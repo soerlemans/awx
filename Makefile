@@ -6,16 +6,22 @@ export EXECUTABLE := awx
 
 # Compiler settings:
 WARNINGS := -Wall -Wextra
-CXXSTD := -std=c++23
+CXXSTD := -std=c++2b
 CXXFLAGS := $(CXXSTD) -O2 $(WARNINGS)
 
-ifndef CXX
-CXX := clang
-endif
+CXX := clang++
+
+# Local variables:
+SOURCES := $(wildcard $(SRC)/*.cpp)
+OBJECTS := $(patsubst $(SRC)/%.cpp,$(BUILD)/%.o,$(SOURCES))
 
 # Rules:
-$(EXECUTABLE): $(SRC)/*.cpp
+$(EXECUTABLE): $(OBJECTS)
+	@echo $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $(EXECUTABLE)
+
+$(BUILD)/%.o: $(SRC)/%.cpp
+	$(CXX) -c $(CXXFLAGS) $^ -o $@
 
 # Phony rules:
 .PHONY := clean
