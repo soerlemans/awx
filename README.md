@@ -30,28 +30,39 @@ Features
 Our aim is to implement the following features in AWX:
  + Assignable rules
  + Nested rules
+ + Scoping
  + Modules
  + Compilable `.awx` files
+ + Extended regular expressions support
+ + Perl regular expressions support
 
 Features so far implemented:
- + Zero features
+ + Absolutely none
 
 Getting AWX
 -----------
 ### Dependencies
 We aim to keep dependencies to a minimum.
 But the following packages are required:
+ + A C++ compiler (clang, g++ or msvc++)
+   + Must support C++23
 
 ### Build
 
 ### Install
 
-Helping out
------------
-This section is for those who want to help the project.
+Contributing
+------------
+This section is for those who want to contribute to the project.
 
 ### Dependencies
-The following dependencies are required 
- + clang
- + clang-format
- + cppfront (if this works out)
+The following dependencies are required:
+ + A C++ compiler (clang, g++ or msvc++)
+   + Must support C++23
+ + `clang-format`
+ + `valgrind`
+ + `cppfront` (if this works out)
+ + `doxygen`
+
+### Style guide
+For the style guide look into `docs/styleguide.md`.
