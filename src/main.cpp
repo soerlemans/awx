@@ -3,6 +3,7 @@
 #include "filebuffer.hpp"
 #include "parser.hpp"
 
+
 auto print_help() -> void
 {
   std::cout << "AWX - Help Manual\n"
@@ -22,8 +23,10 @@ int main(int argc, char *argv[])
 
   try {
 	FileBuffer program{argv[1]};
+	program.print();
   } catch(std::exception& e) {
-	std::cerr << "Error: " << e.what() << std::endl;
+	std::cout << "Error: " << e.what() << '\n';
+
 	return 1;
   }
 

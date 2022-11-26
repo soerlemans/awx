@@ -12,14 +12,16 @@ namespace fs = std::filesystem;
 
 class FileBuffer {
 private:
-
-  std::vector<std::string> m_file;
+  std::size_t m_lineno{0}, m_columnno{0};
+  std::vector<std::string> m_filebuffer;
 
 public:
   FileBuffer();
   FileBuffer(std::string_view t_path);
 
   auto load_file(fs::path t_path) -> void;
+
+  auto print(bool t_all=false) -> void;
 
   virtual ~FileBuffer();
 };

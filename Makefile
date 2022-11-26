@@ -5,7 +5,7 @@ export BUILD := build
 export EXECUTABLE := awx
 
 # Compiler settings:
-WARNINGS := -Wall -Wextra
+WARNINGS := -Wall -Wextra -pedantic
 CXXSTD := -std=c++2b
 CXXFLAGS := $(CXXSTD) -g3 -O2 $(WARNINGS)
 
