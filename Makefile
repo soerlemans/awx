@@ -7,7 +7,7 @@ export EXECUTABLE := awx
 # Compiler settings:
 WARNINGS := -Wall -Wextra
 CXXSTD := -std=c++2b
-CXXFLAGS := $(CXXSTD) -O2 $(WARNINGS)
+CXXFLAGS := $(CXXSTD) -g3 -O2 $(WARNINGS)
 
 CXX := clang++
 
