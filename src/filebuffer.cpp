@@ -11,8 +11,9 @@ FileBuffer::FileBuffer()
 }
 
 FileBuffer::FileBuffer(std::string_view t_path)
+  :FileBuffer{}
 {
-  m_filebuffer.reserve(256);
+  std::cout << m_filebuffer.capacity() << '\n';
 
   load_file(t_path);
 }
