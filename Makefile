@@ -18,15 +18,13 @@ OBJECTS := $(patsubst $(SRC)/%.cpp,$(BUILD)/%.o,$(SOURCES))
 
 # Rules:
 $(EXECUTABLE): $(OBJECTS)
-	@echo $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $(EXECUTABLE)
 
-$(BUILD)/%.o: $(SRC)/%.cpp
+$(BUILD)/main.o: $(SRC)/main.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 
 $(BUILD)/%.o: $(SRC)/%.cpp $(SRC)/%.hpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@
-
 
 # Phony rules:
 .PHONY := clean

@@ -7,7 +7,6 @@
 
 #include "tokentype.hpp"
 
-
 class Token {
 private:
   using enum TokenType;
