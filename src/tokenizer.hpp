@@ -16,6 +16,8 @@ public:
   Tokenizer() = delete;
   Tokenizer(FileBuffer&& t_filebuffer);
 
+  auto tokenize() -> void;
+
   virtual ~Tokenizer();
 };
 
