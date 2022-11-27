@@ -66,3 +66,8 @@ The following dependencies are required:
 
 ### Style guide
 For the style guide look into `docs/styleguide.md`.
+
+Credit
+------
+I sourced some scripts from Tim Sherwood for the purpose of testing the implementation.
+I got them from his personal website [Some Useful Gawk Scripts](https://sites.cs.ucsb.edu/~sherwood/awk/).
