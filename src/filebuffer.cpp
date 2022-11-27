@@ -5,30 +5,28 @@
 
 #include "filebuffer.hpp"
 
-FileBuffer::FileBuffer()
+
+// Constructors:
+FileBuffer::FileBuffer(fs::path t_path)
+  :m_path{t_path}
 {
   m_filebuffer.reserve(256);
+
+  load();
 }
 
-FileBuffer::FileBuffer(std::string_view t_path)
-  :FileBuffer{}
+// Methods:
+auto FileBuffer::load() -> void
 {
-  std::cout << m_filebuffer.capacity() << '\n';
-
-  load_file(t_path);
-}
-
-auto FileBuffer::load_file(fs::path t_path) -> void
-{
-  if(!fs::exists(t_path)) {
+  if(!fs::exists(m_path)) {
 	std::string error_str{"File does not exist! \""};
-	error_str += t_path.string();
+	error_str += m_path.string();
 	error_str += "\"";
 
 	throw std::invalid_argument{error_str};
   }
 
-  std::ifstream ifs{t_path};
+  std::ifstream ifs{m_path};
   while(ifs.good() && !ifs.eof())
 	{
 	  std::string line;
@@ -49,7 +47,22 @@ auto FileBuffer::print(bool t_all) -> void
   }
 }
 
-FileBuffer::~FileBuffer()
+// Operators:
+auto FileBuffer::operator[](std::size_t t_index) -> std::string&
 {
-
+  return m_filebuffer[t_index];
 }
+
+auto FileBuffer::operator++() -> std::string&
+{
+  return m_filebuffer[m_lineno++];
+}
+
+auto FileBuffer::operator--() -> std::string&
+{
+  return m_filebuffer[m_lineno--];
+}
+
+// Destructor:
+FileBuffer::~FileBuffer()
+{}

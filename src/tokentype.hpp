@@ -87,8 +87,8 @@ enum class TokenType : u32 {
   DOLLAR_SIGN = '$',
 
   WHITESPACE,
-  EOL = '\n',
-  EOF,
+  END_OF_LINE = '\n',
+  END_OF_FILE
 };
 
 #endif // TOKENTYPE_H

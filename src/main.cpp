@@ -9,9 +9,14 @@ auto print_help() -> void
   std::cout << "AWX - Help Manual\n"
 			<< " <-h> Displays this help manual\n"
 			<< '\n';
-	}
+}
 
-int main(int argc, char *argv[])
+auto run(int argc, char* argv[]) -> void
+{
+  FileBuffer fb{argv[1]};
+}
+
+int main(int argc, char* argv[])
 {
   if (argc < 2)
 	{
@@ -22,8 +27,7 @@ int main(int argc, char *argv[])
 	}
 
   try {
-	FileBuffer program{argv[1]};
-	program.print();
+	run(argc, argv);
   } catch(std::exception& e) {
 	std::cout << "Error: " << e.what() << '\n';
 

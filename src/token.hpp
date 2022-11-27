@@ -2,7 +2,7 @@
 #define TOKEN_H
 
 #include <string>
-#include <typle>
+#include <tuple>
 #include <variant>
 
 #include "tokentype.hpp"
@@ -10,32 +10,36 @@
 class Token {
 private:
   using enum TokenType;
+  using TokenValue = std::variant<int, std::string>;
 
   TokenType m_tokentype{UNKNOWN};
-  std::variant<int, std::string> m_value;
+  TokenValue m_value;
 
 public:
-  explicit Token(t_tokentype, int t_value)
+  explicit Token(TokenType t_tokentype, int t_value)
 	:m_tokentype{t_tokentype}, m_value{t_value}
   {};
 
-  explicit Token(t_tokentype, std::string t_value)
+  explicit Token(TokenType t_tokentype, std::string t_value)
 	:m_tokentype{t_tokentype}, m_value{t_value}
   {};
 
-  auto get_type() -> TokenType
+  auto type() const -> TokenType
   {
 	return m_tokentype;
   }
 
   template<typename T>
-  auto get_value() -> T
+  auto value() const -> T
   {
 	return std::get<T>(m_value);
   }
 
-  // template<typename T>
-  // auto get() -> std::tuple<TokenType, std::var
+  template<typename T, typename Type=TokenType, typename Value=TokenValue>
+  auto get() const -> std::tuple<TokenType, TokenValue>
+  {
+	return std::tuple<Type, Value>{m_tokentype, std::get<T>(m_value)};
+  }
 
   virtual ~Token();
 };
