@@ -12,33 +12,51 @@ namespace fs = std::filesystem;
 
 class FileBuffer {
 private:
+  using File = std::vector<std::string>;
+
   fs::path m_path;
-  std::size_t m_lineno{0}, m_columnno{0};
-  std::vector<std::string> m_filebuffer;
+  mutable std::size_t m_lineno{0}, m_columnno{0};
+  File m_filebuffer;
 
 public:
   FileBuffer() = delete;
   FileBuffer(fs::path t_path);
 
+  // Load and Save the FileBuffer from FS
   auto load() -> void;
   auto save() -> void; // TODO: Have this return an error code?
 
+  // Line movement
+  auto next() -> std::string&;
+  auto prev() -> std::string&;
+
+  // Character movement
+  auto forward() const -> char;
+  auto backward() const -> char;
+
+  // Get current line
   auto line() -> std::string&;
+  auto line() const -> std::string;
+
+  // Get current character
+  // TODO: Implement
+
+  // Get indexes
   auto lineno() const -> std::size_t;
   auto columnno() const -> std::size_t;
 
-  auto begin() -> std::vector<std::string>::iterator;
-  auto end() -> std::vector<std::string>::iterator;
+  auto begin() -> File::iterator;
+  auto end() -> File::iterator;
 
   auto size() const -> std::size_t;
+  auto eof() const -> bool;
 
   auto print(bool t_all=false) -> void;
 
   // Operators:
   auto operator[](std::size_t t_index) -> std::string&;
-  auto operator++(int) -> std::string;
-  auto operator--(int) -> std::string;
 
+  // Destructors
   virtual ~FileBuffer();
 };
 

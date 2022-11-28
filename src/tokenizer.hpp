@@ -14,6 +14,7 @@ using TokenStream = std::vector<Token>;
 class Tokenizer {
 private:
   FileBuffer& m_filebuffer;
+  TokenStream m_tokenstream;
 
   // Tokenizer functions:
   auto single_character() -> void;
