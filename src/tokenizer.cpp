@@ -41,7 +41,6 @@ auto Tokenizer::tokenize() -> TokenStream
     for(; !m_filebuffer.eol(); m_filebuffer.forward())
       {
 		const char character{m_filebuffer.character()};
-		std::cout << "ch: " << character << '\n';
 
         if(std::isalpha(character)) {
 		  identifier();

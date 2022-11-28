@@ -39,11 +39,17 @@ auto FileBuffer::load() -> void
 
 auto FileBuffer::next() -> std::string&
 {
+  // Changing lines resets the column number
+  m_columnno = 0;
+
   return m_filebuffer[m_lineno++];
 }
 
 auto FileBuffer::prev() -> std::string&
 {
+  // Changing lines resets the column number
+  m_columnno = 0;
+
   return m_filebuffer[m_lineno--];
 }
 auto FileBuffer::forward() const -> char
