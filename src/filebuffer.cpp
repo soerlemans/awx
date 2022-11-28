@@ -7,7 +7,8 @@
 
 
 // Constructors:
-FileBuffer::FileBuffer(fs::path t_path): m_path{t_path}
+FileBuffer::FileBuffer(fs::path t_path)
+  : m_path{t_path}, m_lineno{0}, m_columnno{0}
 {
   m_filebuffer.reserve(256);
 
@@ -65,6 +66,11 @@ auto FileBuffer::line() const -> std::string
   return m_filebuffer[m_lineno];
 }
 
+auto FileBuffer::character() const -> char
+{
+  return m_filebuffer[m_lineno][m_columnno];
+}
+
 auto FileBuffer::lineno() const -> std::size_t
 {
   return m_lineno;
@@ -90,29 +96,35 @@ auto FileBuffer::size() const -> std::size_t
   return m_filebuffer.size();
 }
 
+auto FileBuffer::eol() const -> bool
+{
+  return m_columnno >= line().size();
+}
+
 auto FileBuffer::eof() const -> bool
 {
   if(m_lineno >= m_filebuffer.size())
-	if(m_columnno >= line().size())
-	  {
-		return true;
-	  }
+    if(m_columnno >= line().size())
+      {
+        return true;
+    }
 
   return false;
 }
 
 auto FileBuffer::print(bool t_all) -> void
 {
-  if(t_all) {
+  if(t_all)
+    {
       for(const auto& line : m_filebuffer)
         {
           std::cout << line << '\n';
         }
-  }else{
-      std::cout << "Line(" << m_lineno << "): "
-				<< m_filebuffer[m_lineno]
+  } else
+    {
+      std::cout << "Line(" << m_lineno << "): " << m_filebuffer[m_lineno]
                 << '\n';
-  }
+    }
 }
 
 // Operators:

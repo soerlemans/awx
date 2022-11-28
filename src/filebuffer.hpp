@@ -15,7 +15,7 @@ private:
   using File = std::vector<std::string>;
 
   fs::path m_path;
-  mutable std::size_t m_lineno{0}, m_columnno{0};
+  mutable std::size_t m_lineno, m_columnno;
   File m_filebuffer;
 
 public:
@@ -39,7 +39,7 @@ public:
   auto line() const -> std::string;
 
   // Get current character
-  // TODO: Implement
+  auto character() const -> char;
 
   // Get indexes
   auto lineno() const -> std::size_t;
@@ -49,6 +49,7 @@ public:
   auto end() -> File::iterator;
 
   auto size() const -> std::size_t;
+  auto eol() const -> bool;
   auto eof() const -> bool;
 
   auto print(bool t_all=false) -> void;

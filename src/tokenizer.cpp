@@ -4,6 +4,7 @@
 
 #include "tokenizer.hpp"
 
+
 auto Tokenizer::single_character() -> void
 {}
 auto Tokenizer::literal_numeric() -> void
@@ -34,19 +35,25 @@ Tokenizer::Tokenizer(FileBuffer &t_filebuffer)
 
 auto Tokenizer::tokenize() -> TokenStream
 {
-  for(; !m_filebuffer.eof(); m_filebuffer++)
-    for(std::size_t index{0}; index < m_filebuffer.line().size(); index++)
-      {
-        const std::string line{m_filebuffer.line()};
-        const char character{line[index]};
+  using namespace reserved::symbols;
 
-        if(std::isalpha(character))
-          {
-            identifier();
-        } else if(std::isdigit(character))
-          {
-            literal_numeric();
-        }
+  for(; !m_filebuffer.eof(); m_filebuffer.next())
+    for(; !m_filebuffer.eol(); m_filebuffer.forward())
+      {
+		const char character{m_filebuffer.character()};
+		std::cout << "ch: " << character << '\n';
+
+        if(std::isalpha(character)) {
+		  identifier();
+        }else if(std::isdigit(character)) {
+		  literal_numeric();
+        }else if(character == g_double_quote) {
+		  std::cout << "I found a string character\n";
+        // }else if() {
+        // }else if() {
+        // }else if() {
+		  
+		}
       }
 
   return m_tokenstream;

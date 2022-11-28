@@ -2,17 +2,19 @@
 #define TOKENIZER_H
 
 #include <string>
+#include <string_view>
 #include <tuple>
 #include <variant>
 
 #include "filebuffer.hpp"
+#include "reserved.hpp"
 #include "token.hpp"
 
 
 using TokenStream = std::vector<Token>;
 
 class Tokenizer {
-private:
+  private:
   FileBuffer& m_filebuffer;
   TokenStream m_tokenstream;
 
@@ -29,7 +31,7 @@ private:
   auto operator_mutable() -> void;
   auto operator_() -> void; // TODO: Find a beter name for this than operator_
 
-public:
+  public:
   Tokenizer() = delete;
   Tokenizer(FileBuffer& t_filebuffer);
 
