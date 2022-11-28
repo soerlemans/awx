@@ -30,7 +30,7 @@ public:
   template<typename T, typename Type=TokenType, typename Value=TokenValue>
   auto get() const -> std::tuple<TokenType, TokenValue>
   {
-	return std::tuple<Type, Value>{m_tokentype, std::get<T>(m_value)};
+	return {m_tokentype, std::get<T>(m_value)};
   }
 
   virtual ~Token();

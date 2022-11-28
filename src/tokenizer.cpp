@@ -12,7 +12,9 @@ auto Tokenizer::keyword() -> void {}
 
 auto Tokenizer::identifier() -> void
 {
-  keyword();
+  std::stringstream buffer;
+
+
 }
 
 auto operator_logical() -> void {}
@@ -27,8 +29,6 @@ auto Tokenizer::tokenize() -> TokenStream
 {
   TokenStream token_stream;
   token_stream.reserve(256);
-
-  std::stringstream buffer;
 
   for (; m_filebuffer.lineno() < m_filebuffer.size(); m_filebuffer++)
     for (std::size_t index{0}; index < m_filebuffer.line().size(); index++) {
