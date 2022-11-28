@@ -1,8 +1,7 @@
 #include <iostream>
 
-#include "filebuffer.hpp"
+#include "tokenizer.hpp"
 #include "parser.hpp"
-
 
 auto print_help() -> void
 {
@@ -14,6 +13,9 @@ auto print_help() -> void
 auto run(int argc, char* argv[]) -> void
 {
   FileBuffer fb{argv[1]};
+  Tokenizer tokenizer{fb};
+
+  tokenizer.tokenize();
 }
 
 int main(int argc, char* argv[])

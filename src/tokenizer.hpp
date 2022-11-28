@@ -8,17 +8,31 @@
 #include "filebuffer.hpp"
 #include "token.hpp"
 
+
+using TokenStream = std::vector<Token>;
+
 class Tokenizer {
 private:
-  FileBuffer m_filebuffer;
+  FileBuffer& m_filebuffer;
+
+  // Tokenizer functions:
+  auto single_character() -> void;
+
+  auto literal() -> void;
+  auto keyword() -> void;
+  auto identifier() -> void;
+
+  auto operator_logical() -> void;
+  auto operator_mutable() -> void;
+  auto operator_() -> void; // TODO: Find a beter name for this than operator_
 
 public:
   Tokenizer() = delete;
-  Tokenizer(FileBuffer&& t_filebuffer);
+  Tokenizer(FileBuffer& t_filebuffer);
 
-  auto tokenize() -> void;
-
+  auto tokenize() -> TokenStream;
   virtual ~Tokenizer();
 };
+
 
 #endif // TOKENIZER_H

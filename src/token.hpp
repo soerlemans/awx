@@ -16,18 +16,10 @@ private:
   TokenValue m_value;
 
 public:
-  explicit Token(TokenType t_tokentype, int t_value)
-	:m_tokentype{t_tokentype}, m_value{t_value}
-  {};
+  explicit Token(TokenType t_tokentype, int t_value);
+  explicit Token(TokenType t_tokentype, std::string t_value);
 
-  explicit Token(TokenType t_tokentype, std::string t_value)
-	:m_tokentype{t_tokentype}, m_value{t_value}
-  {};
-
-  auto type() const -> TokenType
-  {
-	return m_tokentype;
-  }
+  auto type() const -> TokenType;
 
   template<typename T>
   auto value() const -> T

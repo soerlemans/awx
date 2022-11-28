@@ -21,6 +21,7 @@ enum class TokenType : u32 {
 
   // Types:
   STRING,
+  REGEX,
   NUMERIC,
 
   // Brace types:

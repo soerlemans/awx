@@ -36,6 +36,36 @@ auto FileBuffer::load() -> void
 	}
 }
 
+auto FileBuffer::line() -> std::string&
+{
+  return m_filebuffer[m_lineno];
+}
+
+auto FileBuffer::lineno() const -> std::size_t
+{
+  return m_lineno;
+}
+
+auto FileBuffer::columnno() const -> std::size_t
+{
+  return m_columnno;
+}
+
+auto FileBuffer::begin() -> std::vector<std::string>::iterator
+{
+  return m_filebuffer.begin();
+}
+
+auto FileBuffer::end() -> std::vector<std::string>::iterator
+{
+  return m_filebuffer.end();
+}
+
+auto FileBuffer::size() const -> std::size_t
+{
+  return m_filebuffer.size();
+}
+
 auto FileBuffer::print(bool t_all) -> void
 {
   if (t_all) {
@@ -53,12 +83,12 @@ auto FileBuffer::operator[](std::size_t t_index) -> std::string&
   return m_filebuffer[t_index];
 }
 
-auto FileBuffer::operator++() -> std::string&
+auto FileBuffer::operator++(int) -> std::string
 {
   return m_filebuffer[m_lineno++];
 }
 
-auto FileBuffer::operator--() -> std::string&
+auto FileBuffer::operator--(int) -> std::string
 {
   return m_filebuffer[m_lineno--];
 }
