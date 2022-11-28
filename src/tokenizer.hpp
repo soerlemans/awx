@@ -18,7 +18,9 @@ private:
   // Tokenizer functions:
   auto single_character() -> void;
 
-  auto literal() -> void;
+  auto literal_numeric() -> void;
+  auto literal_string() -> void;
+
   auto keyword() -> void;
   auto identifier() -> void;
 

@@ -25,30 +25,30 @@ enum class TokenType : u32 {
   NUMERIC,
 
   // Brace types:
-  PAREN_OPEN = '(',
-  PAREP_CLOSE = ')',
+  PAREN_OPEN,
+  PAREP_CLOSE,
 
-  ACCOLADE_OPEN = '{',
-  ACCOLADE_CLOSE = '}',
+  ACCOLADE_OPEN,
+  ACCOLADE_CLOSE,
 
-  BRACE_OPEN = '[',
-  BRACE_CLOSE = ']',
+  BRACE_OPEN,
+  BRACE_CLOSE,
 
   // Quotes:
-  SINGLE_QUOTE = '\'',
-  DOUBLE_QUOTE = '"',
+  SINGLE_QUOTE,
+  DOUBLE_QUOTE,
 
   // Numeric Tokens:
   INCREMENT,
   DECREMENT,
 
-  EXPONENT = '^',
-  PLUS = '+',
-  MINUS = '-',
+  EXPONENT,
+  PLUS,
+  MINUS,
 
-  MULTIPLIER = '*',
-  DIVIDER = '/',
-  MODULUS = '%',
+  MULTIPLIER,
+  DIVIDER,
+  MODULUS,
 
   EXPONENT_ASSIGNMENT,
   PLUS_ASSIGNMENT,
@@ -58,14 +58,14 @@ enum class TokenType : u32 {
   DIVISION_ASSIGNMENT,
   ADDITION_ASSIGNMENT,
   SUBTRACTION_ASSIGNMENT,
-  ASSIGNMENT = '=',
+  ASSIGNMENT,
 
   // REGEX Tokens:
-  ERE_MATCH = '~',
+  ERE_MATCH,
   NOT_ERE_MATCH,
 
   // Logical Tokens:
-  NOT = '!',
+  NOT,
 
   LESS_THAN = '<',
   LESS_THAN_EQUAL,
@@ -80,6 +80,53 @@ enum class TokenType : u32 {
   OR,
 
   // Miscellaneous:
+  COMMA,
+  QUESTIONMARK,
+  COLON,
+  SEMICOLON,
+
+  DOLLAR_SIGN,
+
+  WHITESPACE,
+  END_OF_LINE,
+};
+
+// Enum that is used for comparing single characters
+// Used for comparison purposes
+enum TokenCharacters : char {
+  PAREN_OPEN = '(',
+  PAREP_CLOSE = ')',
+
+  ACCOLADE_OPEN = '{',
+  ACCOLADE_CLOSE = '}',
+
+  BRACE_OPEN = '[',
+  BRACE_CLOSE = ']',
+
+  SINGLE_QUOTE = '\'',
+  DOUBLE_QUOTE = '"',
+
+  //
+  EXPONENT = '^',
+  PLUS = '+',
+  MINUS = '-',
+
+  MULTIPLIER = '*',
+  DIVIDER = '/',
+  MODULUS = '%',
+
+  ASSIGNMENT = '=',
+
+  // REGEX Tokens:
+  ERE_MATCH = '~',
+  NOT_ERE_MATCH,
+
+  // Logical Tokens:
+  NOT = '!',
+  LESS_THAN = '<',
+  GREATER_THAN = '>',
+
+  // Miscellaneous:
   COMMA = ',',
   QUESTIONMARK = '?',
   COLON = ':',
@@ -87,9 +134,7 @@ enum class TokenType : u32 {
 
   DOLLAR_SIGN = '$',
 
-  WHITESPACE,
   END_OF_LINE = '\n',
-  END_OF_FILE
 };
 
 #endif // TOKENTYPE_H
