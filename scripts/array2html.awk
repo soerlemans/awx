@@ -41,4 +41,7 @@ BEGIN {
 
 END {
 	printf "</TABLE>\n";
+	i = 0.2;
+	i = 0x299;
+	i = 0x99.99;
 }

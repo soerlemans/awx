@@ -20,9 +20,11 @@ enum class TokenType : u32 {
   IN_KEYWORD,
 
   // Types:
+  INTEGER,
+  FLOAT,
+  HEX,
   STRING,
   REGEX,
-  NUMERIC,
 
   // Brace types:
   PAREN_OPEN,

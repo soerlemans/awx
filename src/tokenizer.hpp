@@ -19,7 +19,8 @@ class Tokenizer {
   TokenStream m_tokenstream;
 
   // Tokenizer functions:
-  auto single_character() -> void;
+  auto is_hex() -> bool;
+  auto is_float() -> bool;
 
   auto literal_numeric() -> void;
   auto literal_string() -> void;
