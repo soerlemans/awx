@@ -2,13 +2,46 @@
 #define RESERVED_H
 
 #include <string_view>
+#include <type_traits>
 
-// TODO: If keywords ever need to be changed or reserved characters
-// Change the namespaces into structs with a shared parent so different
-// Syntaxes would be able to be dynamically swapped
+#include "tokentype.hpp"
+
+// The Identifier is either one character or
+template<typename T>
+concept ReservedIdentifier =
+  std::is_convertible_v<T, std::string_view> ||
+  std::same_as<std::remove_cv<T>, char>;
 
 // AWX reserved keywords and symbols
 namespace reserved {
+  // Helper class for the Reserved global variable definitions
+  template<typename T>
+  requires ReservedIdentifier<T>
+  class ReservedWrapper {
+  private:
+	const T m_identifier;
+	const TokenType m_tokentype;
+
+  public:
+	ReservedWrapper(T t_indentifier, TokenType t_tokentype)
+	  : m_identifier{t_indentifier}, m_tokentype{t_tokentype}
+	{}
+
+	auto identifier() const -> T
+	{
+	  return m_identifier;
+	}
+
+	auto tokentype() const -> TokenType
+	{
+	  return m_tokentype;
+	}
+
+	auto get() const -> std::tuple<T, TokenType>
+	{
+	  return {m_identifier, m_tokentype};
+	}
+  };
 
 // Reserved shorthands of constexpr types
 // Do not use outside of reserved namespace to avoid confusion

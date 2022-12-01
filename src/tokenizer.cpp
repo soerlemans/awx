@@ -55,12 +55,14 @@ auto Tokenizer::literal_numeric() -> void
       const char character{m_filebuffer.character()};
 
       // Check for integer
-      if(std::isdigit(character)) {
+      if(std::isdigit(character))
+        {
           ss << m_filebuffer.forward();
 
           // Check for floating point
           // TODO: Define dot reserved symbol
-      }else if(!dot && character == '.') {
+      } else if(!dot && character == '.')
+        {
           // Cant be a hex literal with a floating point at the same time
           // In the future we might have primitive types be classes ruby style
           // so someday this could be a feature But for now give an error on
@@ -74,9 +76,10 @@ auto Tokenizer::literal_numeric() -> void
 
           dot = true;
           dot_pos = m_filebuffer.columnno();
-      }else{
-        break;
-	  }
+      } else
+        {
+          break;
+        }
     }
 
   std::cout << "number found! " << ss.str() << '\n';
@@ -89,28 +92,28 @@ auto Tokenizer::is_keyword(std::string_view t_identifier) -> TokenType
 {
   using namespace reserved::keywords;
 
-  TokenType ret;
-  
-  // TODO: Clean this up we could use a loop with an std::pair for the tokentype
-  if(t_identifier == g_function) {
-	ret = TokenType::FUNCTION_KEYWORD;
-  }else if(t_identifier == g_if) {
-	ret = TokenType::IF_KEYWORD;
-  }else if(t_identifier == g_else) {
-	ret = TokenType::ELSE_KEYWORD;
-  }else if(t_identifier == g_do) {
-	ret = TokenType::DO_KEYWORD;
-  }else if(t_identifier == g_while) {
-	ret = TokenType::WHILE_KEYWORD;
-  }else if(t_identifier == g_for) {
-	ret = TokenType::FOR_KEYWORD;
-  }else if(t_identifier == g_in) {
-	ret = TokenType::IN_KEYWORD;
-  }else{
-	ret = TokenType::UNKNOWN;
-  }
+  TokenType type;
 
-  return ret;
+  // TODO: Clean this up we could use a loop with an std::pair for the tokentype
+  // Having a centralized location for 
+  if(t_identifier == g_function)
+     type = TokenType::FUNCTION_KEYWORD;
+  else if(t_identifier == g_if)
+     type = TokenType::IF_KEYWORD;
+  else if(t_identifier == g_else)
+     type = TokenType::ELSE_KEYWORD;
+  else if(t_identifier == g_do)
+     type = TokenType::DO_KEYWORD;
+  else if(t_identifier == g_while)
+     type = TokenType::WHILE_KEYWORD;
+  else if(t_identifier == g_for)
+     type = TokenType::FOR_KEYWORD;
+  else if(t_identifier == g_in)
+     type = TokenType::IN_KEYWORD;
+  else
+     type = TokenType::UNKNOWN;
+
+  return  type;
 }
 
 auto Tokenizer::identifier() -> void
@@ -121,14 +124,10 @@ auto Tokenizer::identifier() -> void
 
   // Verify if it is a keyword or not
   if(TokenType token_type{is_keyword(buffer.str())};
-     token_type != TokenType::IDENTIFIER)
-    {
-	  m_tokenstream.push_back(Token{token_type});
-	}else{
-	// m_tokenstream.push_back();
-    }
-
-  std::cout << "identifier found! " << buffer.str() << '\n';
+     token_type != TokenType::UNKNOWN)
+    m_tokenstream.push_back(Token{token_type});
+  else
+    m_tokenstream.push_back(Token{TokenType::IDENTIFIER, buffer.str()});
 }
 
 auto operator_logical() -> void
