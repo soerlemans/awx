@@ -9,7 +9,7 @@
 #include "tokentype.hpp"
 
 
-// Helper function to literal_numeric
+// Helper functions for literal_numeric
 auto Tokenizer::is_hex() -> bool
 {
   // Octal literals are not specified in the POSIX AWK standard
@@ -30,7 +30,6 @@ auto Tokenizer::is_hex() -> bool
   return false;
 }
 
-// Helper function for literal_numeric
 auto Tokenizer::is_float() -> bool
 {}
 
