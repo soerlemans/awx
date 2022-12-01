@@ -49,9 +49,6 @@ auto Tokenizer::literal_numeric() -> void
 
   while(!m_filebuffer.eol())
     {
-      std::cout << std::boolalpha << "hex: " << hex << " dot: " << dot
-                << " ss: " << ss.str() << " line: " << m_filebuffer.line()
-                << '\n';
       const char character{m_filebuffer.character()};
 
       // Check for integer
