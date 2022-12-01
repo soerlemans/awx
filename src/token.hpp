@@ -7,7 +7,6 @@
 
 #include "tokentype.hpp"
 
-template<typename T>
 class Token {
 private:
   using TokenValue = std::variant<int, double, std::string>;
@@ -16,9 +15,9 @@ private:
   TokenValue m_value;
 
 public:
-  explicit Token(T t_tokentype);
-  explicit Token(T t_tokentype, int t_value);
-  explicit Token(T t_tokentype, std::string t_value);
+  explicit Token(TokenType t_tokentype);
+  explicit Token(TokenType t_tokentype, int t_value);
+  explicit Token(TokenType t_tokentype, std::string t_value);
 
   auto type() const -> TokenType;
 
@@ -28,8 +27,8 @@ public:
 	return std::get<T>(m_value);
   }
 
-  template<typename T, typename Type=TokenType, typename Value=TokenValue>
-  auto get() const -> std::tuple<TokenType, TokenValue>
+  template<typename T, typename Type=TokenType, typename TokenValueType=TokenValue>
+  auto get() const -> std::tuple<TokenType, TokenValueType>
   {
 	return {m_tokentype, std::get<T>(m_value)};
   }

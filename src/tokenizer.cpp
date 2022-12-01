@@ -89,16 +89,16 @@ auto Tokenizer::is_keyword(std::string_view t_identifier) -> TokenType
 {
   using namespace reserved::keywords;
 
-// constexpr r_vw g_function{"function"};
-// constexpr r_vw g_if{"if"};
-// constexpr r_vw g_else{"else"};
-// constexpr r_vw g_do{"do"};
-// constexpr r_vw g_while{"while"};
-// constexpr r_vw g_for{"for"};
-// constexpr r_vw g_in{"in"};
+  // constexpr r_vw g_function{"function"};
+  // constexpr r_vw g_if{"if"};
+  // constexpr r_vw g_else{"else"};
+  // constexpr r_vw g_do{"do"};
+  // constexpr r_vw g_while{"while"};
+  // constexpr r_vw g_for{"for"};
+  // constexpr r_vw g_in{"in"};
   // TODO: Clean this up we could use a loop with an std::pair for the tokentype
   if(t_identifier == g_function) {
-	return TokenType::Keyword::FUNCTION;
+	return TokenType::FUNCTION_KEYWORD;
   }else if(){}
 
   return TokenType::IDENTIFIER;

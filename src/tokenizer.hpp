@@ -14,7 +14,6 @@
 // Aliases:
 using TokenStream = std::vector<Token>;
 
-// Classes:
 class Tokenizer {
   private:
   FileBuffer& m_filebuffer;

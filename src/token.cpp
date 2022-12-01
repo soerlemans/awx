@@ -1,7 +1,7 @@
 #include "token.hpp"
 
 Token::Token(TokenType t_tokentype)
-  : m_tokentype(t_tokentype), m_value{}
+  : m_tokentype{t_tokentype}, m_value{}
 {}
 
 Token::Token(TokenType t_tokentype, int t_value)
