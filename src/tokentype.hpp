@@ -36,6 +36,9 @@ enum class TokenType : u16 {
   BRACE_OPEN,
   BRACE_CLOSE,
 
+  // Assignment:
+  ASSIGNMENT,
+
   // Numeric Tokens:
   INCREMENT,
   DECREMENT,
@@ -54,9 +57,9 @@ enum class TokenType : u16 {
 
   MULTIPLICATION_ASSIGNEMNT,
   DIVISION_ASSIGNMENT,
+  MODULO_ASSIGNMENT,
   ADDITION_ASSIGNMENT,
   SUBTRACTION_ASSIGNMENT,
-  ASSIGNMENT,
 
   // REGEX Tokens:
   ERE_MATCH,

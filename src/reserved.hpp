@@ -1,116 +1,135 @@
 #ifndef RESERVED_H
 #define RESERVED_H
 
+#include <array>
 #include <string_view>
 #include <type_traits>
 
 #include "tokentype.hpp"
 
+
+// Macros:
+// Do not use this macro outside of this file
+#define DEFINE_RESERVED(name, str, token) \
+  constexpr ReservedWrapper name          \
+  {                                       \
+    str, TokenType::token                 \
+  }
+
+// Concepts:
 // The Identifier is either one character or
 template<typename T>
-concept ReservedIdentifier =
-  std::is_convertible_v<T, std::string_view> ||
-  std::same_as<std::remove_cv<T>, char>;
+concept ReservedIdentifier = std::is_convertible_v<T, std::string_view>
+                             || std::same_as<std::remove_cv<T>, char>;
 
 // AWX reserved keywords and symbols
 namespace reserved {
-  // Helper class for the Reserved global variable definitions
-  template<typename T>
+// Helper class for the Reserved global variable definitions
+template<typename T>
   requires ReservedIdentifier<T>
-  class ReservedWrapper {
+class ReservedWrapper {
   private:
-	const T m_identifier;
-	const TokenType m_tokentype;
+  const T m_identifier;
+  const TokenType m_tokentype;
 
   public:
-	ReservedWrapper(T t_indentifier, TokenType t_tokentype)
-	  : m_identifier{t_indentifier}, m_tokentype{t_tokentype}
-	{}
+  constexpr ReservedWrapper(T t_indentifier, TokenType t_tokentype = TokenType::UNKNOWN)
+    : m_identifier{t_indentifier}, m_tokentype{t_tokentype}
+  {}
 
-	auto identifier() const -> T
-	{
-	  return m_identifier;
-	}
+  auto identifier() const -> T
+  {
+    return m_identifier;
+  }
 
-	auto tokentype() const -> TokenType
-	{
-	  return m_tokentype;
-	}
+  auto tokentype() const -> TokenType
+  {
+    return m_tokentype;
+  }
 
-	auto get() const -> std::tuple<T, TokenType>
-	{
-	  return {m_identifier, m_tokentype};
-	}
-  };
+  auto get() const -> std::tuple<T, TokenType>
+  {
+    return {m_identifier, m_tokentype};
+  }
 
-// Reserved shorthands of constexpr types
-// Do not use outside of reserved namespace to avoid confusion
-using r_ch = char;
-using r_vw = std::string_view;
+  ~ReservedWrapper() = default;
+};
 
+// clang-format off
 // Language reserved keywords
 namespace keywords {
-constexpr r_vw g_function{"function"};
-constexpr r_vw g_if{"if"};
-constexpr r_vw g_else{"else"};
-constexpr r_vw g_do{"do"};
-constexpr r_vw g_while{"while"};
-constexpr r_vw g_for{"for"};
-constexpr r_vw g_in{"in"};
+  DEFINE_RESERVED(g_function, "function", TokenType::FUNCTION_KEYWORD);
+  DEFINE_RESERVED(g_if, "if", TokenType::IF_KEYWORD);
+  DEFINE_RESERVED(g_else, "else", TokenType::ELSE_KEYWORD);
+  DEFINE_RESERVED(g_do, "do", TokenType::DO_KEYWORD);
+  DEFINE_RESERVED(g_while, "while", TokenType::WHILE_KEYWORD);
+  DEFINE_RESERVED(g_for, "for", TokenType::FOR_KEYWORD);
+  DEFINE_RESERVED(g_in, "in", TokenType::IN_KEYWORD);
+
+  constexpr u8 keywords_size{7};
+  std::array<ReservedWrapper, keywords_size> m_keywords{}
 }; // namespace keywords
 
 // Language reserved symbols
 namespace symbols {
-// Braces
-constexpr r_ch g_paren_open{'('};
-constexpr r_ch g_paren_close{')'};
-constexpr r_ch g_accolade_open{'{'};
-constexpr r_ch g_accolade_close{'}'};
-constexpr r_ch g_brace_open{'['};
-constexpr r_ch g_brace_close{']'};
+  // Braces
+  DEFINE_RESERVED(g_paren_open,     '(', TokenType::PAREN_OPEN);
+  DEFINE_RESERVED(g_paren_close,    ')', TokenType::PAREN_CLOSE);
+  DEFINE_RESERVED(g_accolade_open,  '{', TokenType::ACCOLADE_OPEN);
+  DEFINE_RESERVED(g_accolade_close, '}', TokenType::ACCOLADE_CLOSE);
+  DEFINE_RESERVED(g_brace_open,     '[', TokenType::BRACE_OPEN);
+  DEFINE_RESERVED(g_brace_close,    ']', TokenType::BRACE_CLOSE);
 
-// String literal symbols
-constexpr r_ch g_double_quote{'"'};
+  // String literal symbols
+  // TODO: Create an extra tokentype called NONE, or EMPTY
+  DEFINE_RESERVED(g_double_quote, '"');
 
-// Arithmetic operators
-constexpr r_ch g_exponent{'^'};
-constexpr r_ch g_plus{'+'};
-constexpr r_ch g_minus{'-'};
-constexpr r_ch g_multiplier{'*'};
-constexpr r_ch g_divider{'/'};
-constexpr r_ch g_modulus{'%'};
+  // Assignment
+  DEFINE_RESERVED(g_assignment, '=',  TokenType::ASSIGNMENT);
 
-// Assignment variants of Arithmetic operators
-// TODO: Rename or structure these better in the future?
-constexpr r_vw g_exponent_assignment{"^="};
-constexpr r_vw g_plus_assignment{"+="};
-constexpr r_vw g_minus_assignment{"-="};
-constexpr r_vw g_multiplier_assignment{"*="};
-constexpr r_vw g_divider_assignment{"/="};
-constexpr r_vw g_modulus_assignment{"%="};
-constexpr r_ch g_assignment{'='};
+  // Arithmetic operators:
+  DEFINE_RESERVED(g_exponent,   '^', TokenType::EXPONENT);
+  DEFINE_RESERVED(g_plus,       '+', TokenType::PLUS);
+  DEFINE_RESERVED(g_minus,      '-', TokenType::MINUS);
+  DEFINE_RESERVED(g_multiplier, '*', TokenType::MULTIPLIER);
+  DEFINE_RESERVED(g_divider,    '/', TokenType::DIVIDER);
+  DEFINE_RESERVED(g_modulus,    '%', TokenType::MODULUS);
 
-// Regex operators
-constexpr r_ch g_ere_match{'~'};
-constexpr r_vw g_not_ere_match{"!~"};
+  // Assignment variants of Arithmetic operators:
+  DEFINE_RESERVED(g_increment, "++", TokenType::INCREMENT);
+  DEFINE_RESERVED(g_decrement, "--", TokenType::DECREMENT);
 
-// Logic operators
-constexpr r_ch g_not{'!'};
-constexpr r_ch g_less_than{'<'};
-constexpr r_ch g_less_than_equal{'<'};
+  // TODO: Rename or structure these better in the future?
+  DEFINE_RESERVED(g_exponent_assignment,       "^=", TokenType::EXPONENT_ASSIGNMENT);
+  DEFINE_RESERVED(g_plus_assignment,           "+=", TokenType::PLUS_ASSIGNMENT);
+  DEFINE_RESERVED(g_minus_assignment,          "-=", TokenType::MINUS_ASSIGNMENT);
+  DEFINE_RESERVED(g_multiplication_assignment, "*=", TokenType::MULTIPLICATION_ASSIGNMENT);
+  DEFINE_RESERVED(g_division_assignment,       "/=", TokenType::DIVISION_ASSIGNMENT);
+  DEFINE_RESERVED(g_modulo_assignment,         "%=", TokenType::MODULO_ASSIGNMENT);
 
-constexpr r_ch g_greater_than{'>'};
-constexpr r_ch g_greater_than_equal{'>'};
+  // Regex operators:
+  DEFINE_RESERVED(g_ere_match, '~', TokenType::ERE_MATCH);
+  DEFINE_RESERVED(g_not_ere_match, "!~", TokenType::NOT_ERE_MATCH);
 
-// Control flow symbols
-constexpr r_ch g_comma{','};
-constexpr r_ch g_questionmark{'?'};
-constexpr r_ch g_colon{':'};
-constexpr r_ch g_semicolon{';'};
+  // Logic operators:
+  DEFINE_RESERVED(g_not, '!');
+  DEFINE_RESERVED(g_less_than, '<');
+  DEFINE_RESERVED(g_less_than_equal, '<');
 
-// Miscellaneous operators:
-constexpr r_ch g_dollar_sign{'$'};
-constexpr r_ch g_end_of_line{'\n'};
+  DEFINE_RESERVED(g_greater_than, '>');
+  DEFINE_RESERVED(g_greater_than_equal, '>');
+
+  // Control flow symbols
+  DEFINE_RESERVED(g_comma, ',');
+  DEFINE_RESERVED(g_questionmark, '?');
+  DEFINE_RESERVED(g_colon, ':');
+  DEFINE_RESERVED(g_semicolon, ';');
+
+  // Miscellaneous operators:
+  DEFINE_RESRVED(g_dollar_sign, '$');
+  DEFINE_RESRVED(g_end_of_line, '\n');
+
+// clang-format on
 }; // namespace symbols
 }; // namespace reserved
 
