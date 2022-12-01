@@ -94,9 +94,9 @@ auto Tokenizer::is_keyword(std::string_view t_identifier) -> TokenType
 
   // TODO: Clean this up we could use a loop with an std::pair for the tokentype
   // Having a centralized location for
-  // for(auto keyword : g_keywords)
-  // 	if(t_identifier == keyword.identifier())
-  // 	  return keyword.tokentype();
+  for(auto keyword : g_keywords)
+	if(t_identifier == keyword.identifier())
+	  return keyword.tokentype();
 
   return TokenType::UNKNOWN;
 }

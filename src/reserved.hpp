@@ -75,12 +75,9 @@ namespace keywords {
   DEFINE_RESERVED(g_in,       r_vw{"in"},       IN_KEYWORD);
 
   constexpr u8 keywords_size{7};
-  // std::array<ReservedWrapper<std::string_view>, keywords_size> g_keywords{
-  // 	g_function,
-  // 	g_if, g_else,
-  // 	g_do, g_while,
-  // 	g_for, g_in
-  // };
+  constexpr std::array<ReservedWrapper<std::string_view>, keywords_size> g_keywords{
+	g_function, g_if, g_else, g_do, g_while, g_for, g_in
+  };
 }; // namespace keywords
 
 // Language reserved symbols
