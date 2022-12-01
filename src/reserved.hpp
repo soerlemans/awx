@@ -10,17 +10,18 @@
 
 // Macros:
 // Do not use this macro outside of this file
-#define DEFINE_RESERVED(name, str, token) \
-  constexpr ReservedWrapper name          \
-  {                                       \
-    str, TokenType::token                 \
+#define DEFINE_RESERVED(name, str, token)   \
+  constexpr ReservedWrapper name            \
+  {                                         \
+    std::string_view{str}, TokenType::token \
   }
 
 // Concepts:
 // The Identifier is either one character or
 template<typename T>
 concept ReservedIdentifier =
-  std::is_convertible_v<T, std::string_view> || std::same_as<T, char>;
+  std::same_as<T, std::string_view> || std::same_as<T, char>;
+  // std::is_convertible_v<T, std::string_view> || std::same_as<T, char>;
 
 // AWX reserved keywords and symbols
 namespace reserved {
@@ -67,7 +68,7 @@ namespace keywords {
   DEFINE_RESERVED(g_in, "in", IN_KEYWORD);
 
   constexpr u8 keywords_size{7};
-  std::array<ReservedWrapper<const char*>, keywords_size> m_keywords{
+  std::array<ReservedWrapper<const char*>, keywords_size> g_keywords{
 	g_function,
 	g_if, g_else,
 	g_do, g_while,

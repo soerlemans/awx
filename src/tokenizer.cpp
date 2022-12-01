@@ -92,28 +92,13 @@ auto Tokenizer::is_keyword(std::string_view t_identifier) -> TokenType
 {
   using namespace reserved::keywords;
 
-  TokenType type;
-
   // TODO: Clean this up we could use a loop with an std::pair for the tokentype
-  // Having a centralized location for 
-  if(t_identifier == g_function)
-     type = TokenType::FUNCTION_KEYWORD;
-  else if(t_identifier == g_if)
-     type = TokenType::IF_KEYWORD;
-  else if(t_identifier == g_else)
-     type = TokenType::ELSE_KEYWORD;
-  else if(t_identifier == g_do)
-     type = TokenType::DO_KEYWORD;
-  else if(t_identifier == g_while)
-     type = TokenType::WHILE_KEYWORD;
-  else if(t_identifier == g_for)
-     type = TokenType::FOR_KEYWORD;
-  else if(t_identifier == g_in)
-     type = TokenType::IN_KEYWORD;
-  else
-     type = TokenType::UNKNOWN;
+  // Having a centralized location for
+  for(auto keyword : g_keywords)
+	if(t_identifier == keyword.identifier())
+	  return keyword.tokentype();
 
-  return  type;
+  return TokenType::UNKNOWN;
 }
 
 auto Tokenizer::identifier() -> void
