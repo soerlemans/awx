@@ -108,11 +108,13 @@ auto Tokenizer::identifier() -> void
     buffer << m_filebuffer.forward();
 
   // Verify if it is a keyword or not
-  if(TokenType token_type{is_keyword(buffer.str())};
-     token_type != TokenType::UNKNOWN)
+  if(const auto token_type{is_keyword(buffer.str())}; token_type != TokenType::UNKNOWN) {
     m_tokenstream.push_back(Token{token_type});
-  else
+	std::cout << "Keyword: " << buffer.str() << std::endl;
+  }else{
     m_tokenstream.push_back(Token{TokenType::IDENTIFIER, buffer.str()});
+	std::cout << "Identifier: " << buffer.str() << std::endl;
+  }
 }
 
 auto operator_logical() -> void
