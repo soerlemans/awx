@@ -89,19 +89,28 @@ auto Tokenizer::is_keyword(std::string_view t_identifier) -> TokenType
 {
   using namespace reserved::keywords;
 
-  // constexpr r_vw g_function{"function"};
-  // constexpr r_vw g_if{"if"};
-  // constexpr r_vw g_else{"else"};
-  // constexpr r_vw g_do{"do"};
-  // constexpr r_vw g_while{"while"};
-  // constexpr r_vw g_for{"for"};
-  // constexpr r_vw g_in{"in"};
+  TokenType ret;
+  
   // TODO: Clean this up we could use a loop with an std::pair for the tokentype
   if(t_identifier == g_function) {
-	return TokenType::FUNCTION_KEYWORD;
-  }else if(){}
+	ret = TokenType::FUNCTION_KEYWORD;
+  }else if(t_identifier == g_if) {
+	ret = TokenType::IF_KEYWORD;
+  }else if(t_identifier == g_else) {
+	ret = TokenType::ELSE_KEYWORD;
+  }else if(t_identifier == g_do) {
+	ret = TokenType::DO_KEYWORD;
+  }else if(t_identifier == g_while) {
+	ret = TokenType::WHILE_KEYWORD;
+  }else if(t_identifier == g_for) {
+	ret = TokenType::FOR_KEYWORD;
+  }else if(t_identifier == g_in) {
+	ret = TokenType::IN_KEYWORD;
+  }else{
+	ret = TokenType::UNKNOWN;
+  }
 
-  return TokenType::IDENTIFIER;
+  return ret;
 }
 
 auto Tokenizer::identifier() -> void
@@ -114,7 +123,7 @@ auto Tokenizer::identifier() -> void
   if(TokenType token_type{is_keyword(buffer.str())};
      token_type != TokenType::IDENTIFIER)
     {
-	  m_tokenstream.push_back({token_type});
+	  m_tokenstream.push_back(Token{token_type});
 	}else{
 	// m_tokenstream.push_back();
     }
