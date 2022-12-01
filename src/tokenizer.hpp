@@ -11,8 +11,10 @@
 #include "token.hpp"
 
 
+// Aliases:
 using TokenStream = std::vector<Token>;
 
+// Classes:
 class Tokenizer {
   private:
   FileBuffer& m_filebuffer;
@@ -25,7 +27,7 @@ class Tokenizer {
   auto literal_numeric() -> void;
   auto literal_string() -> void;
 
-  auto keyword() -> void;
+  auto is_keyword(std::string_view t_identifier) -> TokenType;
   auto identifier() -> void;
 
   auto operator_logical() -> void;

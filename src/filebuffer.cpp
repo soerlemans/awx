@@ -52,6 +52,23 @@ auto FileBuffer::prev() -> std::string&
 
   return m_filebuffer[m_lineno--];
 }
+
+auto FileBuffer::next() const -> std::string
+{
+  // Changing lines resets the column number
+  m_columnno = 0;
+
+  return m_filebuffer[m_lineno++];
+}
+
+auto FileBuffer::prev() const -> std::string
+{
+  // Changing lines resets the column number
+  m_columnno = 0;
+
+  return m_filebuffer[m_lineno--];
+}
+
 auto FileBuffer::forward() const -> char
 {
   return m_filebuffer[m_lineno][m_columnno++];

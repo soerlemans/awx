@@ -4,13 +4,13 @@
 #include "types.hpp"
 
 // Enum definitions:
-enum class TokenType : u32 {
-  UNKNOWN = 0,
-
-  // Identifiers:
+namespace TokenType {
+enum : u16 {
   IDENTIFIER,
+};
 
-  // Keywords:
+enum class Keyword : u16 {
+  NOT_KEYWORD,
   FUNCTION_KEYWORD,
   IF_KEYWORD,
   ELSE_KEYWORD,
@@ -18,15 +18,17 @@ enum class TokenType : u32 {
   WHILE_KEYWORD,
   FOR_KEYWORD,
   IN_KEYWORD,
+};
 
-  // Types:
+enum class Type : u16 {
   INTEGER,
   FLOAT,
   HEX,
   STRING,
   REGEX,
+};
 
-  // Brace types:
+enum class Brace : u16 {
   PAREN_OPEN,
   PAREP_CLOSE,
 
@@ -35,7 +37,9 @@ enum class TokenType : u32 {
 
   BRACE_OPEN,
   BRACE_CLOSE,
+};
 
+enum class Num : u16 {
   // Numeric Tokens:
   INCREMENT,
   DECREMENT,
@@ -57,12 +61,14 @@ enum class TokenType : u32 {
   ADDITION_ASSIGNMENT,
   SUBTRACTION_ASSIGNMENT,
   ASSIGNMENT,
+};
 
-  // REGEX Tokens:
+enum class Regex : u16 {
   ERE_MATCH,
   NOT_ERE_MATCH,
+};
 
-  // Logical Tokens:
+enum class Logical : u16 {
   NOT,
 
   LESS_THAN,
@@ -76,18 +82,19 @@ enum class TokenType : u32 {
 
   AND,
   OR,
+};
 
-  // Control flow Tokens:
+enum class ControlFlow : u16 {
   COMMA,
   QUESTIONMARK,
   COLON,
   SEMICOLON,
+};
 
-  // Miscellaneous:
+enum class Miscellaneous : u16 {
   DOLLAR_SIGN,
   END_OF_LINE,
 };
+}; // namespace TokenType
 
-// Enum that is used for detecting special characters
-//
 #endif // TOKENTYPE_H

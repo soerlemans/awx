@@ -6,6 +6,7 @@
 
 #include "exception.hpp"
 #include "tokenizer.hpp"
+#include "tokentype.hpp"
 
 
 // Helper function to literal_numeric
@@ -15,16 +16,17 @@ auto Tokenizer::is_hex() -> bool
   // So just discard leading zeros
   if(m_filebuffer.character() == '0')
     {
-      m_filebuffer.forward();
       // TODO: Define reserved hex literal symbol
       // If the next character is a 'x' it must be a hex literal
+      m_filebuffer.forward();
       if(m_filebuffer.character() == 'x')
-		{
-		  m_filebuffer.forward();
+        {
+          m_filebuffer.forward();
 
-		  return true;
-		}
+          return true;
+      }
   }
+
   return false;
 }
 
@@ -43,11 +45,13 @@ auto Tokenizer::literal_numeric() -> void
   // TODO: Make separate function for handling hex literals
   // TODO: Make separate function for handling floats
   if(!hex)
-	ss << m_filebuffer.character();
+    ss << m_filebuffer.character();
 
   while(!m_filebuffer.eol())
     {
-	  std::cout << std::boolalpha << "hex: " << hex << " dot: " << dot << " ss: " << ss.str() << " line: " << m_filebuffer.line() << '\n';
+      std::cout << std::boolalpha << "hex: " << hex << " dot: " << dot
+                << " ss: " << ss.str() << " line: " << m_filebuffer.line()
+                << '\n';
       const char character{m_filebuffer.character()};
 
       // Check for integer
@@ -58,17 +62,21 @@ auto Tokenizer::literal_numeric() -> void
           // TODO: Define dot reserved symbol
       }else if(!dot && character == '.') {
           // Cant be a hex literal with a floating point at the same time
-          // This could be a feature if we add methods to literal types
-          // But for now give an error on this
-		// FIXME: The ^^^ does not properly align, columnno is possibly not properly adjusted
+          // In the future we might have primitive types be classes ruby style
+          // so someday this could be a feature But for now give an error on
+          // this
+          // FIXME: The ^^^ does not properly align, columnno is possibly not
+          // properly adjusted
           if(hex)
-            throw SyntaxError{"Found a . in a hex literal", m_filebuffer.lineno(),
-                              m_filebuffer.line(), m_filebuffer.columnno()};
+            throw SyntaxError{"Found a . in a hex literal",
+                              m_filebuffer.lineno(), m_filebuffer.line(),
+                              m_filebuffer.columnno()};
 
-		  dot = true;
-		  dot_pos = m_filebuffer.columnno();
-      }else
-		break;
+          dot = true;
+          dot_pos = m_filebuffer.columnno();
+      }else{
+        break;
+	  }
     }
 
   std::cout << "number found! " << ss.str() << '\n';
@@ -77,8 +85,24 @@ auto Tokenizer::literal_numeric() -> void
 auto Tokenizer::literal_string() -> void
 {}
 
-auto Tokenizer::keyword() -> void
-{}
+auto Tokenizer::is_keyword(std::string_view t_identifier) -> TokenType
+{
+  using namespace reserved::keywords;
+
+// constexpr r_vw g_function{"function"};
+// constexpr r_vw g_if{"if"};
+// constexpr r_vw g_else{"else"};
+// constexpr r_vw g_do{"do"};
+// constexpr r_vw g_while{"while"};
+// constexpr r_vw g_for{"for"};
+// constexpr r_vw g_in{"in"};
+  // TODO: Clean this up we could use a loop with an std::pair for the tokentype
+  if(t_identifier == g_function) {
+	return TokenType::Keyword::FUNCTION;
+  }else if(){}
+
+  return TokenType::IDENTIFIER;
+}
 
 auto Tokenizer::identifier() -> void
 {
@@ -86,13 +110,24 @@ auto Tokenizer::identifier() -> void
   while(std::isalnum(m_filebuffer.character()) && !m_filebuffer.eol())
     buffer << m_filebuffer.forward();
 
+  // Verify if it is a keyword or not
+  if(TokenType token_type{is_keyword(buffer.str())};
+     token_type != TokenType::IDENTIFIER)
+    {
+	  m_tokenstream.push_back({token_type});
+	}else{
+	// m_tokenstream.push_back();
+    }
+
   std::cout << "identifier found! " << buffer.str() << '\n';
 }
 
 auto operator_logical() -> void
 {}
+
 auto operator_mutable() -> void
 {}
+
 auto operator_() -> void
 {}
 

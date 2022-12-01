@@ -1,6 +1,8 @@
 #ifndef RESERVED_H
 #define RESERVED_H
 
+#include <string_view>
+
 // TODO: If keywords ever need to be changed or reserved characters
 // Change the namespaces into structs with a shared parent so different
 // Syntaxes would be able to be dynamically swapped

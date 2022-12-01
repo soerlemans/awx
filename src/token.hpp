@@ -7,17 +7,18 @@
 
 #include "tokentype.hpp"
 
+template<typename T>
 class Token {
 private:
-  using enum TokenType;
-  using TokenValue = std::variant<int, std::string>;
+  using TokenValue = std::variant<int, double, std::string>;
 
-  TokenType m_tokentype{UNKNOWN};
+  TokenType m_tokentype;
   TokenValue m_value;
 
 public:
-  explicit Token(TokenType t_tokentype, int t_value);
-  explicit Token(TokenType t_tokentype, std::string t_value);
+  explicit Token(T t_tokentype);
+  explicit Token(T t_tokentype, int t_value);
+  explicit Token(T t_tokentype, std::string t_value);
 
   auto type() const -> TokenType;
 

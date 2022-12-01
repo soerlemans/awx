@@ -30,6 +30,9 @@ public:
   auto next() -> std::string&;
   auto prev() -> std::string&;
 
+  auto next() const -> std::string;
+  auto prev() const -> std::string;
+
   // Character movement
   auto forward() const -> char;
   auto backward() const -> char;
