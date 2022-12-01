@@ -9,11 +9,19 @@
 
 
 // Macros:
-// Do not use this macro outside of this file
-#define DEFINE_RESERVED(name, str, token)   \
-  constexpr ReservedWrapper name            \
-  {                                         \
-    std::string_view{str}, TokenType::token \
+// Do not use these macros outside of this file
+// Macro is used for giving a string_view to DEFINE_RESERVED
+// Must be given a const char*
+// TODO: Find a way to use templates to convert const char* to a
+// std::string_view without having to give a size, via concepts or template arguments
+#define STR_VW(str) \
+  std::string_view{str, sizeof(str)}
+
+// Macro used of defining/initializing a reserved keyword or symbol
+#define DEFINE_RESERVED(name, id, token) \
+  constexpr ReservedWrapper name         \
+  {                                      \
+    id, TokenType::token                 \
   }
 
 // Concepts:
@@ -21,7 +29,6 @@
 template<typename T>
 concept ReservedIdentifier =
   std::same_as<T, std::string_view> || std::same_as<T, char>;
-  // std::is_convertible_v<T, std::string_view> || std::same_as<T, char>;
 
 // AWX reserved keywords and symbols
 namespace reserved {
@@ -59,21 +66,21 @@ class ReservedWrapper {
 // clang-format off
 // Language reserved keywords
 namespace keywords {
-  DEFINE_RESERVED(g_function, "function", FUNCTION_KEYWORD);
-  DEFINE_RESERVED(g_if, "if", IF_KEYWORD);
-  DEFINE_RESERVED(g_else, "else", ELSE_KEYWORD);
-  DEFINE_RESERVED(g_do, "do", DO_KEYWORD);
-  DEFINE_RESERVED(g_while, "while", WHILE_KEYWORD);
-  DEFINE_RESERVED(g_for, "for", FOR_KEYWORD);
-  DEFINE_RESERVED(g_in, "in", IN_KEYWORD);
+  DEFINE_RESERVED(g_function, STR_VW("function"), FUNCTION_KEYWORD);
+  DEFINE_RESERVED(g_if,       STR_VW("if"),       IF_KEYWORD);
+  DEFINE_RESERVED(g_else,     STR_VW("else"),     ELSE_KEYWORD);
+  DEFINE_RESERVED(g_do,       STR_VW("do"),       DO_KEYWORD);
+  DEFINE_RESERVED(g_while,    STR_VW("while"),    WHILE_KEYWORD);
+  DEFINE_RESERVED(g_for,      STR_VW("for"),      FOR_KEYWORD);
+  DEFINE_RESERVED(g_in,       STR_VW("in"),       IN_KEYWORD);
 
   constexpr u8 keywords_size{7};
-  std::array<ReservedWrapper<const char*>, keywords_size> g_keywords{
-	g_function,
-	g_if, g_else,
-	g_do, g_while,
-	g_for, g_in
-  };
+  // std::array<ReservedWrapper<std::string_view>, keywords_size> g_keywords{
+  // 	g_function,
+  // 	g_if, g_else,
+  // 	g_do, g_while,
+  // 	g_for, g_in
+  // };
 }; // namespace keywords
 
 // Language reserved symbols
@@ -102,28 +109,28 @@ namespace symbols {
   DEFINE_RESERVED(g_modulus,    '%', MODULUS);
 
   // Assignment variants of Arithmetic operators:
-  DEFINE_RESERVED(g_increment, "++", INCREMENT);
-  DEFINE_RESERVED(g_decrement, "--", DECREMENT);
+  DEFINE_RESERVED(g_increment, STR_VW("++"), INCREMENT);
+  DEFINE_RESERVED(g_decrement, STR_VW("--"), DECREMENT);
 
   // TODO: Rename or structure these better in the future?
-  DEFINE_RESERVED(g_exponent_assignment,       "^=", EXPONENT_ASSIGNMENT);
-  DEFINE_RESERVED(g_plus_assignment,           "+=", PLUS_ASSIGNMENT);
-  DEFINE_RESERVED(g_minus_assignment,          "-=", MINUS_ASSIGNMENT);
-  DEFINE_RESERVED(g_multiplication_assignment, "*=", MULTIPLICATION_ASSIGNMENT);
-  DEFINE_RESERVED(g_division_assignment,       "/=", DIVISION_ASSIGNMENT);
-  DEFINE_RESERVED(g_modulo_assignment,         "%=", MODULO_ASSIGNMENT);
+  DEFINE_RESERVED(g_exponent_assignment,       STR_VW("^="), EXPONENT_ASSIGNMENT);
+  DEFINE_RESERVED(g_plus_assignment,           STR_VW("+="), PLUS_ASSIGNMENT);
+  DEFINE_RESERVED(g_minus_assignment,          STR_VW("-="), MINUS_ASSIGNMENT);
+  DEFINE_RESERVED(g_multiplication_assignment, STR_VW("*="), MULTIPLICATION_ASSIGNMENT);
+  DEFINE_RESERVED(g_division_assignment,       STR_VW("/="), DIVISION_ASSIGNMENT);
+  DEFINE_RESERVED(g_modulo_assignment,         STR_VW("%="), MODULO_ASSIGNMENT);
 
   // Regex operators:
   DEFINE_RESERVED(g_ere_match,     '~',  ERE_MATCH);
-  DEFINE_RESERVED(g_not_ere_match, "!~", NOT_ERE_MATCH);
+  DEFINE_RESERVED(g_not_ere_match, STR_VW("!~"), NOT_ERE_MATCH);
 
   // Logic operators:
-  DEFINE_RESERVED(g_not,             '!',  NOT);
-  DEFINE_RESERVED(g_less_than,       '<',  LESS_THAN);
-  DEFINE_RESERVED(g_less_than_equal, "<=", LESS_THAN_EQUAL);
+  DEFINE_RESERVED(g_not,                    '!',  NOT);
+  DEFINE_RESERVED(g_less_than,              '<',  LESS_THAN);
+  DEFINE_RESERVED(g_less_than_equal, STR_VW("<="), LESS_THAN_EQUAL);
 
-  DEFINE_RESERVED(g_greater_than,       '>',  GREATER_THAN);
-  DEFINE_RESERVED(g_greater_than_equal, ">=", GREATER_THAN_EQUAL);
+  DEFINE_RESERVED(g_greater_than,              '>',  GREATER_THAN);
+  DEFINE_RESERVED(g_greater_than_equal, STR_VW(">="), GREATER_THAN_EQUAL);
 
   // Control flow symbols:
   DEFINE_RESERVED(g_comma,        ',', COMMA);
