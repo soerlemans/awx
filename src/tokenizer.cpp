@@ -5,6 +5,7 @@
 #include <stdexcept>
 
 #include "exception.hpp"
+#include "reserved.hpp"
 #include "tokenizer.hpp"
 #include "tokentype.hpp"
 
@@ -28,7 +29,7 @@ auto Tokenizer::syntax_error(std::string_view t_msg) const -> void
 }
 
 // Helper functions for literal_numeric
-auto Tokenizer::is_hex() -> bool
+auto Tokenizer::check_hex() -> bool
 {
   // Octal literals are not specified in the POSIX AWK standard
   // So just discard leading zeros
@@ -56,7 +57,7 @@ auto Tokenizer::literal_numeric() -> void
   using namespace reserved::symbols;
 
   // TODO: Make separate function for handling floats
-  bool hex{is_hex()};
+  bool is_hex{check_hex()};
   bool is_float{false};
 
   std::stringstream ss;
@@ -64,26 +65,31 @@ auto Tokenizer::literal_numeric() -> void
     {
       const char character{m_filebuffer.character()};
 
-      // Check for integer
+      // Check for different type of integer literals
       if(std::isdigit(character)) {
           ss << m_filebuffer.forward();
+	  }else if(is_hex && std::isxdigit(character)) {
+          // The following check is probably not needed, but implement it one
+          // day just in case to be sure
+		  // if(is_float)
+          //   syntax_error("Illegal character in ");
 
-          // Check for floating point
+          ss << m_filebuffer.forward();
       }else if(!is_float && character == g_dot.identifier()) {
-            // Cant be a hex literal with a floating point at the same time in
-            // the future we might have primitive types be classes ruby style so
-            // someday this could be a feature But for now give an error on this
-            if(hex)
-              syntax_error("Found a . in a hex literal");
+          // Cant be a is_hex literal with a floating point at the same time in
+          // the future we might have primitive types be classes ruby style so
+          // someday this could be a feature But for now give an error on this
+          if(is_hex)
+            syntax_error("Found a . in a hex literal");
 
-            is_float = true;
-			ss << m_filebuffer.forward();
-        }else{ // Quit if digit ends
-            break;
-		}
+          is_float = true;
+          ss << m_filebuffer.forward();
+      }else{ // Quit if digit ends
+          break;
+        }
     }
 
-  if(hex) {
+  if(is_hex) {
 	add_token(Token{TokenType::HEX, ss.str()});
 	std::cout << "Hex: " << ss.str() << '\n';
   }else if(is_float) {
@@ -96,7 +102,37 @@ auto Tokenizer::literal_numeric() -> void
 }
 
 auto Tokenizer::literal_string() -> void
-{}
+{
+  using namespace reserved::symbols;
+
+  std::stringstream ss;
+
+  // Discard starting " character
+  m_filebuffer.forward();
+
+  bool quit{false};
+  while(!quit && !m_filebuffer.eol())
+	{
+	  const char character{m_filebuffer.character()};
+
+	  switch(character) {
+	  case g_double_quote.identifier():
+		quit = true;
+		break;
+
+	  case g_backslash.identifier():
+		ss << m_filebuffer.forward();
+		[[fallthrough]];
+
+	  default:
+		ss << m_filebuffer.forward();
+		break;
+	  }
+  }
+
+  add_token(Token{TokenType::STRING, ss.str()});
+  std::cout << "String: " << ss.str() << '\n';
+}
 
 auto Tokenizer::is_keyword(std::string_view t_identifier) -> TokenType
 {
@@ -157,8 +193,8 @@ auto Tokenizer::tokenize() -> TokenStream
           identifier();
         else if(std::isdigit(character))
           literal_numeric();
-        else if(character == g_double_quote.identifier())
-          {
+        else if(character == g_double_quote.identifier()) {
+		  literal_string();
             // }else if() {
             // }else if() {
             // }else if() {

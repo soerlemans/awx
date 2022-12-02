@@ -26,7 +26,7 @@ private:
   auto syntax_error(std::string_view t_msg) const -> void;
 
   // Tokenizer functions:
-  auto is_hex() -> bool;
+  auto check_hex() -> bool;
   auto is_float() -> bool;
 
   auto literal_numeric() -> void;

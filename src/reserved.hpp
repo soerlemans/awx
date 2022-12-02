@@ -44,12 +44,12 @@ class ReservedWrapper {
     : m_identifier{t_indentifier}, m_tokentype{t_tokentype}
   {}
 
-  auto identifier() const -> T
+  constexpr auto identifier() const -> T
   {
     return m_identifier;
   }
 
-  auto tokentype() const -> TokenType
+  constexpr auto tokentype() const -> TokenType
   {
     return m_tokentype;
   }
@@ -138,6 +138,7 @@ namespace symbols {
 
   // Miscellaneous operators:
   DEFINE_RESERVED(g_dollar_sign, '$',  DOLLAR_SIGN);
+  DEFINE_RESERVED(g_backslash, '\\',  UNKNOWN);
   DEFINE_RESERVED(g_end_of_line, '\n', END_OF_LINE);
 
 // clang-format on
