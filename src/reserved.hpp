@@ -116,15 +116,15 @@ namespace symbols {
   DEFINE_RESERVED(g_modulo_assignment,         r_vw{"%="}, MODULO_ASSIGNMENT);
 
   // Regex operators:
-  DEFINE_RESERVED(g_ere_match,     '~',  ERE_MATCH);
+  DEFINE_RESERVED(g_ere_match,          '~',   ERE_MATCH);
   DEFINE_RESERVED(g_not_ere_match, r_vw{"!~"}, NOT_ERE_MATCH);
 
   // Logic operators:
-  DEFINE_RESERVED(g_not,                  '!',  NOT);
-  DEFINE_RESERVED(g_less_than,            '<',  LESS_THAN);
+  DEFINE_RESERVED(g_not,                  '!',   NOT);
+  DEFINE_RESERVED(g_less_than,            '<',   LESS_THAN);
   DEFINE_RESERVED(g_less_than_equal, r_vw{"<="}, LESS_THAN_EQUAL);
 
-  DEFINE_RESERVED(g_greater_than,            '>',  GREATER_THAN);
+  DEFINE_RESERVED(g_greater_than,            '>',   GREATER_THAN);
   DEFINE_RESERVED(g_greater_than_equal, r_vw{">="}, GREATER_THAN_EQUAL);
 
   // Control flow symbols:
@@ -139,15 +139,59 @@ namespace symbols {
   DEFINE_RESERVED(g_end_of_line, '\n', END_OF_LINE);
 
   // TODO: Make these be generated automagically
-  // constexpr u8 single_symbol_size{7};
-  // constexpr std::array<ReservedWrapper<std::string_view>, single_symbol_size>
-  // g_single_symbols{
-  // };
+  // TODO: Place these  somewhere else they are ugly
+  constexpr u8 single_symbol_size{24};
+  constexpr std::array<ReservedWrapper<char>, single_symbol_size>
+  g_single_symbols{
+	g_paren_open,
+	g_paren_close,
+	g_accolade_open,
+	g_accolade_close,
+	g_brace_open,
+	g_brace_close,
 
-  // constexpr u8 multi_symbol_size{7};
-  // constexpr std::array<ReservedWrapper<std::string_view>, multi_symbol_size>
-  // g_multi_symbols{
-  // };
+	g_assignment,
+
+	g_exponent,
+	g_plus,
+	g_minus,
+	g_multiplier,
+	g_divider,
+	g_modulus,
+
+	g_ere_match,
+
+	g_not,
+	g_less_than,
+	g_greater_than,
+
+	g_comma,
+	g_dot,
+	g_questionmark,
+	g_colon,
+	g_semicolon,
+
+	g_dollar_sign,
+	g_end_of_line
+  };
+
+  constexpr u8 multi_symbol_size{11};
+  constexpr std::array<ReservedWrapper<std::string_view>, multi_symbol_size>
+  g_multi_symbols{
+	g_increment,
+	g_decrement,
+
+	g_exponent_assignment,
+	g_plus_assignment,
+	g_minus_assignment,
+	g_multiplication_assignment,
+	g_division_assignment,
+	g_modulo_assignment,
+
+	g_not_ere_match,
+	g_less_than_equal,
+	g_greater_than_equal
+  };
 
 // Contains symbols that have a special meaning but are not tiedto a Token
 namespace none {
