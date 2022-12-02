@@ -7,6 +7,7 @@
 // Enum definitions:
 enum class TokenType : u16 {
   UNKNOWN = 0,
+  NONE,
 
   // Identifiers:
   IDENTIFIER,

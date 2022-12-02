@@ -54,7 +54,7 @@ class ReservedWrapper {
     return m_tokentype;
   }
 
-  auto get() const -> std::tuple<T, TokenType>
+  constexpr auto get() const -> std::tuple<T, TokenType>
   {
     return {m_identifier, m_tokentype};
   }
@@ -65,7 +65,6 @@ class ReservedWrapper {
 // clang-format off
 // Language reserved keywords
 namespace keywords {
-  constexpr ReservedWrapper g_function2{std::string_view{"test"}, TokenType::FUNCTION_KEYWORD};
   DEFINE_RESERVED(g_function, r_vw{"function"}, FUNCTION_KEYWORD);
   DEFINE_RESERVED(g_if,       r_vw{"if"},       IF_KEYWORD);
   DEFINE_RESERVED(g_else,     r_vw{"else"},     ELSE_KEYWORD);
@@ -89,10 +88,6 @@ namespace symbols {
   DEFINE_RESERVED(g_accolade_close, '}', ACCOLADE_CLOSE);
   DEFINE_RESERVED(g_brace_open,     '[', BRACE_OPEN);
   DEFINE_RESERVED(g_brace_close,    ']', BRACE_CLOSE);
-
-  // String literal symbols
-  // TODO: Create an extra tokentype called NONE, or EMPTY
-  DEFINE_RESERVED(g_double_quote, '"', UNKNOWN);
 
   // Assignment
   DEFINE_RESERVED(g_assignment, '=', ASSIGNMENT);
@@ -138,11 +133,28 @@ namespace symbols {
 
   // Miscellaneous operators:
   DEFINE_RESERVED(g_dollar_sign, '$',  DOLLAR_SIGN);
-  DEFINE_RESERVED(g_backslash, '\\',  UNKNOWN);
   DEFINE_RESERVED(g_end_of_line, '\n', END_OF_LINE);
 
-// clang-format on
+  // constexpr u8 single_symbol_size{7};
+  // constexpr std::array<ReservedWrapper<std::string_view>, single_symbol_size>
+  // g_single_symbols{
+  // };
+
+  // constexpr u8 multi_symbol_size{7};
+  // constexpr std::array<ReservedWrapper<std::string_view>, multi_symbol_size>
+  // g_multi_symbols{
+  // };
+
+// Contains symbols that have a special meaning but are not tiedto a Token
+namespace none {
+  // String literal symbols
+  // TODO: Create an extra tokentype called NONE, or EMPTY
+  DEFINE_RESERVED(g_double_quote, '"', NONE);
+  DEFINE_RESERVED(g_backslash, '\\',  NONE);
+}; // namespace unknown
 }; // namespace symbols
+
+// clang-format on
 }; // namespace reserved
 
 #endif // RESERVED_H

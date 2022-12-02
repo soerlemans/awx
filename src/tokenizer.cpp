@@ -49,9 +49,6 @@ auto Tokenizer::check_hex() -> bool
   return false;
 }
 
-// auto Tokenizer::is_float() -> bool
-// {}
-
 auto Tokenizer::literal_numeric() -> void
 {
   using namespace reserved::symbols;
@@ -103,7 +100,7 @@ auto Tokenizer::literal_numeric() -> void
 
 auto Tokenizer::literal_string() -> void
 {
-  using namespace reserved::symbols;
+  using namespace reserved::symbols::none;
 
   std::stringstream ss;
 
@@ -155,31 +152,33 @@ auto Tokenizer::identifier() -> void
 
   // Verify if it is a keyword or not
   if(const auto token_type{is_keyword(buffer.str())};
-     token_type != TokenType::UNKNOWN)
-    {
-      add_token(Token{token_type});
-      std::cout << "Keyword: " << buffer.str() << std::endl;
-  } else
-    {
-      add_token(Token{TokenType::IDENTIFIER, buffer.str()});
-      std::cout << "Identifier: " << buffer.str() << std::endl;
-    }
+	 token_type != TokenType::UNKNOWN) {
+	add_token(Token{token_type});
+	std::cout << "Keyword: " << buffer.str() << std::endl;
+  }else{
+	add_token(Token{TokenType::IDENTIFIER, buffer.str()});
+	std::cout << "Identifier: " << buffer.str() << std::endl;
+  }
 }
 
-auto operator_logical() -> void
-{}
+auto Tokenizer::literal_operator() -> void
+{
+  std::stringstream buffer;
+  // TODO: Check single symbols first if there is a multi symbols variant check
+  // If the next character corresponds, if we find nothing that it could be give
+  // A syntax error while(!m_filebuffer.eol())
+  // 	{
+  // 	  const auto character{m_filebuffer.character()};
+  // 	}
+}
 
-auto operator_mutable() -> void
-{}
-
-auto operator_() -> void
-{}
-
+// Public constructors:
 Tokenizer::Tokenizer(FileBuffer &t_filebuffer): m_filebuffer{t_filebuffer}
 {
   m_tokenstream.reserve(256);
 }
 
+// Public methods:
 auto Tokenizer::tokenize() -> TokenStream
 {
   using namespace reserved::symbols;
@@ -193,12 +192,10 @@ auto Tokenizer::tokenize() -> TokenStream
           identifier();
         else if(std::isdigit(character))
           literal_numeric();
-        else if(character == g_double_quote.identifier()) {
+        else if(character == none::g_double_quote.identifier()) 
 		  literal_string();
-            // }else if() {
-            // }else if() {
-            // }else if() {
-        }
+		else
+		  literal_operator();
       }
 
   return m_tokenstream;

@@ -27,17 +27,13 @@ private:
 
   // Tokenizer functions:
   auto check_hex() -> bool;
-  auto is_float() -> bool;
-
   auto literal_numeric() -> void;
   auto literal_string() -> void;
 
   auto is_keyword(std::string_view t_identifier) -> TokenType;
   auto identifier() -> void;
 
-  auto operator_logical() -> void;
-  auto operator_mutable() -> void;
-  auto operator_() -> void; // TODO: Find a beter name for this than operator_
+  auto literal_operator() -> void;
 
 public:
   Tokenizer() = delete;
