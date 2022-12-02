@@ -15,8 +15,10 @@ private:
   TokenValue m_value;
 
 public:
+  // TODO: Replace these constructors with a template with a restrictive concept
   explicit Token(TokenType t_tokentype);
   explicit Token(TokenType t_tokentype, int t_value);
+  explicit Token(TokenType t_tokentype, double t_value);
   explicit Token(TokenType t_tokentype, std::string t_value);
 
   auto type() const -> TokenType;

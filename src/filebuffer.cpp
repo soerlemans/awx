@@ -37,6 +37,11 @@ auto FileBuffer::load() -> void
     }
 }
 
+auto FileBuffer::path() const -> fs::path
+{
+  return m_path;
+}
+
 auto FileBuffer::next() -> std::string&
 {
   // Changing lines resets the column number

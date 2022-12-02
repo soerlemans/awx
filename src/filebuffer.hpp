@@ -26,6 +26,8 @@ public:
   auto load() -> void;
   auto save() -> void; // TODO: Have this return an error code?
 
+  auto path() const -> fs::path;
+
   // Line movement
   auto next() -> std::string&;
   auto prev() -> std::string&;

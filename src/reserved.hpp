@@ -131,6 +131,7 @@ namespace symbols {
 
   // Control flow symbols:
   DEFINE_RESERVED(g_comma,        ',', COMMA);
+  DEFINE_RESERVED(g_dot,          '.', DOT);
   DEFINE_RESERVED(g_questionmark, '?', QUESTIONMARK);
   DEFINE_RESERVED(g_colon,        ':', COLON);
   DEFINE_RESERVED(g_semicolon,    ';', SEMICOLON);

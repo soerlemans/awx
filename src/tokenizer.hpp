@@ -15,9 +15,15 @@
 using TokenStream = std::vector<Token>;
 
 class Tokenizer {
-  private:
+private:
   FileBuffer& m_filebuffer;
   TokenStream m_tokenstream;
+
+  // TokenStream handling:
+  auto add_token(const Token&& t_token) -> void;
+
+  // Error handling:
+  auto syntax_error(std::string_view t_msg) const -> void;
 
   // Tokenizer functions:
   auto is_hex() -> bool;
@@ -33,11 +39,12 @@ class Tokenizer {
   auto operator_mutable() -> void;
   auto operator_() -> void; // TODO: Find a beter name for this than operator_
 
-  public:
+public:
   Tokenizer() = delete;
   Tokenizer(FileBuffer& t_filebuffer);
 
   auto tokenize() -> TokenStream;
+
   virtual ~Tokenizer();
 };
 

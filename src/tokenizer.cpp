@@ -9,6 +9,24 @@
 #include "tokentype.hpp"
 
 
+// TokenStream handling:
+auto Tokenizer::add_token(const Token&& t_token) -> void
+{
+  m_tokenstream.push_back(t_token);
+}
+
+// Error handling:
+auto Tokenizer::syntax_error(std::string_view t_msg) const -> void
+{
+  // FIXME: The ^^^ does not properly align, columnno is possibly not
+  // properly adjusted
+
+  // Throws a SyntaxError with a message
+  throw SyntaxError{std::string{t_msg}, m_filebuffer.path().string(),
+					m_filebuffer.lineno(), m_filebuffer.line(),
+                    m_filebuffer.columnno()};
+}
+
 // Helper functions for literal_numeric
 auto Tokenizer::is_hex() -> bool
 {
@@ -30,55 +48,51 @@ auto Tokenizer::is_hex() -> bool
   return false;
 }
 
-auto Tokenizer::is_float() -> bool
-{}
+// auto Tokenizer::is_float() -> bool
+// {}
 
 auto Tokenizer::literal_numeric() -> void
 {
-  std::stringstream ss;
+  using namespace reserved::symbols;
 
-  bool hex{is_hex()};
-  bool dot{false};
-  std::size_t dot_pos{0};
-
-  // TODO: Make separate function for handling hex literals
   // TODO: Make separate function for handling floats
-  if(!hex)
-    ss << m_filebuffer.character();
+  bool hex{is_hex()};
+  bool is_float{false};
 
+  std::stringstream ss;
   while(!m_filebuffer.eol())
     {
       const char character{m_filebuffer.character()};
 
       // Check for integer
-      if(std::isdigit(character))
-        {
+      if(std::isdigit(character)) {
           ss << m_filebuffer.forward();
 
           // Check for floating point
-          // TODO: Define dot reserved symbol
-      } else if(!dot && character == '.')
-        {
-          // Cant be a hex literal with a floating point at the same time
-          // In the future we might have primitive types be classes ruby style
-          // so someday this could be a feature But for now give an error on
-          // this
-          // FIXME: The ^^^ does not properly align, columnno is possibly not
-          // properly adjusted
-          if(hex)
-            throw SyntaxError{"Found a . in a hex literal",
-                              m_filebuffer.lineno(), m_filebuffer.line(),
-                              m_filebuffer.columnno()};
+      }else if(!is_float && character == g_dot.identifier()) {
+            // Cant be a hex literal with a floating point at the same time in
+            // the future we might have primitive types be classes ruby style so
+            // someday this could be a feature But for now give an error on this
+            if(hex)
+              syntax_error("Found a . in a hex literal");
 
-          dot = true;
-          dot_pos = m_filebuffer.columnno();
-      } else
-        {
-          break;
-        }
+            is_float = true;
+			ss << m_filebuffer.forward();
+        }else{ // Quit if digit ends
+            break;
+		}
     }
 
-  std::cout << "number found! " << ss.str() << '\n';
+  if(hex) {
+	add_token(Token{TokenType::HEX, ss.str()});
+	std::cout << "Hex: " << ss.str() << '\n';
+  }else if(is_float) {
+	add_token(Token{TokenType::FLOAT, std::stod(ss.str())});
+	std::cout << "Float: " << ss.str() << '\n';
+  }else{
+	add_token(Token{TokenType::INTEGER, ss.str()});
+	std::cout << "Integer: " << ss.str() << '\n';
+  }
 }
 
 auto Tokenizer::literal_string() -> void
@@ -91,8 +105,8 @@ auto Tokenizer::is_keyword(std::string_view t_identifier) -> TokenType
   // TODO: Clean this up we could use a loop with an std::pair for the tokentype
   // Having a centralized location for
   for(auto keyword : g_keywords)
-	if(t_identifier == keyword.identifier())
-	  return keyword.tokentype();
+    if(t_identifier == keyword.identifier())
+      return keyword.tokentype();
 
   return TokenType::UNKNOWN;
 }
@@ -104,13 +118,16 @@ auto Tokenizer::identifier() -> void
     buffer << m_filebuffer.forward();
 
   // Verify if it is a keyword or not
-  if(const auto token_type{is_keyword(buffer.str())}; token_type != TokenType::UNKNOWN) {
-    m_tokenstream.push_back(Token{token_type});
-	std::cout << "Keyword: " << buffer.str() << std::endl;
-  }else{
-    m_tokenstream.push_back(Token{TokenType::IDENTIFIER, buffer.str()});
-	std::cout << "Identifier: " << buffer.str() << std::endl;
-  }
+  if(const auto token_type{is_keyword(buffer.str())};
+     token_type != TokenType::UNKNOWN)
+    {
+      add_token(Token{token_type});
+      std::cout << "Keyword: " << buffer.str() << std::endl;
+  } else
+    {
+      add_token(Token{TokenType::IDENTIFIER, buffer.str()});
+      std::cout << "Identifier: " << buffer.str() << std::endl;
+    }
 }
 
 auto operator_logical() -> void

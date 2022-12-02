@@ -3,6 +3,7 @@
 
 #include "types.hpp"
 
+
 // Enum definitions:
 enum class TokenType : u16 {
   UNKNOWN = 0,
@@ -82,6 +83,7 @@ enum class TokenType : u16 {
 
   // Control flow Tokens:
   COMMA,
+  DOT,
   QUESTIONMARK,
   COLON,
   SEMICOLON,
