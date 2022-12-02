@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
   try {
 	run(argc, argv);
   } catch(std::exception& e) {
-	std::cout << "Error: " << e.what() << '\n';
+	std::cout << e.what() << '\n';
 
 	return 1;
   }

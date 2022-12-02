@@ -12,20 +12,21 @@ SyntaxError::SyntaxError(std::string t_msg, std::string t_path,
 :m_error{}, m_path{t_path}, m_lineno{t_lineno + 1}, m_line{t_line}, m_columnno(t_columnno + 1)
 {
   std::stringstream ss;
-  std::stringstream columnno_ss;
+  std::stringstream lineno_ss;
 
-  columnno_ss << " - Line(";
-  columnno_ss << t_lineno;
-  columnno_ss << "): ";
+  lineno_ss << " - Line(";
+  lineno_ss << t_lineno;
+  lineno_ss << "): ";
 
-  ss << '"' << t_msg << "\"\n";
-  ss << columnno_ss.str();
+  ss << "Error in file: " << '"' << t_path << '"' << '\n';
+  ss << "Error description: " << '"' << t_msg << '"' << "\n";
+  ss << lineno_ss.str();
   ss << t_line << '\n';
 
-  const auto pos{columnno_ss.str().size() + m_columnno};
+  const auto pos{lineno_ss.str().size() + m_columnno};
   std::string column_str(pos, ' ');
 
-  // Use the temp string to point where the error was found
+  // Use the lineno_ss to point where the error was found
   // FIXME: The ^^^ does not properly align
   ss << column_str << "^^^" << '\n';
 
