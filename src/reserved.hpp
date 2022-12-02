@@ -40,6 +40,8 @@ class ReservedWrapper {
   const TokenType m_tokentype;
 
   public:
+  // TODO: Use std::is_convertible<T, std::string_view> to not need to cast to
+  // std::string_view explicitly
   constexpr ReservedWrapper(T t_indentifier, TokenType t_tokentype)
     : m_identifier{t_indentifier}, m_tokentype{t_tokentype}
   {}
@@ -73,6 +75,7 @@ namespace keywords {
   DEFINE_RESERVED(g_for,      r_vw{"for"},      FOR_KEYWORD);
   DEFINE_RESERVED(g_in,       r_vw{"in"},       IN_KEYWORD);
 
+  // TODO: Make these be generated automagically
   constexpr u8 keywords_size{7};
   constexpr std::array<ReservedWrapper<std::string_view>, keywords_size> g_keywords{
 	g_function, g_if, g_else, g_do, g_while, g_for, g_in
@@ -135,6 +138,7 @@ namespace symbols {
   DEFINE_RESERVED(g_dollar_sign, '$',  DOLLAR_SIGN);
   DEFINE_RESERVED(g_end_of_line, '\n', END_OF_LINE);
 
+  // TODO: Make these be generated automagically
   // constexpr u8 single_symbol_size{7};
   // constexpr std::array<ReservedWrapper<std::string_view>, single_symbol_size>
   // g_single_symbols{

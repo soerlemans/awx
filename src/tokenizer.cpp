@@ -181,7 +181,7 @@ Tokenizer::Tokenizer(FileBuffer &t_filebuffer): m_filebuffer{t_filebuffer}
 // Public methods:
 auto Tokenizer::tokenize() -> TokenStream
 {
-  using namespace reserved::symbols;
+  using namespace reserved::symbols::none;
 
   for(; !m_filebuffer.eof(); m_filebuffer.next())
     for(; !m_filebuffer.eol(); m_filebuffer.forward())
@@ -192,7 +192,7 @@ auto Tokenizer::tokenize() -> TokenStream
           identifier();
         else if(std::isdigit(character))
           literal_numeric();
-        else if(character == none::g_double_quote.identifier()) 
+        else if(character == g_double_quote.identifier())
 		  literal_string();
 		else
 		  literal_operator();
