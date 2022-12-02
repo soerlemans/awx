@@ -146,30 +146,50 @@ auto Tokenizer::is_keyword(std::string_view t_identifier) -> TokenType
 
 auto Tokenizer::identifier() -> void
 {
-  std::stringstream buffer;
+  std::stringstream ss;
   while(std::isalnum(m_filebuffer.character()) && !m_filebuffer.eol())
-    buffer << m_filebuffer.forward();
+    ss << m_filebuffer.forward();
 
   // Verify if it is a keyword or not
-  if(const auto token_type{is_keyword(buffer.str())};
+  if(const auto token_type{is_keyword(ss.str())};
 	 token_type != TokenType::UNKNOWN) {
 	add_token(Token{token_type});
-	std::cout << "Keyword: " << buffer.str() << std::endl;
+	std::cout << "Keyword: " << ss.str() << std::endl;
   }else{
-	add_token(Token{TokenType::IDENTIFIER, buffer.str()});
-	std::cout << "Identifier: " << buffer.str() << std::endl;
+	add_token(Token{TokenType::IDENTIFIER, ss.str()});
+	std::cout << "Identifier: " << ss.str() << std::endl;
   }
 }
 
 auto Tokenizer::literal_operator() -> void
 {
-  std::stringstream buffer;
+  using namespace reserved::symbols;
+
   // TODO: Check single symbols first if there is a multi symbols variant check
   // If the next character corresponds, if we find nothing that it could be give
-  // A syntax error while(!m_filebuffer.eol())
-  // 	{
-  // 	  const auto character{m_filebuffer.character()};
-  // 	}
+  // A syntax error
+
+  std::stringstream ss;
+  const auto character{m_filebuffer.character()};
+  TokenType tokentype{TokenType::UNKNOWN};
+  for(const auto single : g_single_symbols)
+	if(character == single.identifier())
+	  tokentype = single.tokentype();
+
+  ss << character << m_filebuffer.forward();
+
+  if(tokentype != TokenType::UNKNOWN && !m_filebuffer.eol())
+	{
+	  for(const auto multi : g_multi_symbols)
+		if(ss.str() == multi.identifier())
+		  {
+			add_token(Token{multi.tokentype()});
+			std::cout << "Multi symbol: " << ss.str() << '\n';
+		  }
+	}else{
+	add_token(Token{tokentype});
+	std::cout << "Single symbol: " << character << '\n';
+  }
 }
 
 // Public constructors:

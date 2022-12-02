@@ -26,7 +26,6 @@ concept ReservedIdentifier =
 
 // AWX reserved keywords and symbols
 namespace reserved {
-
   // Aliases:
   // Shorthand for string_view do not use outside of this namespace
   using r_vw = std::string_view;
