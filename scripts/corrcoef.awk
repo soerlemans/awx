@@ -28,5 +28,5 @@ END {
 	ssxy = xy - ((x*y)/NR); 
 	print "ssxy=" ssxy; 
 	r=ssxy/sqrt(ssx*ssy); 
-	print "r=" r; 
+	print "r=" r;
 }

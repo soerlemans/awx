@@ -252,7 +252,7 @@ auto Tokenizer::tokenize() -> TokenStream
 
         if(std::isspace(character))
           ; // Just ignore whitespace
-        else if(character == '#')
+        else if(character == '#') // # Denotes comments
           break; // Stop parsing current line
         else if(std::isalpha(character))
 		  {

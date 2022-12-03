@@ -23,12 +23,13 @@ SyntaxError::SyntaxError(std::string t_msg, std::string t_path,
   ss << lineno_ss.str();
   ss << t_line << '\n';
 
+  // TODO: We assume spaces now as the default indentationt
   const auto pos{lineno_ss.str().size() + m_columnno};
   std::string column_str(pos, ' ');
 
   // Use the lineno_ss to point where the error was found
   // FIXME: The ^^^ does not properly align
-  ss << column_str << "^^^" << '\n';
+  ss << column_str << "~^~" << '\n';
 
   m_error = ss.str();
 }
