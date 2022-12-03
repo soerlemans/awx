@@ -188,20 +188,39 @@ auto Tokenizer::symbol() -> void
   for(const auto multi : g_multi_symbols)
     if(character == multi.identifier().front())
       {
-        ss << m_filebuffer.forward();
+		m_filebuffer.forward();
+        ss << m_filebuffer.character();
 
-		std::cout << "Multi: " << ss.str() << '\n';
         if(!m_filebuffer.eol())
-		  for(const auto multi : g_multi_symbols)
-			if(ss.str() == multi.identifier())
-			  tokentype = multi.tokentype();
-    }
+          for(const auto multi : g_multi_symbols)
+            if(ss.str() == multi.identifier())
+			  {
+				tokentype = multi.tokentype();
+				break; // We found a multi symbol token!
+			  }
+
+        // If the next character is not part of
+        // A multi symbol just undo the forward
+        // TODO: Maybe return a bool and continue in tokenizing loop?
+        if(tokentype == TokenType::UNKNOWN)
+		  {
+			m_filebuffer.backward();
+
+			ss.str("");
+			ss << character;
+		  }else{
+		  break; // We found a multi symbol token!
+		}
+	  }
 
   // Single character symbol detection
   if(tokentype == TokenType::UNKNOWN)
 	for(const auto single : g_single_symbols)
 	  if(character == single.identifier())
-		tokentype = single.tokentype();
+		{
+		  tokentype = single.tokentype();
+		  break;
+		}
 
   // Throws
   if(tokentype == TokenType::UNKNOWN)
@@ -212,6 +231,7 @@ auto Tokenizer::symbol() -> void
 
   // Add the symbol if we recognize it
   add_token(Token{tokentype});
+  std::cout << "Symbol: " << ss.str() << '\n';
 }
 
 // Public constructors:
@@ -229,8 +249,6 @@ auto Tokenizer::tokenize() -> TokenStream
     while(!m_filebuffer.eol())
       {
         const char character{m_filebuffer.character()};
-        std::cout << "Token loop char: '" << character
-                  << "' columnno: " << m_filebuffer.columnno() << '\n';
 
         if(std::isspace(character))
           ; // Just ignore whitespace
@@ -242,7 +260,10 @@ auto Tokenizer::tokenize() -> TokenStream
 			continue;
 		  }
 		else if(std::isdigit(character))
-          literal_numeric();
+		  {
+			literal_numeric();
+			continue;
+		  }
         else if(character == g_double_quote.identifier())
           literal_string();
         else

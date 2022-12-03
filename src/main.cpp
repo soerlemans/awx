@@ -6,6 +6,8 @@
 auto print_help() -> void
 {
   std::cout << "AWX - Help Manual\n"
+			<< "Usage: awx <file>"
+			<< "Flags:"
 			<< " <-h> Displays this help manual\n"
 			<< '\n';
 }

@@ -4,6 +4,13 @@
 #include "types.hpp"
 
 
+template<typename Enumeration>
+auto enum2underlying_type(Enumeration const value) ->
+  typename std::underlying_type<Enumeration>::type
+{
+  return static_cast<typename std::underlying_type<Enumeration>::type>(value);
+}
+
 // Enum definitions:
 enum class TokenType : u16 {
   UNKNOWN = 0,
