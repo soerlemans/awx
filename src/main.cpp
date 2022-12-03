@@ -2,6 +2,7 @@
 
 #include "tokenizer.hpp"
 #include "parser.hpp"
+#include "tokentype.hpp"
 
 auto print_help() -> void
 {
@@ -17,7 +18,12 @@ auto run(int argc, char* argv[]) -> void
   FileBuffer fb{argv[1]};
   Tokenizer tokenizer{fb};
 
-  tokenizer.tokenize();
+  TokenStream token_stream{tokenizer.tokenize()};
+
+  for(Token token : token_stream)
+	{
+	  std::cout << enum2underlying_type(token.type()) << '\n';
+	}
 }
 
 int main(int argc, char* argv[])
