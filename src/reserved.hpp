@@ -75,8 +75,7 @@ namespace keywords {
   DEFINE_RESERVED(g_in,       r_vw{"in"},       IN_KEYWORD);
 
   // TODO: Make these be generated automagically
-  constexpr u8 keywords_size{7};
-  constexpr std::array<ReservedWrapper<std::string_view>, keywords_size> g_keywords{
+  constexpr std::array<ReservedWrapper<std::string_view>, 7> g_keywords{
 	g_function, g_if, g_else, g_do, g_while, g_for, g_in
   };
 }; // namespace keywords
@@ -142,8 +141,7 @@ namespace symbols {
 
   // TODO: Make these be generated automagically
   // TODO: Place these  somewhere else they are ugly
-  constexpr u8 g_single_symbol_size{24};
-  constexpr std::array<ReservedWrapper<char>, g_single_symbol_size>
+  constexpr std::array<ReservedWrapper<char>, 24>
   g_single_symbols{
 	g_paren_open,
 	g_paren_close,
@@ -177,8 +175,7 @@ namespace symbols {
 	g_end_of_line
   };
 
-  constexpr u8 g_multi_symbol_size{13};
-  constexpr std::array<ReservedWrapper<std::string_view>, g_multi_symbol_size>
+  constexpr std::array<ReservedWrapper<std::string_view>, 13>
   g_multi_symbols{
 	g_increment,
 	g_decrement,

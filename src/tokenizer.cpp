@@ -24,7 +24,7 @@ auto Tokenizer::syntax_error(std::string_view t_msg) const -> void
 
   // Throws a SyntaxError with a message
   throw SyntaxError{std::string{t_msg}, m_filebuffer.path().string(),
-					m_filebuffer.lineno(), m_filebuffer.line(),
+                    m_filebuffer.lineno(), m_filebuffer.line(),
                     m_filebuffer.columnno()};
 }
 
@@ -63,16 +63,19 @@ auto Tokenizer::literal_numeric() -> void
       const char character{m_filebuffer.character()};
 
       // Check for different type of integer literals
-      if(std::isdigit(character)) {
+      if(std::isdigit(character))
+        {
           ss << m_filebuffer.forward();
-	  }else if(is_hex && std::isxdigit(character)) {
+      } else if(is_hex && std::isxdigit(character))
+        {
           // The following check is probably not needed, but implement it one
           // day just in case to be sure
-		  // if(is_float)
+          // if(is_float)
           //   syntax_error("Illegal character in ");
 
           ss << m_filebuffer.forward();
-      }else if(!is_float && character == g_dot.identifier()) {
+      } else if(!is_float && character == g_dot.identifier())
+        {
           // Cant be a is_hex literal with a floating point at the same time in
           // the future we might have primitive types be classes ruby style so
           // someday this could be a feature But for now give an error on this
@@ -81,21 +84,25 @@ auto Tokenizer::literal_numeric() -> void
 
           is_float = true;
           ss << m_filebuffer.forward();
-      }else{ // Quit if digit ends
+      } else
+        { // Quit if digit ends
           break;
         }
     }
 
-  if(is_hex) {
-	add_token(Token{TokenType::HEX, ss.str()});
-	std::cout << "Hex: " << ss.str() << '\n';
-  }else if(is_float) {
-	add_token(Token{TokenType::FLOAT, std::stod(ss.str())});
-	std::cout << "Float: " << ss.str() << '\n';
-  }else{
-	add_token(Token{TokenType::INTEGER, ss.str()});
-	std::cout << "Integer: " << ss.str() << '\n';
-  }
+  if(is_hex)
+    {
+      add_token(Token{TokenType::HEX, ss.str()});
+      std::cout << "Hex: " << ss.str() << '\n';
+  } else if(is_float)
+    {
+      add_token(Token{TokenType::FLOAT, std::stod(ss.str())});
+      std::cout << "Float: " << ss.str() << '\n';
+  } else
+    {
+      add_token(Token{TokenType::INTEGER, ss.str()});
+      std::cout << "Integer: " << ss.str() << '\n';
+    }
 }
 
 auto Tokenizer::literal_string() -> void
@@ -109,23 +116,24 @@ auto Tokenizer::literal_string() -> void
 
   bool quit{false};
   while(!quit && !m_filebuffer.eol())
-	{
-	  const char character{m_filebuffer.character()};
+    {
+      const char character{m_filebuffer.character()};
 
-	  switch(character) {
-	  case g_double_quote.identifier():
-		quit = true;
-		break;
+      switch(character)
+        {
+          case g_double_quote.identifier():
+            quit = true;
+            break;
 
-	  case g_backslash.identifier():
-		ss << m_filebuffer.forward();
-		[[fallthrough]];
+          case g_backslash.identifier():
+            ss << m_filebuffer.forward();
+            [[fallthrough]];
 
-	  default:
-		ss << m_filebuffer.forward();
-		break;
-	  }
-  }
+          default:
+            ss << m_filebuffer.forward();
+            break;
+        }
+    }
 
   add_token(Token{TokenType::STRING, ss.str()});
   std::cout << "String: " << ss.str() << '\n';
@@ -150,63 +158,64 @@ auto Tokenizer::identifier() -> void
   while(std::isalnum(m_filebuffer.character()) && !m_filebuffer.eol())
     ss << m_filebuffer.forward();
 
-  // Go back one character since we 
+  // Go back one character since we
   // m_filebuffer.backward();
 
   // Verify if it is a keyword or not
   if(const auto token_type{is_keyword(ss.str())};
-	 token_type != TokenType::UNKNOWN) {
-	add_token(Token{token_type});
-	std::cout << "Keyword: " << ss.str() << std::endl;
-  }else{
-	add_token(Token{TokenType::IDENTIFIER, ss.str()});
-	std::cout << "Identifier: " << ss.str() << std::endl;
-  }
+     token_type != TokenType::UNKNOWN)
+    {
+      add_token(Token{token_type});
+      std::cout << "Keyword: " << ss.str() << std::endl;
+  } else
+    {
+      add_token(Token{TokenType::IDENTIFIER, ss.str()});
+      std::cout << "Identifier: " << ss.str() << std::endl;
+    }
 }
 
 auto Tokenizer::symbol() -> void
 {
   using namespace reserved::symbols;
 
-  // TODO: Check single symbols first if there is a multi symbols variant check
-  // If the next character corresponds, if we find nothing that it could be give
-  // A syntax error
-
   std::stringstream ss;
   const auto character{m_filebuffer.character()};
   TokenType tokentype{TokenType::UNKNOWN};
 
-  for(const auto single : g_single_symbols)
-	if(character == single.identifier())
-	  tokentype = single.tokentype();
+  ss << character;
 
-  ss << character << m_filebuffer.forward();
+  // First check for multi symbols
+  for(const auto multi : g_multi_symbols)
+    if(character == multi.identifier().front())
+      {
+        ss << m_filebuffer.forward();
 
-  if(bool is_multi_token{false}; tokentype != TokenType::UNKNOWN)
-	{
-	  if(!m_filebuffer.eol())
-		for(const auto multi : g_multi_symbols)
-		  if(ss.str() == multi.identifier())
-			{
-			  // is_multi_token = true;
+		std::cout << "Multi: " << ss.str() << '\n';
+        if(!m_filebuffer.eol())
+		  for(const auto multi : g_multi_symbols)
+			if(ss.str() == multi.identifier())
 			  tokentype = multi.tokentype();
-			  std::cout << "Multi symbol: " << ss.str() << '\n';
-			}
+    }
 
-	  // If it is not a multi token we should go back
-	  // if(is_multi_token)
-	  // 	m_filebuffer.backward();
+  // Single character symbol detection
+  if(tokentype == TokenType::UNKNOWN)
+	for(const auto single : g_single_symbols)
+	  if(character == single.identifier())
+		tokentype = single.tokentype();
 
-	  add_token(Token{tokentype});
-	  std::cout << "Symbol: " << character << '\n';
-	}else{
-	syntax_error("Character encountered is not valid AWX!");
-  }
+  // Throws
+  if(tokentype == TokenType::UNKNOWN)
+	{
+	  std::cout << "Token Error: " << character << '\n';
+	  syntax_error("Character encountered is not valid AWX!");
+    }
+
+  // Add the symbol if we recognize it
+  add_token(Token{tokentype});
 }
 
 // Public constructors:
-Tokenizer::Tokenizer(FileBuffer &t_filebuffer)
-:m_filebuffer{t_filebuffer}
+Tokenizer::Tokenizer(FileBuffer& t_filebuffer): m_filebuffer{t_filebuffer}
 {
   m_tokenstream.reserve(256);
 }
@@ -217,22 +226,34 @@ auto Tokenizer::tokenize() -> TokenStream
   using namespace reserved::symbols::none;
 
   for(; !m_filebuffer.eof(); m_filebuffer.next())
-    for(; !m_filebuffer.eol(); m_filebuffer.forward())
+    while(!m_filebuffer.eol())
       {
         const char character{m_filebuffer.character()};
+        std::cout << "Token loop char: '" << character
+                  << "' columnno: " << m_filebuffer.columnno() << '\n';
 
-		if(std::isspace(character))
-		  continue;
-		else if(character == '#')
-		  break; // Stop parsing current line
-		else if(std::isalpha(character))
-          identifier();
-        else if(std::isdigit(character))
+        if(std::isspace(character))
+          ; // Just ignore whitespace
+        else if(character == '#')
+          break; // Stop parsing current line
+        else if(std::isalpha(character))
+		  {
+			identifier();
+			continue;
+		  }
+		else if(std::isdigit(character))
           literal_numeric();
         else if(character == g_double_quote.identifier())
-		  literal_string();
-		else
-		  symbol();
+          literal_string();
+        else
+		  {
+			symbol();
+			// continue;
+		  }
+
+        // Increment at the end, this allows us to prevent having to use
+        // m_filebuffer.backward() in situations where we look a head to much
+        m_filebuffer.forward();
       }
 
   return m_tokenstream;
