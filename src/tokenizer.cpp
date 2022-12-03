@@ -150,6 +150,9 @@ auto Tokenizer::identifier() -> void
   while(std::isalnum(m_filebuffer.character()) && !m_filebuffer.eol())
     ss << m_filebuffer.forward();
 
+  // Go back one character since we 
+  // m_filebuffer.backward();
+
   // Verify if it is a keyword or not
   if(const auto token_type{is_keyword(ss.str())};
 	 token_type != TokenType::UNKNOWN) {
@@ -161,7 +164,7 @@ auto Tokenizer::identifier() -> void
   }
 }
 
-auto Tokenizer::literal_operator() -> void
+auto Tokenizer::symbol() -> void
 {
   using namespace reserved::symbols;
 
@@ -172,28 +175,38 @@ auto Tokenizer::literal_operator() -> void
   std::stringstream ss;
   const auto character{m_filebuffer.character()};
   TokenType tokentype{TokenType::UNKNOWN};
+
   for(const auto single : g_single_symbols)
 	if(character == single.identifier())
 	  tokentype = single.tokentype();
 
   ss << character << m_filebuffer.forward();
 
-  if(tokentype != TokenType::UNKNOWN && !m_filebuffer.eol())
+  if(bool is_multi_token{false}; tokentype != TokenType::UNKNOWN)
 	{
-	  for(const auto multi : g_multi_symbols)
-		if(ss.str() == multi.identifier())
-		  {
-			add_token(Token{multi.tokentype()});
-			std::cout << "Multi symbol: " << ss.str() << '\n';
-		  }
+	  if(!m_filebuffer.eol())
+		for(const auto multi : g_multi_symbols)
+		  if(ss.str() == multi.identifier())
+			{
+			  // is_multi_token = true;
+			  tokentype = multi.tokentype();
+			  std::cout << "Multi symbol: " << ss.str() << '\n';
+			}
+
+	  // If it is not a multi token we should go back
+	  // if(is_multi_token)
+	  // 	m_filebuffer.backward();
+
+	  add_token(Token{tokentype});
+	  std::cout << "Symbol: " << character << '\n';
 	}else{
-	add_token(Token{tokentype});
-	std::cout << "Single symbol: " << character << '\n';
+	syntax_error("Character encountered is not valid AWX!");
   }
 }
 
 // Public constructors:
-Tokenizer::Tokenizer(FileBuffer &t_filebuffer): m_filebuffer{t_filebuffer}
+Tokenizer::Tokenizer(FileBuffer &t_filebuffer)
+:m_filebuffer{t_filebuffer}
 {
   m_tokenstream.reserve(256);
 }
@@ -208,14 +221,18 @@ auto Tokenizer::tokenize() -> TokenStream
       {
         const char character{m_filebuffer.character()};
 
-        if(std::isalpha(character))
+		if(std::isspace(character))
+		  continue;
+		else if(character == '#')
+		  break; // Stop parsing current line
+		else if(std::isalpha(character))
           identifier();
         else if(std::isdigit(character))
           literal_numeric();
         else if(character == g_double_quote.identifier())
 		  literal_string();
 		else
-		  literal_operator();
+		  symbol();
       }
 
   return m_tokenstream;

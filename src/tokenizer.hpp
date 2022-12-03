@@ -33,7 +33,7 @@ private:
   auto is_keyword(std::string_view t_identifier) -> TokenType;
   auto identifier() -> void;
 
-  auto literal_operator() -> void;
+  auto symbol() -> void;
 
 public:
   Tokenizer() = delete;

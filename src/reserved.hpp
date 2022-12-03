@@ -119,6 +119,9 @@ namespace symbols {
   DEFINE_RESERVED(g_not_ere_match, r_vw{"!~"}, NOT_ERE_MATCH);
 
   // Logic operators:
+  DEFINE_RESERVED(g_or,  r_vw{"||"}, OR);
+  DEFINE_RESERVED(g_and, r_vw{"&&"}, AND);
+
   DEFINE_RESERVED(g_not,                  '!',   NOT);
   DEFINE_RESERVED(g_less_than,            '<',   LESS_THAN);
   DEFINE_RESERVED(g_less_than_equal, r_vw{"<="}, LESS_THAN_EQUAL);
@@ -139,8 +142,8 @@ namespace symbols {
 
   // TODO: Make these be generated automagically
   // TODO: Place these  somewhere else they are ugly
-  constexpr u8 single_symbol_size{24};
-  constexpr std::array<ReservedWrapper<char>, single_symbol_size>
+  constexpr u8 g_single_symbol_size{24};
+  constexpr std::array<ReservedWrapper<char>, g_single_symbol_size>
   g_single_symbols{
 	g_paren_open,
 	g_paren_close,
@@ -174,8 +177,8 @@ namespace symbols {
 	g_end_of_line
   };
 
-  constexpr u8 multi_symbol_size{11};
-  constexpr std::array<ReservedWrapper<std::string_view>, multi_symbol_size>
+  constexpr u8 g_multi_symbol_size{13};
+  constexpr std::array<ReservedWrapper<std::string_view>, g_multi_symbol_size>
   g_multi_symbols{
 	g_increment,
 	g_decrement,
@@ -188,6 +191,10 @@ namespace symbols {
 	g_modulo_assignment,
 
 	g_not_ere_match,
+
+	g_or,
+	g_and,
+
 	g_less_than_equal,
 	g_greater_than_equal
   };
