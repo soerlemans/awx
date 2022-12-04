@@ -14,7 +14,7 @@
 // Aliases:
 using TokenStream = std::vector<Token>;
 
-class Tokenizer {
+class Lexer {
 private:
   FileBuffer& m_filebuffer;
   TokenStream m_tokenstream;
@@ -25,7 +25,7 @@ private:
   // Error handling:
   auto syntax_error(std::string_view t_msg) const -> void;
 
-  // Tokenizer functions:
+  // Lexer functions:
   auto check_hex() -> bool;
   auto literal_numeric() -> Token;
   auto literal_string() -> Token;
@@ -36,12 +36,12 @@ private:
   auto symbol() -> Token;
 
 public:
-  Tokenizer() = delete;
-  Tokenizer(FileBuffer& t_filebuffer);
+  Lexer() = delete;
+  Lexer(FileBuffer& t_filebuffer);
 
   auto tokenize() -> TokenStream;
 
-  virtual ~Tokenizer();
+  virtual ~Lexer();
 };
 
 

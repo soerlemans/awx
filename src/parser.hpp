@@ -1,7 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include "tokenizer.hpp"
+#include "lexer.hpp"
 #include "ast.hpp"
 
 

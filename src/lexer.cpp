@@ -6,18 +6,18 @@
 
 #include "exception.hpp"
 #include "reserved.hpp"
-#include "tokenizer.hpp"
+#include "lexer.hpp"
 #include "tokentype.hpp"
 
 
 // TokenStream handling:
-auto Tokenizer::add_token(const Token&& t_token) -> void
+auto Lexer::add_token(const Token&& t_token) -> void
 {
   m_tokenstream.push_back(t_token);
 }
 
 // Error handling:
-auto Tokenizer::syntax_error(std::string_view t_msg) const -> void
+auto Lexer::syntax_error(std::string_view t_msg) const -> void
 {
   // FIXME: The ^^^ does not properly align, columnno is possibly not
   // properly adjusted
@@ -29,7 +29,7 @@ auto Tokenizer::syntax_error(std::string_view t_msg) const -> void
 }
 
 // Helper functions for literal_numeric
-auto Tokenizer::check_hex() -> bool
+auto Lexer::check_hex() -> bool
 {
   // Octal literals are not specified in the POSIX AWK standard
   // So just discard leading zeros
@@ -49,7 +49,7 @@ auto Tokenizer::check_hex() -> bool
   return false;
 }
 
-auto Tokenizer::literal_numeric() -> Token
+auto Lexer::literal_numeric() -> Token
 {
   using namespace reserved::symbols;
 
@@ -101,7 +101,7 @@ auto Tokenizer::literal_numeric() -> Token
   return token;
 }
 
-auto Tokenizer::literal_string() -> Token
+auto Lexer::literal_string() -> Token
 {
   using namespace reserved::symbols::none;
 
@@ -135,7 +135,7 @@ auto Tokenizer::literal_string() -> Token
   return Token{TokenType::STRING, ss.str()};
 }
 
-auto Tokenizer::is_keyword(std::string_view t_identifier) -> TokenType
+auto Lexer::is_keyword(std::string_view t_identifier) -> TokenType
 {
   using namespace reserved::keywords;
 
@@ -148,7 +148,7 @@ auto Tokenizer::is_keyword(std::string_view t_identifier) -> TokenType
   return TokenType::UNKNOWN;
 }
 
-auto Tokenizer::identifier() -> Token
+auto Lexer::identifier() -> Token
 {
   Token token;
   std::stringstream ss;
@@ -171,7 +171,7 @@ auto Tokenizer::identifier() -> Token
   return token;
 }
 
-auto Tokenizer::symbol() -> Token
+auto Lexer::symbol() -> Token
 {
   using namespace reserved::symbols;
 
@@ -232,13 +232,13 @@ auto Tokenizer::symbol() -> Token
 }
 
 // Public constructors:
-Tokenizer::Tokenizer(FileBuffer& t_filebuffer): m_filebuffer{t_filebuffer}
+Lexer::Lexer(FileBuffer& t_filebuffer): m_filebuffer{t_filebuffer}
 {
   m_tokenstream.reserve(256);
 }
 
 // Public methods:
-auto Tokenizer::tokenize() -> TokenStream
+auto Lexer::tokenize() -> TokenStream
 {
   using namespace reserved::symbols::none;
 
@@ -274,5 +274,5 @@ auto Tokenizer::tokenize() -> TokenStream
   return m_tokenstream;
 }
 
-Tokenizer::~Tokenizer()
+Lexer::~Lexer()
 {}

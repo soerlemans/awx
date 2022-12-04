@@ -16,8 +16,8 @@ auto run(int argc, char* argv[]) -> void
 {
   FileBuffer fb{argv[1]};
 
-  Tokenizer tokenizer{fb};
-  TokenStream token_stream{tokenizer.tokenize()};
+  Lexer lexer{fb};
+  TokenStream token_stream{lexer.tokenize()};
 
   Parser parser{token_stream};
   parser.parse();
