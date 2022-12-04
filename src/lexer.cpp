@@ -28,6 +28,49 @@ auto Lexer::syntax_error(std::string_view t_msg) const -> void
                     m_filebuffer.columnno()};
 }
 
+// Public constructors:
+Lexer::Lexer(FileBuffer& t_filebuffer): m_filebuffer{t_filebuffer}
+{
+  m_tokenstream.reserve(256);
+}
+
+// Public methods:
+auto Lexer::is_keyword(std::string_view t_identifier) -> TokenType
+{
+  using namespace reserved::keywords;
+
+  // TODO: Clean this up we could use a loop with an std::pair for the tokentype
+  // Having a centralized location for
+  for(auto keyword : g_keywords)
+    if(t_identifier == keyword.identifier())
+      return keyword.tokentype();
+
+  return TokenType::UNKNOWN;
+}
+
+auto Lexer::identifier() -> Token
+{
+  Token token;
+  std::stringstream ss;
+  while(std::isalnum(m_filebuffer.character()) && !m_filebuffer.eol())
+    ss << m_filebuffer.forward();
+
+  // Go back one character since we
+  // m_filebuffer.backward();
+
+  // Verify if it is a keyword or not
+  if(const auto token_type{is_keyword(ss.str())};
+     token_type != TokenType::UNKNOWN) {
+	std::cout << "Keyword: " << ss.str() << std::endl;
+	token = Token{token_type};
+  }else{
+	std::cout << "Identifier: " << ss.str() << std::endl;
+	token = Token{TokenType::IDENTIFIER, ss.str()};
+  }
+
+  return token;
+}
+
 // Helper functions for literal_numeric
 auto Lexer::check_hex() -> bool
 {
@@ -135,42 +178,6 @@ auto Lexer::literal_string() -> Token
   return Token{TokenType::STRING, ss.str()};
 }
 
-auto Lexer::is_keyword(std::string_view t_identifier) -> TokenType
-{
-  using namespace reserved::keywords;
-
-  // TODO: Clean this up we could use a loop with an std::pair for the tokentype
-  // Having a centralized location for
-  for(auto keyword : g_keywords)
-    if(t_identifier == keyword.identifier())
-      return keyword.tokentype();
-
-  return TokenType::UNKNOWN;
-}
-
-auto Lexer::identifier() -> Token
-{
-  Token token;
-  std::stringstream ss;
-  while(std::isalnum(m_filebuffer.character()) && !m_filebuffer.eol())
-    ss << m_filebuffer.forward();
-
-  // Go back one character since we
-  // m_filebuffer.backward();
-
-  // Verify if it is a keyword or not
-  if(const auto token_type{is_keyword(ss.str())};
-     token_type != TokenType::UNKNOWN) {
-	std::cout << "Keyword: " << ss.str() << std::endl;
-	token = Token{token_type};
-  }else{
-	std::cout << "Identifier: " << ss.str() << std::endl;
-	token = Token{TokenType::IDENTIFIER, ss.str()};
-  }
-
-  return token;
-}
-
 auto Lexer::symbol() -> Token
 {
   using namespace reserved::symbols;
@@ -231,13 +238,6 @@ auto Lexer::symbol() -> Token
   return Token{tokentype};
 }
 
-// Public constructors:
-Lexer::Lexer(FileBuffer& t_filebuffer): m_filebuffer{t_filebuffer}
-{
-  m_tokenstream.reserve(256);
-}
-
-// Public methods:
 auto Lexer::tokenize() -> TokenStream
 {
   using namespace reserved::symbols::none;

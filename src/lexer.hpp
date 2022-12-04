@@ -19,25 +19,25 @@ private:
   FileBuffer& m_filebuffer;
   TokenStream m_tokenstream;
 
-  // TokenStream handling:
+  // Token stream handling:
   auto add_token(const Token&& t_token) -> void;
 
   // Error handling:
   auto syntax_error(std::string_view t_msg) const -> void;
 
+public:
+  Lexer() = delete;
+  Lexer(FileBuffer& t_filebuffer);
+
   // Lexer functions:
+  auto is_keyword(std::string_view t_identifier) -> TokenType;
+  auto identifier() -> Token;
+
   auto check_hex() -> bool;
   auto literal_numeric() -> Token;
   auto literal_string() -> Token;
 
-  auto is_keyword(std::string_view t_identifier) -> TokenType;
-  auto identifier() -> Token;
-
   auto symbol() -> Token;
-
-public:
-  Lexer() = delete;
-  Lexer(FileBuffer& t_filebuffer);
 
   auto tokenize() -> TokenStream;
 
