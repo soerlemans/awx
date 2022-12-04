@@ -12,14 +12,14 @@ private:
 public:
   Parser(TokenStream t_tokenstream);
 
-  // Helper 
-  auto identifier() -> void;
-  auto keyword() -> void;
-  auto numeric() -> void;
-  auto string() -> void;
-  auto symbol() -> void;
+  // Helper
+  auto identifier(const Token& t_token) -> void;
+  auto keyword(const Token& t_token) -> void;
+  auto numeric(const Token& t_token) -> void;
+  auto string(const Token& t_token) -> void;
+  auto symbol(const Token& t_token) -> void;
 
-  auto parse() -> void;
+  auto parse() -> Ast;
 
   ~Parser();
 };
