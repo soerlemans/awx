@@ -1,8 +1,7 @@
 #include <iostream>
 
-#include "tokenizer.hpp"
 #include "parser.hpp"
-#include "tokentype.hpp"
+
 
 auto print_help() -> void
 {
@@ -19,6 +18,7 @@ auto run(int argc, char* argv[]) -> void
   Tokenizer tokenizer{fb};
 
   TokenStream token_stream{tokenizer.tokenize()};
+  Parser parser{token_stream};
 
   for(Token token : token_stream)
 	{
@@ -26,7 +26,7 @@ auto run(int argc, char* argv[]) -> void
 	}
 }
 
-int main(int argc, char* argv[])
+auto main(int argc, char* argv[]) -> int
 {
   if (argc < 2)
 	{
