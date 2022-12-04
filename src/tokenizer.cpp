@@ -253,21 +253,18 @@ auto Tokenizer::tokenize() -> TokenStream
           break; // Stop parsing current line
         else if(std::isalpha(character))
 		  {
-			identifier();
+			add_token(identifier());
 			continue;
 		  }
 		else if(std::isdigit(character))
 		  {
-			literal_numeric();
+			add_token(literal_numeric());
 			continue;
 		  }
         else if(character == g_double_quote.identifier())
-          literal_string();
+          add_token(literal_string());
         else
-		  {
-			symbol();
-			// continue;
-		  }
+		  add_token(symbol());
 
         // Increment at the end, this allows us to prevent having to use
         // m_filebuffer.backward() in situations where we look a head to much

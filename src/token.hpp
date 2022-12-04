@@ -16,7 +16,9 @@ private:
 
 public:
   // TODO: Replace these constructors with a template with a restrictive concept
-  Token();
+  Token() = default;
+  Token(const Token& t_token) = default;
+
   explicit Token(TokenType t_tokentype);
   explicit Token(TokenType t_tokentype, int t_value);
   explicit Token(TokenType t_tokentype, double t_value);
@@ -37,7 +39,8 @@ public:
   }
 
   // Operators
-  auto operator=(Token&& t_token) -> const Token&&;
+  auto operator=(const Token& t_token) -> Token& = default;
+  auto operator=(Token&& t_token) -> Token& = default;
 
   virtual ~Token();
 };

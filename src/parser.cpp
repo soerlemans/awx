@@ -8,14 +8,18 @@ Parser::Parser(TokenStream t_tokenstream)
 
 auto Parser::parse() -> void
 {
+  using namespace reserved;
   for(const auto& token : m_tokenstream)
 	{
 	  switch(token.type())
 		{
-		case g_function.tokentype():
-		  break;
+		// case g_function.tokentype():
+		//   break;
 
-		case g_function.tokentype():
+		// case g_function.tokentype():
+		//   break;
+		default:
+		  // Throw an error
 		  break;
 		}
 	}
