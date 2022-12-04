@@ -49,11 +49,12 @@ auto Tokenizer::check_hex() -> bool
   return false;
 }
 
-auto Tokenizer::literal_numeric() -> void
+auto Tokenizer::literal_numeric() -> Token
 {
   using namespace reserved::symbols;
 
-  // TODO: Make separate function for handling floats
+  Token token;
+
   bool is_hex{check_hex()};
   bool is_float{false};
 
@@ -63,19 +64,16 @@ auto Tokenizer::literal_numeric() -> void
       const char character{m_filebuffer.character()};
 
       // Check for different type of integer literals
-      if(std::isdigit(character))
-        {
+      if(std::isdigit(character)) {
           ss << m_filebuffer.forward();
-      } else if(is_hex && std::isxdigit(character))
-        {
+      }else if(is_hex && std::isxdigit(character)) {
           // The following check is probably not needed, but implement it one
           // day just in case to be sure
           // if(is_float)
           //   syntax_error("Illegal character in ");
 
           ss << m_filebuffer.forward();
-      } else if(!is_float && character == g_dot.identifier())
-        {
+      }else if(!is_float && character == g_dot.identifier()) {
           // Cant be a is_hex literal with a floating point at the same time in
           // the future we might have primitive types be classes ruby style so
           // someday this could be a feature But for now give an error on this
@@ -84,28 +82,26 @@ auto Tokenizer::literal_numeric() -> void
 
           is_float = true;
           ss << m_filebuffer.forward();
-      } else
-        { // Quit if digit ends
+      }else{ // Quit if digit ends
           break;
-        }
+	  }
     }
 
-  if(is_hex)
-    {
-      add_token(Token{TokenType::HEX, ss.str()});
+  if(is_hex) {
       std::cout << "Hex: " << ss.str() << '\n';
-  } else if(is_float)
-    {
-      add_token(Token{TokenType::FLOAT, std::stod(ss.str())});
+      token = Token{TokenType::HEX, ss.str()};
+  }else if(is_float) {
       std::cout << "Float: " << ss.str() << '\n';
-  } else
-    {
-      add_token(Token{TokenType::INTEGER, ss.str()});
+      token = Token{TokenType::FLOAT, std::stod(ss.str())};
+  }else {
       std::cout << "Integer: " << ss.str() << '\n';
+      token = Token{TokenType::INTEGER, ss.str()};
     }
+
+  return token;
 }
 
-auto Tokenizer::literal_string() -> void
+auto Tokenizer::literal_string() -> Token
 {
   using namespace reserved::symbols::none;
 
@@ -135,8 +131,8 @@ auto Tokenizer::literal_string() -> void
         }
     }
 
-  add_token(Token{TokenType::STRING, ss.str()});
   std::cout << "String: " << ss.str() << '\n';
+  return Token{TokenType::STRING, ss.str()};
 }
 
 auto Tokenizer::is_keyword(std::string_view t_identifier) -> TokenType
@@ -152,8 +148,9 @@ auto Tokenizer::is_keyword(std::string_view t_identifier) -> TokenType
   return TokenType::UNKNOWN;
 }
 
-auto Tokenizer::identifier() -> void
+auto Tokenizer::identifier() -> Token
 {
+  Token token;
   std::stringstream ss;
   while(std::isalnum(m_filebuffer.character()) && !m_filebuffer.eol())
     ss << m_filebuffer.forward();
@@ -163,18 +160,18 @@ auto Tokenizer::identifier() -> void
 
   // Verify if it is a keyword or not
   if(const auto token_type{is_keyword(ss.str())};
-     token_type != TokenType::UNKNOWN)
-    {
-      add_token(Token{token_type});
-      std::cout << "Keyword: " << ss.str() << std::endl;
-  } else
-    {
-      add_token(Token{TokenType::IDENTIFIER, ss.str()});
-      std::cout << "Identifier: " << ss.str() << std::endl;
-    }
+     token_type != TokenType::UNKNOWN) {
+	std::cout << "Keyword: " << ss.str() << std::endl;
+	token = Token{token_type};
+  }else{
+	std::cout << "Identifier: " << ss.str() << std::endl;
+	token = Token{TokenType::IDENTIFIER, ss.str()};
+  }
+
+  return token;
 }
 
-auto Tokenizer::symbol() -> void
+auto Tokenizer::symbol() -> Token
 {
   using namespace reserved::symbols;
 
@@ -230,8 +227,8 @@ auto Tokenizer::symbol() -> void
     }
 
   // Add the symbol if we recognize it
-  add_token(Token{tokentype});
   std::cout << "Symbol: " << ss.str() << '\n';
+  return Token{tokentype};
 }
 
 // Public constructors:

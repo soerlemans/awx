@@ -16,6 +16,7 @@ private:
 
 public:
   // TODO: Replace these constructors with a template with a restrictive concept
+  Token();
   explicit Token(TokenType t_tokentype);
   explicit Token(TokenType t_tokentype, int t_value);
   explicit Token(TokenType t_tokentype, double t_value);
@@ -34,6 +35,9 @@ public:
   {
 	return {m_tokentype, std::get<T>(m_value)};
   }
+
+  // Operators
+  auto operator=(Token&& t_token) -> const Token&&;
 
   virtual ~Token();
 };

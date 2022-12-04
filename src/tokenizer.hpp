@@ -27,13 +27,13 @@ private:
 
   // Tokenizer functions:
   auto check_hex() -> bool;
-  auto literal_numeric() -> void;
-  auto literal_string() -> void;
+  auto literal_numeric() -> Token;
+  auto literal_string() -> Token;
 
   auto is_keyword(std::string_view t_identifier) -> TokenType;
-  auto identifier() -> void;
+  auto identifier() -> Token;
 
-  auto symbol() -> void;
+  auto symbol() -> Token;
 
 public:
   Tokenizer() = delete;

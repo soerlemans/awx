@@ -6,6 +6,8 @@ private:
 
 public:
   Expression();
+
+  
   virtual ~Expression();
 };
 

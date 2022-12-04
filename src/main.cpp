@@ -15,12 +15,15 @@ auto print_help() -> void
 auto run(int argc, char* argv[]) -> void
 {
   FileBuffer fb{argv[1]};
+
   Tokenizer tokenizer{fb};
-
   TokenStream token_stream{tokenizer.tokenize()};
-  Parser parser{token_stream};
 
-  for(Token token : token_stream)
+  Parser parser{token_stream};
+  parser.parse();
+
+
+  for(Token& token : token_stream)
 	{
 	  std::cout << enum2underlying_type(token.type()) << '\n';
 	}
