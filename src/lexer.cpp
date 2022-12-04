@@ -178,6 +178,16 @@ auto Lexer::literal_string() -> Token
   return Token{TokenType::STRING, ss.str()};
 }
 
+auto Lexer::is_multi_symbol(std::stringstream& t_ss) -> TokenType
+{
+  // TODO: Refactor symbol and place multi symbol part in here
+}
+
+auto Lexer::is_single_symbol(const char t_char) -> TokenType
+{
+  // TODO: Split symbol in multi and single symbol checks
+}
+
 auto Lexer::symbol() -> Token
 {
   using namespace reserved::symbols;

@@ -37,6 +37,8 @@ public:
   auto literal_numeric() -> Token;
   auto literal_string() -> Token;
 
+  auto is_multi_symbol(std::stringstream& t_ss) -> TokenType;
+  auto is_single_symbol(const char t_char) -> TokenType;
   auto symbol() -> Token;
 
   auto tokenize() -> TokenStream;
