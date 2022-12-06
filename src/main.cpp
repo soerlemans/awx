@@ -1,6 +1,8 @@
 #include <iostream>
 
+#include "expression.hpp"
 #include "parser.hpp"
+#include "tokentype.hpp"
 
 
 auto print_help() -> void
@@ -21,6 +23,9 @@ auto run(int argc, char* argv[]) -> void
 
   Parser parser{token_stream};
   parser.parse();
+
+  // FIXME: Does not work???
+  Expression expr{TokenType::FUNCTION_KEYWORD, Expression{TokenType::DO_KEYWORD}};
 
 
   for(Token& token : token_stream)

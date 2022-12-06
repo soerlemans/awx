@@ -37,8 +37,8 @@ public:
   virtual auto left() -> Expression&;
   // virtual auto left(Expression& t_expr) -> void;
 
-  virtual auto right() -> Expression& = 0;
-  virtual auto list() -> ExpressionList = 0;
+  // virtual auto right() -> Expression& = 0;
+  // virtual auto list() -> ExpressionList = 0;
 
   virtual ~Expression();
 };
