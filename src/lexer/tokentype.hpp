@@ -1,9 +1,10 @@
 #ifndef TOKENTYPE_H
 #define TOKENTYPE_H
 
-#include "types.hpp"
+#include "../types.hpp"
 
 
+// TODO: Move this function somewhere applicable
 template<typename Enumeration>
 auto enum2underlying_type(Enumeration const value) ->
   typename std::underlying_type<Enumeration>::type

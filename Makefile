@@ -1,33 +1,36 @@
 # Exported variables:
-export SRC := src
+# Important build information
+export TOPDIR := $(PWD)
 export BUILD := build
+
+export SRC := src
+# export DEST = $(TOPDIR)/$(BUILD)
 
 export EXECUTABLE := awx
 
 # Compiler settings:
-WARNINGS := -Wall -Wextra -pedantic
-CXXSTD := -std=c++2b
-CXXFLAGS := $(CXXSTD) -g3 -O2 $(WARNINGS)
+export WARNINGS := -Wall -Wextra -pedantic
+export CXXSTD := -std=c++2b
+export CXXFLAGS := $(CXXSTD) -g3 -O2 $(WARNINGS)
 
-CXX := clang++
+export CXX := clang++
 
-# Local variables:
-SOURCES := $(wildcard $(SRC)/*.cpp)
-HEADERS := $(wildcard $(SRC)/*.hpp)
-OBJECTS := $(patsubst $(SRC)/%.cpp,$(BUILD)/%.o,$(SOURCES))
+# File's
+export TOP_SOURCES
+export TOP_HEADERS
+export TOP_OBJECTS
 
 # Rules:
-$(EXECUTABLE): $(OBJECTS)
+all: subdirs $(EXECUTABLE)
+
+subdirs:
+	$(MAKE) -C $(SRC)/ -f src.mk
+
+$(EXECUTABLE): $(TOP_OBJECTS)
+	@echo Objects $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $(EXECUTABLE)
 
-$(BUILD)/main.o: $(SRC)/main.cpp
-	$(CXX) -c $(CXXFLAGS) $< -o $@
-
-$(BUILD)/%.o: $(SRC)/%.cpp $(SRC)/%.hpp
-	$(CXX) -c $(CXXFLAGS) $< -o $@
-
-# Phony rules:
-.PHONY := clean
+.PHONY: all subdirs clean
 clean:
-	$(RM) $(BUILD)/*
+	$(RM) -r $(BUILD)/*
 	$(RM) $(EXECUTABLE)

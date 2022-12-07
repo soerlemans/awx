@@ -1,7 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include "lexer.hpp"
+#include "../lexer/lexer.hpp"
 #include "ast.hpp"
 
 

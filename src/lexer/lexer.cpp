@@ -4,7 +4,8 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "exception.hpp"
+#include "../exception.hpp"
+
 #include "reserved.hpp"
 #include "lexer.hpp"
 #include "tokentype.hpp"

@@ -1,15 +1,8 @@
 #ifndef EXPRESSIONTYPE_H
 #define EXPRESSIONTYPE_H
 
-#include "types.hpp"
+#include "../types.hpp"
 
-
-template<typename Enumeration>
-auto enum2underlying_type(Enumeration const value) ->
-  typename std::underlying_type<Enumeration>::type
-{
-  return static_cast<typename std::underlying_type<Enumeration>::type>(value);
-}
 
 // Enum definitions:
 enum class ExpressionType : u16 {

@@ -1,8 +1,7 @@
 #include <iostream>
 
-#include "expression.hpp"
-#include "parser.hpp"
-#include "tokentype.hpp"
+#include "parser/parser.hpp"
+#include "lexer/tokentype.hpp"
 
 
 auto print_help() -> void

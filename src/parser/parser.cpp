@@ -1,5 +1,6 @@
 #include "parser.hpp"
-#include "tokentype.hpp"
+
+#include "../lexer/tokentype.hpp"
 
 
 Parser::Parser(TokenStream t_tokenstream)

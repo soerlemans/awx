@@ -1,7 +1,7 @@
 #ifndef AST_H
 #define AST_H
 
-#include "types.hpp"
+#include "../types.hpp"
 #include "expression.hpp"
 
 
