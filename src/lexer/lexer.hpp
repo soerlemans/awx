@@ -34,7 +34,7 @@ public:
   auto is_keyword(std::string_view t_identifier) -> TokenType;
   auto identifier() -> Token;
 
-  auto is_hex() -> bool;
+  auto is_hex_numeric() -> bool;
   auto literal_numeric() -> Token;
   auto literal_string() -> Token;
 

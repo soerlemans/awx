@@ -21,6 +21,9 @@ auto Parser::keyword(const Token& t_token) -> void
 	case g_function.tokentype():
 	  break;
 
+	case g_return.tokentype():
+	  break;
+
 	case g_if.tokentype():
 	  break;
 
@@ -38,6 +41,9 @@ auto Parser::keyword(const Token& t_token) -> void
 
 	case g_in.tokentype():
 	  break;
+
+	default:
+	  break;
 	}
 }
 
@@ -45,7 +51,8 @@ auto Parser::numeric(const Token& t_token) -> void
 {
   switch(t_token.type())
 	{
-
+	default:
+	  break;
 	}
 }
 
@@ -53,7 +60,8 @@ auto Parser::string(const Token& t_token) -> void
 {
   switch(t_token.type())
 	{
-
+	default:
+	  break;
 	}
 }
 
@@ -61,7 +69,8 @@ auto Parser::symbol(const Token& t_token) -> void
 {
   switch(t_token.type())
 	{
-
+	default:
+	  break;
 	}
 }
 

@@ -70,7 +70,7 @@ auto Lexer::identifier() -> Token
 }
 
 // Helper functions for literal_numeric
-auto Lexer::is_hex() -> bool
+auto Lexer::is_hex_numeric() -> bool
 {
   // Octal literals are not specified in the POSIX AWK standard
   // So just discard leading zeros
@@ -96,7 +96,7 @@ auto Lexer::literal_numeric() -> Token
 
   Token token;
 
-  bool hex{is_hex()};
+  bool hex{is_hex_numeric()};
   bool is_float{false};
 
   std::stringstream ss;
