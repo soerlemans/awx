@@ -20,13 +20,13 @@ TOP_OBJECTS += OBJECTS
 
 # .PHONY: all $(SUBDIRS)
 
-all: lexer/ parser/ $(OBJECTS)
+all: lexer parser $(OBJECTS)
 
-lexer/:
-	$(MAKE) -C $@ -f lexer.mk
+lexer:
+	$(MAKE) -C $@/ -f $@.mk
 
-parser/:
-	$(MAKE) -C $@ -f parser.mk
+parser:
+	$(MAKE) -C $@/ -f $@.mk
 
 $(DEST)/main.o: main.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@

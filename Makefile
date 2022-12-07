@@ -15,22 +15,22 @@ export CXXFLAGS := $(CXXSTD) -g3 -O2 $(WARNINGS)
 
 export CXX := clang++
 
-# File's
-export TOP_SOURCES
-export TOP_HEADERS
-export TOP_OBJECTS
+# TODO: Find a way around the shell escape
+SOURCES := $(shell find $(SRC)/ -name '*.cpp')
+OBJECTS := $(patsubst $(SRC)/%.cpp,$(BUILD)/%.o,$(SOURCES))
 
 # Rules:
-all: subdirs $(EXECUTABLE)
+all: $(EXECUTABLE)
 
-subdirs:
-	$(MAKE) -C $(SRC)/ -f src.mk
-
-$(EXECUTABLE): $(TOP_OBJECTS)
-	@echo Objects $(OBJECTS)
+$(EXECUTABLE): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $(EXECUTABLE)
 
-.PHONY: all subdirs clean
+$(OBJECTS): src
+
+src:
+	$(MAKE) -C $(SRC)/ -f $@.mk
+
+.PHONY: all src clean
 clean:
 	$(RM) -r $(BUILD)/*
 	$(RM) $(EXECUTABLE)
