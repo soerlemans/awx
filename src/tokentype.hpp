@@ -20,13 +20,14 @@ enum class TokenType : u16 {
   IDENTIFIER,
 
   // Keywords:
-  FUNCTION_KEYWORD,
-  IF_KEYWORD,
-  ELSE_KEYWORD,
-  DO_KEYWORD,
-  WHILE_KEYWORD,
-  FOR_KEYWORD,
-  IN_KEYWORD,
+  FUNCTION,
+  RETURN,
+  IF,
+  ELSE,
+  DO,
+  WHILE,
+  FOR,
+  IN,
 
   // Types:
   INTEGER,

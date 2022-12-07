@@ -66,17 +66,20 @@ class ReservedWrapper {
 // clang-format off
 // Language reserved keywords
 namespace keywords {
-  DEFINE_RESERVED(g_function, r_vw{"function"}, FUNCTION_KEYWORD);
-  DEFINE_RESERVED(g_if,       r_vw{"if"},       IF_KEYWORD);
-  DEFINE_RESERVED(g_else,     r_vw{"else"},     ELSE_KEYWORD);
-  DEFINE_RESERVED(g_do,       r_vw{"do"},       DO_KEYWORD);
-  DEFINE_RESERVED(g_while,    r_vw{"while"},    WHILE_KEYWORD);
-  DEFINE_RESERVED(g_for,      r_vw{"for"},      FOR_KEYWORD);
-  DEFINE_RESERVED(g_in,       r_vw{"in"},       IN_KEYWORD);
+  DEFINE_RESERVED(g_function, r_vw{"function"}, FUNCTION);
+  DEFINE_RESERVED(g_return,   r_vw{"return"},   RETURN);
+  DEFINE_RESERVED(g_if,       r_vw{"if"},       IF);
+  DEFINE_RESERVED(g_else,     r_vw{"else"},     ELSE);
+  DEFINE_RESERVED(g_do,       r_vw{"do"},       DO);
+  DEFINE_RESERVED(g_while,    r_vw{"while"},    WHILE);
+  DEFINE_RESERVED(g_for,      r_vw{"for"},      FOR);
+  DEFINE_RESERVED(g_in,       r_vw{"in"},       IN);
 
+  // TODO: Use a std::map instead of an array as those have a faster lookup time
+  // Then we wont need to loop through them either
   // TODO: Make these be generated automagically
-  constexpr std::array<ReservedWrapper<std::string_view>, 7> g_keywords{
-	g_function, g_if, g_else, g_do, g_while, g_for, g_in
+  constexpr std::array<ReservedWrapper<std::string_view>, 8> g_keywords{
+	g_function, g_return, g_if, g_else, g_do, g_while, g_for, g_in
   };
 }; // namespace keywords
 

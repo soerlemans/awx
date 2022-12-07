@@ -72,7 +72,7 @@ auto Lexer::identifier() -> Token
 }
 
 // Helper functions for literal_numeric
-auto Lexer::check_hex() -> bool
+auto Lexer::is_hex() -> bool
 {
   // Octal literals are not specified in the POSIX AWK standard
   // So just discard leading zeros
@@ -98,7 +98,7 @@ auto Lexer::literal_numeric() -> Token
 
   Token token;
 
-  bool is_hex{check_hex()};
+  bool hex{is_hex()};
   bool is_float{false};
 
   std::stringstream ss;
@@ -109,7 +109,7 @@ auto Lexer::literal_numeric() -> Token
       // Check for different type of integer literals
       if(std::isdigit(character)) {
           ss << m_filebuffer.forward();
-      }else if(is_hex && std::isxdigit(character)) {
+      }else if(hex && std::isxdigit(character)) {
           // The following check is probably not needed, but implement it one
           // day just in case to be sure
           // if(is_float)
@@ -117,10 +117,10 @@ auto Lexer::literal_numeric() -> Token
 
           ss << m_filebuffer.forward();
       }else if(!is_float && character == g_dot.identifier()) {
-          // Cant be a is_hex literal with a floating point at the same time in
+          // Cant be a hex literal with a floating point at the same time in
           // the future we might have primitive types be classes ruby style so
           // someday this could be a feature But for now give an error on this
-          if(is_hex)
+          if(hex)
             syntax_error("Found a . in a hex literal");
 
           is_float = true;
@@ -130,7 +130,7 @@ auto Lexer::literal_numeric() -> Token
 	  }
     }
 
-  if(is_hex) {
+  if(hex) {
       std::cout << "Hex: " << ss.str() << '\n';
       token = Token{TokenType::HEX, ss.str()};
   }else if(is_float) {
@@ -180,25 +180,6 @@ auto Lexer::literal_string() -> Token
 
 auto Lexer::is_multi_symbol(std::stringstream& t_ss) -> TokenType
 {
-  // TODO: Refactor symbol and place multi symbol part in here
-}
-
-auto Lexer::is_single_symbol(const char t_char) -> TokenType
-{
-  // TODO: Split symbol in multi and single symbol checks
-}
-
-auto Lexer::symbol() -> Token
-{
-  using namespace reserved::symbols;
-
-  std::stringstream ss;
-  const auto character{m_filebuffer.character()};
-  TokenType tokentype{TokenType::UNKNOWN};
-
-  ss << character;
-
-  // First check for multi symbols
   for(const auto multi : g_multi_symbols)
     if(character == multi.identifier().front())
       {
@@ -226,6 +207,24 @@ auto Lexer::symbol() -> Token
 		  break; // We found a multi symbol token!
 		}
 	  }
+}
+
+auto Lexer::is_single_symbol(const char t_char) -> TokenType
+{
+  // TODO: Split symbol in multi and single symbol checks
+}
+
+auto Lexer::symbol() -> Token
+{
+  using namespace reserved::symbols;
+
+  std::stringstream ss;
+  const auto character{m_filebuffer.character()};
+  TokenType tokentype{TokenType::UNKNOWN};
+
+  ss << character;
+
+  // First check for multi symbols
 
   // Single character symbol detection
   if(tokentype == TokenType::UNKNOWN)
