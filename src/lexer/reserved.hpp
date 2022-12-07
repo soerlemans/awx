@@ -78,6 +78,7 @@ namespace keywords {
   // TODO: Use a std::map instead of an array as those have a faster lookup time
   // Then we wont need to loop through them either
   // TODO: Make these be generated automagically
+  // TODO: Make this a constexpr vector? those have constexpr initializer_list constructor
   constexpr std::array<ReservedWrapper<std::string_view>, 8> g_keywords{
 	g_function, g_return, g_if, g_else, g_do, g_while, g_for, g_in
   };
