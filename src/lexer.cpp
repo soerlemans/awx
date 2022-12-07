@@ -59,14 +59,11 @@ auto Lexer::identifier() -> Token
   // m_filebuffer.backward();
 
   // Verify if it is a keyword or not
-  if(const auto token_type{is_keyword(ss.str())};
-     token_type != TokenType::UNKNOWN) {
-	std::cout << "Keyword: " << ss.str() << std::endl;
-	token = Token{token_type};
-  }else{
-	std::cout << "Identifier: " << ss.str() << std::endl;
+  if(const auto tokentype{is_keyword(ss.str())};
+     tokentype != TokenType::UNKNOWN)
+	token = Token{tokentype};
+  else
 	token = Token{TokenType::IDENTIFIER, ss.str()};
-  }
 
   return token;
 }
@@ -130,16 +127,14 @@ auto Lexer::literal_numeric() -> Token
 	  }
     }
 
-  if(hex) {
-      std::cout << "Hex: " << ss.str() << '\n';
-      token = Token{TokenType::HEX, ss.str()};
-  }else if(is_float) {
-      std::cout << "Float: " << ss.str() << '\n';
-      token = Token{TokenType::FLOAT, std::stod(ss.str())};
-  }else {
-      std::cout << "Integer: " << ss.str() << '\n';
-      token = Token{TokenType::INTEGER, ss.str()};
-    }
+  // Determine what must be returned:
+  if(hex)
+	token = Token{TokenType::HEX, ss.str()};
+  else
+  if(is_float)
+	token = Token{TokenType::FLOAT, std::stod(ss.str())};
+  else
+	token = Token{TokenType::INTEGER, ss.str()};
 
   return token;
 }
@@ -174,12 +169,21 @@ auto Lexer::literal_string() -> Token
         }
     }
 
-  std::cout << "String: " << ss.str() << '\n';
   return Token{TokenType::STRING, ss.str()};
 }
 
-auto Lexer::is_multi_symbol(std::stringstream& t_ss) -> TokenType
+auto Lexer::is_multi_symbol() -> TokenType
 {
+  using namespace reserved::symbols;
+
+  std::stringstream ss;
+  TokenType tokentype{TokenType::UNKNOWN};
+  const char character{m_filebuffer.character()};
+
+  ss << character;
+
+  // TODO: We use two loops now, we can change this to only use one
+  // Refactor someday
   for(const auto multi : g_multi_symbols)
     if(character == multi.identifier().front())
       {
@@ -196,54 +200,53 @@ auto Lexer::is_multi_symbol(std::stringstream& t_ss) -> TokenType
 
         // If the next character is not part of
         // A multi symbol just undo the forward
-        // TODO: Maybe return a bool and continue in tokenizing loop?
         if(tokentype == TokenType::UNKNOWN)
-		  {
-			m_filebuffer.backward();
+		  m_filebuffer.backward();
 
-			ss.str("");
-			ss << character;
-		  }else{
-		  break; // We found a multi symbol token!
-		}
+		// We compare against all reserverd multi symbols in the second loop
+		// So there is no need to iterate againt after we found our first match
+		break;
 	  }
+
+  return tokentype;
 }
 
-auto Lexer::is_single_symbol(const char t_char) -> TokenType
+auto Lexer::is_single_symbol() -> TokenType
 {
-  // TODO: Split symbol in multi and single symbol checks
+  using namespace reserved::symbols;
+
+  const char character{m_filebuffer.character()};
+  TokenType tokentype{TokenType::UNKNOWN};
+
+  for(const auto single : g_single_symbols)
+    if(character == single.identifier())
+      {
+		tokentype = single.tokentype();
+		break;
+	  }
+
+  return tokentype;
 }
 
 auto Lexer::symbol() -> Token
 {
-  using namespace reserved::symbols;
-
-  std::stringstream ss;
-  const auto character{m_filebuffer.character()};
   TokenType tokentype{TokenType::UNKNOWN};
 
-  ss << character;
+  // First check for multi symbol
+  tokentype = is_multi_symbol();
 
-  // First check for multi symbols
-
-  // Single character symbol detection
+  // Then check for single symbol
   if(tokentype == TokenType::UNKNOWN)
-	for(const auto single : g_single_symbols)
-	  if(character == single.identifier())
-		{
-		  tokentype = single.tokentype();
-		  break;
-		}
+	tokentype = is_single_symbol();
 
-  // Throws
+  // Throw if it is neither
   if(tokentype == TokenType::UNKNOWN)
 	{
-	  std::cout << "Token Error: " << character << '\n';
+	  std::cout << "Token Error: " << m_filebuffer.character() << '\n';
 	  syntax_error("Character encountered is not valid AWX!");
     }
 
   // Add the symbol if we recognize it
-  std::cout << "Symbol: " << ss.str() << '\n';
   return Token{tokentype};
 }
 
