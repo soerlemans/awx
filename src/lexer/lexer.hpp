@@ -37,6 +37,7 @@ public:
   auto is_hex_numeric() -> bool;
   auto literal_numeric() -> Token;
   auto literal_string() -> Token;
+  auto literal_regex() -> Token;
 
   auto is_multi_symbol() -> TokenType;
   auto is_single_symbol() -> TokenType;

@@ -59,7 +59,7 @@ enum class TokenType : u16 {
   MINUS,
 
   MULTIPLIER,
-  DIVIDER,
+  SLASH,
   MODULUS,
 
   EXPONENT_ASSIGNMENT,
@@ -100,7 +100,13 @@ enum class TokenType : u16 {
 
   // Miscellaneous:
   DOLLAR_SIGN,
+  VERTICAL_BAR,
   END_OF_LINE,
 };
+
+// Functions:
+namespace tokentype {
+auto is_int(const TokenType t_tokentype) -> bool;
+}; // namespace tokentype
 
 #endif // TOKENTYPE_H

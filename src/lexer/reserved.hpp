@@ -102,7 +102,7 @@ namespace symbols {
   DEFINE_RESERVED(g_plus,       '+', PLUS);
   DEFINE_RESERVED(g_minus,      '-', MINUS);
   DEFINE_RESERVED(g_multiplier, '*', MULTIPLIER);
-  DEFINE_RESERVED(g_divider,    '/', DIVIDER);
+  DEFINE_RESERVED(g_slash,      '/', SLASH);
   DEFINE_RESERVED(g_modulus,    '%', MODULUS);
 
   // Assignment variants of Arithmetic operators:
@@ -140,12 +140,13 @@ namespace symbols {
   DEFINE_RESERVED(g_semicolon,    ';', SEMICOLON);
 
   // Miscellaneous operators:
-  DEFINE_RESERVED(g_dollar_sign, '$',  DOLLAR_SIGN);
-  DEFINE_RESERVED(g_end_of_line, '\n', END_OF_LINE);
+  DEFINE_RESERVED(g_dollar_sign,  '$',  DOLLAR_SIGN);
+  DEFINE_RESERVED(g_vertical_bar, '|',  VERTICAL_BAR);
+  DEFINE_RESERVED(g_end_of_line,  '\n', END_OF_LINE);
 
   // TODO: Make these be generated automagically
   // TODO: Place these  somewhere else they are ugly
-  constexpr std::array<ReservedWrapper<char>, 24>
+  constexpr std::array<ReservedWrapper<char>, 25>
   g_single_symbols{
 	g_paren_open,
 	g_paren_close,
@@ -160,7 +161,7 @@ namespace symbols {
 	g_plus,
 	g_minus,
 	g_multiplier,
-	g_divider,
+	g_slash,
 	g_modulus,
 
 	g_ere_match,
@@ -176,6 +177,7 @@ namespace symbols {
 	g_semicolon,
 
 	g_dollar_sign,
+	g_vertical_bar,
 	g_end_of_line
   };
 
@@ -203,7 +205,6 @@ namespace symbols {
 // Contains symbols that have a special meaning but are not tiedto a Token
 namespace none {
   // String literal symbols
-  // TODO: Create an extra tokentype called NONE, or EMPTY
   DEFINE_RESERVED(g_double_quote, '"', NONE);
   DEFINE_RESERVED(g_backslash, '\\',  NONE);
 }; // namespace unknown
