@@ -7,8 +7,6 @@
 pattern1 { action; } # just like lex
 pattern2 { action; }
 
-/fjfjfj/
-
 # There is an implied loop and AWK automatically reads and parses each
 # record of each file supplied. Each record is split by the FS delimiter,
 # which defaults to white-space (multiple spaces,tabs count as one)
