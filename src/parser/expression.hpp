@@ -2,13 +2,18 @@
 #define EXPRESSION_H
 
 #include <memory>
-#include <list>
 #include <type_traits>
 
 #include "expressiontype.hpp"
 
 
-// Abstract base expression class
+// Forward declarations:
+class Expression;
+
+// Aliases:
+using ExpressionPointer = std::unique_ptr<Expression>;
+
+// Base expression class:
 class Expression {
 protected:
   ExpressionType m_expressiontype;

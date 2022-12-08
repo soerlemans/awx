@@ -212,8 +212,6 @@ auto Lexer::literal_regex() -> Token
         }
     }
 
-  std::cout << "Regex: " << ss.str() << std::endl;
-
   return Token{TokenType::REGEX, ss.str()};
 }
 
