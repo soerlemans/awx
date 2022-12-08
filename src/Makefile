@@ -10,10 +10,10 @@ OBJECTS := $(patsubst %.cpp,$(DEST)/%.o,$(SOURCES))
 all: lexer parser $(OBJECTS)
 
 lexer:
-	$(MAKE) -C $@/ -f $@.mk
+	$(MAKE) -C $@/
 
 parser:
-	$(MAKE) -C $@/ -f $@.mk
+	$(MAKE) -C $@/
 
 $(DEST)/main.o: main.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@

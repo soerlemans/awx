@@ -28,7 +28,7 @@ $(EXECUTABLE): $(OBJECTS)
 $(OBJECTS): src
 
 src:
-	$(MAKE) -C $(SRC)/ -f $@.mk
+	$(MAKE) -C $@/
 
 .PHONY: all src clean
 clean:
