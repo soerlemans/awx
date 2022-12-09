@@ -49,5 +49,3 @@ auto set_loglevel(const LogLevel t_loglevel) -> void
 {
   g_loglevel = t_loglevel;
 }
-
-

@@ -71,7 +71,8 @@ auto Lexer::identifier() -> Token
   else
     token = Token{TokenType::IDENTIFIER, ss.str()};
 
-  LOG(LogLevel::WARNING, "IDENTIFIER: ", token.get<std::string>(), " Type: ", token.type());
+  LOG(LogLevel::INFO, "IDENTIFIER: ", ss.str());
+
   return token;
 }
 
@@ -145,6 +146,8 @@ auto Lexer::literal_numeric() -> Token
     token = Token{TokenType::FLOAT, std::stod(ss.str())};
   else
     token = Token{TokenType::INTEGER, ss.str()};
+
+  LOG(LogLevel::INFO, "NUMERIC: ", ss.str());
 
   return token;
 }

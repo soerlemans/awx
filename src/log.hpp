@@ -20,7 +20,7 @@ enum class LogLevel : u16 {
 // Only log if we are on the development build
 #if DEVELOPMENT
 
-// Macros for logging:
+// Macros:
 #define LOG(loglevel, ...) \
   log(__FILE__, __FUNCTION__, __LINE__, loglevel, __VA_ARGS__)
 
@@ -33,19 +33,19 @@ auto set_loglevel(const LogLevel t_loglevel) -> void;
 
 template<typename... Args>
 auto log(std::string_view t_file, std::string_view t_function,
-         std::string_view t_lineno, LogLevel t_loglevel, Args... t_args) -> void
+         int t_lineno, LogLevel t_loglevel, Args&&... t_args) -> void
 {
   // Ignore higher log levels
   if(!is_lower_loglevel(t_loglevel))
     return;
 
   // Module information
-  std::clog << '[' << t_file << " -> " << t_function << ": " << '"' << t_lineno
-            << "\"]";
+  std::clog << '['    << t_file
+			<< " -> " << t_function << "(): "
+			<< t_lineno << "] ";
 
   // Fold expression
-  (..., (std::clog << t_args ));
-  std::clog << '\n';
+  (std::clog << ... << t_args) << '\n';
 }
 
 #else

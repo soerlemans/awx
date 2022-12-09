@@ -1,7 +1,9 @@
 #include <iostream>
 
 #include "parser/parser.hpp"
-#include "lexer/tokentype.hpp"
+#include "lexer/tokentype.hpp" // This was for enum2underlying_type function
+
+#include "log.hpp"
 
 
 auto print_help() -> void
@@ -15,6 +17,7 @@ auto print_help() -> void
 
 auto run(int argc, char* argv[]) -> void
 {
+  SET_LOGLEVEL(LogLevel::DEBUG);
   FileBuffer fb{argv[1]};
 
   Lexer lexer{fb};
