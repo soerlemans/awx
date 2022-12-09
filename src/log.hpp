@@ -1,0 +1,59 @@
+#ifndef LOG_H
+#define LOG_H
+
+#include <iostream>
+#include <string_view>
+
+#include "types.hpp"
+
+
+// Enums:
+// Different logging levels
+enum class LogLevel : u16 {
+  CRITICAL = 0,
+  ERROR,
+  WARNING,
+  INFO,
+  DEBUG,
+};
+
+// Only log if we are on the development build
+#if DEVELOPMENT
+
+// Macros for logging:
+#define LOG(loglevel, ...) \
+  log(__FILE__, __FUNCTION__, __LINE__, loglevel, __VA_ARGS__)
+
+#define SET_LOGLEVEL(loglevel) \
+  set_loglevel(loglevel)
+
+// Functions:
+auto is_lower_loglevel(LogLevel t_loglevel) -> bool;
+auto set_loglevel(const LogLevel t_loglevel) -> void;
+
+template<typename... Args>
+auto log(std::string_view t_file, std::string_view t_function,
+         std::string_view t_lineno, LogLevel t_loglevel, Args... t_args) -> void
+{
+  // Ignore higher log levels
+  if(!is_lower_loglevel(t_loglevel))
+    return;
+
+  // Module information
+  std::clog << '[' << t_file << " -> " << t_function << ": " << '"' << t_lineno
+            << "\"]";
+
+  // Fold expression
+  (..., (std::clog << t_args ));
+  std::clog << '\n';
+}
+
+#else
+
+// Stub the macros if we are not on the debugging build
+#define LOG(__VA_ARGS__) do {} while(0)
+#define SET_LEVEL(level) do {} while(0)
+#endif // DEBUG
+
+
+#endif // LOG_H

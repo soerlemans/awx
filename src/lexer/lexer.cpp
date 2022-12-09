@@ -5,11 +5,14 @@
 #include <stdexcept>
 
 #include "../exception.hpp"
+#include "../log.hpp"
 
 #include "lexer.hpp"
 #include "reserved.hpp"
 #include "tokentype.hpp"
 
+
+namespace {};
 
 // TokenStream handling:
 auto Lexer::add_token(const Token&& t_token) -> void
@@ -53,11 +56,12 @@ auto Lexer::identifier() -> Token
 {
   Token token;
   std::stringstream ss;
-  auto check{[&](const char t_char) -> bool {
+
+  auto is_valid_character{[&](const char t_char) -> bool {
     return std::isalnum(t_char) || t_char == '_';
   }};
 
-  while(check(m_filebuffer.character()) && !m_filebuffer.eol())
+  while(is_valid_character(m_filebuffer.character()) && !m_filebuffer.eol())
     ss << m_filebuffer.forward();
 
   // Verify if it is a keyword or not
@@ -67,11 +71,12 @@ auto Lexer::identifier() -> Token
   else
     token = Token{TokenType::IDENTIFIER, ss.str()};
 
+  LOG(LogLevel::WARNING, "IDENTIFIER: ", token.get<std::string>(), " Type: ", token.type());
   return token;
 }
 
 // Helper functions for literal_numeric
-auto Lexer::is_hex_numeric() -> bool
+auto Lexer::is_hex_literal() -> bool
 {
   // Octal literals are not specified in the POSIX AWK standard
   // So just discard leading zeros
@@ -97,7 +102,7 @@ auto Lexer::literal_numeric() -> Token
 
   Token token;
 
-  bool hex{is_hex_numeric()};
+  bool hex{is_hex_literal()};
   bool is_float{false};
 
   std::stringstream ss;
@@ -105,7 +110,7 @@ auto Lexer::literal_numeric() -> Token
     {
       const char character{m_filebuffer.character()};
 
-      // Check for different type of integer literals
+      // is_valid_character for different type of integer literals
       if(std::isdigit(character))
         {
           ss << m_filebuffer.forward();

@@ -11,7 +11,7 @@ export EXECUTABLE := awx
 # Compiler settings:
 export WARNINGS := -Wall -Wextra -pedantic
 export CXXSTD := -std=c++2b
-export CXXFLAGS := $(CXXSTD) -g3 -O2 $(WARNINGS)
+export CXXFLAGS := $(CXXSTD) -g3 -DDEVELOPMENT -O2 $(WARNINGS)
 
 export CXX := clang++
 
@@ -20,12 +20,10 @@ SOURCES := $(shell find $(SRC)/ -name '*.cpp')
 OBJECTS := $(patsubst $(SRC)/%.cpp,$(BUILD)/%.o,$(SOURCES))
 
 # Rules:
-all: $(EXECUTABLE)
+all: src $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $(EXECUTABLE)
-
-$(OBJECTS): src
 
 src:
 	$(MAKE) -C $@/
