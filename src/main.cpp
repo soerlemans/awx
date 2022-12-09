@@ -17,7 +17,9 @@ auto print_help() -> void
 
 auto run(int argc, char* argv[]) -> void
 {
+  // Set loglevel for now for debugging purposes
   SET_LOGLEVEL(LogLevel::DEBUG);
+
   FileBuffer fb{argv[1]};
 
   Lexer lexer{fb};

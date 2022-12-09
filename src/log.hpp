@@ -31,9 +31,11 @@ enum class LogLevel : u16 {
 auto is_lower_loglevel(LogLevel t_loglevel) -> bool;
 auto set_loglevel(const LogLevel t_loglevel) -> void;
 
+// Do not use this function with non primitive types it will not know how to
+// Handle them and give an obscure tuple error
 template<typename... Args>
-auto log(std::string_view t_file, std::string_view t_function,
-         int t_lineno, LogLevel t_loglevel, Args&&... t_args) -> void
+auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
+         LogLevel t_loglevel, Args&&... t_args) -> void
 {
   // Ignore higher log levels
   if(!is_lower_loglevel(t_loglevel))

@@ -2,6 +2,7 @@
 
 
 // Macros:
+// TODO: THe break statement now leaves the do while loop this is not intended
 #define CHECK_LEVEL(loglevel)      \
   case loglevel:                   \
     do                             \
@@ -28,12 +29,16 @@ auto is_lower_loglevel(LogLevel t_loglevel) -> bool
       // These macros alter is_lower and [[fallthrough]]
       CHECK_LEVEL(LogLevel::DEBUG);
       [[fallthrough]];
+
       CHECK_LEVEL(LogLevel::INFO);
       [[fallthrough]];
+
       CHECK_LEVEL(LogLevel::WARNING);
       [[fallthrough]];
+
       CHECK_LEVEL(LogLevel::ERROR);
       [[fallthrough]];
+
       CHECK_LEVEL(LogLevel::CRITICAL);
       break;
 
