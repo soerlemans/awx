@@ -2,15 +2,12 @@
 
 
 // Macros:
-// TODO: THe break statement now leaves the do while loop this is not intended
 #define CHECK_LEVEL(loglevel)      \
   case loglevel:                   \
-    do                             \
-      {                            \
+    do {                           \
         if(g_loglevel == loglevel) \
           {                        \
-            is_lower = true;       \
-            break;                 \
+            return true;           \
         }                          \
     } while(0)
 
@@ -21,12 +18,11 @@ LogLevel g_loglevel{LogLevel::WARNING};
 
 // Public functions:
 // This function checks if the LogLevel is lower than the current g_loglevel
-auto is_lower_loglevel(LogLevel t_loglevel) -> bool
+auto is_lower_loglevel(const LogLevel t_loglevel) -> bool
 {
-  bool is_lower{false};
-  switch(t_loglevel)
+  switch(g_loglevel)
     {
-      // These macros alter is_lower and [[fallthrough]]
+      // These macros use the return statement
       CHECK_LEVEL(LogLevel::DEBUG);
       [[fallthrough]];
 
@@ -47,7 +43,7 @@ auto is_lower_loglevel(LogLevel t_loglevel) -> bool
         break;
     }
 
-  return is_lower;
+  return false;
 }
 
 auto set_loglevel(const LogLevel t_loglevel) -> void
