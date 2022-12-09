@@ -28,12 +28,13 @@ enum class LogLevel : u16 {
   set_loglevel(loglevel)
 
 // Functions:
+auto is_lower_loglevel(const LogLevel t_loglevel) -> bool;
 auto loglevel2str(const LogLevel t_loglevel) -> std::string_view;
-auto is_lower_loglevel(LogLevel t_loglevel) -> bool;
 auto set_loglevel(const LogLevel t_loglevel) -> void;
 
 // Do not use this function with non primitive types it will not know how to
 // Handle them and give an obscure tuple error
+// TODO: Maybe inline log? We will be using it a lot for debugging
 template<typename... Args>
 auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
          LogLevel t_loglevel, Args&&... t_args) -> void
@@ -48,7 +49,8 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
   // Module information
   std::clog << '['    << t_file
 			<< ':'    << t_lineno
-			<< " -> " << t_function << "()] ";
+			<< " -> " << t_function
+			<< "()] => ";
 
   // Fold expression
   (std::clog << ... << t_args) << '\n';
