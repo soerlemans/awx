@@ -10,7 +10,7 @@
 
 #include "lexer.hpp"
 #include "reserved.hpp"
-#include "tokentype.hpp"
+#include "token_type.hpp"
 
 
 // TokenStream handling:

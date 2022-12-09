@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "parser/parser.hpp"
-#include "lexer/tokentype.hpp" // This was for enum2underlying_type function
+#include "lexer/token_type.hpp" // This was for enum2underlying_type function
 
 #include "log.hpp"
 

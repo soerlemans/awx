@@ -5,7 +5,7 @@
 
 class BinaryOperator : public UnaryOperator {
   protected:
-  StatementType m_right;
+  StatementPointer m_right;
 
   public:
   explicit BinaryOperator(StatementType t_stmnttype, StatementPointer&& t_left,

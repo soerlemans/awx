@@ -1,15 +1,17 @@
-#ifndef TOKENTYPE_H
-#define TOKENTYPE_H
+#ifndef TOKEN_TYPE_H
+#define TOKEN_TYPE_H
+
+#include <type_traits>
 
 #include "../types.hpp"
 
 
 // TODO: Move this function somewhere applicable
 template<typename Enumeration>
-auto enum2underlying_type(Enumeration const value) ->
-  typename std::underlying_type<Enumeration>::type
+auto enum2underlying_type(Enumeration const value)
+  -> std::underlying_type_t<Enumeration>
 {
-  return static_cast<typename std::underlying_type<Enumeration>::type>(value);
+  return static_cast<std::underlying_type_t<Enumeration>>(value);
 }
 
 // Enum definitions:
@@ -109,4 +111,4 @@ namespace tokentype {
 auto is_int(const TokenType t_tokentype) -> bool;
 }; // namespace tokentype
 
-#endif // TOKENTYPE_H
+#endif // TOKEN_TYPE_H

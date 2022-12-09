@@ -5,13 +5,13 @@
 #include "statement.hpp"
 
 
-Statement::Statement(ExpressionType t_expressiontype)
-  :m_expressiontype{t_expressiontype}
+Statement::Statement(StatementType t_stmnttype)
+  :m_stmnttype{t_stmnttype}
 {}
 
 auto Statement::type() -> StatementType
 {
-  return m_statementtype;
+  return m_stmnttype;
 }
 
 Statement::~Statement()

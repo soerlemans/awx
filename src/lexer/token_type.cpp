@@ -1,5 +1,6 @@
+#include "token_type.hpp"
+
 #include "token.hpp"
-#include "tokentype.hpp"
 
 
 namespace tokentype {

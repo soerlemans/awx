@@ -5,7 +5,7 @@
 #include <tuple>
 #include <variant>
 
-#include "tokentype.hpp"
+#include "token_type.hpp"
 
 class Token {
 private:

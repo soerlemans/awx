@@ -18,10 +18,10 @@ using StatementPointer = std::unique_ptr<Statement>;
 // A statement could either be a literal or some form of expression
 class Statement {
 protected:
-  StatementType m_expressiontype;
+  StatementType m_stmnttype;
 
 public:
-  explicit Statement(StatementType t_expressiontype);
+  explicit Statement(StatementType t_stmnttype);
 
   auto type() -> StatementType;
 
