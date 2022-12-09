@@ -12,8 +12,6 @@
 #include "tokentype.hpp"
 
 
-namespace {};
-
 // TokenStream handling:
 auto Lexer::add_token(const Token&& t_token) -> void
 {
@@ -72,7 +70,6 @@ auto Lexer::identifier() -> Token
     token = Token{TokenType::IDENTIFIER, ss.str()};
 
   LOG(LogLevel::INFO, "IDENTIFIER: ", ss.str());
-
   return token;
 }
 
@@ -148,7 +145,6 @@ auto Lexer::literal_numeric() -> Token
     token = Token{TokenType::INTEGER, ss.str()};
 
   LOG(LogLevel::INFO, "NUMERIC: ", ss.str());
-
   return token;
 }
 
@@ -182,6 +178,7 @@ auto Lexer::literal_string() -> Token
         }
     }
 
+  LOG(LogLevel::INFO, "STRING: ", ss.str());
   return Token{TokenType::STRING, ss.str()};
 }
 
@@ -220,6 +217,7 @@ auto Lexer::literal_regex() -> Token
         }
     }
 
+  LOG(LogLevel::INFO, "REGEX: ", ss.str());
   return Token{TokenType::REGEX, ss.str()};
 }
 
@@ -246,6 +244,8 @@ auto Lexer::is_multi_symbol() -> TokenType
             if(ss.str() == multi.identifier())
               {
                 tokentype = multi.tokentype();
+
+				LOG(LogLevel::INFO, "MULTI SYMBOL: ", ss.str());
                 break; // We found a multi symbol token!
             }
 
@@ -273,6 +273,7 @@ auto Lexer::is_single_symbol() -> TokenType
     if(character == single.identifier())
       {
         tokentype = single.tokentype();
+		LOG(LogLevel::INFO, "SINGLE SYMBOL: ", character);
         break;
     }
 

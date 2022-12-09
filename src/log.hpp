@@ -43,8 +43,8 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
 
   // Module information
   std::clog << '['    << t_file
-			<< " -> " << t_function << "(): "
-			<< t_lineno << "] ";
+			<< ':'    << t_lineno
+			<< " -> " << t_function << "()] ";
 
   // Fold expression
   (std::clog << ... << t_args) << '\n';
@@ -56,6 +56,4 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
 #define LOG(__VA_ARGS__) do {} while(0)
 #define SET_LEVEL(level) do {} while(0)
 #endif // DEBUG
-
-
 #endif // LOG_H
