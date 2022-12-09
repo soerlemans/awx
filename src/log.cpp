@@ -2,13 +2,19 @@
 
 
 // Macros:
-#define CHECK_LEVEL(loglevel)      \
-  case loglevel:                   \
-    do {                           \
-        if(g_loglevel == loglevel) \
-          {                        \
-            return true;           \
-        }                          \
+// Stringify the given log leven in a case
+#define CASE_STRINGIFY_LOGLEVEL(loglevel) \
+  case LogLevel::loglevel:                \
+    return {#loglevel};
+
+// Compare the global and given log level within a case statement
+#define CASE_EQUAL_LOGLEVEL(loglevel) \
+  case loglevel:                      \
+    do {                              \
+        if(g_loglevel == loglevel)    \
+          {                           \
+            return true;              \
+        }                             \
     } while(0)
 
 namespace {
@@ -23,19 +29,19 @@ auto is_lower_loglevel(const LogLevel t_loglevel) -> bool
   switch(g_loglevel)
     {
       // These macros use the return statement
-      CHECK_LEVEL(LogLevel::DEBUG);
+      CASE_EQUAL_LOGLEVEL(LogLevel::DEBUG);
       [[fallthrough]];
 
-      CHECK_LEVEL(LogLevel::INFO);
+      CASE_EQUAL_LOGLEVEL(LogLevel::INFO);
       [[fallthrough]];
 
-      CHECK_LEVEL(LogLevel::WARNING);
+      CASE_EQUAL_LOGLEVEL(LogLevel::WARNING);
       [[fallthrough]];
 
-      CHECK_LEVEL(LogLevel::ERROR);
+      CASE_EQUAL_LOGLEVEL(LogLevel::ERROR);
       [[fallthrough]];
 
-      CHECK_LEVEL(LogLevel::CRITICAL);
+      CASE_EQUAL_LOGLEVEL(LogLevel::CRITICAL);
       break;
 
       default:
@@ -44,6 +50,23 @@ auto is_lower_loglevel(const LogLevel t_loglevel) -> bool
     }
 
   return false;
+}
+
+auto loglevel2str(const LogLevel t_loglevel) -> std::string_view
+{
+  switch(t_loglevel)
+    {
+      CASE_STRINGIFY_LOGLEVEL(DEBUG);
+      CASE_STRINGIFY_LOGLEVEL(INFO);
+      CASE_STRINGIFY_LOGLEVEL(WARNING);
+      CASE_STRINGIFY_LOGLEVEL(CRITICAL);
+
+      default:
+        // TODO: Error or handle unknown loglevel
+        break;
+    }
+
+  return {"UNKNOWN"};
 }
 
 auto set_loglevel(const LogLevel t_loglevel) -> void

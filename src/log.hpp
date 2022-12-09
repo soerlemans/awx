@@ -28,6 +28,7 @@ enum class LogLevel : u16 {
   set_loglevel(loglevel)
 
 // Functions:
+auto loglevel2str(const LogLevel t_loglevel) -> std::string_view;
 auto is_lower_loglevel(LogLevel t_loglevel) -> bool;
 auto set_loglevel(const LogLevel t_loglevel) -> void;
 
@@ -40,6 +41,9 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
   // Ignore higher log levels
   if(!is_lower_loglevel(t_loglevel))
     return;
+
+  // Denote loglevel
+  std::clog << '[' << loglevel2str(t_loglevel) << ']';
 
   // Module information
   std::clog << '['    << t_file
