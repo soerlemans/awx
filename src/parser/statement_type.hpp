@@ -1,11 +1,11 @@
-#ifndef EXPRESSIONTYPE_H
-#define EXPRESSIONTYPE_H
+#ifndef STATEMENT_TYPE_H
+#define STATEMENT_TYPE_H
 
 #include "../types.hpp"
 
 
 // Enum definitions:
-enum class ExpressionType : u16 {
+enum class StatementType : u16 {
   UNKNOWN = 0,
   NONE,
 
@@ -88,4 +88,4 @@ enum class ExpressionType : u16 {
   SUBSCRIPT,
 };
 
-#endif // EXPRESSIONTYPE_H
+#endif // STATEMENT_TYPE_H

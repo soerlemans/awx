@@ -3,7 +3,7 @@
 
 #include "../types.hpp"
 
-#include "expression.hpp"
+#include "statement.hpp"
 
 
 // The Abstract Syntax Tree management class

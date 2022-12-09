@@ -21,7 +21,7 @@ private:
   TokenStream m_tokenstream;
 
   // Token stream handling:
-  auto add_token(const Token&& t_token) -> void;
+  auto add_token(Token&& t_token) -> void;
 
   // Error handling:
   auto syntax_error(std::string_view t_msg) const -> void;

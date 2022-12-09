@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <utility>
 
 #include "../exception.hpp"
 #include "../log.hpp"
@@ -13,9 +14,9 @@
 
 
 // TokenStream handling:
-auto Lexer::add_token(const Token&& t_token) -> void
+auto Lexer::add_token(Token&& t_token) -> void
 {
-  m_tokenstream.push_back(t_token);
+  m_tokenstream.push_back(std::forward<Token>(t_token));
 }
 
 // Error handling:
