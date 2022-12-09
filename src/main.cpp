@@ -27,11 +27,6 @@ auto run(int argc, char* argv[]) -> void
 
   Parser parser{token_stream};
   parser.parse();
-
-  // for(Token& token : token_stream)
-  // 	{
-  // 	  std::cout << enum2underlying_type(token.type()) << '\n';
-  // 	}
 }
 
 auto main(int argc, char* argv[]) -> int
