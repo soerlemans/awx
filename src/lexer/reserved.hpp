@@ -98,12 +98,12 @@ namespace symbols {
   DEFINE_RESERVED(g_assignment, '=', ASSIGNMENT);
 
   // Arithmetic operators:
-  DEFINE_RESERVED(g_power,    '^', POWER);
-  DEFINE_RESERVED(g_plus,     '+', PLUS);
-  DEFINE_RESERVED(g_minus,    '-', MINUS);
-  DEFINE_RESERVED(g_asterisk, '*', ASTERISK);
-  DEFINE_RESERVED(g_slash,    '/', SLASH);
-  DEFINE_RESERVED(g_modulus,  '%', MODULUS);
+  DEFINE_RESERVED(g_power,        '^', POWER);
+  DEFINE_RESERVED(g_plus,         '+', PLUS);
+  DEFINE_RESERVED(g_minus,        '-', MINUS);
+  DEFINE_RESERVED(g_asterisk,     '*', ASTERISK);
+  DEFINE_RESERVED(g_slash,        '/', SLASH);
+  DEFINE_RESERVED(g_percent_sign, '%', PERCENT_SIGN);
 
   // Assignment variants of Arithmetic operators:
   DEFINE_RESERVED(g_increment, r_vw{"++"}, INCREMENT);
@@ -162,7 +162,7 @@ namespace symbols {
 	g_minus,
 	g_asterisk,
 	g_slash,
-	g_modulus,
+	g_percent_sign,
 
 	g_ere_match,
 

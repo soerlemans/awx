@@ -3,7 +3,7 @@
 
 PowerOperator::PowerOperator(StatementPointer&& t_left,
                                    StatementPointer&& t_right)
-  : BinaryOperator{StatementType::EXPONENTATION, Precedence::ArithmeticMuDiMo,
+  : BinaryOperator{StatementType::POWER, Precedence::ArithmeticMuDiMo,
                    std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}

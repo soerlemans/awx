@@ -52,7 +52,7 @@ enum class TokenType : u16 {
 
   ASTERISK,
   SLASH,
-  MODULUS,
+  PERCENT_SIGN,
 
   POWER_ASSIGNMENT,
   PLUS_ASSIGNMENT,

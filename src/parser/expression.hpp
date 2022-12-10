@@ -10,7 +10,7 @@ enum class Precedence : u16 {
   FieldReference,    // $a
   PostfixNumeric,    // a++, a--
   PrefixNumeric,     // ++a, --a
-  Exponent,          // a ^ b
+  Power,             // a ^ b
   UnaryPrefix,       // !a, +a, -a
   ArithmeticMuDiMo,  // a * b, a / b, a % b (Multiplication, Division, Exponentation)
   ArithmeticAddSub,  // a + b, a - b (Addition, Subtraction)
