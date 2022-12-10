@@ -59,7 +59,7 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
 #else
 
 // Stub the macros if we are not on the debugging build
-#define LOG(__VA_ARGS__) do {} while(0)
+#define LOG(...) do {} while(0)
 #define SET_LEVEL(level) do {} while(0)
 #endif // DEBUG
 #endif // LOG_H

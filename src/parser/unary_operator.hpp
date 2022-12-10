@@ -1,17 +1,19 @@
 #ifndef UNARY_OPERATOR_H
 #define UNARY_OPERATOR_H
 
-#include "statement.hpp"
+#include "expression.hpp"
 
 
-class UnaryOperator : public Statement {
+class UnaryOperator : public Expression {
 protected:
   StatementPointer m_left;
 
 public:
-  explicit UnaryOperator(StatementType t_stmnttype, StatementPointer&& t_stmnt);
+  explicit UnaryOperator(StatementType t_stmnttype, Precedence t_precedence, StatementPointer&& t_stmnt);
 
-  auto left() const -> Statement;
+  auto left() -> StatementPointer&;
+
+  virtual auto accept(StatementVisitor t_visitor) -> void = 0;
 
   virtual ~UnaryOperator();
 };

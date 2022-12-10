@@ -98,24 +98,24 @@ namespace symbols {
   DEFINE_RESERVED(g_assignment, '=', ASSIGNMENT);
 
   // Arithmetic operators:
-  DEFINE_RESERVED(g_exponent,   '^', EXPONENT);
-  DEFINE_RESERVED(g_plus,       '+', PLUS);
-  DEFINE_RESERVED(g_minus,      '-', MINUS);
-  DEFINE_RESERVED(g_multiplier, '*', MULTIPLIER);
-  DEFINE_RESERVED(g_slash,      '/', SLASH);
-  DEFINE_RESERVED(g_modulus,    '%', MODULUS);
+  DEFINE_RESERVED(g_power,    '^', POWER);
+  DEFINE_RESERVED(g_plus,     '+', PLUS);
+  DEFINE_RESERVED(g_minus,    '-', MINUS);
+  DEFINE_RESERVED(g_asterisk, '*', ASTERISK);
+  DEFINE_RESERVED(g_slash,    '/', SLASH);
+  DEFINE_RESERVED(g_modulus,  '%', MODULUS);
 
   // Assignment variants of Arithmetic operators:
   DEFINE_RESERVED(g_increment, r_vw{"++"}, INCREMENT);
   DEFINE_RESERVED(g_decrement, r_vw{"--"}, DECREMENT);
 
   // TODO: Rename or structure these better in the future?
-  DEFINE_RESERVED(g_exponent_assignment,       r_vw{"^="}, EXPONENT_ASSIGNMENT);
-  DEFINE_RESERVED(g_plus_assignment,           r_vw{"+="}, PLUS_ASSIGNMENT);
-  DEFINE_RESERVED(g_minus_assignment,          r_vw{"-="}, MINUS_ASSIGNMENT);
-  DEFINE_RESERVED(g_multiplication_assignment, r_vw{"*="}, MULTIPLICATION_ASSIGNMENT);
-  DEFINE_RESERVED(g_division_assignment,       r_vw{"/="}, DIVISION_ASSIGNMENT);
-  DEFINE_RESERVED(g_modulo_assignment,         r_vw{"%="}, MODULO_ASSIGNMENT);
+  DEFINE_RESERVED(g_power_assignment,    r_vw{"^="}, POWER_ASSIGNMENT);
+  DEFINE_RESERVED(g_plus_assignment,     r_vw{"+="}, PLUS_ASSIGNMENT);
+  DEFINE_RESERVED(g_minus_assignment,    r_vw{"-="}, MINUS_ASSIGNMENT);
+  DEFINE_RESERVED(g_multiply_assignment, r_vw{"*="}, MULTIPLY_ASSIGNMENT);
+  DEFINE_RESERVED(g_divide_assignment,   r_vw{"/="}, DIVIDE_ASSIGNMENT);
+  DEFINE_RESERVED(g_modulo_assignment,   r_vw{"%="}, MODULO_ASSIGNMENT);
 
   // Regex operators:
   DEFINE_RESERVED(g_ere_match,          '~',   ERE_MATCH);
@@ -157,10 +157,10 @@ namespace symbols {
 
 	g_assignment,
 
-	g_exponent,
+	g_power,
 	g_plus,
 	g_minus,
-	g_multiplier,
+	g_asterisk,
 	g_slash,
 	g_modulus,
 
@@ -186,11 +186,11 @@ namespace symbols {
 	g_increment,
 	g_decrement,
 
-	g_exponent_assignment,
+	g_power_assignment,
 	g_plus_assignment,
 	g_minus_assignment,
-	g_multiplication_assignment,
-	g_division_assignment,
+	g_multiply_assignment,
+	g_divide_assignment,
 	g_modulo_assignment,
 
 	g_not_ere_match,

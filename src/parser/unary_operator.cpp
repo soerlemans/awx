@@ -3,14 +3,16 @@
 #include <utility>
 
 
-UnaryOperator::UnaryOperator(StatementType t_stmnttype, StatementPointer&& t_stmnt)
-  :Statement{t_stmnttype}, m_left{std::forward<StatementPointer>(t_stmnt)}
+UnaryOperator::UnaryOperator(StatementType t_stmnttype, Precedence t_precedence,
+                             StatementPointer&& t_stmnt)
+  : Expression{t_stmnttype, t_precedence},
+    m_left{std::forward<StatementPointer>(t_stmnt)}
 {}
 
-// auto UnaryOperator::left() const -> Statement
-// {
-//   return *m_left;
-// }
+auto UnaryOperator::left() -> StatementPointer&
+{
+  return m_left;
+}
 
 UnaryOperator::~UnaryOperator()
 {}

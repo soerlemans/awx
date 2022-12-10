@@ -1,18 +1,8 @@
 #ifndef TOKEN_TYPE_H
 #define TOKEN_TYPE_H
 
-#include <type_traits>
-
 #include "../types.hpp"
 
-
-// TODO: Move this function somewhere applicable
-template<typename Enumeration>
-auto enum2underlying_type(Enumeration const value)
-  -> std::underlying_type_t<Enumeration>
-{
-  return static_cast<std::underlying_type_t<Enumeration>>(value);
-}
 
 // Enum definitions:
 enum class TokenType : u16 {
@@ -56,20 +46,20 @@ enum class TokenType : u16 {
   INCREMENT,
   DECREMENT,
 
-  EXPONENT,
+  POWER,
   PLUS,
   MINUS,
 
-  MULTIPLIER,
+  ASTERISK,
   SLASH,
   MODULUS,
 
-  EXPONENT_ASSIGNMENT,
+  POWER_ASSIGNMENT,
   PLUS_ASSIGNMENT,
   MINUS_ASSIGNMENT,
 
-  MULTIPLICATION_ASSIGNMENT,
-  DIVISION_ASSIGNMENT,
+  MULTIPLY_ASSIGNMENT,
+  DIVIDE_ASSIGNMENT,
   MODULO_ASSIGNMENT,
   ADDITION_ASSIGNMENT,
   SUBTRACTION_ASSIGNMENT,

@@ -1,18 +1,21 @@
 #include "binary_operator.hpp"
+#include "expression.hpp"
 
 #include <utility>
 
 BinaryOperator::BinaryOperator(StatementType t_stmnttype,
+                               Precedence t_precedence,
                                StatementPointer&& t_left,
                                StatementPointer&& t_right)
-  : UnaryOperator{t_stmnttype, std::forward<StatementPointer>(t_left)},
+  : UnaryOperator{t_stmnttype, t_precedence,
+                  std::forward<StatementPointer>(t_left)},
     m_right{std::forward<StatementPointer>(t_right)}
 {}
 
-// auto BinaryOperator::right() const -> Statement
-// {
-//   return *m_right;
-// }
+auto BinaryOperator::right() -> StatementPointer&
+{
+  return m_right;
+}
 
 BinaryOperator::~BinaryOperator()
 {}
