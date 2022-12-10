@@ -51,5 +51,33 @@ Divide::~Divide()
 {}
 
 // Add:
+Add::Add(StatementPointer&& t_left,
+                               StatementPointer&& t_right)
+  : BinaryOperator{StatementType::ADD, Precedence::ArithmeticMuDiMo,
+                   std::forward<StatementPointer>(t_left),
+                   std::forward<StatementPointer>(t_right)}
+{}
+
+auto Add::accept([[maybe_unused]] StatementVisitor t_visitor) -> void
+{
+  //
+}
+
+Add::~Add()
+{}
 
 // Subtract:
+Subtract::Subtract(StatementPointer&& t_left,
+                               StatementPointer&& t_right)
+  : BinaryOperator{StatementType::SUBTRACT, Precedence::ArithmeticMuDiMo,
+                   std::forward<StatementPointer>(t_left),
+                   std::forward<StatementPointer>(t_right)}
+{}
+
+auto Subtract::accept([[maybe_unused]] StatementVisitor t_visitor) -> void
+{
+  //
+}
+
+Subtract::~Subtract()
+{}

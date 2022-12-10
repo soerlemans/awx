@@ -35,4 +35,23 @@ public:
   virtual ~Divide();
 };
 
+// Add:
+class operators::Add : public operators::BinaryOperator {
+public:
+  Add(StatementPointer&& t_left, StatementPointer&& t_right);
+
+  auto accept(StatementVisitor t_visitor) -> void;
+
+  virtual ~Add();
+};
+
+// Subtract:
+class operators::Subtract : public operators::BinaryOperator {
+public:
+  Subtract(StatementPointer&& t_left, StatementPointer&& t_right);
+
+  auto accept(StatementVisitor t_visitor) -> void;
+
+  virtual ~Subtract();
+};
 #endif // ARITHMETIC_H

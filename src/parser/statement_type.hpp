@@ -36,8 +36,8 @@ enum class StatementType : u16 {
   DIVIDE,
   MODULO,
 
-  ADDITION,
-  SUBTRACTION,
+  ADD,
+  SUBTRACT,
 
   STRING_CONCATIONATION,
 

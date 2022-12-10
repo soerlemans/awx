@@ -21,6 +21,8 @@ namespace operators {
   class Power;
   class Multiply;
   class Divide;
+  class Add;
+  class Subtract;
 };
 
 #endif // OPERATORS_H
