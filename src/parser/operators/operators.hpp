@@ -23,6 +23,14 @@ namespace operators {
   class Divide;
   class Add;
   class Subtract;
+
+  class PowerAssignment;
+  class MultiplyAssignment;
+  class DivideAssignment;
+  class ModuloAssignment;
+  class AddAssignment;
+  class SubtractAssignment;
+  class Assignemnt;
 };
 
 #endif // OPERATORS_H
