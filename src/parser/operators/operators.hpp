@@ -12,6 +12,10 @@ namespace operators {
 
   // UnaryOperator derived classes:
   class PrefixIncrement;
+  class PrefixDecrement;
+
+  class PostfixIncrement;
+  class PostfixDecrement;
 
   // BinaryOperator derived classes:
   class Power;
