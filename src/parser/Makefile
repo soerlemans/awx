@@ -1,4 +1,4 @@
-# Local variables
+# Local variables:
 DEST := $(BUILD)/parser
 
 SOURCES := $(wildcard *.cpp)

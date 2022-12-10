@@ -1,5 +1,7 @@
 #include "divide.hpp"
 
+using namespace operators;
+
 
 Divide::Divide(StatementPointer&& t_left,
                                StatementPointer&& t_right)

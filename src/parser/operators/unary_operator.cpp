@@ -1,6 +1,6 @@
 #include "unary_operator.hpp"
 
-#include <utility>
+using namespace operators;
 
 
 UnaryOperator::UnaryOperator(StatementType t_stmnttype, Precedence t_precedence,

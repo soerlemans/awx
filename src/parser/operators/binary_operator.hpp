@@ -1,6 +1,7 @@
 #ifndef BINARY_OPERATOR_H
 #define BINARY_OPERATOR_H
 
+#include "operators.hpp"
 #include "unary_operator.hpp"
 
 
@@ -10,7 +11,7 @@ enum Associativity : u16 {
   RIGHT,
 };
 
-class BinaryOperator : public UnaryOperator {
+class operators::BinaryOperator : public operators::UnaryOperator {
   protected:
   StatementPointer m_right;
   Associativity m_associativity;

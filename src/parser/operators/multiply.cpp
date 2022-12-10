@@ -1,5 +1,7 @@
 #include "multiply.hpp"
 
+using namespace operators;
+
 
 Multiply::Multiply(StatementPointer&& t_left,
                                    StatementPointer&& t_right)

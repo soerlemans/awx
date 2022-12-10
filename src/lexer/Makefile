@@ -1,4 +1,4 @@
-# Local variables
+# Local variables:
 DEST := $(BUILD)/lexer
 
 SOURCES := $(wildcard *.cpp)

@@ -3,8 +3,10 @@
 
 #include "../expression.hpp"
 
+#include "operators.hpp"
 
-class UnaryOperator : public Expression {
+
+class operators::UnaryOperator : public Expression {
 protected:
   StatementPointer m_left;
 

@@ -1,5 +1,7 @@
 #include "prefix_increment.hpp"
 
+using namespace operators;
+
 
 PrefixIncrement::PrefixIncrement(StatementPointer&& t_left)
 :UnaryOperator{StatementType::PREFIX_INCREMENT, Precedence::PrefixIncDec,

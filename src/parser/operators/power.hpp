@@ -1,10 +1,11 @@
 #ifndef POWER_H
 #define POWER_H
 
+#include "operators.hpp"
 #include "binary_operator.hpp"
 
 
-class Power : public BinaryOperator {
+class operators::Power : public operators::BinaryOperator {
 public:
   Power(StatementPointer&& t_left, StatementPointer&& t_right);
 

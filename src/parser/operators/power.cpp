@@ -1,6 +1,8 @@
 #include "power.hpp"
 
 
+using namespace operators;
+
 Power::Power(StatementPointer&& t_left,
                                    StatementPointer&& t_right)
   : BinaryOperator{StatementType::POWER, Precedence::ArithmeticMuDiMo,

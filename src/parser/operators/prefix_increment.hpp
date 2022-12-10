@@ -1,10 +1,11 @@
 #ifndef PREFIX_INCREMENT_H
 #define PREFIX_INCREMENT_H
 
+#include "operators.hpp"
 #include "binary_operator.hpp"
 
 
-class PrefixIncrement: public UnaryOperator {
+class operators::PrefixIncrement: public operators::UnaryOperator {
 public:
   PrefixIncrement(StatementPointer&& t_left);
 

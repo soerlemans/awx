@@ -1,10 +1,11 @@
 #ifndef MULTIPLY_H
 #define MULTIPLY_H
 
+#include "operators.hpp"
 #include "binary_operator.hpp"
 
 
-class Multiply : public BinaryOperator {
+class operators::Multiply : public operators::BinaryOperator {
 public:
   Multiply(StatementPointer&& t_left, StatementPointer&& t_right);
 

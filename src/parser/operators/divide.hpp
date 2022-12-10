@@ -1,9 +1,11 @@
 #ifndef DIVIDE_H
 #define DIVIDE_H
 
+#include "operators.hpp"
 #include "binary_operator.hpp"
 
-class Divide : public BinaryOperator {
+
+class operators::Divide : public operators::BinaryOperator {
 public:
   Divide(StatementPointer&& t_left, StatementPointer&& t_right);
 

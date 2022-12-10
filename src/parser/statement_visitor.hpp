@@ -1,8 +1,7 @@
 #ifndef STATEMENT_VISITOR_H
 #define STATEMENT_VISITOR_H
 
-
-// Forward declarations:
+#include "operators/operators.hpp"
 
 
 // Implementation of the Visitor design pattern for Statements

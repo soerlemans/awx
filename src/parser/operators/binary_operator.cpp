@@ -1,6 +1,6 @@
 #include "binary_operator.hpp"
 
-#include <utility>
+using namespace operators;
 
 BinaryOperator::BinaryOperator(StatementType t_stmnttype,
                                Precedence t_precedence,
