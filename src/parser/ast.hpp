@@ -9,6 +9,8 @@
 // The Abstract Syntax Tree management class
 class Ast {
 private:
+  StatementPointer m_root;
+  StatementPointer m_current;
 
 public:
   Ast() = default;

@@ -1,6 +1,6 @@
 # Local variables
 # Destination directory for these object files
-DEST = $(TOPDIR)/$(BUILD)/parser
+DEST = $(TOPDIR)/$(BUILD)/operators
 
 SOURCES := $(wildcard *.cpp)
 HEADERS := $(wildcard *.hpp)
@@ -11,10 +11,7 @@ TOP_HEADERS += HEADERS
 TOP_OBJECTS += OBJECTS
 
 # Rules:
-all: operators $(DEST)/ $(OBJECTS)
-
-operators:
-	$(MAKE) -C $@/
+all: $(DEST)/ $(OBJECTS)
 
 $(DEST)/:
 	@echo $(MKDIR)
@@ -24,4 +21,4 @@ $(DEST)/%.o: %.cpp %.hpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 
 # Phony targets
-.PHONY: all operators $(SUBDIRS)
+.PHONY: all $(SUBDIRS)

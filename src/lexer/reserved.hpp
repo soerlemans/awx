@@ -111,8 +111,8 @@ namespace symbols {
 
   // TODO: Rename or structure these better in the future?
   DEFINE_RESERVED(g_power_assignment,    r_vw{"^="}, POWER_ASSIGNMENT);
-  DEFINE_RESERVED(g_plus_assignment,     r_vw{"+="}, PLUS_ASSIGNMENT);
-  DEFINE_RESERVED(g_minus_assignment,    r_vw{"-="}, MINUS_ASSIGNMENT);
+  DEFINE_RESERVED(g_add_assignment,      r_vw{"+="}, ADD_ASSIGNMENT);
+  DEFINE_RESERVED(g_subtract_assignment, r_vw{"-="}, SUBTRACT_ASSIGNMENT);
   DEFINE_RESERVED(g_multiply_assignment, r_vw{"*="}, MULTIPLY_ASSIGNMENT);
   DEFINE_RESERVED(g_divide_assignment,   r_vw{"/="}, DIVIDE_ASSIGNMENT);
   DEFINE_RESERVED(g_modulo_assignment,   r_vw{"%="}, MODULO_ASSIGNMENT);
@@ -187,8 +187,8 @@ namespace symbols {
 	g_decrement,
 
 	g_power_assignment,
-	g_plus_assignment,
-	g_minus_assignment,
+	g_add_assignment,
+	g_subtract_assignment,
 	g_multiply_assignment,
 	g_divide_assignment,
 	g_modulo_assignment,

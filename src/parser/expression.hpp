@@ -8,11 +8,11 @@
 enum class Precedence : u16 {
   Grouping = 0,      // (a)
   FieldReference,    // $a
-  PostfixNumeric,    // a++, a--
-  PrefixNumeric,     // ++a, --a
+  PostfixIncDec,     // a++, a--
+  PrefixIncDec,      // ++a, --a
   Power,             // a ^ b
   UnaryPrefix,       // !a, +a, -a
-  ArithmeticMuDiMo,  // a * b, a / b, a % b (Multiplication, Division, Exponentation)
+  ArithmeticMuDiMo,  // a * b, a / b, a % b (Multiply, Divide, Modulo)
   ArithmeticAddSub,  // a + b, a - b (Addition, Subtraction)
   StringConcat,      // a b
   LogicalComparison, // a < b, a <= b, a != b, a == b, a > b, a >= b
