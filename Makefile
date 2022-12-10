@@ -1,10 +1,10 @@
 # Exported variables:
 # Important build information
 export TOPDIR := $(PWD)
-export BUILD := build
+export BUILD := $(TOPDIR)/build
 
 export SRC := src
-# export DEST = $(TOPDIR)/$(BUILD)
+export DEST
 
 export EXECUTABLE := awx
 
@@ -22,11 +22,11 @@ OBJECTS := $(patsubst $(SRC)/%.cpp,$(BUILD)/%.o,$(SOURCES))
 # Rules:
 all: src $(EXECUTABLE)
 
-$(EXECUTABLE): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o $(EXECUTABLE)
-
 src:
 	$(MAKE) -C $@/
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $(EXECUTABLE)
 
 .PHONY: all src clean
 clean:

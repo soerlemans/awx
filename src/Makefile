@@ -1,6 +1,5 @@
 # Local variables
-# Destination directory for these object files
-DEST = $(TOPDIR)/$(BUILD)
+DEST := $(BUILD)
 
 SOURCES := $(wildcard *.cpp)
 HEADERS := $(wildcard *.hpp)
