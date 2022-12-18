@@ -1,14 +1,14 @@
 # Local variables:
-DEST := $(BUILD)/parser
+DEST := $(BUILD)/parser/ast
 
 SOURCES := $(wildcard *.cpp)
 HEADERS := $(wildcard *.hpp)
 OBJECTS := $(patsubst %.cpp,$(DEST)/%.o,$(SOURCES))
 
 # Rules:
-all: ast $(DEST)/ $(OBJECTS)
+all: operators $(DEST)/ $(OBJECTS)
 
-ast:
+operators:
 	$(MAKE) -C $@/
 
 $(DEST)/:
@@ -18,4 +18,4 @@ $(DEST)/%.o: %.cpp %.hpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 
 # Phony targets
-.PHONY: all ast
+.PHONY: all operators

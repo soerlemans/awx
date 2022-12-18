@@ -1,7 +1,7 @@
 #ifndef STATEMENT_TYPE_H
 #define STATEMENT_TYPE_H
 
-#include "../types.hpp"
+#include "../../types.hpp"
 
 
 // Enum definitions:
