@@ -4,13 +4,15 @@
 #include "operators.hpp"
 #include "binary_operator.hpp"
 
+
+// EreMatch:
 class operators::EreMatch : public operators::BinaryOperator {
 private:
 public:
   virtual ~EreMatch();
 };
 
-// EreNonMatch
+// EreNonMatch:
 class operators::EreNonMatch : public operator::BinaryOperator {
 private:
 public:

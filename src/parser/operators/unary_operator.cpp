@@ -6,12 +6,12 @@ using namespace operators;
 UnaryOperator::UnaryOperator(StatementType t_stmnttype, Precedence t_precedence,
                              StatementPointer&& t_stmnt)
   : Expression{t_stmnttype, t_precedence},
-    m_left{std::forward<StatementPointer>(t_stmnt)}
+    m_first{std::forward<StatementPointer>(t_stmnt)}
 {}
 
-auto UnaryOperator::left() -> StatementPointer&
+auto UnaryOperator::first() -> StatementPointer&
 {
-  return m_left;
+  return m_first;
 }
 
 UnaryOperator::~UnaryOperator()

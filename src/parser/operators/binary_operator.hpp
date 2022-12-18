@@ -14,7 +14,7 @@ enum Associativity : u16 {
 class operators::BinaryOperator : public operators::UnaryOperator {
   protected:
   Associativity m_associativity;
-  StatementPointer m_right;
+  StatementPointer m_second;
 
   public:
   explicit BinaryOperator(StatementType t_stmnttype,
@@ -23,7 +23,7 @@ class operators::BinaryOperator : public operators::UnaryOperator {
                           StatementPointer&& t_left,
                           StatementPointer&& t_right);
 
-  auto right() -> StatementPointer&;
+  auto second() -> StatementPointer&;
 
   virtual auto accept(StatementVisitor t_visitor) -> void = 0;
 

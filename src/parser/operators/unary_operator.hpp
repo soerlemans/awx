@@ -8,12 +8,12 @@
 
 class operators::UnaryOperator : public Expression {
 protected:
-  StatementPointer m_left;
+  StatementPointer m_first;
 
 public:
   explicit UnaryOperator(StatementType t_stmnttype, Precedence t_precedence, StatementPointer&& t_stmnt);
 
-  auto left() -> StatementPointer&;
+  auto first() -> StatementPointer&;
 
   virtual auto accept(StatementVisitor t_visitor) -> void = 0;
 
