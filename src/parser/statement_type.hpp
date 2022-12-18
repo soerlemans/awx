@@ -25,11 +25,12 @@ enum class StatementType : u16 {
   PREFIX_INCREMENT,
   PREFIX_DECREMENT,
 
-  LOGICAL_NOT,
-  UNARY_PLUS,
-  UNARY_MINUS,
+  NOT,
+  PLUS,
+  MINUS,
 
   // Binary expressions:
+  // Arithmetic:
   POWER,
 
   MULTIPLY,
@@ -39,8 +40,10 @@ enum class StatementType : u16 {
   ADD,
   SUBTRACT,
 
+  // String operations:
   STRING_CONCATIONATION,
 
+  // Comparisons:
   LESS_THAN,
   LESS_THAN_EQUAL,
 
@@ -50,15 +53,19 @@ enum class StatementType : u16 {
   GREATER_THAN,
   GREATER_THAN_EQUAL,
 
+  // Regex match:
   ERE_MATCH,
   NOT_ERE_MATCH,
 
-  IN_ARRAY,
-  IN_MULTIDIMENSIONAL_ARRAY,
+  // Array operations:
+  ARRAY_MEMBERSHIP,
+  ARRAY_MULTIDIMENSIONAL_MEMBERSHIP,
 
+  // Logical Statements:
   AND,
   OR,
 
+  // Assignment:
   POWER_ASSIGNMENT,
 
   MULTIPLY_ASSIGNMENT,

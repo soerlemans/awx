@@ -68,9 +68,7 @@ enum class TokenType : u16 {
   ERE_MATCH,
   NOT_ERE_MATCH,
 
-  // Logical Tokens:
-  NOT,
-
+  // Comparison Tokens:
   LESS_THAN,
   LESS_THAN_EQUAL,
 
@@ -79,6 +77,9 @@ enum class TokenType : u16 {
 
   GREATER_THAN,
   GREATER_THAN_EQUAL,
+
+  // Logical Tokens:
+  NOT,
 
   AND,
   OR,

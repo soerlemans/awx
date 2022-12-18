@@ -3,10 +3,9 @@
 using namespace operators;
 
 // Power:
-Power::Power(StatementPointer&& t_left,
-                                   StatementPointer&& t_right)
+Power::Power(StatementPointer&& t_left, StatementPointer&& t_right)
   : BinaryOperator{StatementType::POWER, Precedence::ArithmeticMuDiMo,
-                   std::forward<StatementPointer>(t_left),
+                   Associativity::RIGHT, std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}
 
@@ -19,11 +18,10 @@ Power::~Power()
 {}
 
 // Multiply:
-Multiply::Multiply(StatementPointer&& t_left,
-                                   StatementPointer&& t_right)
-:BinaryOperator{StatementType::MULTIPLY, Precedence::ArithmeticMuDiMo,
-				std::forward<StatementPointer>(t_left),
-				std::forward<StatementPointer>(t_right)}
+Multiply::Multiply(StatementPointer&& t_left, StatementPointer&& t_right)
+  : BinaryOperator{StatementType::MULTIPLY, Precedence::ArithmeticMuDiMo,
+                   Associativity::LEFT, std::forward<StatementPointer>(t_left),
+                   std::forward<StatementPointer>(t_right)}
 {}
 
 auto Multiply::accept([[maybe_unused]] StatementVisitor t_visitor) -> void
@@ -35,10 +33,9 @@ Multiply::~Multiply()
 {}
 
 // Divide:
-Divide::Divide(StatementPointer&& t_left,
-                               StatementPointer&& t_right)
+Divide::Divide(StatementPointer&& t_left, StatementPointer&& t_right)
   : BinaryOperator{StatementType::DIVIDE, Precedence::ArithmeticMuDiMo,
-                   std::forward<StatementPointer>(t_left),
+                   Associativity::LEFT, std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}
 
@@ -50,11 +47,25 @@ auto Divide::accept([[maybe_unused]] StatementVisitor t_visitor) -> void
 Divide::~Divide()
 {}
 
+// Modulo:
+Modulo::Modulo(StatementPointer&& t_left, StatementPointer&& t_right)
+  : BinaryOperator{StatementType::MODULO, Precedence::ArithmeticMuDiMo,
+                   Associativity::LEFT, std::forward<StatementPointer>(t_left),
+                   std::forward<StatementPointer>(t_right)}
+{}
+
+auto Modulo::accept([[maybe_unused]] StatementVisitor t_visitor) -> void
+{
+  //
+}
+
+Modulo::~Modulo()
+{}
+
 // Add:
-Add::Add(StatementPointer&& t_left,
-                               StatementPointer&& t_right)
+Add::Add(StatementPointer&& t_left, StatementPointer&& t_right)
   : BinaryOperator{StatementType::ADD, Precedence::ArithmeticMuDiMo,
-                   std::forward<StatementPointer>(t_left),
+                   Associativity::LEFT, std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}
 
@@ -67,10 +78,9 @@ Add::~Add()
 {}
 
 // Subtract:
-Subtract::Subtract(StatementPointer&& t_left,
-                               StatementPointer&& t_right)
+Subtract::Subtract(StatementPointer&& t_left, StatementPointer&& t_right)
   : BinaryOperator{StatementType::SUBTRACT, Precedence::ArithmeticMuDiMo,
-                   std::forward<StatementPointer>(t_left),
+                   Associativity::LEFT, std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}
 

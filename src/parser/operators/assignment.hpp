@@ -5,45 +5,74 @@
 #include "binary_operator.hpp"
 
 
-// PowerAssignment:
+// Power assignment:
 class operators::PowerAssignment : public operators::BinaryOperator {
-protected:
 public:
+  PowerAssignment(StatementPointer&& t_left, StatementPointer&& t_right);
+
+  auto accept(StatementVisitor t_visitor) -> void;
+
+  virtual ~PowerAssignment();
 };
 
-// PowerAssignment:
+// Multiply assignment:
 class operators::MultiplyAssignment : public operators::BinaryOperator {
-protected:
 public:
+  MultiplyAssignment(StatementPointer&& t_left, StatementPointer&& t_right);
+
+  auto accept(StatementVisitor t_visitor) -> void;
+
+  virtual ~MultiplyAssignment();
 };
 
-// PowerAssignment:
+// Divide assignemnt:
 class operators::DivideAssignment : public operators::BinaryOperator {
-protected:
 public:
+  DivideAssignment(StatementPointer&& t_left, StatementPointer&& t_right);
+
+  auto accept(StatementVisitor t_visitor) -> void;
+
+  virtual ~DivideAssignment();
 };
 
-// PowerAssignment:
+// Modulo assignment:
 class operators::ModuloAssignment : public operators::BinaryOperator {
-protected:
 public:
+  ModuloAssignment(StatementPointer&& t_left, StatementPointer&& t_right);
+
+  auto accept(StatementVisitor t_visitor) -> void;
+
+  virtual ~ModuloAssignment();
 };
 
-// PowerAssignment:
+// Add assignment:
 class operators::AddAssignment : public operators::BinaryOperator {
-protected:
 public:
+  AddAssignment(StatementPointer&& t_left, StatementPointer&& t_right);
+
+  auto accept(StatementVisitor t_visitor) -> void;
+
+  virtual ~AddAssignment();
 };
 
-// PowerAssignment:
+// Subtract assignment:
 class operators::SubtractAssignment : public operators::BinaryOperator {
-protected:
 public:
+  SubtractAssignment(StatementPointer&& t_left, StatementPointer&& t_right);
+
+  auto accept(StatementVisitor t_visitor) -> void;
+
+  virtual ~SubtractAssignment();
 };
 
-class operators::Assignemnt : public operators::BinaryOperator {
-protected:
+// Assignemnt
+class operators::Assignment : public operators::BinaryOperator {
 public:
+  Assignment(StatementPointer&& t_left, StatementPointer&& t_right);
+
+  auto accept(StatementVisitor t_visitor) -> void;
+
+  virtual ~Assignment();
 };
 
 #endif // ASIGNMENT_H

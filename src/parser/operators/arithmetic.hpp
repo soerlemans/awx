@@ -35,6 +35,16 @@ public:
   virtual ~Divide();
 };
 
+// Modulo:
+class operators::Modulo : public operators::BinaryOperator {
+public:
+  Modulo(StatementPointer&& t_left, StatementPointer&& t_right);
+
+  auto accept(StatementVisitor t_visitor) -> void;
+
+  virtual ~Modulo();
+};
+
 // Add:
 class operators::Add : public operators::BinaryOperator {
 public:

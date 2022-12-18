@@ -6,22 +6,22 @@
 
 // TODO: Name these more accurately later
 enum class Precedence : u16 {
-  Grouping = 0,      // (a)
-  FieldReference,    // $a
-  PostfixIncDec,     // a++, a--
-  PrefixIncDec,      // ++a, --a
-  Power,             // a ^ b
-  UnaryPrefix,       // !a, +a, -a
-  ArithmeticMuDiMo,  // a * b, a / b, a % b (Multiply, Divide, Modulo)
-  ArithmeticAddSub,  // a + b, a - b (Addition, Subtraction)
-  StringConcat,      // a b
-  LogicalComparison, // a < b, a <= b, a != b, a == b, a > b, a >= b
-  ERE,               // a ~ b, a ~! b (Extended Regular Expression)
-  ArrayMembership,   // a in b, (a) in b
-  LogicalAnd,        // a && b
-  LogicalOr,         // a || b
-  ConditionalExpr,   // a ? b : c
-  Assignment,        // a ^= b, a %= b, a *= b, a /= b, a += b, a -= b, a = b
+  Grouping = 0,     // (a)
+  FieldReference,   // $a
+  PostfixIncDec,    // a++, a--
+  PrefixIncDec,     // ++a, --a
+  Power,            // a ^ b
+  UnaryPrefix,      // !a, +a, -a
+  ArithmeticMuDiMo, // a * b, a / b, a % b (Multiply, Divide, Modulo)
+  ArithmeticAddSub, // a + b, a - b (Addition, Subtraction)
+  StringConcat,     // a b
+  Comparison,       // a < b, a <= b, a != b, a == b, a > b, a >= b
+  ERE,              // a ~ b, a ~! b (Extended Regular Expression)
+  ArrayMembership,  // a in b, (a) in b
+  LogicalAnd,       // a && b
+  LogicalOr,        // a || b
+  ConditionalExpr,  // a ? b : c
+  Assignment,       // a ^= b, a %= b, a *= b, a /= b, a += b, a -= b, a = b
 };
 
 // Have UnaryOperator and BinaryOperator derive from this
