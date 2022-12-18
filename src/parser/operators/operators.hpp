@@ -11,6 +11,8 @@ namespace operators {
   class BinaryOperator;
   class TrinaryOperator;
 
+  class DynamicOperator;
+
   // UnaryOperator derived classes:
   class PrefixIncrement;
   class PrefixDecrement;
@@ -68,6 +70,13 @@ namespace operators {
   class SubtractAssignment;
 
   class Assignment;
+
+  // TrinaryOperator derived classes:
+  class Conditional;
+
+  // DynamicOperators:
+  class FunctionDefinition;
+  class FunctionCall;
 };
 
 #endif // OPERATORS_H
