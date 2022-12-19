@@ -17,10 +17,9 @@ private:
 
 public:
   Ast();
-  // Must define a copy constructor as unique_ptr's dont have any
   // Ast(const Ast& t_ast) = default;
 
-  // add
+  auto add(NodePointer&& t_node) -> void;
 
   virtual ~Ast();
 };

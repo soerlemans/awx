@@ -11,7 +11,7 @@ class Token {
 private:
   using TokenValue = std::variant<int, double, std::string>;
 
-  TokenType m_tokentype;
+  TokenType m_token_type;
   TokenValue m_value;
 
 public:
@@ -19,10 +19,10 @@ public:
   Token() = default;
   Token(const Token& t_token) = default;
 
-  explicit Token(TokenType t_tokentype);
-  explicit Token(TokenType t_tokentype, int t_value);
-  explicit Token(TokenType t_tokentype, double t_value);
-  explicit Token(TokenType t_tokentype, std::string t_value);
+  explicit Token(TokenType t_token_type);
+  explicit Token(TokenType t_token_type, int t_value);
+  explicit Token(TokenType t_token_type, double t_value);
+  explicit Token(TokenType t_token_type, std::string t_value);
 
   auto type() const -> TokenType;
 
@@ -35,7 +35,7 @@ public:
   template<typename T, typename Type=TokenType, typename TokenValueType=TokenValue>
   auto get() const -> std::tuple<TokenType, TokenValueType>
   {
-	return {m_tokentype, std::get<T>(m_value)};
+	return {m_token_type, std::get<T>(m_value)};
   }
 
   // Operators
