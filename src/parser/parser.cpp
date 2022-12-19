@@ -7,7 +7,7 @@ Parser::Parser(TokenStream t_tokenstream)
   :m_tokenstream{t_tokenstream}
 {}
 
-auto Parser::identifier(const Token& t_token) -> void
+auto Parser::identifier(const Token& t_token) -> bool
 {
 }
 
@@ -94,13 +94,13 @@ auto Parser::parse() -> Ast
 {
   using namespace reserved;
 
-  Ast ast;
+  // Ast ast;
 
   for(const auto& token : m_tokenstream)
 	{
 	}
 
-  return ast;
+  // return ast;
 }
 
 Parser::~Parser()

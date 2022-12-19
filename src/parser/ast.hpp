@@ -16,8 +16,9 @@ private:
   NodeList m_list;
 
 public:
-  Ast() = default;
-  Ast(const Ast& t_ast) = default;
+  Ast();
+  // Must define a copy constructor as unique_ptr's dont have any
+  // Ast(const Ast& t_ast) = default;
 
   // add
 

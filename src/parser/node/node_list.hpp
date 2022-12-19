@@ -1,5 +1,5 @@
-#ifndef EXPRESSION_LIST_H
-#define EXPRESSION_LIST_H
+#ifndef NODE_LIST_H
+#define NODE_LIST_H
 
 #include <vector>
 
@@ -15,9 +15,11 @@ private:
   std::vector<NodePointer> m_node_list;
 
 public:
+  NodeList();
+
   auto add(NodePointer&& t_node) -> void;
 
   auto accept(NodeVisitor t_visitor) -> void;
 };
 
-#endif // EXPRESSION_LIST_H
+#endif // NODE_LIST_H

@@ -19,6 +19,7 @@ using NodePointer = std::unique_ptr<Node>;
 enum class NodeType {
   LITERAL,
   VARIABLE,   // Variables are the only allowed LValue
+  NODE_LIST,
   EXPRESSION,
 };
 
