@@ -1,9 +1,9 @@
 #ifndef AST_H
 #define AST_H
 
-#include "../../types.hpp"
+#include "../types.hpp"
 
-#include "statement.hpp"
+#include "statement/statement.hpp"
 
 
 // The Abstract Syntax Tree management class
@@ -13,8 +13,7 @@ private:
   StatementPointer m_current;
 
 public:
-  Ast() = default;
-  virtual ~Ast() = default;
+
 };
 
 #endif // AST_H

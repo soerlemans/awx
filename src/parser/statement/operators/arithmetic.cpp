@@ -4,8 +4,8 @@ using namespace operators;
 
 // Power:
 Power::Power(StatementPointer&& t_left, StatementPointer&& t_right)
-  : BinaryOperator{StatementType::POWER, Precedence::ArithmeticMuDiMo,
-                   Associativity::RIGHT, std::forward<StatementPointer>(t_left),
+  : BinaryOperator{Precedence::ArithmeticMuDiMo, Associativity::RIGHT,
+                   std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}
 
@@ -19,8 +19,8 @@ Power::~Power()
 
 // Multiply:
 Multiply::Multiply(StatementPointer&& t_left, StatementPointer&& t_right)
-  : BinaryOperator{StatementType::MULTIPLY, Precedence::ArithmeticMuDiMo,
-                   Associativity::LEFT, std::forward<StatementPointer>(t_left),
+  : BinaryOperator{Precedence::ArithmeticMuDiMo, Associativity::LEFT,
+                   std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}
 
@@ -34,7 +34,7 @@ Multiply::~Multiply()
 
 // Divide:
 Divide::Divide(StatementPointer&& t_left, StatementPointer&& t_right)
-  : BinaryOperator{StatementType::DIVIDE, Precedence::ArithmeticMuDiMo,
+  : BinaryOperator{Precedence::ArithmeticMuDiMo,
                    Associativity::LEFT, std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}
@@ -49,7 +49,7 @@ Divide::~Divide()
 
 // Modulo:
 Modulo::Modulo(StatementPointer&& t_left, StatementPointer&& t_right)
-  : BinaryOperator{StatementType::MODULO, Precedence::ArithmeticMuDiMo,
+  : BinaryOperator{Precedence::ArithmeticMuDiMo,
                    Associativity::LEFT, std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}
@@ -64,7 +64,7 @@ Modulo::~Modulo()
 
 // Add:
 Add::Add(StatementPointer&& t_left, StatementPointer&& t_right)
-  : BinaryOperator{StatementType::ADD, Precedence::ArithmeticMuDiMo,
+  : BinaryOperator{Precedence::ArithmeticMuDiMo,
                    Associativity::LEFT, std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}
@@ -79,7 +79,7 @@ Add::~Add()
 
 // Subtract:
 Subtract::Subtract(StatementPointer&& t_left, StatementPointer&& t_right)
-  : BinaryOperator{StatementType::SUBTRACT, Precedence::ArithmeticMuDiMo,
+  : BinaryOperator{Precedence::ArithmeticMuDiMo,
                    Associativity::LEFT, std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}

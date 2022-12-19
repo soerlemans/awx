@@ -3,7 +3,7 @@
 
 #include "../lexer/lexer.hpp"
 
-#include "ast/ast.hpp"
+#include "ast.hpp"
 
 
 class Parser {

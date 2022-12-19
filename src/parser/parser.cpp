@@ -77,11 +77,14 @@ auto Parser::symbol(const Token& t_token) -> void
 auto Parser::parse() -> Ast
 {
   using namespace reserved;
+
+  Ast ast;
+
   for([[maybe_unused]] const auto& token : m_tokenstream)
 	{
 	}
 
-  return {};
+  return ast;
 }
 
 Parser::~Parser()

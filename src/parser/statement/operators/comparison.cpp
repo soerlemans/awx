@@ -3,7 +3,7 @@
 
 // LessThan:
 LessThan::LessThan(StatementPointer&& t_left, StatementPointer&& t_right)
-  : BinaryOperator{StatementType::LESS_THAN, Precedence::Comparison,
+  : BinaryOperator{Precedence::Comparison,
                    Associativity::NONE, std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}
@@ -18,7 +18,7 @@ LessThan::~LessThan()
 
 // LessThanEqual:
 LessThanEqual::LessThanEqual(StatementPointer&& t_left, StatementPointer&& t_right)
-  : BinaryOperator{StatementType::LESS_THAN_EQUAL, Precedence::Comparison,
+  : BinaryOperator{Precedence::Comparison,
                    Associativity::NONE,
 				   std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
@@ -34,7 +34,7 @@ LessThanEqual::~LessThanEqual()
 
 // NotEqual:
 NotEqual::NotEqual(StatementPointer&& t_left, StatementPointer&& t_right)
-  : BinaryOperator{StatementType::NOT_EQUAL, Precedence::Comparison,
+  : BinaryOperator{Precedence::Comparison,
                    Associativity::NONE, std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}
@@ -49,7 +49,7 @@ NotEqual::~NotEqual()
 
 // Equal:
 Equal::Equal(StatementPointer&& t_left, StatementPointer&& t_right)
-  : BinaryOperator{StatementType::EQUAL, Precedence::Comparison,
+  : BinaryOperator{Precedence::Comparison,
                    Associativity::NONE, std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}
@@ -64,7 +64,7 @@ Equal::~Equal()
 
 // GreaterThan:
 GreaterThan::GreaterThan(StatementPointer&& t_left, StatementPointer&& t_right)
-  : BinaryOperator{StatementType::GREATER_THAN, Precedence::Comparison,
+  : BinaryOperator{Precedence::Comparison,
                    Associativity::NONE, std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}
@@ -79,7 +79,7 @@ GreaterThan::~GreaterThan()
 
 // GreaterThanEqual:
 GreaterThanEqual::GreaterThanEqual(StatementPointer&& t_left, StatementPointer&& t_right)
-  : BinaryOperator{StatementType::GREATER_THAN_EQUAL, Precedence::Comparison,
+  : BinaryOperator{Precedence::Comparison,
                    Associativity::NONE, std::forward<StatementPointer>(t_left),
                    std::forward<StatementPointer>(t_right)}
 {}

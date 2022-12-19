@@ -11,7 +11,7 @@ protected:
   StatementPointer m_first;
 
 public:
-  explicit UnaryOperator(StatementType t_stmnttype, Precedence t_precedence, StatementPointer&& t_stmnt);
+  explicit UnaryOperator(Precedence t_precedence, StatementPointer&& t_stmnt);
 
   auto first() -> StatementPointer&;
 

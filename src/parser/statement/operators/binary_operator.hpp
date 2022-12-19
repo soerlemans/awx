@@ -17,8 +17,7 @@ class operators::BinaryOperator : public operators::UnaryOperator {
   StatementPointer m_second;
 
   public:
-  explicit BinaryOperator(StatementType t_stmnttype,
-						  Precedence t_precedence,
+  explicit BinaryOperator(Precedence t_precedence,
                           Associativity t_associativity,
                           StatementPointer&& t_left,
                           StatementPointer&& t_right);

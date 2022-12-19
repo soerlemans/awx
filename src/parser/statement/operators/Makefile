@@ -1,5 +1,5 @@
 # Local variables:
-DEST := $(BUILD)/parser/ast/operators
+DEST := $(BUILD)/parser/statement/operators
 
 SOURCES := $(wildcard *.cpp)
 HEADERS := $(wildcard *.hpp)
