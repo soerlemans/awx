@@ -8,7 +8,7 @@
 
 
 class operators::DynamicOperator : public Expression {
-  std::vector<StatementPointer> m_statements;
+  std::vector<NodePointer> m_nodes;
 public:
 
 };

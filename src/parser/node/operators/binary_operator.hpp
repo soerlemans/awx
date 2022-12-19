@@ -14,17 +14,17 @@ enum Associativity : u16 {
 class operators::BinaryOperator : public operators::UnaryOperator {
   protected:
   Associativity m_associativity;
-  StatementPointer m_second;
+  NodePointer m_second;
 
   public:
   explicit BinaryOperator(Precedence t_precedence,
                           Associativity t_associativity,
-                          StatementPointer&& t_left,
-                          StatementPointer&& t_right);
+                          NodePointer&& t_left,
+                          NodePointer&& t_right);
 
-  auto second() -> StatementPointer&;
+  auto second() -> NodePointer&;
 
-  virtual auto accept(StatementVisitor t_visitor) -> void = 0;
+  virtual auto accept(NodeVisitor t_visitor) -> void = 0;
 
   virtual ~BinaryOperator();
 };

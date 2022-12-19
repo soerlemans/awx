@@ -24,8 +24,8 @@ enum class TokenType : u16 {
 
   // Types:
   INTEGER,
-  FLOAT,
   HEX,
+  FLOAT,
   STRING,
   REGEX,
 

@@ -6,9 +6,9 @@ HEADERS := $(wildcard *.hpp)
 OBJECTS := $(patsubst %.cpp,$(DEST)/%.o,$(SOURCES))
 
 # Rules:
-all: statement $(DEST)/ $(OBJECTS)
+all: node $(DEST)/ $(OBJECTS)
 
-statement:
+node:
 	$(MAKE) -C $@/
 
 $(DEST)/:
@@ -18,4 +18,4 @@ $(DEST)/%.o: %.cpp %.hpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 
 # Phony targets
-.PHONY: all statement
+.PHONY: all node

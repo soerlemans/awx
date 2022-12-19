@@ -8,9 +8,9 @@
 // Postfix:
 class operators::PostfixIncrement: public operators::UnaryOperator {
 public:
-  PostfixIncrement(StatementPointer&& t_left);
+  PostfixIncrement(NodePointer&& t_left);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~PostfixIncrement();
 };
@@ -18,9 +18,9 @@ public:
 // Prefix:
 class operators::PrefixIncrement: public operators::UnaryOperator {
 public:
-  PrefixIncrement(StatementPointer&& t_left);
+  PrefixIncrement(NodePointer&& t_left);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~PrefixIncrement();
 };

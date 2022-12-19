@@ -7,9 +7,9 @@
 // LessThan:
 class LessThan : public operators::BinaryOperator {
   public:
-  LessThan(StatementPointer&& t_left, StatementPointer&& t_right);
+  LessThan(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~LessThan();
 };
@@ -17,9 +17,9 @@ class LessThan : public operators::BinaryOperator {
 // LessThanEqual:
 class LessThanEqual : public operators::BinaryOperator {
   public:
-  LessThanEqual(StatementPointer&& t_left, StatementPointer&& t_right);
+  LessThanEqual(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~LessThanEqual();
 };
@@ -27,9 +27,9 @@ class LessThanEqual : public operators::BinaryOperator {
 // NotEqual:
 class NotEqual : public operators::BinaryOperator {
   public:
-  NotEqual(StatementPointer&& t_left, StatementPointer&& t_right);
+  NotEqual(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~NotEqual();
 };
@@ -37,9 +37,9 @@ class NotEqual : public operators::BinaryOperator {
 // Equal:
 class Equal : public operators::BinaryOperator {
   public:
-  Equal(StatementPointer&& t_left, StatementPointer&& t_right);
+  Equal(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~Equal();
 };
@@ -47,9 +47,9 @@ class Equal : public operators::BinaryOperator {
 // GreaterThan:
 class GreaterThan : public operators::BinaryOperator {
   public:
-  GreaterThan(StatementPointer&& t_left, StatementPointer&& t_right);
+  GreaterThan(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~GreaterThan();
 };
@@ -57,9 +57,9 @@ class GreaterThan : public operators::BinaryOperator {
 // GreaterThanEqual:
 class GreaterThanEqual : public operators::BinaryOperator {
   public:
-  GreaterThanEqual(StatementPointer&& t_left, StatementPointer&& t_right);
+  GreaterThanEqual(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~GreaterThanEqual();
 };

@@ -14,11 +14,11 @@ public:
   Parser(TokenStream t_tokenstream);
 
   // Helper
-  auto identifier(const Token& t_token) -> void;
-  auto keyword(const Token& t_token) -> void;
-  auto numeric(const Token& t_token) -> void;
-  auto string(const Token& t_token) -> void;
-  auto symbol(const Token& t_token) -> void;
+  auto identifier(const Token& t_token) -> bool;
+  auto keyword(const Token& t_token) -> bool;
+  auto numeric(const Token& t_token) -> bool;
+  auto string(const Token& t_token) -> bool;
+  auto symbol(const Token& t_token) -> bool;
 
   auto parse() -> Ast;
 

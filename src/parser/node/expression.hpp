@@ -1,7 +1,7 @@
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 
-#include "statement.hpp"
+#include "node.hpp"
 
 
 // Enum definitions:
@@ -26,7 +26,7 @@ enum class Precedence : u16 {
 };
 
 // Have UnaryOperator and BinaryOperator derive from this
-class Expression : public Statement {
+class Expression : public Node {
   protected:
   Precedence m_precedence;
 
@@ -35,7 +35,7 @@ class Expression : public Statement {
 
   auto precedence() -> Precedence;
 
-  virtual auto accept(StatementVisitor t_visitor) -> void = 0;
+  virtual auto accept(NodeVisitor t_visitor) -> void = 0;
 
   virtual ~Expression();
 };

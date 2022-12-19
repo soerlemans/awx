@@ -11,11 +11,13 @@ auto Parser::identifier(const Token& t_token) -> void
 {
 }
 
-auto Parser::keyword(const Token& t_token) -> void
+// Handle keyword related tokens
+// Return a bool if it is a keyword
+auto Parser::keyword(const Token& t_token) -> bool
 {
   using namespace reserved::keywords;
 
-  // TODO: Create different functions that construct an expression and return it
+  bool is_keyword{true};
   switch(t_token.type())
 	{
 	case g_function.tokentype():
@@ -39,39 +41,53 @@ auto Parser::keyword(const Token& t_token) -> void
 	case g_for.tokentype():
 	  break;
 
-	case g_in.tokentype():
-	  break;
+	// TODO: Handle in identifier case
+	// case g_in.tokentype():
+	//   break;
 
 	default:
+	  is_keyword = false;
 	  break;
 	}
+
+  return is_keyword;
 }
 
-auto Parser::numeric(const Token& t_token) -> void
+auto Parser::numeric(const Token& t_token) -> bool
 {
+  bool is_numeric{true};
   switch(t_token.type())
 	{
+	case TokenType::INTEGER:
+	  break;
+
+	case TokenType::HEX:
+	  break;
+
+	case TokenType::FLOAT:
+	  break;
+
+
 	default:
+	  is_numeric = false;
 	  break;
 	}
+
+  return is_numeric;
 }
 
-auto Parser::string(const Token& t_token) -> void
+auto Parser::string(const Token& t_token) -> bool
 {
-  switch(t_token.type())
-	{
-	default:
-	  break;
-	}
+  bool is_string{false};
+
+  return is_string;
 }
 
-auto Parser::symbol(const Token& t_token) -> void
+auto Parser::symbol(const Token& t_token) -> bool
 {
-  switch(t_token.type())
-	{
-	default:
-	  break;
-	}
+  bool is_symbol{false};
+
+  return is_symbol;
 }
 
 auto Parser::parse() -> Ast
@@ -80,7 +96,7 @@ auto Parser::parse() -> Ast
 
   Ast ast;
 
-  for([[maybe_unused]] const auto& token : m_tokenstream)
+  for(const auto& token : m_tokenstream)
 	{
 	}
 

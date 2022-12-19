@@ -8,14 +8,14 @@
 
 class operators::UnaryOperator : public Expression {
 protected:
-  StatementPointer m_first;
+  NodePointer m_first;
 
 public:
-  explicit UnaryOperator(Precedence t_precedence, StatementPointer&& t_stmnt);
+  explicit UnaryOperator(Precedence t_precedence, NodePointer&& t_stmnt);
 
-  auto first() -> StatementPointer&;
+  auto first() -> NodePointer&;
 
-  virtual auto accept(StatementVisitor t_visitor) -> void = 0;
+  virtual auto accept(NodeVisitor t_visitor) -> void = 0;
 
   virtual ~UnaryOperator();
 };

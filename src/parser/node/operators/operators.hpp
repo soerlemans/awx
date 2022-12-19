@@ -3,7 +3,7 @@
 
 
 // All Operator classes are part of this namespace
-// These forward declarations are also used by StatementVisitor
+// These forward declarations are also used by NodeVisitor
 // To declare its overload functions for visit()
 namespace operators {
   // Abstract Base classes:

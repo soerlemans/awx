@@ -8,9 +8,9 @@
 // Power:
 class operators::Power : public operators::BinaryOperator {
 public:
-  Power(StatementPointer&& t_left, StatementPointer&& t_right);
+  Power(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~Power();
 };
@@ -18,9 +18,9 @@ public:
 // Multiply:
 class operators::Multiply : public operators::BinaryOperator {
 public:
-  Multiply(StatementPointer&& t_left, StatementPointer&& t_right);
+  Multiply(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~Multiply();
 };
@@ -28,9 +28,9 @@ public:
 // Divide:
 class operators::Divide : public operators::BinaryOperator {
 public:
-  Divide(StatementPointer&& t_left, StatementPointer&& t_right);
+  Divide(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~Divide();
 };
@@ -38,9 +38,9 @@ public:
 // Modulo:
 class operators::Modulo : public operators::BinaryOperator {
 public:
-  Modulo(StatementPointer&& t_left, StatementPointer&& t_right);
+  Modulo(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~Modulo();
 };
@@ -48,9 +48,9 @@ public:
 // Add:
 class operators::Add : public operators::BinaryOperator {
 public:
-  Add(StatementPointer&& t_left, StatementPointer&& t_right);
+  Add(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~Add();
 };
@@ -58,9 +58,9 @@ public:
 // Subtract:
 class operators::Subtract : public operators::BinaryOperator {
 public:
-  Subtract(StatementPointer&& t_left, StatementPointer&& t_right);
+  Subtract(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~Subtract();
 };

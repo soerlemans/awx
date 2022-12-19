@@ -8,9 +8,9 @@
 // Power assignment:
 class operators::PowerAssignment : public operators::BinaryOperator {
 public:
-  PowerAssignment(StatementPointer&& t_left, StatementPointer&& t_right);
+  PowerAssignment(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~PowerAssignment();
 };
@@ -18,9 +18,9 @@ public:
 // Multiply assignment:
 class operators::MultiplyAssignment : public operators::BinaryOperator {
 public:
-  MultiplyAssignment(StatementPointer&& t_left, StatementPointer&& t_right);
+  MultiplyAssignment(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~MultiplyAssignment();
 };
@@ -28,9 +28,9 @@ public:
 // Divide assignemnt:
 class operators::DivideAssignment : public operators::BinaryOperator {
 public:
-  DivideAssignment(StatementPointer&& t_left, StatementPointer&& t_right);
+  DivideAssignment(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~DivideAssignment();
 };
@@ -38,9 +38,9 @@ public:
 // Modulo assignment:
 class operators::ModuloAssignment : public operators::BinaryOperator {
 public:
-  ModuloAssignment(StatementPointer&& t_left, StatementPointer&& t_right);
+  ModuloAssignment(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~ModuloAssignment();
 };
@@ -48,9 +48,9 @@ public:
 // Add assignment:
 class operators::AddAssignment : public operators::BinaryOperator {
 public:
-  AddAssignment(StatementPointer&& t_left, StatementPointer&& t_right);
+  AddAssignment(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~AddAssignment();
 };
@@ -58,9 +58,9 @@ public:
 // Subtract assignment:
 class operators::SubtractAssignment : public operators::BinaryOperator {
 public:
-  SubtractAssignment(StatementPointer&& t_left, StatementPointer&& t_right);
+  SubtractAssignment(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~SubtractAssignment();
 };
@@ -68,9 +68,9 @@ public:
 // Assignemnt
 class operators::Assignment : public operators::BinaryOperator {
 public:
-  Assignment(StatementPointer&& t_left, StatementPointer&& t_right);
+  Assignment(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~Assignment();
 };

@@ -9,9 +9,9 @@
 // Pay attention Not is not a BinaryOperator
 class operators::Not : public operators::UnaryOperator {
   public:
-  Not(StatementPointer&& t_left);
+  Not(NodePointer&& t_left);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~Not();
 };
@@ -19,9 +19,9 @@ class operators::Not : public operators::UnaryOperator {
 // And:
 class operators::And : public operators::BinaryOperator {
   public:
-  And(StatementPointer&& t_left, StatementPointer&& t_right);
+  And(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~And();
 };
@@ -29,9 +29,9 @@ class operators::And : public operators::BinaryOperator {
 // Or:
 class operators::Or : public operators::BinaryOperator {
   public:
-  Or(StatementPointer&& t_left, StatementPointer&& t_right);
+  Or(NodePointer&& t_left, NodePointer&& t_right);
 
-  auto accept(StatementVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void;
 
   virtual ~Or();
 };
