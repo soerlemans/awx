@@ -6,7 +6,7 @@
 #include <tuple>
 #include <variant>
 
-#include "../filebuffer.hpp"
+#include "../file_buffer.hpp"
 
 #include "reserved.hpp"
 #include "token_stream.hpp"

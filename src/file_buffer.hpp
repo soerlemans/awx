@@ -1,5 +1,5 @@
-#ifndef FILEBUFFER_H
-#define FILEBUFFER_H
+#ifndef FILE_BUFFER_H
+#define FILE_BUFFER_H
 
 #include <filesystem>
 #include <vector>
@@ -68,4 +68,4 @@ public:
   virtual ~FileBuffer();
 };
 
-#endif // FILEBUFFER_H
+#endif // FILE_BUFFER_H
