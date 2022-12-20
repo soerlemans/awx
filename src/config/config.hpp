@@ -1,5 +1,5 @@
-#ifndef CONFIG_STORE_H
-#define CONFIG_STORE_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 #include <filesystem>
 #include <memory>
@@ -29,25 +29,27 @@ enum AwxMode {
 // Note: This class is a singleton for now!
 // If we ever allow per file configuration we should change this! To each file
 // having its own config store object
-class ConfigStore {
+// TODO: Have Config inherit from a singleton so we can just focus on protected
+// Setters and public getters/etc
+class Config {
   private:
   // Regular private variables:
   AwxMode m_awx_mode;
   std::vector<fs::path> m_file_paths;
 
   protected:
-  static std::unique_ptr<ConfigStore> m_singleton;
+  static std::unique_ptr<Config> m_singleton;
 
-  ConfigStore();
+  Config();
 
   auto add_path(fs::path&& t_path) -> void;
 
   public:
   // Constructors:
-  ConfigStore(const ConfigStore&) = delete;
+  Config(const Config&) = delete;
 
   // Public methods:
-  static auto get_instance() -> ConfigStore&;
+  static auto get_instance() -> Config&;
 
   auto get_paths() const -> std::vector<fs::path>;
 
@@ -55,7 +57,7 @@ class ConfigStore {
   friend auto parse_args(const int t_argc, char* t_argv[]) -> void;
 
   // Operators:
-  auto operator=(const ConfigStore&) -> ConfigStore& = delete;
+  auto operator=(const Config&) -> Config& = delete;
 };
 
-#endif // CONFIG_STORE_H
+#endif // CONFIG_H

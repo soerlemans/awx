@@ -3,7 +3,7 @@
 
 #include <unistd.h>
 
-#include "config/config_store.hpp"
+#include "config/config.hpp"
 #include "parser/parser.hpp"
 
 #include "log.hpp"
@@ -23,14 +23,14 @@ auto print_help() -> void
 // Warning: This is friend of the ConfigStore class
 auto parse_args(const int t_argc, char* t_argv[]) -> void
 {
-  auto& config_store{ConfigStore::get_instance()};
+  auto& config{Config::get_instance()};
 
   const auto f_getopt{std::bind(getopt, t_argc, t_argv, "f:")};
   for(auto opt{f_getopt()}; opt != -1; opt = f_getopt())
     switch(opt)
       {
 	  case 'f': {
-		config_store.add_path(optarg);
+		config.add_path(optarg);
 		break;
 	  }
 
@@ -45,13 +45,13 @@ auto run(int argc, char* argv[]) -> void
   // Set loglevel for now for debugging purposes
   SET_LOGLEVEL(LogLevel::DEBUG);
 
-  auto& config_store{ConfigStore::get_instance()};
+  auto& config{Config::get_instance()};
 
   // TODO: REmove this is temporary testing code
-  if(!config_store.get_paths().size())
+  if(!config.get_paths().size())
 	return;
 
-  FileBuffer fb{config_store.get_paths().front()};
+  FileBuffer fb{config.get_paths().front()};
 
   Lexer lexer{fb};
   TokenStream token_stream{lexer.tokenize()};
