@@ -2,8 +2,8 @@
 
 #include <unistd.h>
 
-#include "parser/parser.hpp"
 #include "lexer/token_type.hpp" // This was for enum2underlying_type function
+#include "parser/parser.hpp"
 
 #include "log.hpp"
 
@@ -11,30 +11,29 @@
 auto print_help() -> void
 {
   std::cout << "AWX - Help Manual\n"
-			<< "Usage: awx <flags> <file>\n"
-			<< "Flags:\n"
-			<< " <-f program file> \n"
-			<< " <-h> Displays this help manual\n"
-			<< '\n';
+            << "Usage: awx <flags> <file>\n"
+            << "Flags:\n"
+            << " <-f program file> \n"
+            << " <-h> Displays this help manual\n"
+            << '\n';
 }
 
 // Parse command line arguments and store them in a configuration class
-auto parse_args(int t_argc, char* argv[]) -> void
+auto parse_args(const int t_argc, char* t_argv[]) -> void
 {
-  for(;;)
-	{
-	  const auto opt = getopt(argc, argv, "f");
-	  switch(opt)
-		{
-		case 'f':
-		  // handle the chosen program file
-		  break;
+  while(const auto opt = getopt(t_argc, t_argv, "f") != -1)
+    switch(opt)
+      {
+         case 'f': {
+		   // handle the chosen program file
+		   std::string prog_file{optarg};
+		   break;
+		 }
 
-		default:
-		  return; // Quit function
-		  break;
-		}
-	}
+        default:
+          print_help();
+          break;
+      }
 }
 
 auto run(int argc, char* argv[]) -> void
@@ -55,21 +54,14 @@ auto main(int argc, char* argv[]) -> int
 {
   parse_args(argc, argv);
 
-  // TODO: Use getopt for argument parsing
-  if (argc < 2)
-	{
-	  std::cout << "No arguments were given\n";
-	  print_help();
+  try
+    {
+      run(argc, argv);
+  } catch(std::exception& e)
+    {
+      std::cout << e.what() << '\n';
 
-	  return 0;
-	}
-
-  try {
-	run(argc, argv);
-  } catch(std::exception& e) {
-	std::cout << e.what() << '\n';
-
-	return 1;
+      return 1;
   }
 
   return 0;
