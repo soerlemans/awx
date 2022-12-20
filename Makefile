@@ -1,10 +1,7 @@
 # Exported variables:
 # Important build information
-export TOPDIR := $(PWD)
-export BUILD := $(TOPDIR)/build
-
 export SRC := src
-export DEST
+export BUILD := build
 
 export EXECUTABLE := awx
 
@@ -20,15 +17,14 @@ SOURCES := $(shell find $(SRC)/ -name '*.cpp')
 OBJECTS := $(patsubst $(SRC)/%.cpp,$(BUILD)/%.o,$(SOURCES))
 
 # Rules:
-all: src $(EXECUTABLE)
-
-src:
-	$(MAKE) -C $@/
+all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $(EXECUTABLE)
 
-.PHONY: all src clean
+
+
+.PHONY: all clean
 clean:
 	$(RM) -r $(BUILD)/*
 	$(RM) $(EXECUTABLE)
