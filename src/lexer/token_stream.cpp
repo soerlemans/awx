@@ -20,6 +20,11 @@ auto TokenStream::prev() -> Token&
   return (*this)[m_index--];
 }
 
+auto TokenStream::token() -> Token&
+{
+  return (*this)[m_index];
+}
+
 auto TokenStream::eos() const -> bool
 {
   return m_index >= size();

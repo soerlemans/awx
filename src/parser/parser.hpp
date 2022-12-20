@@ -8,13 +8,13 @@
 
 class Parser {
 private:
-  std::size_t m_index;
-  TokenStream m_tokenstream;
+  TokenStream m_token_stream;
 
+  // TODO: Checkout of this variable is needed
   bool m_toplevel;
 
 public:
-  Parser(TokenStream t_tokenstream);
+  Parser(TokenStream t_token_stream);
 
   // Helper
   auto identifier(const Token& t_token) -> bool;

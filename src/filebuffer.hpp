@@ -12,8 +12,10 @@ namespace fs = std::filesystem;
 
 class FileBuffer {
 private:
+  // Alisases:
   using File = std::vector<std::string>;
 
+  // Private variables:
   fs::path m_path;
   mutable std::size_t m_lineno, m_columnno;
   File m_filebuffer;

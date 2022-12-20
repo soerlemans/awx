@@ -19,6 +19,8 @@ public:
   auto next() -> Token&;
   auto prev() -> Token&;
 
+  auto token() -> Token&;
+
   auto eos() const -> bool;
 
   virtual ~TokenStream();
