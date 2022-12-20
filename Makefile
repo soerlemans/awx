@@ -14,15 +14,17 @@ export CXX := clang++
 
 # TODO: Find a way around the shell escape
 SOURCES := $(shell find $(SRC)/ -name '*.cpp')
-OBJECTS := $(patsubst $(SRC)/%.cpp,$(BUILD)/%.o,$(SOURCES))
+OBJECTS := $(SOURCES:%.cpp=$(BUILD)/%.o)
 
 # Rules:
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o $(EXECUTABLE)
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
-
+$(BUILD)/%.o: %.cpp
+	mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 .PHONY: all clean
 clean:
