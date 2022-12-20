@@ -131,7 +131,7 @@ auto FileBuffer::eol() const -> bool
 
 auto FileBuffer::eof() const -> bool
 {
-  if(m_lineno >= m_filebuffer.size())
+  if(m_lineno >= size())
     if(m_columnno >= line().size())
       {
         return true;

@@ -26,7 +26,7 @@ auto run(int argc, char* argv[]) -> void
   TokenStream token_stream{lexer.tokenize()};
 
   Parser parser{token_stream};
-  parser.parse();
+  // parser.parse();
 }
 
 auto main(int argc, char* argv[]) -> int

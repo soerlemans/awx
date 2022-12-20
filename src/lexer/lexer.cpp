@@ -33,9 +33,7 @@ auto Lexer::syntax_error(std::string_view t_msg) const -> void
 
 // Public constructors:
 Lexer::Lexer(FileBuffer& t_filebuffer): m_filebuffer{t_filebuffer}
-{
-  m_tokenstream.reserve(256);
-}
+{}
 
 // Public methods:
 auto Lexer::is_keyword(std::string_view t_identifier) -> TokenType
@@ -246,7 +244,7 @@ auto Lexer::is_multi_symbol() -> TokenType
               {
                 tokentype = multi.tokentype();
 
-				LOG(LogLevel::INFO, "MULTI SYMBOL: ", ss.str());
+                LOG(LogLevel::INFO, "MULTI SYMBOL: ", ss.str());
                 break; // We found a multi symbol token!
             }
 
@@ -274,7 +272,7 @@ auto Lexer::is_single_symbol() -> TokenType
     if(character == single.identifier())
       {
         tokentype = single.tokentype();
-		LOG(LogLevel::INFO, "SINGLE SYMBOL: ", character);
+        LOG(LogLevel::INFO, "SINGLE SYMBOL: ", character);
         break;
     }
 

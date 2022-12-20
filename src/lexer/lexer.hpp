@@ -9,11 +9,11 @@
 #include "../filebuffer.hpp"
 
 #include "reserved.hpp"
-#include "token.hpp"
+#include "token_stream.hpp"
 
 
 // Aliases:
-using TokenStream = std::vector<Token>;
+// using TokenStream = std::vector<Token>;
 
 class Lexer {
 private:

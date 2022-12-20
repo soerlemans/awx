@@ -4,7 +4,7 @@
 
 
 Parser::Parser(TokenStream t_tokenstream)
-  :m_tokenstream{t_tokenstream}
+  :m_index{0}, m_tokenstream{t_tokenstream}, m_toplevel{false}
 {}
 
 auto Parser::identifier(const Token& t_token) -> bool
@@ -29,9 +29,6 @@ auto Parser::keyword(const Token& t_token) -> bool
 	case g_if.tokentype():
 	  break;
 
-	case g_else.tokentype():
-	  break;
-
 	case g_do.tokentype():
 	  break;
 
@@ -41,39 +38,12 @@ auto Parser::keyword(const Token& t_token) -> bool
 	case g_for.tokentype():
 	  break;
 
-	// TODO: Handle in identifier case
-	// case g_in.tokentype():
-	//   break;
-
 	default:
 	  is_keyword = false;
 	  break;
 	}
 
   return is_keyword;
-}
-
-auto Parser::numeric(const Token& t_token) -> bool
-{
-  bool is_numeric{true};
-  switch(t_token.type())
-	{
-	case TokenType::INTEGER:
-	  break;
-
-	case TokenType::HEX:
-	  break;
-
-	case TokenType::FLOAT:
-	  break;
-
-
-	default:
-	  is_numeric = false;
-	  break;
-	}
-
-  return is_numeric;
 }
 
 auto Parser::string(const Token& t_token) -> bool
@@ -90,15 +60,19 @@ auto Parser::symbol(const Token& t_token) -> bool
   return is_symbol;
 }
 
+auto Parser::toplevel() -> bool
+{
+  // switch()
+}
+
 auto Parser::parse() -> Ast
 {
   using namespace reserved;
 
-  // Ast ast;
-
-  for(const auto& token : m_tokenstream)
-	{
-	}
+  Ast ast;
+  // for(const auto& token : m_tokenstream)
+  // 	{
+  // 	}
 
   // return ast;
 }
