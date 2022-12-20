@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include <unistd.h>
+
 #include "parser/parser.hpp"
 #include "lexer/token_type.hpp" // This was for enum2underlying_type function
 
@@ -9,10 +11,30 @@
 auto print_help() -> void
 {
   std::cout << "AWX - Help Manual\n"
-			<< "Usage: awx <file>\n"
+			<< "Usage: awx <flags> <file>\n"
 			<< "Flags:\n"
+			<< " <-f program file> \n"
 			<< " <-h> Displays this help manual\n"
 			<< '\n';
+}
+
+// Parse command line arguments and store them in a configuration class
+auto parse_args(int t_argc, char* argv[]) -> void
+{
+  for(;;)
+	{
+	  const auto opt = getopt(argc, argv, "f");
+	  switch(opt)
+		{
+		case 'f':
+		  // handle the chosen program file
+		  break;
+
+		default:
+		  return; // Quit function
+		  break;
+		}
+	}
 }
 
 auto run(int argc, char* argv[]) -> void
@@ -26,11 +48,14 @@ auto run(int argc, char* argv[]) -> void
   TokenStream token_stream{lexer.tokenize()};
 
   Parser parser{token_stream};
-  // parser.parse();
+  auto ast{parser.parse()};
 }
 
 auto main(int argc, char* argv[]) -> int
 {
+  parse_args(argc, argv);
+
+  // TODO: Use getopt for argument parsing
   if (argc < 2)
 	{
 	  std::cout << "No arguments were given\n";

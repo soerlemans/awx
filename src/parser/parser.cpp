@@ -10,12 +10,15 @@ Parser::Parser(TokenStream t_token_stream)
 auto Parser::function() -> NodePointer
 {
   // TODO: Define Function node for this
+  NodePointer node{nullptr};
+
+  return node;
 }
 
 // Check for valid toplevel form tokens
 auto Parser::toplevel() -> NodePointer
 {
-  NodePointer node;
+  NodePointer node{nullptr};
   const TokenType token_type{m_token_stream.token().type()};
 
   // TODO: Create seperate functions for handling/defining the next tokens
