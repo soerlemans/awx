@@ -24,7 +24,8 @@ LogLevel g_loglevel{LogLevel::WARNING};
 
 // Public functions:
 // This function checks if the LogLevel is lower than the current g_loglevel
-auto is_lower_loglevel(const LogLevel t_loglevel) -> bool
+// t_loglevel is used in macros use [[maybe_unused]] to silence warnings
+auto is_lower_loglevel([[maybe_unused]] const LogLevel t_loglevel) -> bool
 {
   switch(g_loglevel)
     {
