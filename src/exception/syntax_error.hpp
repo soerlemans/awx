@@ -1,5 +1,5 @@
-#ifndef EXCEPTION_H
-#define EXCEPTION_H
+#ifndef SYNTAX_ERROR_H
+#define SYNTAX_ERROR_H
 
 #include <filesystem>
 #include <stdexcept>
@@ -26,4 +26,4 @@ public:
   auto what() const noexcept -> const char*;
 };
 
-#endif // EXCEPTION_H
+#endif // SYNTAX_ERROR_H

@@ -1,8 +1,7 @@
+#include "syntax_error.hpp"
+
 #include <sstream>
 #include <string>
-
-#include "exception.hpp"
-
 
 // The following members m_lineno and m_columno are zero indexed so they need to
 // Have + 1 counted for them to line up properly

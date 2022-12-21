@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../exception.hpp"
+#include "../exception/syntax_error.hpp"
 #include "../log.hpp"
 
 #include "lexer.hpp"

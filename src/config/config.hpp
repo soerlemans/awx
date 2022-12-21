@@ -9,7 +9,6 @@
 
 namespace fs = std::filesystem;
 
-
 // The AWX mode determines the interpreters mode and what it considers valid
 // syntax and supported features
 enum AwxMode {
@@ -38,10 +37,12 @@ class Config {
   std::vector<fs::path> m_file_paths;
 
   protected:
+  // Singleton data:
   static std::unique_ptr<Config> m_singleton;
 
   Config();
 
+  // Setters:
   auto add_path(fs::path&& t_path) -> void;
 
   public:
@@ -49,8 +50,15 @@ class Config {
   Config(const Config&) = delete;
 
   // Public methods:
-  static auto get_instance() -> Config&;
+  static auto get_instance() -> Config&
+  {
+    if(!m_singleton)
+      m_singleton = std::unique_ptr<Config>(new Config);
 
+    return *(m_singleton.get());
+  }
+
+  // Getters:
   auto get_paths() const -> std::vector<fs::path>;
 
   // Friend declarations:
