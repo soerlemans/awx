@@ -10,13 +10,15 @@
 // The Abstract Syntax Tree management class
 class Ast {
 private:
-  NodePointer m_root;
-  NodePointer m_current;
+  // We use raw pointers for determining where we are in the AST
+  // This is fine as it is for traversal purposes
+  Node* m_root;
+  Node* m_current;
 
   NodeList m_list;
 
 public:
-  Ast();
+  Ast(NodeList&& t_list);
   // Ast(const Ast& t_ast) = default;
 
   auto add(NodePointer&& t_node) -> void;

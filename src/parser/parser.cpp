@@ -60,12 +60,11 @@ auto Parser::parse() -> Ast
   for(; m_token_stream.eos(); m_token_stream.next())
 	{
 	  // Ast is pieced together from calling nested functions
-	  // That each return a Node
+	  // That each return a Node_ptr
 	  ast.add(toplevel());
 	}
 
-  // return ast;
-  return {};
+  return ast;
 }
 
 Parser::~Parser()

@@ -25,15 +25,16 @@ auto parse_args(const int t_argc, char* t_argv[]) -> void
 {
   auto& config{Config::get_instance()};
 
-  const auto f_getopt{std::bind(getopt, t_argc, t_argv, "f:")};
+  const auto f_getopt{std::bind(getopt, t_argc, t_argv, "f:h")};
   for(auto opt{f_getopt()}; opt != -1; opt = f_getopt())
     switch(opt)
       {
 	  case 'f': {
-		config.add_path(optarg);
+		config.add_file(fs::path{optarg});
 		break;
 	  }
 
+	  case 'h':
 	  default:
 		print_help();
 		break;
@@ -48,10 +49,10 @@ auto run(int argc, char* argv[]) -> void
   auto& config{Config::get_instance()};
 
   // TODO: REmove this is temporary testing code
-  if(!config.get_paths().size())
+  if(!config.get_files().size())
 	return;
 
-  FileBuffer fb{config.get_paths().front()};
+  FileBuffer fb{config.get_files().front()};
 
   Lexer lexer{fb};
   TokenStream token_stream{lexer.tokenize()};

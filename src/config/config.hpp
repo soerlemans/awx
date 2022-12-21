@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "../file_buffer.hpp"
+
 
 namespace fs = std::filesystem;
 
@@ -34,7 +36,7 @@ class Config {
   private:
   // Regular private variables:
   AwxMode m_awx_mode;
-  std::vector<fs::path> m_file_paths;
+  std::vector<FileBuffer> m_file_buffers;
 
   protected:
   // Singleton data:
@@ -43,7 +45,7 @@ class Config {
   Config();
 
   // Setters:
-  auto add_path(fs::path&& t_path) -> void;
+  auto add_file(FileBuffer&& t_fb) -> void;
 
   public:
   // Constructors:
@@ -59,7 +61,7 @@ class Config {
   }
 
   // Getters:
-  auto get_paths() const -> std::vector<fs::path>;
+  auto get_files() const -> std::vector<FileBuffer>;
 
   // Friend declarations:
   friend auto parse_args(const int t_argc, char* t_argv[]) -> void;

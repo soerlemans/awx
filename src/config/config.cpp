@@ -5,17 +5,17 @@
 std::unique_ptr<Config> Config::m_singleton;
 
 // Protected constructors:
-Config::Config(): m_awx_mode{AwxMode::AWK}, m_file_paths{}
+Config::Config(): m_awx_mode{AwxMode::AWK}, m_file_buffers{}
 {}
 
 // Protected methods:
-auto Config::add_path(fs::path&& t_path) -> void
+auto Config::add_file(FileBuffer&& t_fb) -> void
 {
-  m_file_paths.push_back(std::forward<fs::path>(t_path));
+  m_file_buffers.push_back(std::forward<FileBuffer>(t_fb));
 }
 
 // Public methods:
-auto Config::get_paths() const -> std::vector<fs::path>
+auto Config::get_files() const -> std::vector<FileBuffer>
 {
-  return m_file_paths;
+  return m_file_buffers;
 }

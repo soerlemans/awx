@@ -14,9 +14,9 @@ class Parser {
   Parser(TokenStream t_token_stream);
 
   // Helper
-  auto function() -> NodePointer;
+  virtual auto function() -> NodePointer;
 
-  auto toplevel() -> NodePointer;
+  virtual auto toplevel() -> NodePointer;
 
   // The parse() method should be virtual cause in the future we may want to
   // have different dialects of AWX
