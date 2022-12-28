@@ -13,7 +13,7 @@
 // Or function call separated nodes
 class NodeList : public Node {
 private:
-  std::list<NodePointer> m_node_list;
+  std::list<NodePointer> m_list;
 
 public:
   NodeList();

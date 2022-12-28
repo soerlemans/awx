@@ -5,6 +5,7 @@
 
 #include "node/node.hpp"
 #include "node/node_list.hpp"
+#include "node/node_visitor.hpp"
 
 
 // The Abstract Syntax Tree management class
@@ -17,8 +18,10 @@ private:
 
   NodeList m_list;
 
+  NodeVisitor m_visitor;
+
 public:
-  Ast(NodeList&& t_list);
+  Ast();
   // Ast(const Ast& t_ast) = default;
 
   auto add(NodePointer&& t_node) -> void;
