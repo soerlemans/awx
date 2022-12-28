@@ -17,6 +17,7 @@ private:
 
 public:
   NodeList();
+  NodeList(NodeList&& t_ast) = default;
 
   auto add(NodePointer&& t_node) -> void;
 

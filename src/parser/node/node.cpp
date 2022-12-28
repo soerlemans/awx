@@ -5,8 +5,7 @@
 #include "node.hpp"
 
 
-Node::Node(NodeType t_nodetype)
-  :m_nodetype{t_nodetype}
+Node::Node(NodeType t_nodetype): m_nodetype{t_nodetype}
 {}
 
 auto Node::type() -> NodeType

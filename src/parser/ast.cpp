@@ -2,9 +2,7 @@
 
 
 Ast::Ast()
-  : m_root{nullptr}, m_current{nullptr},
-	// m_list{},
-	m_visitor{}
+  : m_root{nullptr}, m_current{nullptr}, m_list{}, m_visitor{}
 {}
 
 auto Ast::add(NodePointer&& t_node) -> void

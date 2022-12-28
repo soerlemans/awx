@@ -59,6 +59,8 @@ auto run(int argc, char* argv[]) -> void
 
   Parser parser{token_stream};
   auto ast{parser.parse()};
+
+  parser.parse();
 }
 
 auto main(int argc, char* argv[]) -> int

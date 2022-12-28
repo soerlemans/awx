@@ -16,12 +16,13 @@ private:
   Node* m_root;
   Node* m_current;
 
-  // NodeList m_list;
+  NodeList m_list;
 
   NodeVisitor m_visitor;
 
 public:
   Ast();
+  Ast(Ast&& t_ast) = default;
   // Ast(const Ast& t_ast) = default;
 
   auto add(NodePointer&& t_node) -> void;
