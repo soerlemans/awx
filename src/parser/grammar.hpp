@@ -1,7 +1,7 @@
 #ifndef GRAMMAR_H
 #define GRAMMAR_H
 
-#include "../lexer/token_type.hpp"
+#include "../token/token_type.hpp"
 
 // This file contains functions for verifying if a given token type adheres to a
 // Certain class of tokens like literals, lvalues, rvalue, etc

@@ -4,7 +4,7 @@
 #include <memory>
 #include <type_traits>
 
-#include "../../types.hpp"
+#include "../types.hpp"
 
 #include "node_visitor.hpp"
 

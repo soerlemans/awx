@@ -4,7 +4,7 @@
 #include <stdexcept>
 
 #include "../exception/syntax_error.hpp"
-#include "../lexer/token_type.hpp"
+#include "../token/token_type.hpp"
 
 
 Parser::Parser(TokenStream t_token_stream): m_token_stream{t_token_stream}
@@ -45,7 +45,7 @@ auto Parser::condition() -> NodePointer
 
       case TokenType::EQUAL:
       case TokenType::NOT_EQUAL:
-		break;
+        break;
     }
 
   return node;

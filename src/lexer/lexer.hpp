@@ -7,8 +7,8 @@
 
 #include "../file_buffer.hpp"
 
-#include "reserved.hpp"
-#include "token_stream.hpp"
+#include "../token/reserved.hpp"
+#include "../token/token_stream.hpp"
 
 
 // Aliases:

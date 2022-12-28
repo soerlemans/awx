@@ -1,3 +1,5 @@
+#include "lexer.hpp"
+
 #include <cctype>
 #include <ios>
 #include <iostream>
@@ -7,10 +9,6 @@
 
 #include "../exception/syntax_error.hpp"
 #include "../log.hpp"
-
-#include "lexer.hpp"
-#include "reserved.hpp"
-#include "token_type.hpp"
 
 
 // TokenStream handling:

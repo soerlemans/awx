@@ -3,9 +3,9 @@
 
 #include "../types.hpp"
 
-#include "node/node.hpp"
-#include "node/node_list.hpp"
-#include "node/node_visitor.hpp"
+#include "../node/node.hpp"
+#include "../node/node_list.hpp"
+#include "../node/node_visitor.hpp"
 
 
 // The Abstract Syntax Tree management class
