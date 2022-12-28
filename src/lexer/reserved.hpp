@@ -21,7 +21,7 @@
 // Concepts:
 // The Identifier is either one character or
 template<typename T>
-concept ReservedIdentifier =
+concept ReservedIdentifierConcept =
   std::same_as<T, std::string_view> || std::same_as<T, char>;
 
 // AWX reserved keywords and symbols
@@ -32,7 +32,7 @@ namespace reserved {
 
 // Helper class for the Reserved global variable definitions
 template<typename T = char>
-  requires ReservedIdentifier<T>
+  requires ReservedIdentifierConcept<T>
 class ReservedWrapper {
   private:
   const T m_identifier;

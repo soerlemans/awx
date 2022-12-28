@@ -9,6 +9,13 @@
 #include "log.hpp"
 
 
+// Enums:
+enum ExitCode {
+  OK = 0,
+  EXCEPTION,
+};
+
+// Functions:
 auto print_help() -> void
 {
   std::cout << "AWX - Help Manual\n"
@@ -48,7 +55,7 @@ auto run(int argc, char* argv[]) -> void
 
   auto& config{Config::get_instance()};
 
-  // TODO: REmove this is temporary testing code
+  // TODO: Remove this is temporary testing code
   if(!config.get_files().size())
 	return;
 
@@ -67,15 +74,15 @@ auto main(int argc, char* argv[]) -> int
 {
   parse_args(argc, argv);
 
-  try
-    {
-      run(argc, argv);
-  } catch(std::exception& e)
-    {
-      std::cout << e.what() << '\n';
+  try{
+	run(argc, argv);
+  }catch(std::exception& e){
+	std::cerr << "EXCEPTION OCCURED - \n"
+			  << e.what()
+			  << '\n';
 
-      return 1;
+	return ExitCode::EXCEPTION;
   }
 
-  return 0;
+  return ExitCode::OK;
 }

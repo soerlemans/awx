@@ -1,9 +1,9 @@
+#include "file_buffer.hpp"
+
 #include <exception>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
-
-#include "file_buffer.hpp"
 
 
 // Constructors:
@@ -134,19 +134,6 @@ auto FileBuffer::eof() const -> bool
   return m_lineno >= size();
 }
 
-auto FileBuffer::print(bool t_all) -> void
-{
-  if(t_all)
-    {
-      for(const auto& line : m_filebuffer)
-        std::cout << line << '\n';
-  } else
-    {
-      std::cout << "Line(" << m_lineno << "): " << m_filebuffer[m_lineno]
-                << '\n';
-    }
-}
-
 // Operators:
 auto FileBuffer::operator[](std::size_t t_index) -> std::string&
 {
@@ -156,3 +143,12 @@ auto FileBuffer::operator[](std::size_t t_index) -> std::string&
 // Destructor:
 FileBuffer::~FileBuffer()
 {}
+
+// Exported functions:
+auto print_filebuffer(const FileBuffer& t_fb) -> void
+{
+  std::cout << "FileBuffer - ";
+
+  for(; !t_fb.eof(); t_fb.next())
+    std::cout << "Line(" << t_fb.lineno() << "): " << t_fb.line() << '\n';
+}

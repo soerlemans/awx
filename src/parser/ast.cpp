@@ -7,7 +7,7 @@ Ast::Ast()
 
 auto Ast::add(NodePointer&& t_node) -> void
 {
-  // m_list.add(std::forward<NodePointer>(t_node));
+  m_list.add(std::forward<NodePointer>(t_node));
 }
 
 Ast::~Ast()

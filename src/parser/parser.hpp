@@ -6,6 +6,8 @@
 #include "ast.hpp"
 
 
+// TOOD: Create constexpr functions for verifying the grammar
+// Like is_rvalue or is_lvalue
 class Parser {
   private:
   TokenStream m_token_stream;
@@ -13,8 +15,16 @@ class Parser {
   public:
   Parser(TokenStream t_token_stream);
 
-  // Helper
+  // Helpers:
   virtual auto function() -> NodePointer;
+
+  virtual auto identifier() -> NodePointer;
+  virtual auto literal() -> NodePointer;
+
+  virtual auto condition() -> NodePointer;
+
+  // Body contains execution body and actual statements
+  virtual auto body() -> NodePointer;
 
   virtual auto toplevel() -> NodePointer;
 

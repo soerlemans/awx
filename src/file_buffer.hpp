@@ -59,13 +59,14 @@ public:
   auto eol() const -> bool;
   auto eof() const -> bool;
 
-  auto print(bool t_all=false) -> void;
-
   // Operators:
   auto operator[](std::size_t t_index) -> std::string&;
 
   // Destructors
   virtual ~FileBuffer();
 };
+
+// Exported functions:
+auto print_filebuffer(const FileBuffer& t_fb) -> void;
 
 #endif // FILE_BUFFER_H
