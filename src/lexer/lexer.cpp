@@ -319,12 +319,10 @@ auto Lexer::tokenize() -> TokenStream
           ;                       // Just ignore whitespace
         else if(character == '#') // # Denotes comments
           break;                  // Stop parsing current line
-        else if(std::isalpha(character))
-          {
+        else if(std::isalpha(character)) {
             add_token(identifier());
             continue;
-        } else if(std::isdigit(character))
-          {
+        } else if(std::isdigit(character)) {
             add_token(literal_numeric());
             continue;
         } else if(character == double_quote)

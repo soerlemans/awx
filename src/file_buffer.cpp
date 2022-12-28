@@ -131,13 +131,7 @@ auto FileBuffer::eol() const -> bool
 
 auto FileBuffer::eof() const -> bool
 {
-  if(m_lineno >= size())
-    if(m_columnno >= line().size())
-      {
-        return true;
-    }
-
-  return false;
+  return m_lineno >= size();
 }
 
 auto FileBuffer::print(bool t_all) -> void
@@ -145,9 +139,7 @@ auto FileBuffer::print(bool t_all) -> void
   if(t_all)
     {
       for(const auto& line : m_filebuffer)
-        {
-          std::cout << line << '\n';
-        }
+        std::cout << line << '\n';
   } else
     {
       std::cout << "Line(" << m_lineno << "): " << m_filebuffer[m_lineno]

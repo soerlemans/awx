@@ -16,7 +16,7 @@ private:
   Node* m_root;
   Node* m_current;
 
-  NodeList m_list;
+  // NodeList m_list;
 
   NodeVisitor m_visitor;
 
