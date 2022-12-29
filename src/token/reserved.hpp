@@ -129,6 +129,9 @@ namespace symbols {
   DEFINE_RESERVED(g_less_than,            '<',   LESS_THAN);
   DEFINE_RESERVED(g_less_than_equal, r_vw{"<="}, LESS_THAN_EQUAL);
 
+  DEFINE_RESERVED(g_equal,     r_vw{"=="}, EQUAL);
+  DEFINE_RESERVED(g_not_equal, r_vw{"!="}, NOT_EQUAL);
+
   DEFINE_RESERVED(g_greater_than,            '>',   GREATER_THAN);
   DEFINE_RESERVED(g_greater_than_equal, r_vw{">="}, GREATER_THAN_EQUAL);
 
@@ -181,7 +184,7 @@ namespace symbols {
 	g_end_of_line
   };
 
-  constexpr std::array<ReservedWrapper<std::string_view>, 13>
+  constexpr std::array<ReservedWrapper<std::string_view>, 15>
   g_multi_symbols{
 	g_increment,
 	g_decrement,
@@ -199,6 +202,10 @@ namespace symbols {
 	g_and,
 
 	g_less_than_equal,
+
+	g_equal,
+	g_not_equal,
+
 	g_greater_than_equal
   };
 

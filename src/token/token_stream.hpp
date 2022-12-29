@@ -16,8 +16,8 @@ private:
 public:
   TokenStream(const std::size_t t_reserve = 256);
 
-  auto next() -> Token&;
-  auto prev() -> Token&;
+  auto next(const int inc=1) -> Token&;
+  auto prev(const int dec=1) -> Token&;
 
   auto token() -> Token&;
 

@@ -97,9 +97,4 @@ enum class TokenType : u16 {
   END_OF_LINE,
 };
 
-// Functions:
-namespace tokentype {
-auto is_int(const TokenType t_tokentype) -> bool;
-}; // namespace tokentype
-
 #endif // TOKEN_TYPE_H

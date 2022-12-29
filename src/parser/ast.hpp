@@ -30,4 +30,7 @@ public:
   virtual ~Ast();
 };
 
+// Exported functions:
+auto print_ast(const Ast& t_ast) -> void;
+
 #endif // AST_H

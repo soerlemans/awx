@@ -12,3 +12,9 @@ auto Ast::add(NodePointer&& t_node) -> void
 
 Ast::~Ast()
 {}
+
+// Exported functions:
+auto print_ast(const Ast& t_ast) -> void
+{
+  
+}

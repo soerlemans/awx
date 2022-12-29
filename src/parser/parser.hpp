@@ -21,6 +21,10 @@ class Parser {
   virtual auto identifier() -> NodePointer;
   virtual auto literal() -> NodePointer;
 
+  // virtual auto logical_junction(const Token& t_lhs, const Token& t_op,
+  //                         const Token& t_rhs) -> NodePointer;
+  // virtual auto comparison(const Token& t_lhs, const Token& t_op,
+  //                         const Token& t_rhs) -> NodePointer;
   virtual auto condition() -> NodePointer;
 
   // Body contains execution body and actual statements

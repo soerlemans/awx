@@ -10,14 +10,22 @@ TokenStream::TokenStream(const std::size_t t_reserve)
   this->reserve(t_reserve);
 }
 
-auto TokenStream::next() -> Token&
+auto TokenStream::next(const int inc) -> Token&
 {
-  return (*this)[m_index++];
+  Token& result{(*this)[m_index]};
+
+  m_index += inc;
+
+  return result;
 }
 
-auto TokenStream::prev() -> Token&
+auto TokenStream::prev(const int dec) -> Token&
 {
-  return (*this)[m_index--];
+  Token& result{(*this)[m_index]};
+
+  m_index += dec;
+
+  return result;
 }
 
 auto TokenStream::token() -> Token&

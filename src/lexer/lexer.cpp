@@ -7,8 +7,9 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../exception/syntax_error.hpp"
 #include "../log.hpp"
+#include "../exception/syntax_error.hpp"
+#include "../token/token_type_helpers.hpp"
 
 
 // TokenStream handling:
