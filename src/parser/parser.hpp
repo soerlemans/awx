@@ -17,13 +17,15 @@ class Parser
   Parser(TokenStream t_token_stream);
 
   // Helpers:
-  virtual auto function() -> NodePointer;
 
   virtual auto identifier() -> NodePointer;
   virtual auto literal() -> NodePointer;
 
   virtual auto expression() -> NodePointer;
   virtual auto condition() -> NodePointer;
+
+  virtual auto function() -> NodePointer;
+  virtual auto control_statement() -> NodePointer;
 
   // Body contains execution body and actual statements
   virtual auto body() -> NodePointer;

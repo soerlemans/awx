@@ -14,14 +14,6 @@ Parser::Parser(TokenStream t_token_stream): m_token_stream{t_token_stream}
 {
 }
 
-auto Parser::function() -> NodePointer
-{
-  // TODO: Define Function node for this
-  NodePointer node{nullptr};
-
-  return node;
-}
-
 auto Parser::identifier() -> NodePointer
 {
   NodePointer node{nullptr};
@@ -56,6 +48,23 @@ auto Parser::expression() -> NodePointer
 
   return node;
 }
+
+auto Parser::function() -> NodePointer
+{
+  // TODO: Define Function node for this
+  NodePointer node{nullptr};
+
+  return node;
+}
+
+auto Parser::control_statement() -> NodePointer
+{
+  // TODO: Define Function node for this
+  NodePointer node{nullptr};
+
+  return node;
+}
+
 
 // TODO: Think of a better place for these
 namespace
@@ -158,7 +167,7 @@ auto Parser::body() -> NodePointer
     if(tokentype::is_lvalue(token_type) || tokentype::is_rvalue(token_type)) {
       node = expression();
     } else if(tokentype::is_control_statement(token_type)) {
-      node = expression();
+      node = control_statement();
     } else if(token_type == TokenType::ACCOLADE_CLOSE) {
       // TODO: Figure out if awk allows subscoping with no control
       // statements? Exit loop body is closed
