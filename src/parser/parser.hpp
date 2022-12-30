@@ -16,21 +16,13 @@ class Parser
   public:
   Parser(TokenStream t_token_stream);
 
-  // Helpers:
+  // Non-terminals:
+  virtual auto item() -> NodePointer;
+  virtual auto item_list() -> NodePointer;
 
-  virtual auto identifier() -> NodePointer;
-  virtual auto literal() -> NodePointer;
+  virtual auto program() -> NodePointer;
 
-  virtual auto expression() -> NodePointer;
-  virtual auto condition() -> NodePointer;
-
-  virtual auto function() -> NodePointer;
-  virtual auto control_statement() -> NodePointer;
-
-  // Body contains execution body and actual statements
-  virtual auto body() -> NodePointer;
-
-  virtual auto toplevel() -> NodePointer;
+  auto next_token() -> Token&;
 
   // The parse() method should be virtual cause in the future we may want to
   // have different dialects of AWX

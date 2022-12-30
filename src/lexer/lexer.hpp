@@ -43,6 +43,7 @@ class Lexer
   auto is_single_symbol() -> TokenType;
   auto symbol() -> Token;
 
+  auto next_char() -> char;
   auto tokenize() -> TokenStream;
 
   virtual ~Lexer();

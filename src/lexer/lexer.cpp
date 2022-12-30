@@ -59,7 +59,7 @@ auto Lexer::identifier() -> Token
   }};
 
   while(is_valid_character(m_filebuffer.character()) && !m_filebuffer.eol())
-    ss << m_filebuffer.forward();
+    ss << next_char();
 
   // Verify if it is a keyword or not
   if(const auto tokentype{is_keyword(ss.str())};
@@ -80,9 +80,9 @@ auto Lexer::is_hex_literal() -> bool
   if(m_filebuffer.character() == '0') {
     // TODO: Define reserved hex literal symbol
     // If the next character is a 'x' it must be a hex literal
-    m_filebuffer.forward();
+    next_char();
     if(m_filebuffer.character() == 'x') {
-      m_filebuffer.forward();
+      next_char();
 
       return true;
     }
@@ -106,14 +106,14 @@ auto Lexer::literal_numeric() -> Token
 
     // is_valid_character for different type of integer literals
     if(std::isdigit(character)) {
-      ss << m_filebuffer.forward();
+      ss << next_char();
     } else if(hex && std::isxdigit(character)) {
       // The following check is probably not needed, but implement it one
       // day just in case to be sure
       // if(is_float)
       //   syntax_error("Illegal character in ");
 
-      ss << m_filebuffer.forward();
+      ss << next_char();
     } else if(!is_float && character == g_dot.identifier()) {
       // Cant be a hex literal with a floating point at the same time in
       // the future we might have primitive types be classes ruby style so
@@ -122,7 +122,7 @@ auto Lexer::literal_numeric() -> Token
         syntax_error("Found a . in a hex literal");
 
       is_float = true;
-      ss << m_filebuffer.forward();
+      ss << next_char();
     } else { // Quit if digit ends
       break;
     }
@@ -147,7 +147,7 @@ auto Lexer::literal_string() -> Token
   std::stringstream ss;
 
   // Discard starting " character
-  m_filebuffer.forward();
+  next_char();
 
   bool quit{false};
   while(!quit && !m_filebuffer.eol()) {
@@ -159,11 +159,11 @@ auto Lexer::literal_string() -> Token
         break;
 
       case g_backslash.identifier():
-        ss << m_filebuffer.forward();
+        ss << next_char();
         [[fallthrough]];
 
       default:
-        ss << m_filebuffer.forward();
+        ss << next_char();
         break;
     }
   }
@@ -179,7 +179,7 @@ auto Lexer::literal_regex() -> Token
   std::stringstream ss;
 
   // Discard starting / character
-  m_filebuffer.forward();
+  next_char();
 
   // TODO: As of now regex literals perform no checks if the identifier in front
   // of the literal has an integer type or not, as of now we just assume it is a
@@ -196,11 +196,11 @@ auto Lexer::literal_regex() -> Token
 
         // TODO: Take care of handling octal escape codes and other
       case none::g_backslash.identifier():
-        ss << m_filebuffer.forward();
+        ss << next_char();
         [[fallthrough]];
 
       default:
-        ss << m_filebuffer.forward();
+        ss << next_char();
         break;
     }
   }
@@ -223,7 +223,7 @@ auto Lexer::is_multi_symbol() -> TokenType
   // Refactor someday
   for(const auto multi : g_multi_symbols)
     if(character == multi.identifier().front()) {
-      m_filebuffer.forward();
+      next_char();
       ss << m_filebuffer.character();
 
       if(!m_filebuffer.eol())
@@ -284,6 +284,11 @@ auto Lexer::symbol() -> Token
 
   // Add the symbol if we recognize it
   return Token{tokentype};
+}
+
+auto Lexer::next_char() -> char
+{
+  return m_filebuffer.forward();
 }
 
 auto Lexer::tokenize() -> TokenStream
