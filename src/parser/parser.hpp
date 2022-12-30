@@ -6,8 +6,7 @@
 #include "ast.hpp"
 
 
-// TOOD: Create constexpr functions for verifying the grammar
-// Like is_rvalue or is_lvalue
+// This is a recursive descent parser so each rule needs its own function
 class Parser
 {
   private:

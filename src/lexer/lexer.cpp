@@ -46,7 +46,7 @@ auto Lexer::is_keyword(std::string_view t_identifier) -> TokenType
     if(t_identifier == keyword.identifier())
       return keyword.tokentype();
 
-  return TokenType::UNKNOWN;
+  return TokenType::NONE;
 }
 
 auto Lexer::identifier() -> Token
@@ -63,7 +63,7 @@ auto Lexer::identifier() -> Token
 
   // Verify if it is a keyword or not
   if(const auto tokentype{is_keyword(ss.str())};
-     tokentype != TokenType::UNKNOWN)
+     tokentype != TokenType::NONE)
     token = Token{tokentype};
   else
     token = Token{TokenType::IDENTIFIER, ss.str()};
@@ -214,7 +214,7 @@ auto Lexer::is_multi_symbol() -> TokenType
   using namespace reserved::symbols;
 
   std::stringstream ss;
-  TokenType tokentype{TokenType::UNKNOWN};
+  TokenType tokentype{TokenType::NONE};
   const char character{m_filebuffer.character()};
 
   ss << character;
@@ -237,7 +237,7 @@ auto Lexer::is_multi_symbol() -> TokenType
 
       // If the next character is not part of
       // A multi symbol just undo the forward
-      if(tokentype == TokenType::UNKNOWN)
+      if(tokentype == TokenType::NONE)
         m_filebuffer.backward();
 
       // We compare against all reserverd multi symbols in the second loop
@@ -253,7 +253,7 @@ auto Lexer::is_single_symbol() -> TokenType
   using namespace reserved::symbols;
 
   const char character{m_filebuffer.character()};
-  TokenType tokentype{TokenType::UNKNOWN};
+  TokenType tokentype{TokenType::NONE};
 
   for(const auto single : g_single_symbols)
     if(character == single.identifier()) {
@@ -267,17 +267,17 @@ auto Lexer::is_single_symbol() -> TokenType
 
 auto Lexer::symbol() -> Token
 {
-  TokenType tokentype{TokenType::UNKNOWN};
+  TokenType tokentype{TokenType::NONE};
 
   // First check for multi symbol
   tokentype = is_multi_symbol();
 
   // Then check for single symbol
-  if(tokentype == TokenType::UNKNOWN)
+  if(tokentype == TokenType::NONE)
     tokentype = is_single_symbol();
 
   // Throw if it is neither
-  if(tokentype == TokenType::UNKNOWN) {
+  if(tokentype == TokenType::NONE) {
     std::cout << "Token Error: " << m_filebuffer.character() << '\n';
     syntax_error("Character encountered is not valid AWX!");
   }

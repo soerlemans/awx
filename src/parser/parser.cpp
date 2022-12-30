@@ -187,6 +187,9 @@ auto Parser::item() -> NodePtr
 //                  ;
 auto Parser::item_list() -> NodePtr
 {
+  item_list();
+  item();
+  terminator();
 }
 
 // program          : item_list
@@ -194,6 +197,8 @@ auto Parser::item_list() -> NodePtr
 //                  ;
 auto Parser::program() -> NodePtr
 {
+  item_list();
+  item();
 }
 
 auto Parser::next_token() -> Token&

@@ -65,7 +65,7 @@ auto loglevel2str(const LogLevel t_loglevel) -> std::string_view
       break;
   }
 
-  return {"UNKNOWN"};
+  return {"NONE"};
 }
 
 auto set_loglevel(const LogLevel t_loglevel) -> void
