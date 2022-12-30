@@ -204,6 +204,12 @@ auto Lexer::literal_regex() -> Token
         quit = true;
         break;
 
+      case g_end_of_line.identifier():
+        // FIXME: Error on regex literals not being closed on the same line
+		// For now just end REGEX on new line
+		quit = true;
+        break;
+
         // TODO: Take care of handling octal escape codes and other
       case none::g_backslash.identifier():
         ss << next_char();
@@ -322,7 +328,7 @@ auto Lexer::tokenize() -> TokenStream
           add_token(Token{TokenType::END_OF_LINE});
         }
       } else if(character == '#') { // # Denotes comments
-		// Stop lexing the current line and continue with the next!
+        // Stop lexing the current line and continue with the next!
         break;
       } else if(std::isalpha(character)) {
         add_token(identifier());

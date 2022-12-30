@@ -374,6 +374,15 @@ auto Parser::normal_pattern() -> NodePtr
 //                  ;
 auto Parser::pattern() -> NodePtr
 {
+  NodePtr node{nullptr};
+
+  if(auto normal_pattern_ptr{normal_pattern()}; normal_pattern_ptr) {
+    node = std::move(normal_pattern_ptr);
+  } else if(auto special_pattern_ptr{special_pattern()}; special_pattern_ptr) {
+    node = std::move(special_pattern_ptr);
+  }
+
+  return node;
 }
 
 // param_list       : NAME
@@ -381,6 +390,12 @@ auto Parser::pattern() -> NodePtr
 //                  ;
 auto Parser::param_list() -> NodePtr
 {
+  NodePtr node{nullptr};
+
+  std::cout << "Parse param_list\n";
+  // const auto token{next_token()};
+
+  return node;
 }
 
 // param_list_opt   : /* empty */
@@ -388,8 +403,16 @@ auto Parser::param_list() -> NodePtr
 //                  ;
 auto Parser::param_list_opt() -> NodePtr
 {
+  NodePtr node{nullptr};
+
+  if(auto param_list_ptr{param_list()}; param_list_ptr) {
+    node = std::move(param_list_ptr);
+  }
+
+  return node;
 }
 
+// item also covers what is the valid toplevel syntax:
 // item             : action
 //                  | pattern action
 //                  | normal_pattern
@@ -400,6 +423,23 @@ auto Parser::param_list_opt() -> NodePtr
 //                  ;
 auto Parser::item() -> NodePtr
 {
+  NodePtr node{nullptr};
+
+  if(auto action_ptr{action()}; action_ptr) {
+    node = std::move(action_ptr);
+  } else if(auto pattern_ptr{pattern()}; pattern_ptr) {
+    auto action_ptr{action()};
+
+    // Resolve this?
+    // How should we represent this in AST?
+  } else if(auto normal_pattern_ptr{normal_pattern()}; normal_pattern_ptr) {
+    node = std::move(normal_pattern_ptr);
+  } else if(true) {
+    // TODO: Implement function parsing for now ignore?
+  }
+
+
+  return node;
 }
 
 

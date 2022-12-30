@@ -213,7 +213,7 @@ namespace symbols {
 	g_greater_than_equal
   };
 
-// Contains symbols that have a special meaning but are not tiedto a Token
+// Contains symbols that have a special meaning but are not tied to a Token
 namespace none {
   // String literal symbols
   DEFINE_RESERVED(g_double_quote, '"', NONE);
