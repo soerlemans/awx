@@ -4,7 +4,8 @@
 #include "binary_operator.hpp"
 #include "operators.hpp"
 
-class operators::TrinaryOperator : public operators::BinaryOperator {
+class operators::TrinaryOperator : public operators::BinaryOperator
+{
   protected:
   NodePointer m_third;
 

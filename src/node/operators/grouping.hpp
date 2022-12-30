@@ -5,9 +5,10 @@
 #include "unary_operator.hpp"
 
 
-class operators::Grouping : public operators::UnaryOperator {
-private:
-public:
+class operators::Grouping : public operators::UnaryOperator
+{
+  private:
+  public:
   virtual ~Grouping();
 };
 

@@ -32,7 +32,8 @@ enum AwxMode {
 // having its own config store object
 // TODO: Have Config inherit from a singleton so we can just focus on protected
 // Setters and public getters/etc
-class Config {
+class Config
+{
   private:
   // Regular private variables:
   AwxMode m_awx_mode;

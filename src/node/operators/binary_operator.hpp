@@ -11,15 +11,15 @@ enum Associativity : u16 {
   RIGHT,
 };
 
-class operators::BinaryOperator : public operators::UnaryOperator {
+class operators::BinaryOperator : public operators::UnaryOperator
+{
   protected:
   Associativity m_associativity;
   NodePointer m_second;
 
   public:
   explicit BinaryOperator(Precedence t_precedence,
-                          Associativity t_associativity,
-                          NodePointer&& t_left,
+                          Associativity t_associativity, NodePointer&& t_left,
                           NodePointer&& t_right);
 
   auto second() -> NodePointer&;

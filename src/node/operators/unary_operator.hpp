@@ -6,11 +6,12 @@
 #include "operators.hpp"
 
 
-class operators::UnaryOperator : public Expression {
-protected:
+class operators::UnaryOperator : public Expression
+{
+  protected:
   NodePointer m_first;
 
-public:
+  public:
   explicit UnaryOperator(Precedence t_precedence, NodePointer&& t_stmnt);
 
   auto first() -> NodePointer&;

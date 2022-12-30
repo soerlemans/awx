@@ -6,7 +6,8 @@
 // Functions intended for figuring out to what kind of class/property a token
 // Type specifier belongs, example is a token type a numerical or valid for
 // Usage as rvalue? Or could it produce a boolean result?
-namespace tokentype {
+namespace tokentype
+{
 // Functions declarations:
 constexpr auto is_int(const TokenType t_token_type) -> bool;
 constexpr auto is_numeric(const TokenType t_token_type) -> bool;
@@ -14,6 +15,8 @@ constexpr auto is_numeric(const TokenType t_token_type) -> bool;
 constexpr auto is_literal(const TokenType t_token_type) -> bool;
 constexpr auto is_lvalue(const TokenType t_token_type) -> bool;
 constexpr auto is_rvalue(const TokenType t_token_type) -> bool;
+
+constexpr auto is_control_statement(const TokenType t_token_type) -> bool;
 
 constexpr auto is_logical_junction(const TokenType t_token_type) -> bool;
 constexpr auto is_comparison_operator(const TokenType t_token_type) -> bool;
@@ -23,16 +26,15 @@ constexpr auto is_int(const TokenType t_token_type) -> bool
 {
   bool result{false};
 
-  switch(t_token_type)
-    {
-      case TokenType::HEX:
-      case TokenType::INTEGER:
-        result = true;
-        break;
+  switch(t_token_type) {
+    case TokenType::HEX:
+    case TokenType::INTEGER:
+      result = true;
+      break;
 
-      default:
-        break;
-    }
+    default:
+      break;
+  }
 
   return result;
 }
@@ -51,19 +53,18 @@ constexpr auto is_literal(const TokenType t_token_type) -> bool
 {
   bool result{false};
 
-  switch(t_token_type)
-    {
-      case TokenType::INTEGER:
-      case TokenType::HEX:
-      case TokenType::FLOAT:
-      case TokenType::STRING:
-      case TokenType::REGEX:
-        result = true;
-        break;
+  switch(t_token_type) {
+    case TokenType::INTEGER:
+    case TokenType::HEX:
+    case TokenType::FLOAT:
+    case TokenType::STRING:
+    case TokenType::REGEX:
+      result = true;
+      break;
 
-      default:
-        break;
-    }
+    default:
+      break;
+  }
 
   return result;
 }
@@ -88,17 +89,39 @@ constexpr auto is_rvalue(const TokenType t_token_type) -> bool
   return result;
 }
 
+constexpr auto is_control_statement(const TokenType t_token_type) -> bool
+{
+  bool result{false};
+
+  switch(t_token_type) {
+    case TokenType::IF:
+    case TokenType::ELSE:
+    case TokenType::DO:
+    case TokenType::WHILE:
+    case TokenType::FOR:
+      result = true;
+      break;
+
+    default:
+      break;
+  }
+
+  return result;
+}
+
 constexpr auto is_logical_junction(const TokenType t_token_type) -> bool
 {
   bool result{false};
 
-  switch(t_token_type)
-    {
-      case TokenType::AND:
-      case TokenType::OR:
-		result = true;
-		break;
-	}
+  switch(t_token_type) {
+    case TokenType::AND:
+    case TokenType::OR:
+      result = true;
+      break;
+
+    default:
+      break;
+  }
 
   return result;
 }
@@ -107,22 +130,21 @@ constexpr auto is_comparison_operator(const TokenType t_token_type) -> bool
 {
   bool result{false};
 
-  switch(t_token_type)
-    {
-      case TokenType::LESS_THAN:
-      case TokenType::LESS_THAN_EQUAL:
+  switch(t_token_type) {
+    case TokenType::LESS_THAN:
+    case TokenType::LESS_THAN_EQUAL:
 
-      case TokenType::EQUAL:
-      case TokenType::NOT_EQUAL:
+    case TokenType::EQUAL:
+    case TokenType::NOT_EQUAL:
 
-      case TokenType::GREATER_THAN:
-      case TokenType::GREATER_THAN_EQUAL:
-        result = true;
-        break;
+    case TokenType::GREATER_THAN:
+    case TokenType::GREATER_THAN_EQUAL:
+      result = true;
+      break;
 
-      default:
-        break;
-    }
+    default:
+      break;
+  }
 
   return result;
 }

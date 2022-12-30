@@ -3,14 +3,15 @@
 
 #include <vector>
 
-#include "operators.hpp"
 #include "../expression.hpp"
+#include "operators.hpp"
 
 
-class operators::DynamicOperator : public Expression {
+class operators::DynamicOperator : public Expression
+{
   std::vector<NodePointer> m_nodes;
-public:
 
+  public:
 };
 
 #endif // DYNAMIC_OPERATOR_H

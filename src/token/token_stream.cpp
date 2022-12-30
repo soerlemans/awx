@@ -40,4 +40,5 @@ auto TokenStream::eos() const -> bool
 
 
 TokenStream::~TokenStream()
-{}
+{
+}

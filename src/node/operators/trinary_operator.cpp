@@ -13,7 +13,9 @@ TrinaryOperator::TrinaryOperator(Precedence t_precedence,
                    std::forward<NodePointer>(t_left),
                    std::forward<NodePointer>(t_middle)},
     m_third{std::forward<NodePointer>(t_right)}
-{}
+{
+}
 
 TrinaryOperator::~TrinaryOperator()
-{}
+{
+}

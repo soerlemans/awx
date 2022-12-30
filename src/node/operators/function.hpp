@@ -4,4 +4,3 @@
 #include "operators.hpp"
 
 #endif // FUNCTION_H
-

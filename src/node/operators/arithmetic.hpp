@@ -1,13 +1,14 @@
 #ifndef ARITHMETIC_H
 #define ARITHMETIC_H
 
-#include "operators.hpp"
 #include "binary_operator.hpp"
+#include "operators.hpp"
 
 
 // Power:
-class operators::Power : public operators::BinaryOperator {
-public:
+class operators::Power : public operators::BinaryOperator
+{
+  public:
   Power(NodePointer&& t_left, NodePointer&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
@@ -16,8 +17,9 @@ public:
 };
 
 // Multiply:
-class operators::Multiply : public operators::BinaryOperator {
-public:
+class operators::Multiply : public operators::BinaryOperator
+{
+  public:
   Multiply(NodePointer&& t_left, NodePointer&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
@@ -26,8 +28,9 @@ public:
 };
 
 // Divide:
-class operators::Divide : public operators::BinaryOperator {
-public:
+class operators::Divide : public operators::BinaryOperator
+{
+  public:
   Divide(NodePointer&& t_left, NodePointer&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
@@ -36,8 +39,9 @@ public:
 };
 
 // Modulo:
-class operators::Modulo : public operators::BinaryOperator {
-public:
+class operators::Modulo : public operators::BinaryOperator
+{
+  public:
   Modulo(NodePointer&& t_left, NodePointer&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
@@ -46,8 +50,9 @@ public:
 };
 
 // Add:
-class operators::Add : public operators::BinaryOperator {
-public:
+class operators::Add : public operators::BinaryOperator
+{
+  public:
   Add(NodePointer&& t_left, NodePointer&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
@@ -56,8 +61,9 @@ public:
 };
 
 // Subtract:
-class operators::Subtract : public operators::BinaryOperator {
-public:
+class operators::Subtract : public operators::BinaryOperator
+{
+  public:
   Subtract(NodePointer&& t_left, NodePointer&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;

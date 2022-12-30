@@ -3,21 +3,25 @@
 
 #include <list>
 
-#include "node.hpp"
 #include "expression.hpp"
+#include "node.hpp"
 
 
 // TODO: Inherit from std::list itself or shadow std::list functions
 // This is a list in the sense of a list of expressions or similar
 // Think a list of nodes separated by commas like function arguments
 // Or function call separated nodes
-class NodeList : public Node {
-private:
+class NodeList : public Node
+{
+  private:
   std::list<NodePointer> m_list;
 
-public:
+  public:
   NodeList();
   NodeList(NodeList&& t_ast) = default;
+
+  auto begin() -> std::list<NodePointer>::iterator;
+  auto end() -> std::list<NodePointer>::iterator;
 
   auto add(NodePointer&& t_node) -> void;
 

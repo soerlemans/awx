@@ -2,16 +2,17 @@
 #define FILE_BUFFER_H
 
 #include <filesystem>
-#include <vector>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include "types.hpp"
 
 namespace fs = std::filesystem;
 
-class FileBuffer {
-private:
+class FileBuffer
+{
+  private:
   // Alisases:
   using File = std::vector<std::string>;
 
@@ -20,7 +21,7 @@ private:
   mutable std::size_t m_lineno, m_columnno;
   File m_filebuffer;
 
-public:
+  public:
   FileBuffer() = delete;
   FileBuffer(fs::path t_path);
 

@@ -1,13 +1,14 @@
 #ifndef LOGICAL_H
 #define LOGICAL_H
 
-#include "operators.hpp"
 #include "binary_operator.hpp"
+#include "operators.hpp"
 
 
 // Not:
 // Pay attention Not is not a BinaryOperator
-class operators::Not : public operators::UnaryOperator {
+class operators::Not : public operators::UnaryOperator
+{
   public:
   Not(NodePointer&& t_left);
 
@@ -17,7 +18,8 @@ class operators::Not : public operators::UnaryOperator {
 };
 
 // And:
-class operators::And : public operators::BinaryOperator {
+class operators::And : public operators::BinaryOperator
+{
   public:
   And(NodePointer&& t_left, NodePointer&& t_right);
 
@@ -27,7 +29,8 @@ class operators::And : public operators::BinaryOperator {
 };
 
 // Or:
-class operators::Or : public operators::BinaryOperator {
+class operators::Or : public operators::BinaryOperator
+{
   public:
   Or(NodePointer&& t_left, NodePointer&& t_right);
 

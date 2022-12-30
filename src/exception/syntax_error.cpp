@@ -8,7 +8,11 @@
 SyntaxError::SyntaxError(std::string t_msg, std::string t_path,
                          std::size_t t_lineno, std::string t_line,
                          std::size_t t_columnno)
-:m_error{}, m_path{t_path}, m_lineno{t_lineno + 1}, m_line{t_line}, m_columnno(t_columnno + 1)
+  : m_error{},
+    m_path{t_path},
+    m_lineno{t_lineno + 1},
+    m_line{t_line},
+    m_columnno(t_columnno + 1)
 {
   std::stringstream ss;
   std::stringstream lineno_ss;

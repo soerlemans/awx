@@ -14,7 +14,8 @@ concept TokenValueConcept = std::same_as<T, int> || std::same_as<T, double>
                             || std::same_as<T, std::string>;
 
 // Classes:
-class Token {
+class Token
+{
   private:
   using TokenValue = std::variant<int, double, std::string>;
 

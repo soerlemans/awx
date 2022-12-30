@@ -2,8 +2,9 @@
 
 
 Expression::Expression(Precedence t_precedence)
-  :Node{NodeType::EXPRESSION}, m_precedence{t_precedence}
-{}
+  : Node{NodeType::EXPRESSION}, m_precedence{t_precedence}
+{
+}
 
 auto Expression::precedence() -> Precedence
 {
@@ -11,4 +12,5 @@ auto Expression::precedence() -> Precedence
 }
 
 Expression::~Expression()
-{}
+{
+}

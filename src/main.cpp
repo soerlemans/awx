@@ -34,18 +34,17 @@ auto parse_args(const int t_argc, char* t_argv[]) -> void
 
   const auto f_getopt{std::bind(getopt, t_argc, t_argv, "f:h")};
   for(auto opt{f_getopt()}; opt != -1; opt = f_getopt())
-    switch(opt)
-      {
-	  case 'f': {
-		config.add_file(fs::path{optarg});
-		break;
-	  }
-
-	  case 'h':
-	  default:
-		print_help();
-		break;
+    switch(opt) {
+      case 'f': {
+        config.add_file(fs::path{optarg});
+        break;
       }
+
+      case 'h':
+      default:
+        print_help();
+        break;
+    }
 }
 
 auto run(int argc, char* argv[]) -> void
@@ -57,7 +56,7 @@ auto run(int argc, char* argv[]) -> void
 
   // TODO: Remove this is temporary testing code
   if(!config.get_files().size())
-	return;
+    return;
 
   FileBuffer fb{config.get_files().front()};
 
@@ -74,14 +73,12 @@ auto main(int argc, char* argv[]) -> int
 {
   parse_args(argc, argv);
 
-  try{
-	run(argc, argv);
-  }catch(std::exception& e){
-	std::cerr << "EXCEPTION OCCURED - \n"
-			  << e.what()
-			  << '\n';
+  try {
+    run(argc, argv);
+  } catch(std::exception& e) {
+    std::cerr << "EXCEPTION OCCURED - \n" << e.what() << '\n';
 
-	return ExitCode::EXCEPTION;
+    return ExitCode::EXCEPTION;
   }
 
   return ExitCode::OK;

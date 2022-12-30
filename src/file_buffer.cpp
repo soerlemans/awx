@@ -18,23 +18,21 @@ FileBuffer::FileBuffer(fs::path t_path)
 // Methods:
 auto FileBuffer::load() -> void
 {
-  if(!fs::exists(m_path))
-    {
-      std::string error_str{"File does not exist! \""};
-      error_str += m_path.string();
-      error_str += "\"";
+  if(!fs::exists(m_path)) {
+    std::string error_str{"File does not exist! \""};
+    error_str += m_path.string();
+    error_str += "\"";
 
-      throw std::invalid_argument{error_str};
+    throw std::invalid_argument{error_str};
   }
 
   std::ifstream ifs{m_path};
-  while(ifs.good() && !ifs.eof())
-    {
-      std::string line;
-      std::getline(ifs, line);
+  while(ifs.good() && !ifs.eof()) {
+    std::string line;
+    std::getline(ifs, line);
 
-      m_filebuffer.push_back(line);
-    }
+    m_filebuffer.push_back(line);
+  }
 }
 
 auto FileBuffer::path() const -> fs::path
@@ -142,7 +140,8 @@ auto FileBuffer::operator[](std::size_t t_index) -> std::string&
 
 // Destructor:
 FileBuffer::~FileBuffer()
-{}
+{
+}
 
 // Exported functions:
 auto print_filebuffer(const FileBuffer& t_fb) -> void

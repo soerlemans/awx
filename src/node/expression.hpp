@@ -26,7 +26,8 @@ enum class Precedence : u16 {
 };
 
 // Have UnaryOperator and BinaryOperator derive from this
-class Expression : public Node {
+class Expression : public Node
+{
   protected:
   Precedence m_precedence;
 

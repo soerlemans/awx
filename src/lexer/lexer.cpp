@@ -7,8 +7,8 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../log.hpp"
 #include "../exception/syntax_error.hpp"
+#include "../log.hpp"
 #include "../token/token_type_helpers.hpp"
 
 
@@ -32,7 +32,8 @@ auto Lexer::syntax_error(std::string_view t_msg) const -> void
 
 // Public constructors:
 Lexer::Lexer(FileBuffer& t_filebuffer): m_filebuffer{t_filebuffer}
-{}
+{
+}
 
 // Public methods:
 auto Lexer::is_keyword(std::string_view t_identifier) -> TokenType
@@ -76,17 +77,15 @@ auto Lexer::is_hex_literal() -> bool
 {
   // Octal literals are not specified in the POSIX AWK standard
   // So just discard leading zeros
-  if(m_filebuffer.character() == '0')
-    {
-      // TODO: Define reserved hex literal symbol
-      // If the next character is a 'x' it must be a hex literal
+  if(m_filebuffer.character() == '0') {
+    // TODO: Define reserved hex literal symbol
+    // If the next character is a 'x' it must be a hex literal
+    m_filebuffer.forward();
+    if(m_filebuffer.character() == 'x') {
       m_filebuffer.forward();
-      if(m_filebuffer.character() == 'x')
-        {
-          m_filebuffer.forward();
 
-          return true;
-      }
+      return true;
+    }
   }
 
   return false;
@@ -102,37 +101,32 @@ auto Lexer::literal_numeric() -> Token
   bool is_float{false};
 
   std::stringstream ss;
-  while(!m_filebuffer.eol())
-    {
-      const char character{m_filebuffer.character()};
+  while(!m_filebuffer.eol()) {
+    const char character{m_filebuffer.character()};
 
-      // is_valid_character for different type of integer literals
-      if(std::isdigit(character))
-        {
-          ss << m_filebuffer.forward();
-      } else if(hex && std::isxdigit(character))
-        {
-          // The following check is probably not needed, but implement it one
-          // day just in case to be sure
-          // if(is_float)
-          //   syntax_error("Illegal character in ");
+    // is_valid_character for different type of integer literals
+    if(std::isdigit(character)) {
+      ss << m_filebuffer.forward();
+    } else if(hex && std::isxdigit(character)) {
+      // The following check is probably not needed, but implement it one
+      // day just in case to be sure
+      // if(is_float)
+      //   syntax_error("Illegal character in ");
 
-          ss << m_filebuffer.forward();
-      } else if(!is_float && character == g_dot.identifier())
-        {
-          // Cant be a hex literal with a floating point at the same time in
-          // the future we might have primitive types be classes ruby style so
-          // someday this could be a feature But for now give an error on this
-          if(hex)
-            syntax_error("Found a . in a hex literal");
+      ss << m_filebuffer.forward();
+    } else if(!is_float && character == g_dot.identifier()) {
+      // Cant be a hex literal with a floating point at the same time in
+      // the future we might have primitive types be classes ruby style so
+      // someday this could be a feature But for now give an error on this
+      if(hex)
+        syntax_error("Found a . in a hex literal");
 
-          is_float = true;
-          ss << m_filebuffer.forward();
-      } else
-        { // Quit if digit ends
-          break;
-        }
+      is_float = true;
+      ss << m_filebuffer.forward();
+    } else { // Quit if digit ends
+      break;
     }
+  }
 
   // Determine what must be returned:
   if(hex)
@@ -156,25 +150,23 @@ auto Lexer::literal_string() -> Token
   m_filebuffer.forward();
 
   bool quit{false};
-  while(!quit && !m_filebuffer.eol())
-    {
-      const char character{m_filebuffer.character()};
+  while(!quit && !m_filebuffer.eol()) {
+    const char character{m_filebuffer.character()};
 
-      switch(character)
-        {
-          case g_double_quote.identifier():
-            quit = true;
-            break;
+    switch(character) {
+      case g_double_quote.identifier():
+        quit = true;
+        break;
 
-          case g_backslash.identifier():
-            ss << m_filebuffer.forward();
-            [[fallthrough]];
+      case g_backslash.identifier():
+        ss << m_filebuffer.forward();
+        [[fallthrough]];
 
-          default:
-            ss << m_filebuffer.forward();
-            break;
-        }
+      default:
+        ss << m_filebuffer.forward();
+        break;
     }
+  }
 
   LOG(LogLevel::INFO, "STRING: ", ss.str());
   return Token{TokenType::STRING, ss.str()};
@@ -194,26 +186,24 @@ auto Lexer::literal_regex() -> Token
   // regex expression we should also throw an error or assume a division if we
   // do not find a corresponding / before the EOL
   bool quit{false};
-  while(!quit && !m_filebuffer.eol())
-    {
-      const char character{m_filebuffer.character()};
+  while(!quit && !m_filebuffer.eol()) {
+    const char character{m_filebuffer.character()};
 
-      switch(character)
-        {
-          case g_slash.identifier():
-            quit = true;
-            break;
+    switch(character) {
+      case g_slash.identifier():
+        quit = true;
+        break;
 
-            // TODO: Take care of handling octal escape codes and other
-          case none::g_backslash.identifier():
-            ss << m_filebuffer.forward();
-            [[fallthrough]];
+        // TODO: Take care of handling octal escape codes and other
+      case none::g_backslash.identifier():
+        ss << m_filebuffer.forward();
+        [[fallthrough]];
 
-          default:
-            ss << m_filebuffer.forward();
-            break;
-        }
+      default:
+        ss << m_filebuffer.forward();
+        break;
     }
+  }
 
   LOG(LogLevel::INFO, "REGEX: ", ss.str());
   return Token{TokenType::REGEX, ss.str()};
@@ -232,29 +222,27 @@ auto Lexer::is_multi_symbol() -> TokenType
   // TODO: We use two loops now, we can change this to only use one
   // Refactor someday
   for(const auto multi : g_multi_symbols)
-    if(character == multi.identifier().front())
-      {
-        m_filebuffer.forward();
-        ss << m_filebuffer.character();
+    if(character == multi.identifier().front()) {
+      m_filebuffer.forward();
+      ss << m_filebuffer.character();
 
-        if(!m_filebuffer.eol())
-          for(const auto multi : g_multi_symbols)
-            if(ss.str() == multi.identifier())
-              {
-                tokentype = multi.tokentype();
+      if(!m_filebuffer.eol())
+        for(const auto multi : g_multi_symbols)
+          if(ss.str() == multi.identifier()) {
+            tokentype = multi.tokentype();
 
-                LOG(LogLevel::INFO, "MULTI SYMBOL: ", ss.str());
-                break; // We found a multi symbol token!
-            }
+            LOG(LogLevel::INFO, "MULTI SYMBOL: ", ss.str());
+            break; // We found a multi symbol token!
+          }
 
-        // If the next character is not part of
-        // A multi symbol just undo the forward
-        if(tokentype == TokenType::UNKNOWN)
-          m_filebuffer.backward();
+      // If the next character is not part of
+      // A multi symbol just undo the forward
+      if(tokentype == TokenType::UNKNOWN)
+        m_filebuffer.backward();
 
-        // We compare against all reserverd multi symbols in the second loop
-        // So there is no need to iterate againt after we found our first match
-        break;
+      // We compare against all reserverd multi symbols in the second loop
+      // So there is no need to iterate againt after we found our first match
+      break;
     }
 
   return tokentype;
@@ -268,11 +256,10 @@ auto Lexer::is_single_symbol() -> TokenType
   TokenType tokentype{TokenType::UNKNOWN};
 
   for(const auto single : g_single_symbols)
-    if(character == single.identifier())
-      {
-        tokentype = single.tokentype();
-        LOG(LogLevel::INFO, "SINGLE SYMBOL: ", character);
-        break;
+    if(character == single.identifier()) {
+      tokentype = single.tokentype();
+      LOG(LogLevel::INFO, "SINGLE SYMBOL: ", character);
+      break;
     }
 
   return tokentype;
@@ -290,10 +277,9 @@ auto Lexer::symbol() -> Token
     tokentype = is_single_symbol();
 
   // Throw if it is neither
-  if(tokentype == TokenType::UNKNOWN)
-    {
-      std::cout << "Token Error: " << m_filebuffer.character() << '\n';
-      syntax_error("Character encountered is not valid AWX!");
+  if(tokentype == TokenType::UNKNOWN) {
+    std::cout << "Token Error: " << m_filebuffer.character() << '\n';
+    syntax_error("Character encountered is not valid AWX!");
   }
 
   // Add the symbol if we recognize it
@@ -310,36 +296,34 @@ auto Lexer::tokenize() -> TokenStream
   const TokenType last_tokentype{m_tokenstream.back().type()};
 
   for(; !m_filebuffer.eof(); m_filebuffer.next())
-    while(!m_filebuffer.eol())
-      {
-        const char character{m_filebuffer.character()};
+    while(!m_filebuffer.eol()) {
+      const char character{m_filebuffer.character()};
 
-        if(std::isspace(character))
-          ;                       // Just ignore whitespace
-        else if(character == '#') // # Denotes comments
-          break;                  // Stop parsing current line
-        else if(std::isalpha(character))
-          {
-            add_token(identifier());
-            continue;
-        } else if(std::isdigit(character))
-          {
-            add_token(literal_numeric());
-            continue;
-        } else if(character == double_quote)
-          add_token(literal_string());
-        else if(character == slash && !tokentype::is_int(last_tokentype))
-          add_token(literal_regex());
-        else
-          add_token(symbol());
+      if(std::isspace(character))
+        ;                       // Just ignore whitespace
+      else if(character == '#') // # Denotes comments
+        break;                  // Stop parsing current line
+      else if(std::isalpha(character)) {
+        add_token(identifier());
+        continue;
+      } else if(std::isdigit(character)) {
+        add_token(literal_numeric());
+        continue;
+      } else if(character == double_quote)
+        add_token(literal_string());
+      else if(character == slash && !tokentype::is_int(last_tokentype))
+        add_token(literal_regex());
+      else
+        add_token(symbol());
 
-        // Increment at the end, this allows us to prevent having to use
-        // m_filebuffer.backward() in situations where we look a head to much
-        m_filebuffer.forward();
-      }
+      // Increment at the end, this allows us to prevent having to use
+      // m_filebuffer.backward() in situations where we look a head to much
+      m_filebuffer.forward();
+    }
 
   return m_tokenstream;
 }
 
 Lexer::~Lexer()
-{}
+{
+}

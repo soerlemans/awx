@@ -1,13 +1,14 @@
 #ifndef ASSIGNMENT_H
 #define ASSIGNMENT_H
 
-#include "operators.hpp"
 #include "binary_operator.hpp"
+#include "operators.hpp"
 
 
 // Power assignment:
-class operators::PowerAssignment : public operators::BinaryOperator {
-public:
+class operators::PowerAssignment : public operators::BinaryOperator
+{
+  public:
   PowerAssignment(NodePointer&& t_left, NodePointer&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
@@ -16,8 +17,9 @@ public:
 };
 
 // Multiply assignment:
-class operators::MultiplyAssignment : public operators::BinaryOperator {
-public:
+class operators::MultiplyAssignment : public operators::BinaryOperator
+{
+  public:
   MultiplyAssignment(NodePointer&& t_left, NodePointer&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
@@ -26,8 +28,9 @@ public:
 };
 
 // Divide assignemnt:
-class operators::DivideAssignment : public operators::BinaryOperator {
-public:
+class operators::DivideAssignment : public operators::BinaryOperator
+{
+  public:
   DivideAssignment(NodePointer&& t_left, NodePointer&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
@@ -36,8 +39,9 @@ public:
 };
 
 // Modulo assignment:
-class operators::ModuloAssignment : public operators::BinaryOperator {
-public:
+class operators::ModuloAssignment : public operators::BinaryOperator
+{
+  public:
   ModuloAssignment(NodePointer&& t_left, NodePointer&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
@@ -46,8 +50,9 @@ public:
 };
 
 // Add assignment:
-class operators::AddAssignment : public operators::BinaryOperator {
-public:
+class operators::AddAssignment : public operators::BinaryOperator
+{
+  public:
   AddAssignment(NodePointer&& t_left, NodePointer&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
@@ -56,8 +61,9 @@ public:
 };
 
 // Subtract assignment:
-class operators::SubtractAssignment : public operators::BinaryOperator {
-public:
+class operators::SubtractAssignment : public operators::BinaryOperator
+{
+  public:
   SubtractAssignment(NodePointer&& t_left, NodePointer&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
@@ -66,8 +72,9 @@ public:
 };
 
 // Assignemnt
-class operators::Assignment : public operators::BinaryOperator {
-public:
+class operators::Assignment : public operators::BinaryOperator
+{
+  public:
   Assignment(NodePointer&& t_left, NodePointer&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;

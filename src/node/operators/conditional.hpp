@@ -4,8 +4,9 @@
 #include "operators.hpp"
 #include "trinary_operator.hpp"
 
-class Conditional : public operators::TrinaryOperator {
-public:
+class Conditional : public operators::TrinaryOperator
+{
+  public:
 };
 
 

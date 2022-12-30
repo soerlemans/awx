@@ -14,8 +14,9 @@
 // Aliases:
 // using TokenStream = std::vector<Token>;
 
-class Lexer {
-private:
+class Lexer
+{
+  private:
   FileBuffer& m_filebuffer;
   TokenStream m_tokenstream;
 
@@ -25,7 +26,7 @@ private:
   // Error handling:
   auto syntax_error(std::string_view t_msg) const -> void;
 
-public:
+  public:
   Lexer() = delete;
   Lexer(FileBuffer& t_filebuffer);
 

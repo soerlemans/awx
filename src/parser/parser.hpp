@@ -8,7 +8,8 @@
 
 // TOOD: Create constexpr functions for verifying the grammar
 // Like is_rvalue or is_lvalue
-class Parser {
+class Parser
+{
   private:
   TokenStream m_token_stream;
 
@@ -21,10 +22,7 @@ class Parser {
   virtual auto identifier() -> NodePointer;
   virtual auto literal() -> NodePointer;
 
-  // virtual auto logical_junction(const Token& t_lhs, const Token& t_op,
-  //                         const Token& t_rhs) -> NodePointer;
-  // virtual auto comparison(const Token& t_lhs, const Token& t_op,
-  //                         const Token& t_rhs) -> NodePointer;
+  virtual auto expression() -> NodePointer;
   virtual auto condition() -> NodePointer;
 
   // Body contains execution body and actual statements

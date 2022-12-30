@@ -24,8 +24,7 @@ enum class LogLevel : u16 {
 #define LOG(loglevel, ...) \
   log(__FILE__, __FUNCTION__, __LINE__, loglevel, __VA_ARGS__)
 
-#define SET_LOGLEVEL(loglevel) \
-  set_loglevel(loglevel)
+#define SET_LOGLEVEL(loglevel) set_loglevel(loglevel)
 
 // Functions:
 auto is_lower_loglevel(const LogLevel t_loglevel) -> bool;
@@ -47,10 +46,8 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
   std::clog << '[' << loglevel2str(t_loglevel) << ']';
 
   // Module information
-  std::clog << '['    << t_file
-			<< ':'    << t_lineno
-			<< " -> " << t_function
-			<< "()] => ";
+  std::clog << '[' << t_file << ':' << t_lineno << " -> " << t_function
+            << "()] => ";
 
   // Fold expression
   (std::clog << ... << t_args) << '\n';
@@ -59,7 +56,11 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
 #else
 
 // Stub the macros if we are not on the debugging build
-#define LOG(...) do {} while(0)
-#define SET_LEVEL(level) do {} while(0)
+#define LOG(...) \
+  do {           \
+  } while(0)
+#define SET_LEVEL(level) \
+  do {                   \
+  } while(0)
 #endif // DEBUG
 #endif // LOG_H

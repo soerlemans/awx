@@ -5,8 +5,7 @@
 #include <type_traits>
 
 #include "../types.hpp"
-
-#include "node_visitor.hpp"
+#include "../visitor/node_visitor.hpp"
 
 
 // Forward declarations:
@@ -25,7 +24,8 @@ enum class NodeType {
 
 // Abstract Base Node class:
 // A node could either be a literal or some form of expression
-class Node {
+class Node
+{
   protected:
   NodeType m_nodetype;
 

@@ -6,10 +6,12 @@
 #include "node_list.hpp"
 
 
-class FunctionCall : public NodeList {
-private:
+class FunctionCall : public NodeList
+{
+  private:
   std::string m_function_name;
-public:
+
+  public:
 };
 
 #endif // FUNCTION_CALL_H

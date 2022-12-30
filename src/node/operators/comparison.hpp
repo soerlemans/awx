@@ -5,7 +5,8 @@
 #include "operators.hpp"
 
 // LessThan:
-class LessThan : public operators::BinaryOperator {
+class LessThan : public operators::BinaryOperator
+{
   public:
   LessThan(NodePointer&& t_left, NodePointer&& t_right);
 
@@ -15,7 +16,8 @@ class LessThan : public operators::BinaryOperator {
 };
 
 // LessThanEqual:
-class LessThanEqual : public operators::BinaryOperator {
+class LessThanEqual : public operators::BinaryOperator
+{
   public:
   LessThanEqual(NodePointer&& t_left, NodePointer&& t_right);
 
@@ -25,7 +27,8 @@ class LessThanEqual : public operators::BinaryOperator {
 };
 
 // NotEqual:
-class NotEqual : public operators::BinaryOperator {
+class NotEqual : public operators::BinaryOperator
+{
   public:
   NotEqual(NodePointer&& t_left, NodePointer&& t_right);
 
@@ -35,7 +38,8 @@ class NotEqual : public operators::BinaryOperator {
 };
 
 // Equal:
-class Equal : public operators::BinaryOperator {
+class Equal : public operators::BinaryOperator
+{
   public:
   Equal(NodePointer&& t_left, NodePointer&& t_right);
 
@@ -45,7 +49,8 @@ class Equal : public operators::BinaryOperator {
 };
 
 // GreaterThan:
-class GreaterThan : public operators::BinaryOperator {
+class GreaterThan : public operators::BinaryOperator
+{
   public:
   GreaterThan(NodePointer&& t_left, NodePointer&& t_right);
 
@@ -55,7 +60,8 @@ class GreaterThan : public operators::BinaryOperator {
 };
 
 // GreaterThanEqual:
-class GreaterThanEqual : public operators::BinaryOperator {
+class GreaterThanEqual : public operators::BinaryOperator
+{
   public:
   GreaterThanEqual(NodePointer&& t_left, NodePointer&& t_right);
 

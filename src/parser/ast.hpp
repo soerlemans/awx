@@ -5,12 +5,13 @@
 
 #include "../node/node.hpp"
 #include "../node/node_list.hpp"
-#include "../node/node_visitor.hpp"
+#include "../visitor/node_visitor.hpp"
 
 
 // The Abstract Syntax Tree management class
-class Ast {
-private:
+class Ast
+{
+  private:
   // We use raw pointers for determining where we are in the AST
   // This is fine as it is for traversal purposes
   Node* m_root;
@@ -18,9 +19,7 @@ private:
 
   NodeList m_list;
 
-  NodeVisitor m_visitor;
-
-public:
+  public:
   Ast();
   Ast(Ast&& t_ast) = default;
   // Ast(const Ast& t_ast) = default;

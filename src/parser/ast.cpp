@@ -1,9 +1,9 @@
 #include "ast.hpp"
 
 
-Ast::Ast()
-  : m_root{nullptr}, m_current{nullptr}, m_list{}, m_visitor{}
-{}
+Ast::Ast(): m_root{nullptr}, m_current{nullptr}, m_list{}
+{
+}
 
 auto Ast::add(NodePointer&& t_node) -> void
 {
@@ -11,10 +11,10 @@ auto Ast::add(NodePointer&& t_node) -> void
 }
 
 Ast::~Ast()
-{}
+{
+}
 
 // Exported functions:
 auto print_ast(const Ast& t_ast) -> void
 {
-  
 }

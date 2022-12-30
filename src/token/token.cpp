@@ -6,19 +6,23 @@
 
 
 Token::Token(TokenType t_token_type): m_token_type{t_token_type}, m_value{}
-{}
+{
+}
 
 Token::Token(TokenType t_token_type, int t_value)
   : m_token_type{t_token_type}, m_value{t_value}
-{}
+{
+}
 
 Token::Token(TokenType t_token_type, double t_value)
   : m_token_type{t_token_type}, m_value{t_value}
-{}
+{
+}
 
 Token::Token(TokenType t_token_type, std::string t_value)
   : m_token_type{t_token_type}, m_value{t_value}
-{}
+{
+}
 
 auto Token::type() const -> TokenType
 {
@@ -26,7 +30,8 @@ auto Token::type() const -> TokenType
 }
 
 Token::~Token()
-{}
+{
+}
 
 // Exported functions:
 auto print_token(const Token& t_token) -> void
@@ -35,11 +40,11 @@ auto print_token(const Token& t_token) -> void
 
   // TODO: Macro this away?
   if(const auto verify{t_token.check<int>()}; verify)
-	std::cout << " Int: " << *verify << '\n';
+    std::cout << " Int: " << *verify << '\n';
   else if(const auto verify{t_token.check<double>()}; verify)
-	std::cout << " Double: " << *verify << '\n';
+    std::cout << " Double: " << *verify << '\n';
   else if(const auto verify{t_token.check<std::string>()}; verify)
-	std::cout << " String: " << *verify << '\n';
+    std::cout << " String: " << *verify << '\n';
   else
-	; // TODO: Error handling
+    ; // TODO: Error handling
 }

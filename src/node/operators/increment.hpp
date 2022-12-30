@@ -6,8 +6,9 @@
 
 
 // Postfix:
-class operators::PostfixIncrement: public operators::UnaryOperator {
-public:
+class operators::PostfixIncrement : public operators::UnaryOperator
+{
+  public:
   PostfixIncrement(NodePointer&& t_left);
 
   auto accept(NodeVisitor t_visitor) -> void;
@@ -16,8 +17,9 @@ public:
 };
 
 // Prefix:
-class operators::PrefixIncrement: public operators::UnaryOperator {
-public:
+class operators::PrefixIncrement : public operators::UnaryOperator
+{
+  public:
   PrefixIncrement(NodePointer&& t_left);
 
   auto accept(NodeVisitor t_visitor) -> void;

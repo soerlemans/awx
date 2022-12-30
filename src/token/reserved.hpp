@@ -10,8 +10,9 @@
 
 // Macros:
 // Do not use these macros outside of this file!
-// TODO: Find a way to use templates to convert const char* to a std::string_view
-// Macro used of defining/initializing a reserved keyword or symbol
+// TODO: Find a way to use templates to convert const char* to a
+// std::string_view Macro used of defining/initializing a reserved keyword or
+// symbol
 #define DEFINE_RESERVED(name, id, token) \
   constexpr ReservedWrapper name         \
   {                                      \
@@ -25,15 +26,17 @@ concept ReservedIdentifierConcept =
   std::same_as<T, std::string_view> || std::same_as<T, char>;
 
 // AWX reserved keywords and symbols
-namespace reserved {
-  // Aliases:
-  // Shorthand for string_view do not use outside of this namespace
-  using r_vw = std::string_view;
+namespace reserved
+{
+// Aliases:
+// Shorthand for string_view do not use outside of this namespace
+using r_vw = std::string_view;
 
 // Helper class for the Reserved global variable definitions
 template<typename T = char>
   requires ReservedIdentifierConcept<T>
-class ReservedWrapper {
+class ReservedWrapper
+{
   private:
   const T m_identifier;
   const TokenType m_tokentype;
@@ -43,7 +46,8 @@ class ReservedWrapper {
   // std::string_view explicitly
   constexpr ReservedWrapper(T t_indentifier, TokenType t_tokentype)
     : m_identifier{t_indentifier}, m_tokentype{t_tokentype}
-  {}
+  {
+  }
 
   constexpr auto identifier() const -> T
   {
