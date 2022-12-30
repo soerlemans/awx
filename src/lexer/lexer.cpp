@@ -310,17 +310,20 @@ auto Lexer::tokenize() -> TokenStream
 
   const TokenType last_tokentype{m_tokenstream.back().type()};
 
-  for(; !m_filebuffer.eof(); m_filebuffer.next()) {
-    bool skip_newline{false};
-
+  for(; !m_filebuffer.eof(); m_filebuffer.next())
     while(!m_filebuffer.eol()) {
       const char character{m_filebuffer.character()};
 
       if(std::isspace(character)) {
         // Just ignore whitespace
+        // But dont ignore newlines
+        if(character == '\n') {
+          LOG(LogLevel::INFO, "NEWLINE");
+          add_token(Token{TokenType::END_OF_LINE});
+        }
       } else if(character == '#') { // # Denotes comments
-        skip_newline = true;
-        break; // Stop parsing current line
+		// Stop lexing the current line and continue with the next!
+        break;
       } else if(std::isalpha(character)) {
         add_token(identifier());
       } else if(std::isdigit(character)) {
@@ -336,14 +339,6 @@ auto Lexer::tokenize() -> TokenStream
       // m_filebuffer.backward() in situations where we look a head to much
       m_filebuffer.forward();
     }
-
-    // At the end of each line there is always a newline
-    // Since newlines are treated as terminators
-    if(!skip_newline) {
-      LOG(LogLevel::INFO, "NEWLINE");
-      add_token(Token{TokenType::END_OF_LINE});
-    }
-  }
 
   return m_tokenstream;
 }

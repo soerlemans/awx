@@ -15,7 +15,7 @@ class Parser
   public:
   Parser(TokenStream t_tokenstream);
 
-  // Parsing rule functions:
+  // Parsing grammar functions:
   virtual auto newline_opt() -> NodePtr;
   virtual auto simple_get() -> NodePtr;
 
@@ -69,6 +69,7 @@ class Parser
 
   virtual auto program() -> NodePtr;
 
+  // Other functions:
   auto next_token() -> Token&;
 
   // The parse() method should be virtual cause in the future we may want to

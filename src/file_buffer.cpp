@@ -31,6 +31,9 @@ auto FileBuffer::load() -> void
     std::string line;
     std::getline(ifs, line);
 
+	// Dont discard newlines
+	line += '\n';
+
     m_filebuffer.push_back(line);
   }
 }
