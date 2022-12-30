@@ -11,12 +11,19 @@
 class Parser
 {
   private:
-  TokenStream m_token_stream;
+  TokenStream m_tokenstream;
 
   public:
-  Parser(TokenStream t_token_stream);
+  Parser(TokenStream t_tokenstream);
 
   // Non-terminals:
+  virtual auto special_pattern() -> NodePointer;
+  virtual auto normal_pattern() -> NodePointer;
+  virtual auto pattern() -> NodePointer;
+
+  virtual auto param_list() -> NodePointer;
+  virtual auto param_list_opt() -> NodePointer;
+
   virtual auto item() -> NodePointer;
   virtual auto item_list() -> NodePointer;
 

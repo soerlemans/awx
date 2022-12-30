@@ -24,3 +24,9 @@ auto NodeList::add(NodePointer&& t_node) -> void
 auto NodeList::accept([[maybe_unused]] NodeVisitor t_visitor) -> void
 {
 }
+
+auto NodeList::print() const -> void
+{
+  for(auto& ptr : m_list)
+	ptr->print();
+}

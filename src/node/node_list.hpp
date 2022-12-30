@@ -25,7 +25,8 @@ class NodeList : public Node
 
   auto add(NodePointer&& t_node) -> void;
 
-  auto accept(NodeVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void override;
+  auto print() const -> void override;
 };
 
 #endif // NODE_LIST_H

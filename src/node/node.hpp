@@ -40,6 +40,9 @@ class Node
   // Needed for the visitor pattern
   virtual auto accept(NodeVisitor t_visitor) -> void = 0;
 
+  // Needed for printing the AST
+  virtual auto print() const -> void = 0;
+
   virtual ~Node();
 };
 

@@ -19,7 +19,7 @@ class Token
   private:
   using TokenValue = std::variant<int, double, std::string>;
 
-  TokenType m_token_type;
+  TokenType m_tokentype;
   TokenValue m_value;
 
   public:
@@ -27,10 +27,10 @@ class Token
   Token() = default;
   Token(const Token& t_token) = default;
 
-  explicit Token(TokenType t_token_type);
-  explicit Token(TokenType t_token_type, int t_value);
-  explicit Token(TokenType t_token_type, double t_value);
-  explicit Token(TokenType t_token_type, std::string t_value);
+  explicit Token(TokenType t_tokentype);
+  explicit Token(TokenType t_tokentype, int t_value);
+  explicit Token(TokenType t_tokentype, double t_value);
+  explicit Token(TokenType t_tokentype, std::string t_value);
 
   auto type() const -> TokenType;
 
@@ -46,7 +46,7 @@ class Token
     requires TokenValueConcept<T>
   auto get() const -> std::tuple<TokenType, TokenValueType>
   {
-    return {m_token_type, std::get<T>(m_value)};
+    return {m_tokentype, std::get<T>(m_value)};
   }
 
   // The check() function should only be used for checking or verifying the

@@ -10,7 +10,42 @@
 
 
 // Class definitions:
-Parser::Parser(TokenStream t_token_stream): m_token_stream{t_token_stream}
+Parser::Parser(TokenStream t_tokenstream): m_tokenstream{t_tokenstream}
+{
+}
+
+// special_pattern  : Begin
+//                  | End
+//                  ;
+auto Parser::special_pattern() -> NodePointer
+{
+}
+
+// normal_pattern   : expr
+//                  | expr ',' newline_opt expr
+//                  ;
+auto Parser::normal_pattern() -> NodePointer
+{
+}
+
+// pattern          : normal_pattern
+//                  | special_pattern
+//                  ;
+auto Parser::pattern() -> NodePointer
+{
+}
+
+// param_list       : NAME
+//                  | param_list ',' NAME
+//                  ;
+auto Parser::param_list() -> NodePointer
+{
+}
+
+// param_list_opt   : /* empty */
+//                  | param_list
+//                  ;
+auto Parser::param_list_opt() -> NodePointer
 {
 }
 
@@ -43,7 +78,7 @@ auto Parser::program() -> NodePointer
 
 auto Parser::next_token() -> Token&
 {
-  return m_token_stream.next();
+  return m_tokenstream.next();
 }
 
 auto Parser::parse() -> Ast
@@ -51,7 +86,7 @@ auto Parser::parse() -> Ast
   using namespace reserved;
 
   Ast ast;
-  for(; !m_token_stream.eos(); m_token_stream.next()) {
+  for(; !m_tokenstream.eos(); m_tokenstream.next()) {
     // Ast is pieced together from calling nested functions
     // That each return a NodePointer to eachother
     // ast.add(toplevel());
