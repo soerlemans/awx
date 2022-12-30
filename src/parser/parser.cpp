@@ -14,6 +14,118 @@ Parser::Parser(TokenStream t_tokenstream): m_tokenstream{t_tokenstream}
 {
 }
 
+auto Parser::newline_opt() -> NodePtr
+{
+}
+
+auto Parser::simple_get() -> NodePtr
+{
+}
+
+auto Parser::unary_input_function() -> NodePtr
+{
+}
+
+auto Parser::non_unary_input_function() -> NodePtr
+{
+}
+
+auto Parser::lvalue() -> NodePtr
+{
+}
+
+auto Parser::non_unary_print_expr() -> NodePtr
+{
+}
+
+auto Parser::unary_print_expr() -> NodePtr
+{
+}
+
+auto Parser::print_expr() -> NodePtr
+{
+}
+
+auto Parser::print_expr_list() -> NodePtr
+{
+}
+
+auto Parser::print_expr_list_opt() -> NodePtr
+{
+}
+
+auto Parser::non_unary_expr() -> NodePtr
+{
+}
+
+auto Parser::unary_expr() -> NodePtr
+{
+}
+
+auto Parser::expr() -> NodePtr
+{
+}
+
+auto Parser::expr_opt() -> NodePtr
+{
+}
+
+auto Parser::multiple_expr_list() -> NodePtr
+{
+}
+
+auto Parser::expr_list() -> NodePtr
+{
+}
+
+auto Parser::expr_list_opt() -> NodePtr
+{
+}
+
+auto Parser::output_redirection() -> NodePtr
+{
+}
+
+auto Parser::simple_print_statement() -> NodePtr
+{
+}
+
+auto Parser::print_statement() -> NodePtr
+{
+}
+
+auto Parser::simple_statement() -> NodePtr
+{
+}
+
+auto Parser::simple_statement_opt() -> NodePtr
+{
+}
+
+auto Parser::terminatable_statement() -> NodePtr
+{
+}
+
+auto Parser::unterminated_statement() -> NodePtr
+{
+}
+
+auto Parser::terminated_statement() -> NodePtr
+{
+}
+
+auto Parser::unterminated_statement_list() -> NodePtr
+{
+}
+
+auto Parser::terminated_statement_list() -> NodePtr
+{
+}
+
+auto Parser::terminator() -> NodePtr
+{
+}
+
 // action           : '{' newline_opt                             '}'
 //                  | '{' newline_opt terminated_statement_list   '}'
 //                  | '{' newline_opt unterminated_statement_list '}'
