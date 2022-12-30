@@ -4,8 +4,8 @@ using namespace operators;
 
 
 // Postfix:
-PostfixIncrement::PostfixIncrement(NodePointer&& t_left)
-  : UnaryOperator{Precedence::PostfixIncDec, std::forward<NodePointer>(t_left)}
+PostfixIncrement::PostfixIncrement(NodePtr&& t_left)
+  : UnaryOperator{Precedence::PostfixIncDec, std::forward<NodePtr>(t_left)}
 {
 }
 
@@ -20,8 +20,8 @@ PostfixIncrement::~PostfixIncrement()
 
 
 // Prefix:
-PrefixIncrement::PrefixIncrement(NodePointer&& t_left)
-  : UnaryOperator{Precedence::PrefixIncDec, std::forward<NodePointer>(t_left)}
+PrefixIncrement::PrefixIncrement(NodePtr&& t_left)
+  : UnaryOperator{Precedence::PrefixIncDec, std::forward<NodePtr>(t_left)}
 {
 }
 

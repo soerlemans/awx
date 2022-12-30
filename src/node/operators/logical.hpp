@@ -10,7 +10,7 @@
 class operators::Not : public operators::UnaryOperator
 {
   public:
-  Not(NodePointer&& t_left);
+  Not(NodePtr&& t_left);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -21,7 +21,7 @@ class operators::Not : public operators::UnaryOperator
 class operators::And : public operators::BinaryOperator
 {
   public:
-  And(NodePointer&& t_left, NodePointer&& t_right);
+  And(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -32,7 +32,7 @@ class operators::And : public operators::BinaryOperator
 class operators::Or : public operators::BinaryOperator
 {
   public:
-  Or(NodePointer&& t_left, NodePointer&& t_right);
+  Or(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 

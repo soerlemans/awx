@@ -9,7 +9,7 @@
 class operators::PostfixDecrement : public operators::UnaryOperator
 {
   public:
-  PostfixDecrement(NodePointer&& t_left);
+  PostfixDecrement(NodePtr&& t_left);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -20,7 +20,7 @@ class operators::PostfixDecrement : public operators::UnaryOperator
 class operators::PrefixDecrement : public operators::UnaryOperator
 {
   public:
-  PrefixDecrement(NodePointer&& t_left);
+  PrefixDecrement(NodePtr&& t_left);
 
   auto accept(NodeVisitor t_visitor) -> void;
 

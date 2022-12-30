@@ -12,7 +12,7 @@
 class Node;
 
 // Aliases:
-using NodePointer = std::unique_ptr<Node>;
+using NodePtr = std::unique_ptr<Node>;
 
 // Enum definitions:
 enum class NodeType {

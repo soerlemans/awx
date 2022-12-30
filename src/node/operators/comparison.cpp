@@ -2,10 +2,10 @@
 
 
 // LessThan:
-LessThan::LessThan(NodePointer&& t_left, NodePointer&& t_right)
+LessThan::LessThan(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::Comparison, Associativity::NONE,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -19,10 +19,10 @@ LessThan::~LessThan()
 }
 
 // LessThanEqual:
-LessThanEqual::LessThanEqual(NodePointer&& t_left, NodePointer&& t_right)
+LessThanEqual::LessThanEqual(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::Comparison, Associativity::NONE,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -36,10 +36,10 @@ LessThanEqual::~LessThanEqual()
 }
 
 // NotEqual:
-NotEqual::NotEqual(NodePointer&& t_left, NodePointer&& t_right)
+NotEqual::NotEqual(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::Comparison, Associativity::NONE,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -53,10 +53,10 @@ NotEqual::~NotEqual()
 }
 
 // Equal:
-Equal::Equal(NodePointer&& t_left, NodePointer&& t_right)
+Equal::Equal(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::Comparison, Associativity::NONE,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -70,10 +70,10 @@ Equal::~Equal()
 }
 
 // GreaterThan:
-GreaterThan::GreaterThan(NodePointer&& t_left, NodePointer&& t_right)
+GreaterThan::GreaterThan(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::Comparison, Associativity::NONE,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -87,10 +87,10 @@ GreaterThan::~GreaterThan()
 }
 
 // GreaterThanEqual:
-GreaterThanEqual::GreaterThanEqual(NodePointer&& t_left, NodePointer&& t_right)
+GreaterThanEqual::GreaterThanEqual(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::Comparison, Associativity::NONE,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 

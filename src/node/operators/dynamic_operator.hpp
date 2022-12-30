@@ -9,7 +9,7 @@
 
 class operators::DynamicOperator : public Expression
 {
-  std::vector<NodePointer> m_nodes;
+  std::vector<NodePtr> m_nodes;
 
   public:
 };

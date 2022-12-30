@@ -9,7 +9,7 @@
 class operators::Power : public operators::BinaryOperator
 {
   public:
-  Power(NodePointer&& t_left, NodePointer&& t_right);
+  Power(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -20,7 +20,7 @@ class operators::Power : public operators::BinaryOperator
 class operators::Multiply : public operators::BinaryOperator
 {
   public:
-  Multiply(NodePointer&& t_left, NodePointer&& t_right);
+  Multiply(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -31,7 +31,7 @@ class operators::Multiply : public operators::BinaryOperator
 class operators::Divide : public operators::BinaryOperator
 {
   public:
-  Divide(NodePointer&& t_left, NodePointer&& t_right);
+  Divide(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -42,7 +42,7 @@ class operators::Divide : public operators::BinaryOperator
 class operators::Modulo : public operators::BinaryOperator
 {
   public:
-  Modulo(NodePointer&& t_left, NodePointer&& t_right);
+  Modulo(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -53,7 +53,7 @@ class operators::Modulo : public operators::BinaryOperator
 class operators::Add : public operators::BinaryOperator
 {
   public:
-  Add(NodePointer&& t_left, NodePointer&& t_right);
+  Add(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -64,7 +64,7 @@ class operators::Add : public operators::BinaryOperator
 class operators::Subtract : public operators::BinaryOperator
 {
   public:
-  Subtract(NodePointer&& t_left, NodePointer&& t_right);
+  Subtract(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 

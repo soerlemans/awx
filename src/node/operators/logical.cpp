@@ -4,8 +4,8 @@ using namespace operators;
 
 
 // Not:
-Not::Not(NodePointer&& t_left)
-  : UnaryOperator{Precedence::UnaryPrefix, std::forward<NodePointer>(t_left)}
+Not::Not(NodePtr&& t_left)
+  : UnaryOperator{Precedence::UnaryPrefix, std::forward<NodePtr>(t_left)}
 {
 }
 
@@ -19,10 +19,10 @@ Not::~Not()
 }
 
 // And:
-And::And(NodePointer&& t_left, NodePointer&& t_right)
+And::And(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::LogicalAnd, Associativity::LEFT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -36,10 +36,10 @@ And::~And()
 }
 
 // Or:
-Or::Or(NodePointer&& t_left, NodePointer&& t_right)
+Or::Or(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::LogicalOr, Associativity::LEFT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 

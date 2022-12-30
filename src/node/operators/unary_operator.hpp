@@ -9,12 +9,12 @@
 class operators::UnaryOperator : public Expression
 {
   protected:
-  NodePointer m_first;
+  NodePtr m_first;
 
   public:
-  explicit UnaryOperator(Precedence t_precedence, NodePointer&& t_stmnt);
+  explicit UnaryOperator(Precedence t_precedence, NodePtr&& t_stmnt);
 
-  auto first() -> NodePointer&;
+  auto first() -> NodePtr&;
 
   virtual auto accept(NodeVisitor t_visitor) -> void = 0;
 

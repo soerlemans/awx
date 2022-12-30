@@ -7,14 +7,14 @@
 class operators::TrinaryOperator : public operators::BinaryOperator
 {
   protected:
-  NodePointer m_third;
+  NodePtr m_third;
 
   public:
   explicit TrinaryOperator(Precedence t_precedence,
-                           Associativity t_associativity, NodePointer&& t_left,
-                           NodePointer&& t_middle, NodePointer&& t_right);
+                           Associativity t_associativity, NodePtr&& t_left,
+                           NodePtr&& t_middle, NodePtr&& t_right);
 
-  auto third() -> NodePointer&;
+  auto third() -> NodePtr&;
 
   virtual auto accept(NodeVisitor t_visitor) -> void = 0;
 

@@ -14,16 +14,16 @@
 class NodeList : public Node
 {
   private:
-  std::list<NodePointer> m_list;
+  std::list<NodePtr> m_list;
 
   public:
   NodeList();
   NodeList(NodeList&& t_ast) = default;
 
-  auto begin() -> std::list<NodePointer>::iterator;
-  auto end() -> std::list<NodePointer>::iterator;
+  auto begin() -> std::list<NodePtr>::iterator;
+  auto end() -> std::list<NodePtr>::iterator;
 
-  auto add(NodePointer&& t_node) -> void;
+  auto add(NodePtr&& t_node) -> void;
 
   auto accept(NodeVisitor t_visitor) -> void override;
   auto print() const -> void override;

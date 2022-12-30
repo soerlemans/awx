@@ -9,7 +9,7 @@
 class operators::PostfixIncrement : public operators::UnaryOperator
 {
   public:
-  PostfixIncrement(NodePointer&& t_left);
+  PostfixIncrement(NodePtr&& t_left);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -20,7 +20,7 @@ class operators::PostfixIncrement : public operators::UnaryOperator
 class operators::PrefixIncrement : public operators::UnaryOperator
 {
   public:
-  PrefixIncrement(NodePointer&& t_left);
+  PrefixIncrement(NodePtr&& t_left);
 
   auto accept(NodeVisitor t_visitor) -> void;
 

@@ -8,7 +8,7 @@
 class LessThan : public operators::BinaryOperator
 {
   public:
-  LessThan(NodePointer&& t_left, NodePointer&& t_right);
+  LessThan(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -19,7 +19,7 @@ class LessThan : public operators::BinaryOperator
 class LessThanEqual : public operators::BinaryOperator
 {
   public:
-  LessThanEqual(NodePointer&& t_left, NodePointer&& t_right);
+  LessThanEqual(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -30,7 +30,7 @@ class LessThanEqual : public operators::BinaryOperator
 class NotEqual : public operators::BinaryOperator
 {
   public:
-  NotEqual(NodePointer&& t_left, NodePointer&& t_right);
+  NotEqual(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -41,7 +41,7 @@ class NotEqual : public operators::BinaryOperator
 class Equal : public operators::BinaryOperator
 {
   public:
-  Equal(NodePointer&& t_left, NodePointer&& t_right);
+  Equal(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -52,7 +52,7 @@ class Equal : public operators::BinaryOperator
 class GreaterThan : public operators::BinaryOperator
 {
   public:
-  GreaterThan(NodePointer&& t_left, NodePointer&& t_right);
+  GreaterThan(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
@@ -63,7 +63,7 @@ class GreaterThan : public operators::BinaryOperator
 class GreaterThanEqual : public operators::BinaryOperator
 {
   public:
-  GreaterThanEqual(NodePointer&& t_left, NodePointer&& t_right);
+  GreaterThanEqual(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 

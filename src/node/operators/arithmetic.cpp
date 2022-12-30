@@ -3,10 +3,10 @@
 using namespace operators;
 
 // Power:
-Power::Power(NodePointer&& t_left, NodePointer&& t_right)
+Power::Power(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::ArithmeticMuDiMo, Associativity::RIGHT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -20,10 +20,10 @@ Power::~Power()
 }
 
 // Multiply:
-Multiply::Multiply(NodePointer&& t_left, NodePointer&& t_right)
+Multiply::Multiply(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::ArithmeticMuDiMo, Associativity::LEFT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -37,10 +37,10 @@ Multiply::~Multiply()
 }
 
 // Divide:
-Divide::Divide(NodePointer&& t_left, NodePointer&& t_right)
+Divide::Divide(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::ArithmeticMuDiMo, Associativity::LEFT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -54,10 +54,10 @@ Divide::~Divide()
 }
 
 // Modulo:
-Modulo::Modulo(NodePointer&& t_left, NodePointer&& t_right)
+Modulo::Modulo(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::ArithmeticMuDiMo, Associativity::LEFT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -71,10 +71,10 @@ Modulo::~Modulo()
 }
 
 // Add:
-Add::Add(NodePointer&& t_left, NodePointer&& t_right)
+Add::Add(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::ArithmeticMuDiMo, Associativity::LEFT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -88,10 +88,10 @@ Add::~Add()
 }
 
 // Subtract:
-Subtract::Subtract(NodePointer&& t_left, NodePointer&& t_right)
+Subtract::Subtract(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::ArithmeticMuDiMo, Associativity::LEFT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 

@@ -4,10 +4,10 @@
 using namespace operators;
 
 // Power assignment:
-PowerAssignment::PowerAssignment(NodePointer&& t_left, NodePointer&& t_right)
+PowerAssignment::PowerAssignment(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::Assignment, Associativity::RIGHT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -21,11 +21,11 @@ PowerAssignment::~PowerAssignment()
 }
 
 // Multiply assignment:
-MultiplyAssignment::MultiplyAssignment(NodePointer&& t_left,
-                                       NodePointer&& t_right)
+MultiplyAssignment::MultiplyAssignment(NodePtr&& t_left,
+                                       NodePtr&& t_right)
   : BinaryOperator{Precedence::Assignment, Associativity::RIGHT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -39,10 +39,10 @@ MultiplyAssignment::~MultiplyAssignment()
 }
 
 // Divide assignment:
-DivideAssignment::DivideAssignment(NodePointer&& t_left, NodePointer&& t_right)
+DivideAssignment::DivideAssignment(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::Assignment, Associativity::RIGHT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -56,10 +56,10 @@ DivideAssignment::~DivideAssignment()
 }
 
 // Modulo assignment:
-ModuloAssignment::ModuloAssignment(NodePointer&& t_left, NodePointer&& t_right)
+ModuloAssignment::ModuloAssignment(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::Assignment, Associativity::RIGHT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 
 {
 }
@@ -74,10 +74,10 @@ ModuloAssignment::~ModuloAssignment()
 }
 
 // Add assignment:
-AddAssignment::AddAssignment(NodePointer&& t_left, NodePointer&& t_right)
+AddAssignment::AddAssignment(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::Assignment, Associativity::RIGHT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -91,11 +91,11 @@ AddAssignment::~AddAssignment()
 }
 
 // Subtract assignment:
-SubtractAssignment::SubtractAssignment(NodePointer&& t_left,
-                                       NodePointer&& t_right)
+SubtractAssignment::SubtractAssignment(NodePtr&& t_left,
+                                       NodePtr&& t_right)
   : BinaryOperator{Precedence::Assignment, Associativity::RIGHT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 
@@ -109,10 +109,10 @@ SubtractAssignment::~SubtractAssignment()
 }
 
 // Assignment:
-Assignment::Assignment(NodePointer&& t_left, NodePointer&& t_right)
+Assignment::Assignment(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::Assignment, Associativity::RIGHT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
 {
 }
 

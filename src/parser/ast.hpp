@@ -24,7 +24,7 @@ class Ast
   Ast(Ast&& t_ast) = default;
   // Ast(const Ast& t_ast) = default;
 
-  auto add(NodePointer&& t_node) -> void;
+  auto add(NodePtr&& t_node) -> void;
 
   virtual ~Ast();
 };

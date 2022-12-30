@@ -7,12 +7,12 @@ using namespace operators;
 // Power assignment:
 TrinaryOperator::TrinaryOperator(Precedence t_precedence,
                                  Associativity t_associativity,
-                                 NodePointer&& t_left, NodePointer&& t_middle,
-                                 NodePointer&& t_right)
+                                 NodePtr&& t_left, NodePtr&& t_middle,
+                                 NodePtr&& t_right)
   : BinaryOperator{Precedence::Conditional, Associativity::RIGHT,
-                   std::forward<NodePointer>(t_left),
-                   std::forward<NodePointer>(t_middle)},
-    m_third{std::forward<NodePointer>(t_right)}
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_middle)},
+    m_third{std::forward<NodePtr>(t_right)}
 {
 }
 

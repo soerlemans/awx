@@ -3,12 +3,12 @@
 using namespace operators;
 
 
-UnaryOperator::UnaryOperator(Precedence t_precedence, NodePointer&& t_stmnt)
-  : Expression{t_precedence}, m_first{std::forward<NodePointer>(t_stmnt)}
+UnaryOperator::UnaryOperator(Precedence t_precedence, NodePtr&& t_stmnt)
+  : Expression{t_precedence}, m_first{std::forward<NodePtr>(t_stmnt)}
 {
 }
 
-auto UnaryOperator::first() -> NodePointer&
+auto UnaryOperator::first() -> NodePtr&
 {
   return m_first;
 }

@@ -17,17 +17,18 @@ class Parser
   Parser(TokenStream t_tokenstream);
 
   // Non-terminals:
-  virtual auto special_pattern() -> NodePointer;
-  virtual auto normal_pattern() -> NodePointer;
-  virtual auto pattern() -> NodePointer;
+  virtual auto action() -> NodePtr;
+  virtual auto special_pattern() -> NodePtr;
+  virtual auto normal_pattern() -> NodePtr;
+  virtual auto pattern() -> NodePtr;
 
-  virtual auto param_list() -> NodePointer;
-  virtual auto param_list_opt() -> NodePointer;
+  virtual auto param_list() -> NodePtr;
+  virtual auto param_list_opt() -> NodePtr;
 
-  virtual auto item() -> NodePointer;
-  virtual auto item_list() -> NodePointer;
+  virtual auto item() -> NodePtr;
+  virtual auto item_list() -> NodePtr;
 
-  virtual auto program() -> NodePointer;
+  virtual auto program() -> NodePtr;
 
   auto next_token() -> Token&;
 

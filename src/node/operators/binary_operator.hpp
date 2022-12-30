@@ -15,14 +15,14 @@ class operators::BinaryOperator : public operators::UnaryOperator
 {
   protected:
   Associativity m_associativity;
-  NodePointer m_second;
+  NodePtr m_second;
 
   public:
   explicit BinaryOperator(Precedence t_precedence,
-                          Associativity t_associativity, NodePointer&& t_left,
-                          NodePointer&& t_right);
+                          Associativity t_associativity, NodePtr&& t_left,
+                          NodePtr&& t_right);
 
-  auto second() -> NodePointer&;
+  auto second() -> NodePtr&;
 
   virtual auto accept(NodeVisitor t_visitor) -> void = 0;
 

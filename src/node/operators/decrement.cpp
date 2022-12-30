@@ -4,8 +4,8 @@ using namespace operators;
 
 
 // Postfix:
-PostfixDecrement::PostfixDecrement(NodePointer&& t_left)
-  : UnaryOperator{Precedence::PostfixIncDec, std::forward<NodePointer>(t_left)}
+PostfixDecrement::PostfixDecrement(NodePtr&& t_left)
+  : UnaryOperator{Precedence::PostfixIncDec, std::forward<NodePtr>(t_left)}
 {
 }
 
@@ -19,8 +19,8 @@ PostfixDecrement::~PostfixDecrement()
 }
 
 // Prefix:
-PrefixDecrement::PrefixDecrement(NodePointer&& t_left)
-  : UnaryOperator{Precedence::PrefixIncDec, std::forward<NodePointer>(t_left)}
+PrefixDecrement::PrefixDecrement(NodePtr&& t_left)
+  : UnaryOperator{Precedence::PrefixIncDec, std::forward<NodePtr>(t_left)}
 {
 }
 
