@@ -61,9 +61,12 @@ auto Lexer::identifier() -> Token
   while(is_valid_character(m_filebuffer.character()) && !m_filebuffer.eol())
     ss << next_char();
 
+  // We go back one since we add till we find a character that does not
+  // Match so we have to unget it
+  m_filebuffer.backward();
+
   // Verify if it is a keyword or not
-  if(const auto tokentype{is_keyword(ss.str())};
-     tokentype != TokenType::NONE)
+  if(const auto tokentype{is_keyword(ss.str())}; tokentype != TokenType::NONE)
     token = Token{tokentype};
   else
     token = Token{TokenType::IDENTIFIER, ss.str()};
@@ -91,6 +94,7 @@ auto Lexer::is_hex_literal() -> bool
   return false;
 }
 
+// TODO: Split int, hex and float part into separate functions
 auto Lexer::literal_numeric() -> Token
 {
   using namespace reserved::symbols;
@@ -114,6 +118,8 @@ auto Lexer::literal_numeric() -> Token
       //   syntax_error("Illegal character in ");
 
       ss << next_char();
+
+      // FIXME: If we encounter a second dot we should throw a syntax error
     } else if(!is_float && character == g_dot.identifier()) {
       // Cant be a hex literal with a floating point at the same time in
       // the future we might have primitive types be classes ruby style so
@@ -124,9 +130,13 @@ auto Lexer::literal_numeric() -> Token
       is_float = true;
       ss << next_char();
     } else { // Quit if digit ends
+      // We go back one since we add till we find a character that does not
+      // Match so we have to unget it
+      m_filebuffer.backward();
       break;
     }
   }
+
 
   // Determine what must be returned:
   if(hex)
@@ -300,20 +310,21 @@ auto Lexer::tokenize() -> TokenStream
 
   const TokenType last_tokentype{m_tokenstream.back().type()};
 
-  for(; !m_filebuffer.eof(); m_filebuffer.next())
+  for(; !m_filebuffer.eof(); m_filebuffer.next()) {
+    bool skip_newline{false};
+
     while(!m_filebuffer.eol()) {
       const char character{m_filebuffer.character()};
 
-      if(std::isspace(character))
-        ;                       // Just ignore whitespace
-      else if(character == '#') // # Denotes comments
-        break;                  // Stop parsing current line
-      else if(std::isalpha(character)) {
+      if(std::isspace(character)) {
+        // Just ignore whitespace
+      } else if(character == '#') { // # Denotes comments
+        skip_newline = true;
+        break; // Stop parsing current line
+      } else if(std::isalpha(character)) {
         add_token(identifier());
-        continue;
       } else if(std::isdigit(character)) {
         add_token(literal_numeric());
-        continue;
       } else if(character == double_quote)
         add_token(literal_string());
       else if(character == slash && !tokentype::is_int(last_tokentype))
@@ -325,6 +336,14 @@ auto Lexer::tokenize() -> TokenStream
       // m_filebuffer.backward() in situations where we look a head to much
       m_filebuffer.forward();
     }
+
+    // At the end of each line there is always a newline
+    // Since newlines are treated as terminators
+    if(!skip_newline) {
+      LOG(LogLevel::INFO, "NEWLINE");
+      add_token(Token{TokenType::END_OF_LINE});
+    }
+  }
 
   return m_tokenstream;
 }

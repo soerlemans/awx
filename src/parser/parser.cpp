@@ -98,30 +98,76 @@ auto Parser::simple_statement() -> NodePtr
 {
 }
 
+// simple_statement_opt : /* empty */
+//                  | simple_statement
+//                  ;
 auto Parser::simple_statement_opt() -> NodePtr
 {
 }
 
+// terminatable_statement : simple_statement
+//                  | Break
+//                  | Continue
+//                  | Next
+//                  | Exit expr_opt
+//                  | Return expr_opt
+//                  | Do newline_opt terminated_statement While '(' expr ')'
+//                  ;
 auto Parser::terminatable_statement() -> NodePtr
 {
 }
 
+// unterminated_statement : terminatable_statement
+//                  | If '(' expr ')' newline_opt unterminated_statement
+//                  | If '(' expr ')' newline_opt terminated_statement
+//                       Else newline_opt unterminated_statement
+//                  | While '(' expr ')' newline_opt unterminated_statement
+//                  | For '(' simple_statement_opt ';'
+//                   expr_opt ';' simple_statement_opt ')' newline_opt
+//                       unterminated_statement
+//                  | For '(' NAME In NAME ')' newline_opt
+//                       unterminated_statement
+//                  ;
 auto Parser::unterminated_statement() -> NodePtr
 {
 }
 
+// terminated_statement : action newline_opt
+//                  | If '(' expr ')' newline_opt terminated_statement
+//                  | If '(' expr ')' newline_opt terminated_statement
+//                        Else newline_opt terminated_statement
+//                  | While '(' expr ')' newline_opt terminated_statement
+//                  | For '(' simple_statement_opt ';'
+//                       expr_opt ';' simple_statement_opt ')' newline_opt
+//                       terminated_statement
+//                  | For '(' NAME In NAME ')' newline_opt
+//                       terminated_statement
+//                  | ';' newline_opt
+//                  | terminatable_statement NEWLINE newline_opt
+//                  | terminatable_statement ';'     newline_opt
+//                  ;
 auto Parser::terminated_statement() -> NodePtr
 {
 }
 
+// unterminated_statement_list : unterminated_statement
+//                  | terminated_statement_list unterminated_statement
+//                  ;
 auto Parser::unterminated_statement_list() -> NodePtr
 {
 }
 
+// terminated_statement_list : terminated_statement
+//                  | terminated_statement_list terminated_statement
+//                  ;
 auto Parser::terminated_statement_list() -> NodePtr
 {
 }
 
+// terminator       : terminator NEWLINE
+//                  |            ';'
+//                  |            NEWLINE
+//                  ;
 auto Parser::terminator() -> NodePtr
 {
 }
