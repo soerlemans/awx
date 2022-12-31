@@ -88,12 +88,18 @@ auto Parser::lvalue() -> NodePtr
   const auto token{next_token("Identifier or a $")};
   switch(token.type()) {
     case TokenType::IDENTIFIER: {
+	  // We really dont expect these next_tokens to fail
+	  const auto brace_open{next_token()};
 
+	  // What do with expr_list???
+	  expr_list();
+
+	  const auto brace_close{next_token()};
       break;
     }
 
     case TokenType::DOLLAR_SIGN: {
-
+	  expr();
       break;
     }
 
