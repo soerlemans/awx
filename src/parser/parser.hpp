@@ -16,7 +16,7 @@ class Parser
   Parser(TokenStream t_tokenstream);
 
   // Parsing grammar methods:
-  virtual auto newline_opt() -> NodePtr;
+  virtual auto newline_opt() -> void;
   virtual auto simple_get() -> NodePtr;
 
   virtual auto unary_input_function() -> NodePtr;
@@ -70,7 +70,7 @@ class Parser
   virtual auto program() -> NodePtr;
 
   // Regular methods again:
-  auto next_token() -> Token&;
+  auto next_token(const std::string t_msg = "") -> Token&;
   auto eos() -> bool;
 
   // The parse() method should be virtual cause in the future we may want to

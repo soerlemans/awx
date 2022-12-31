@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <memory>
+#include <sstream>
 #include <stdexcept>
 #include <tuple>
 
@@ -17,13 +18,13 @@ Parser::Parser(TokenStream t_tokenstream): m_tokenstream{t_tokenstream}
 }
 
 // Parsing grammar methods:
+// This rule is made purely to discard any amount of newlines
 // newline_opt      : /* empty */
 //                  | newline_opt NEWLINE
 //                  ;
-auto Parser::newline_opt() -> NodePtr
+auto Parser::newline_opt() -> void
 {
   LOG(LogLevel::INFO, "NEWLINE OPT");
-  NodePtr node{nullptr};
 
   for(; !eos(); next_token()) {
     const auto tokentype{m_tokenstream.token().type()};
@@ -33,8 +34,6 @@ auto Parser::newline_opt() -> NodePtr
   }
 
   m_tokenstream.prev();
-
-  return node;
 }
 
 // simple_get       : GETLINE
@@ -55,10 +54,11 @@ auto Parser::unary_input_function() -> NodePtr
   LOG(LogLevel::INFO, "UNARY_INPUT_FUNCTION");
   NodePtr node{nullptr};
 
-  // NodePtr lhs{unary_expr()};
-  // next_token();
+  NodePtr lhs{unary_expr()};
 
-  // NodePtr rhs{simple_get()};
+  const auto token{next_token("|")};
+
+  NodePtr rhs{simple_get()};
 
   return node;
 }
@@ -438,9 +438,31 @@ auto Parser::terminated_statement() -> NodePtr
   LOG(LogLevel::INFO, "TERMINATED STATEMENT");
   NodePtr node{nullptr};
 
+  const auto token{next_token(
+    "Control statement token {if, while, for, ;, terminatable_statement}")};
+
+  switch(token.type()) {
+    case TokenType::IF:
+    case TokenType::WHILE:
+    case TokenType::FOR:
+    case TokenType::SEMICOLON:
+      newline_opt();
+      break;
+
+    default: {
+      terminatable_statement();
+      const auto terminator_token{next_token("\\n or ;")};
+      // TODO: Verify if is a is_terminator()
+      newline_opt();
+      break;
+    }
+  }
+
   return node;
 }
 
+// This rule is made to match atleast one unterminated statement
+// Unterminated statements end on a -> \n
 // unterminated_statement_list : unterminated_statement
 //                  | terminated_statement_list unterminated_statement
 //                  ;
@@ -449,9 +471,30 @@ auto Parser::unterminated_statement_list() -> NodePtr
   LOG(LogLevel::INFO, "UNTERMINATED STATEMENT LIST");
   NodePtr node{nullptr};
 
+
+  if(auto unterminated_statement_ptr{unterminated_statement()};
+     unterminated_statement_ptr) {
+    // Add to NodeList
+
+    while(!eos()) {
+      auto ptr{unterminated_statement()};
+
+      if(ptr) {
+        // Add to NodeList
+      } else {
+        break;
+      }
+    }
+  } else {
+    // TODO: Error handling
+    // EXCPECTED ATLEAST ONE...
+  }
+
   return node;
 }
 
+// This rule is made to match atleast one terminated statement
+// Terminated statements end on a -> ;
 // terminated_statement_list : terminated_statement
 //                  | terminated_statement_list terminated_statement
 //                  ;
@@ -459,6 +502,24 @@ auto Parser::terminated_statement_list() -> NodePtr
 {
   LOG(LogLevel::INFO, "TERMINATED STATEMENT LIST");
   NodePtr node{nullptr};
+
+  if(auto terminated_statement_ptr{terminated_statement()};
+     terminated_statement_ptr) {
+    // Add to NodeList
+
+    while(!eos()) {
+      auto ptr{terminated_statement()};
+
+      if(ptr) {
+        // Add to NodeList
+      } else {
+        break;
+      }
+    }
+  } else {
+    // TODO: Error handling
+    // EXCPECTED ATLEAST ONE...
+  }
 
   return node;
 }
@@ -496,20 +557,20 @@ auto Parser::action() -> NodePtr
   NodePtr node{nullptr};
 
   // TODO: Figure a way out to cleanly compare these two
-  const auto accolade_open{next_token()};
+  const auto accolade_open{next_token("}")};
 
-  if(auto newline_opt_ptr{newline_opt()}; newline_opt_ptr) {
-    if(auto terminated_ptr{terminated_statement_list()}; terminated_ptr) {
-    } else if(auto unterminated_ptr{unterminated_statement_list()};
-              unterminated_ptr) {
-    } else {
-      // TODO:: Error handling
-    }
+  newline_opt();
+
+  if(auto terminated_ptr{terminated_statement_list()}; terminated_ptr) {
+    // DO SOMETHING!
+  } else if(auto unterminated_ptr{unterminated_statement_list()};
+            unterminated_ptr) {
+    // DO SOMETHING!
   } else {
-    // TODO: ERROR HANDLING
+    // TODO:: Error handling
   }
 
-  const auto accolade_close{next_token()};
+  const auto accolade_close{next_token("{")};
 
   return node;
 }
@@ -612,6 +673,8 @@ auto Parser::item() -> NodePtr
 }
 
 
+// FIXME: This rule creates infinite recursion
+// Possibly swap the order? This would seem to not affect the grammar
 // item_list        : /* empty */
 //                  | item_list item terminator
 //                  ;
@@ -621,8 +684,8 @@ auto Parser::item_list() -> NodePtr
   NodePtr node{nullptr};
 
   // TODO Piece these together some way into an AST structure
-  // item_list();
   item();
+  item_list();
   terminator();
 
   return node;
@@ -638,14 +701,27 @@ auto Parser::program() -> NodePtr
 
   // TODO Piece these together some way into an AST structure
   node = item_list();
-  item();
+
+  if(auto item_ptr{item()}; item_ptr) {
+    // item() is optional
+  }
 
   return node;
 }
 
 // Regular methods again:
-auto Parser::next_token() -> Token&
+auto Parser::next_token(const std::string t_msg) -> Token&
 {
+  std::stringstream ss;
+  ss << "Incomplete expression due to reaching EOS\n";
+  ss << "Expected -> ";
+  ss << t_msg;
+
+  // TODO: Add a way for calls to next_token that are out of bounds to throw
+  // A custom error message on what they expect either via overloading or
+  if(eos())
+    throw std::runtime_error{ss.str()};
+
   return m_tokenstream.next();
 }
 
@@ -663,9 +739,9 @@ auto Parser::parse() -> Ast
   Ast ast;
   program();
   // for(; !eos(); next_token()) {
-    // Ast is pieced together from calling nested functions
-    // That each return a NodePtr to eachother
-    // ast.add(toplevel());
+  // Ast is pieced together from calling nested functions
+  // That each return a NodePtr to eachother
+  // ast.add(toplevel());
   // }
 
 
