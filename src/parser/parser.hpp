@@ -71,6 +71,7 @@ class Parser
 
   // Regular methods again:
   auto next_token() -> Token&;
+  auto eos() -> bool;
 
   // The parse() method should be virtual cause in the future we may want to
   // have different dialects of AWX

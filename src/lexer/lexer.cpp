@@ -58,7 +58,7 @@ auto Lexer::identifier() -> Token
     return std::isalnum(t_char) || t_char == '_';
   }};
 
-  while(is_valid_character(m_filebuffer.character()) && !m_filebuffer.eol())
+  while(is_valid_character(m_filebuffer.character()) && !eol())
     ss << next_char();
 
   // We go back one since we add till we find a character that does not
@@ -105,7 +105,7 @@ auto Lexer::literal_numeric() -> Token
   bool is_float{false};
 
   std::stringstream ss;
-  while(!m_filebuffer.eol()) {
+  while(!eol()) {
     const char character{m_filebuffer.character()};
 
     // is_valid_character for different type of integer literals
@@ -160,7 +160,7 @@ auto Lexer::literal_string() -> Token
   next_char();
 
   bool quit{false};
-  while(!quit && !m_filebuffer.eol()) {
+  while(!quit && !eol()) {
     const char character{m_filebuffer.character()};
 
     switch(character) {
@@ -196,7 +196,7 @@ auto Lexer::literal_regex() -> Token
   // regex expression we should also throw an error or assume a division if we
   // do not find a corresponding / before the EOL
   bool quit{false};
-  while(!quit && !m_filebuffer.eol()) {
+  while(!quit && !eol()) {
     const char character{m_filebuffer.character()};
 
     switch(character) {
@@ -242,7 +242,7 @@ auto Lexer::is_multi_symbol() -> TokenType
       next_char();
       ss << m_filebuffer.character();
 
-      if(!m_filebuffer.eol())
+      if(!eol())
         for(const auto multi : g_multi_symbols)
           if(ss.str() == multi.identifier()) {
             tokentype = multi.tokentype();
@@ -302,9 +302,14 @@ auto Lexer::symbol() -> Token
   return Token{tokentype};
 }
 
-auto Lexer::next_char() -> char
+auto Lexer::next_char() const -> char
 {
   return m_filebuffer.forward();
+}
+
+auto Lexer::eol() const -> bool
+{
+  return m_filebuffer.eol();
 }
 
 auto Lexer::tokenize() -> TokenStream
@@ -319,7 +324,7 @@ auto Lexer::tokenize() -> TokenStream
   const TokenType last_tokentype{m_tokenstream.back().type()};
 
   for(; !m_filebuffer.eof(); m_filebuffer.next())
-    while(!m_filebuffer.eol()) {
+    while(!eol()) {
       const char character{m_filebuffer.character()};
 
       if(std::isspace(character)) {

@@ -21,9 +21,9 @@ Parser::Parser(TokenStream t_tokenstream): m_tokenstream{t_tokenstream}
 //                  ;
 auto Parser::newline_opt() -> NodePtr
 {
+  LOG(LogLevel::INFO, "NEWLINE OPT");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "NEWLINE OPT");
   return node;
 }
 
@@ -32,9 +32,9 @@ auto Parser::newline_opt() -> NodePtr
 //                  ;
 auto Parser::simple_get() -> NodePtr
 {
+  LOG(LogLevel::INFO, "SIMPLE GET");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "SIMPLE GET");
   return node;
 }
 
@@ -42,9 +42,9 @@ auto Parser::simple_get() -> NodePtr
 //                  ;
 auto Parser::unary_input_function() -> NodePtr
 {
+  LOG(LogLevel::INFO, "UNARY_INPUT_FUNCTION");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "UNARY_INPUT_FUNCTION");
   return node;
 }
 
@@ -54,9 +54,9 @@ auto Parser::unary_input_function() -> NodePtr
 //                  ;
 auto Parser::non_unary_input_function() -> NodePtr
 {
+  LOG(LogLevel::INFO, "NON_UNARY_INPUT_FUNCTION");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "NON_UNARY_INPUT_FUNCTION");
   return node;
 }
 
@@ -66,9 +66,9 @@ auto Parser::non_unary_input_function() -> NodePtr
 //                  ;
 auto Parser::lvalue() -> NodePtr
 {
+  LOG(LogLevel::INFO, "LVALUE");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "LVALUE");
   return node;
 }
 
@@ -110,9 +110,9 @@ auto Parser::lvalue() -> NodePtr
 //                  ;
 auto Parser::non_unary_print_expr() -> NodePtr
 {
+  LOG(LogLevel::INFO, "NON UNARY PRINT EXPR");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "NON UNARY PRINT EXPR");
   return node;
 }
 
@@ -134,9 +134,9 @@ auto Parser::non_unary_print_expr() -> NodePtr
 //                  ;
 auto Parser::unary_print_expr() -> NodePtr
 {
+  LOG(LogLevel::INFO, "UNARY PRINT EXPR");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "UNARY PRINT EXPR");
   return node;
 }
 
@@ -145,9 +145,9 @@ auto Parser::unary_print_expr() -> NodePtr
 //                  ;
 auto Parser::print_expr() -> NodePtr
 {
+  LOG(LogLevel::INFO, "PRINT EXPR");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "PRINT EXPR");
   return node;
 }
 
@@ -156,9 +156,9 @@ auto Parser::print_expr() -> NodePtr
 //                  ;
 auto Parser::print_expr_list() -> NodePtr
 {
+  LOG(LogLevel::INFO, "PRINT EXPR LIST");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "PRINT EXPR LIST");
   return node;
 }
 
@@ -167,9 +167,9 @@ auto Parser::print_expr_list() -> NodePtr
 //                  ;
 auto Parser::print_expr_list_opt() -> NodePtr
 {
+  LOG(LogLevel::INFO, "PRINT EXPR LIST OPT");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "PRINT EXPR LIST OPT");
   return node;
 }
 
@@ -218,9 +218,9 @@ auto Parser::print_expr_list_opt() -> NodePtr
 //                  ;
 auto Parser::non_unary_expr() -> NodePtr
 {
+  LOG(LogLevel::INFO, "NON UNARY EXPR");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "NON UNARY EXPR");
   return node;
 }
 
@@ -249,9 +249,9 @@ auto Parser::non_unary_expr() -> NodePtr
 //                  ;
 auto Parser::unary_expr() -> NodePtr
 {
+  LOG(LogLevel::INFO, "UNARY EXPR");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "UNARY EXPR");
   return node;
 }
 
@@ -260,9 +260,9 @@ auto Parser::unary_expr() -> NodePtr
 //                  ;
 auto Parser::expr() -> NodePtr
 {
+  LOG(LogLevel::INFO, "EXPR");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "EXPR");
   return node;
 }
 
@@ -271,9 +271,9 @@ auto Parser::expr() -> NodePtr
 //                  ;
 auto Parser::expr_opt() -> NodePtr
 {
+  LOG(LogLevel::INFO, "EXPR OPT");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "EXPR OPT");
   return node;
 }
 
@@ -282,9 +282,9 @@ auto Parser::expr_opt() -> NodePtr
 //                  ;
 auto Parser::multiple_expr_list() -> NodePtr
 {
+  LOG(LogLevel::INFO, "MULTIPLE EXPR LIST");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "MULTIPLE EXPR LIST");
   return node;
 }
 
@@ -293,9 +293,9 @@ auto Parser::multiple_expr_list() -> NodePtr
 //                  ;
 auto Parser::expr_list() -> NodePtr
 {
+  LOG(LogLevel::INFO, "EXPR LIST");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "EXPR LIST");
   return node;
 }
 
@@ -304,9 +304,9 @@ auto Parser::expr_list() -> NodePtr
 //                  ;
 auto Parser::expr_list_opt() -> NodePtr
 {
+  LOG(LogLevel::INFO, "EXPR LIST OPT");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "EXPR LIST OPT");
   return node;
 }
 
@@ -316,9 +316,9 @@ auto Parser::expr_list_opt() -> NodePtr
 //                  ;
 auto Parser::output_redirection() -> NodePtr
 {
+  LOG(LogLevel::INFO, "OUTPUT REDIRECTION");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "OUTPUT REDIRECTION");
   return node;
 }
 
@@ -329,9 +329,9 @@ auto Parser::output_redirection() -> NodePtr
 //                  ;
 auto Parser::simple_print_statement() -> NodePtr
 {
+  LOG(LogLevel::INFO, "SIMPLE PRINT STATEMENT");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "SIMPLE PRINT STATEMENT");
   return node;
 }
 
@@ -340,9 +340,9 @@ auto Parser::simple_print_statement() -> NodePtr
 //                  ;
 auto Parser::print_statement() -> NodePtr
 {
+  LOG(LogLevel::INFO, "PRINT STATEMENT");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "PRINT STATEMENT");
   return node;
 }
 
@@ -352,9 +352,9 @@ auto Parser::print_statement() -> NodePtr
 //                  ;
 auto Parser::simple_statement() -> NodePtr
 {
+  LOG(LogLevel::INFO, "SIMPLE STATEMENT");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "SIMPLE STATEMENT");
   return node;
 }
 
@@ -363,9 +363,9 @@ auto Parser::simple_statement() -> NodePtr
 //                  ;
 auto Parser::simple_statement_opt() -> NodePtr
 {
+  LOG(LogLevel::INFO, "SIMPLE STATEMENT OPT");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "SIMPLE STATEMENT OPT");
   return node;
 }
 
@@ -379,9 +379,9 @@ auto Parser::simple_statement_opt() -> NodePtr
 //                  ;
 auto Parser::terminatable_statement() -> NodePtr
 {
+  LOG(LogLevel::INFO, "TERMINATABLE STATEMENT");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "TERMINATABLE STATEMENT");
   return node;
 }
 
@@ -398,9 +398,9 @@ auto Parser::terminatable_statement() -> NodePtr
 //                  ;
 auto Parser::unterminated_statement() -> NodePtr
 {
+  LOG(LogLevel::INFO, "UNTERMINATED STATEMENT");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "UNTERMINATED STATEMENT");
   return node;
 }
 
@@ -420,9 +420,9 @@ auto Parser::unterminated_statement() -> NodePtr
 //                  ;
 auto Parser::terminated_statement() -> NodePtr
 {
+  LOG(LogLevel::INFO, "TERMINATED STATEMENT");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "TERMINATED STATEMENT");
   return node;
 }
 
@@ -431,9 +431,9 @@ auto Parser::terminated_statement() -> NodePtr
 //                  ;
 auto Parser::unterminated_statement_list() -> NodePtr
 {
+  LOG(LogLevel::INFO, "UNTERMINATED STATEMENT LIST");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "UNTERMINATED STATEMENT LIST");
   return node;
 }
 
@@ -442,9 +442,9 @@ auto Parser::unterminated_statement_list() -> NodePtr
 //                  ;
 auto Parser::terminated_statement_list() -> NodePtr
 {
+  LOG(LogLevel::INFO, "TERMINATED STATEMENT LIST");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "TERMINATED STATEMENT LIST");
   return node;
 }
 
@@ -454,9 +454,10 @@ auto Parser::terminated_statement_list() -> NodePtr
 //                  ;
 auto Parser::terminator() -> NodePtr
 {
+  LOG(LogLevel::INFO, "TERMINATOR");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "TERMINATOR");
+
   return node;
 }
 
@@ -466,9 +467,25 @@ auto Parser::terminator() -> NodePtr
 //                  ;
 auto Parser::action() -> NodePtr
 {
+  LOG(LogLevel::INFO, "ACTION");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "ACTION");
+  // TODO: Figure a way out to cleanly compare these two
+  const auto accolade_open{next_token()};
+
+  if(auto newline_opt_ptr{newline_opt()}; newline_opt_ptr) {
+    if(auto terminated_ptr{terminated_statement_list()}; terminated_ptr) {
+    } else if(auto unterminated_ptr{unterminated_statement_list()};
+              unterminated_ptr) {
+    } else {
+      // TODO:: Error handling
+    }
+  } else {
+    // TODO: ERROR HANDLING
+  }
+
+  const auto accolade_close{next_token()};
+
   return node;
 }
 
@@ -477,9 +494,9 @@ auto Parser::action() -> NodePtr
 //                  ;
 auto Parser::special_pattern() -> NodePtr
 {
+  LOG(LogLevel::INFO, "SPECIAL PATTERN");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "SPECIAL PATTERN");
   return node;
 }
 
@@ -488,9 +505,9 @@ auto Parser::special_pattern() -> NodePtr
 //                  ;
 auto Parser::normal_pattern() -> NodePtr
 {
+  LOG(LogLevel::INFO, "NORMAL PATTERN");
   NodePtr node{nullptr};
 
-  LOG(LogLevel::INFO, "NORMAL PATTERN");
   return node;
 }
 
@@ -499,6 +516,7 @@ auto Parser::normal_pattern() -> NodePtr
 //                  ;
 auto Parser::pattern() -> NodePtr
 {
+  LOG(LogLevel::INFO, "PATTERN");
   NodePtr node{nullptr};
 
   if(auto normal_pattern_ptr{normal_pattern()}; normal_pattern_ptr) {
@@ -507,7 +525,6 @@ auto Parser::pattern() -> NodePtr
     node = std::move(special_pattern_ptr);
   }
 
-  LOG(LogLevel::INFO, "PATTERN");
   return node;
 }
 
@@ -516,11 +533,11 @@ auto Parser::pattern() -> NodePtr
 //                  ;
 auto Parser::param_list() -> NodePtr
 {
+  LOG(LogLevel::INFO, "PARAM LIST");
   NodePtr node{nullptr};
 
   // const auto token{next_token()};
 
-  LOG(LogLevel::INFO, "PARAM_LIST");
   return node;
 }
 
@@ -529,6 +546,7 @@ auto Parser::param_list() -> NodePtr
 //                  ;
 auto Parser::param_list_opt() -> NodePtr
 {
+  LOG(LogLevel::INFO, "PARAM LIST OPT");
   NodePtr node{nullptr};
 
   if(auto param_list_ptr{param_list()}; param_list_ptr) {
@@ -549,6 +567,7 @@ auto Parser::param_list_opt() -> NodePtr
 //                  ;
 auto Parser::item() -> NodePtr
 {
+  LOG(LogLevel::INFO, "ITEM");
   NodePtr node{nullptr};
 
   if(auto action_ptr{action()}; action_ptr) {
@@ -573,6 +592,7 @@ auto Parser::item() -> NodePtr
 //                  ;
 auto Parser::item_list() -> NodePtr
 {
+  LOG(LogLevel::INFO, "ITEM LIST");
   NodePtr node{nullptr};
 
   // TODO Piece these together some way into an AST structure
@@ -588,6 +608,7 @@ auto Parser::item_list() -> NodePtr
 //                  ;
 auto Parser::program() -> NodePtr
 {
+  LOG(LogLevel::INFO, "PROGRAM");
   NodePtr node{nullptr};
 
   // TODO Piece these together some way into an AST structure
@@ -603,6 +624,11 @@ auto Parser::next_token() -> Token&
   return m_tokenstream.next();
 }
 
+auto Parser::eos() -> bool
+{
+  return m_tokenstream.eos();
+}
+
 auto Parser::parse() -> Ast
 {
   using namespace reserved;
@@ -610,7 +636,7 @@ auto Parser::parse() -> Ast
   PRINT("=== PARSING ===");
 
   Ast ast;
-  for(; !m_tokenstream.eos(); m_tokenstream.next()) {
+  for(; !eos(); next_token()) {
     // Ast is pieced together from calling nested functions
     // That each return a NodePtr to eachother
     // ast.add(toplevel());
