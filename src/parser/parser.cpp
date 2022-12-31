@@ -44,6 +44,7 @@ auto Parser::simple_get() -> NodePtr
   LOG(LogLevel::INFO, "SIMPLE GET");
   NodePtr node{nullptr};
 
+  // lvalue();
   return node;
 }
 
@@ -83,6 +84,22 @@ auto Parser::lvalue() -> NodePtr
 {
   LOG(LogLevel::INFO, "LVALUE");
   NodePtr node{nullptr};
+
+  const auto token{next_token("Identifier or a $")};
+  switch(token.type()) {
+    case TokenType::IDENTIFIER: {
+
+      break;
+    }
+
+    case TokenType::DOLLAR_SIGN: {
+
+      break;
+    }
+
+    default:
+      break;
+  }
 
   return node;
 }
@@ -684,9 +701,10 @@ auto Parser::item_list() -> NodePtr
   NodePtr node{nullptr};
 
   // TODO Piece these together some way into an AST structure
-  item();
-  item_list();
-  terminator();
+  if(auto item_ptr{item()}; item_ptr) {
+    item_list();
+    terminator();
+  }
 
   return node;
 }
@@ -737,13 +755,8 @@ auto Parser::parse() -> Ast
   PRINT("=== PARSING ===");
 
   Ast ast;
-  program();
-  // for(; !eos(); next_token()) {
-  // Ast is pieced together from calling nested functions
-  // That each return a NodePtr to eachother
-  // ast.add(toplevel());
-  // }
 
+  program();
 
   PRINT();
   return ast;
