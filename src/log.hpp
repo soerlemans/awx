@@ -7,6 +7,8 @@
 #include "types.hpp"
 
 
+namespace log
+{
 // Enums:
 // Different logging levels
 enum class LogLevel : u16 {
@@ -21,12 +23,22 @@ enum class LogLevel : u16 {
 #if DEVELOPMENT
 
 // Macros:
+#define PRINT(...) \
+  log::print(__VA_ARGS__)
+
 #define LOG(loglevel, ...) \
-  log(__FILE__, __FUNCTION__, __LINE__, loglevel, __VA_ARGS__)
+  log::log(__FILE__, __FUNCTION__, __LINE__, log::loglevel, __VA_ARGS__)
 
 #define SET_LOGLEVEL(loglevel) set_loglevel(loglevel)
 
 // Functions:
+template<typename... Args>
+auto print(Args&&... t_args) -> void
+{
+  // Fold expression
+  (std::clog << ... << t_args) << '\n';
+}
+
 auto is_lower_loglevel(const LogLevel t_loglevel) -> bool;
 auto loglevel2str(const LogLevel t_loglevel) -> std::string_view;
 auto set_loglevel(const LogLevel t_loglevel) -> void;
@@ -49,18 +61,24 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
   std::clog << '[' << t_file << ':' << t_lineno << " -> " << t_function
             << "()] => ";
 
-  // Fold expression
-  (std::clog << ... << t_args) << '\n';
+  print(std::forward<Args>(t_args)...);
 }
 
 #else
 
 // Stub the macros if we are not on the debugging build
+#define PRINT(...) \
+  do {             \
+  } while(0)
+
 #define LOG(...) \
   do {           \
   } while(0)
+
 #define SET_LEVEL(level) \
   do {                   \
   } while(0)
+
 #endif // DEBUG
 #endif // LOG_H
+};

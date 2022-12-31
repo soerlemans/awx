@@ -607,6 +607,8 @@ auto Parser::parse() -> Ast
 {
   using namespace reserved;
 
+  PRINT("=== PARSING ===");
+
   Ast ast;
   for(; !m_tokenstream.eos(); m_tokenstream.next()) {
     // Ast is pieced together from calling nested functions
@@ -616,6 +618,7 @@ auto Parser::parse() -> Ast
 
   program();
 
+  PRINT();
   return ast;
 }
 

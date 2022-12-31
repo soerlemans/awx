@@ -311,6 +311,8 @@ auto Lexer::tokenize() -> TokenStream
 {
   using namespace reserved::symbols;
 
+  PRINT("=== LEXING ===");
+
   constexpr char double_quote{none::g_double_quote.identifier()};
   constexpr char slash{g_slash.identifier()};
 
@@ -346,6 +348,7 @@ auto Lexer::tokenize() -> TokenStream
       m_filebuffer.forward();
     }
 
+  PRINT();
   return m_tokenstream;
 }
 

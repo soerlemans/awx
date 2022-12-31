@@ -19,9 +19,11 @@
 namespace
 {
 // Private variables:
-LogLevel g_loglevel{LogLevel::WARNING};
+log::LogLevel g_loglevel{log::LogLevel::WARNING};
 }; // namespace
 
+namespace log
+{
 // Public functions:
 // This function checks if the LogLevel is lower than the current g_loglevel
 // t_loglevel is used in macros use [[maybe_unused]] to silence warnings
@@ -72,3 +74,4 @@ auto set_loglevel(const LogLevel t_loglevel) -> void
 {
   g_loglevel = t_loglevel;
 }
+}; // namespace log
