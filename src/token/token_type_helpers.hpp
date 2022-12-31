@@ -3,6 +3,20 @@
 
 #include "token_type.hpp"
 
+// TODO: All these functions can be templated with a simple macro
+#define DEFINE_TOKEN_TYPE_HELPER(func, ...)              \
+  constexpr auto func(const TokenType t_tokentype)->bool \
+  {                                                      \
+    bool result{false};                                  \
+                                                         \
+    switch(t_tokentype) {                                \
+      default:                                           \
+        break;                                           \
+    }                                                    \
+                                                         \
+    return result;                                       \
+  }
+
 // Functions intended for figuring out to what kind of class/property a token
 // Type specifier belongs, example is a token type a numerical or valid for
 // Usage as rvalue? Or could it produce a boolean result?
@@ -16,6 +30,7 @@ constexpr auto is_literal(const TokenType t_tokentype) -> bool;
 constexpr auto is_lvalue(const TokenType t_tokentype) -> bool;
 constexpr auto is_rvalue(const TokenType t_tokentype) -> bool;
 
+constexpr auto is_terminator(const TokenType t_tokentype) -> bool;
 constexpr auto is_control_statement(const TokenType t_tokentype) -> bool;
 
 constexpr auto is_logical_junction(const TokenType t_tokentype) -> bool;
@@ -85,6 +100,23 @@ constexpr auto is_rvalue(const TokenType t_tokentype) -> bool
 
   if(is_literal(t_tokentype) || is_lvalue(t_tokentype))
     result = true;
+
+  return result;
+}
+
+constexpr auto is_terminator(const TokenType t_tokentype) -> bool
+{
+  bool result{false};
+
+  switch(t_tokentype) {
+    case TokenType::SEMICOLON:
+    case TokenType::END_OF_LINE:
+      result = true;
+      break;
+
+    default:
+      break;
+  }
 
   return result;
 }

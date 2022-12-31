@@ -454,9 +454,19 @@ auto Parser::terminated_statement_list() -> NodePtr
 //                  ;
 auto Parser::terminator() -> NodePtr
 {
+  LOG(LogLevel::INFO, "TERMINATOR IS NOT TESTED WARNING!!!!!");
   LOG(LogLevel::INFO, "TERMINATOR");
   NodePtr node{nullptr};
 
+  for(; !eos(); next_token()) {
+    const auto tokentype{m_tokenstream.token().type()};
+
+    if(!tokentype::is_terminator(tokentype))
+      break;
+  }
+
+  // if our last token was not a terminator go back to undo the lookahead
+  m_tokenstream.prev();
 
   return node;
 }

@@ -206,8 +206,8 @@ auto Lexer::literal_regex() -> Token
 
       case g_end_of_line.identifier():
         // FIXME: Error on regex literals not being closed on the same line
-		// For now just end REGEX on new line
-		quit = true;
+        // For now just end REGEX on new line
+        quit = true;
         break;
 
         // TODO: Take care of handling octal escape codes and other
@@ -321,16 +321,15 @@ auto Lexer::tokenize() -> TokenStream
   constexpr char double_quote{none::g_double_quote.identifier()};
   constexpr char slash{g_slash.identifier()};
 
-  const TokenType last_tokentype{m_tokenstream.back().type()};
-
   for(; !m_filebuffer.eof(); m_filebuffer.next())
     while(!eol()) {
       const char character{m_filebuffer.character()};
 
+      const TokenType last_tokentype{m_tokenstream.back().type()};
+
       if(std::isspace(character)) {
-        // Just ignore whitespace
-        // But dont ignore newlines
-        if(character == '\n') {
+        // Just ignore whitespace, but do not ignore newlines
+        if(character == g_end_of_line.identifier()) {
           LOG(LogLevel::INFO, "NEWLINE");
           add_token(Token{TokenType::END_OF_LINE});
         }
