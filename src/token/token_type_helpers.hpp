@@ -3,18 +3,22 @@
 
 #include "token_type.hpp"
 
+
 // TODO: All these functions can be templated with a simple macro
+#define CASE_TOKEN_TYPE(tokentype) case TokenType::tokentype:
+
 #define DEFINE_TOKEN_TYPE_HELPER(func, ...)              \
   constexpr auto func(const TokenType t_tokentype)->bool \
   {                                                      \
-    bool result{false};                                  \
-                                                         \
     switch(t_tokentype) {                                \
+      __VA_ARGS__                                        \
+      return true;                                       \
+                                                         \
       default:                                           \
         break;                                           \
     }                                                    \
                                                          \
-    return result;                                       \
+    return false;                                        \
   }
 
 // Functions intended for figuring out to what kind of class/property a token
@@ -37,149 +41,55 @@ constexpr auto is_logical_junction(const TokenType t_tokentype) -> bool;
 constexpr auto is_comparison_operator(const TokenType t_tokentype) -> bool;
 
 // Function definitions:
-constexpr auto is_int(const TokenType t_tokentype) -> bool
-{
-  bool result{false};
-
-  switch(t_tokentype) {
-    case TokenType::HEX:
-    case TokenType::INTEGER:
-      result = true;
-      break;
-
-    default:
-      break;
-  }
-
-  return result;
-}
+// clang-format off
+DEFINE_TOKEN_TYPE_HELPER(is_int,
+						 CASE_TOKEN_TYPE(INTEGER)
+						 CASE_TOKEN_TYPE(HEX));
 
 constexpr auto is_numeric(const TokenType t_tokentype) -> bool
 {
-  bool result{false};
-
-  if(is_int(t_tokentype) || t_tokentype == TokenType::FLOAT)
-    result = true;
-
-  return result;
+  return is_int(t_tokentype) || t_tokentype == TokenType::FLOAT;
 }
 
-constexpr auto is_literal(const TokenType t_tokentype) -> bool
-{
-  bool result{false};
+DEFINE_TOKEN_TYPE_HELPER(is_literal,
+                         CASE_TOKEN_TYPE(INTEGER)
+						 CASE_TOKEN_TYPE(HEX)
+                         CASE_TOKEN_TYPE(FLOAT)
+						 CASE_TOKEN_TYPE(STRING)
+                         CASE_TOKEN_TYPE(REGEX));
 
-  switch(t_tokentype) {
-    case TokenType::INTEGER:
-    case TokenType::HEX:
-    case TokenType::FLOAT:
-    case TokenType::STRING:
-    case TokenType::REGEX:
-      result = true;
-      break;
-
-    default:
-      break;
-  }
-
-  return result;
-}
-
-constexpr auto is_lvalue(const TokenType t_tokentype) -> bool
-{
-  bool result{false};
-
-  if(t_tokentype == TokenType::IDENTIFIER)
-    result = true;
-
-  return result;
-}
+DEFINE_TOKEN_TYPE_HELPER(is_value,
+						 CASE_TOKEN_TYPE(IDENTIFIER));
 
 constexpr auto is_rvalue(const TokenType t_tokentype) -> bool
 {
-  bool result{false};
-
-  if(is_literal(t_tokentype) || is_lvalue(t_tokentype))
-    result = true;
-
-  return result;
+  return is_literal(t_tokentype) || is_lvalue(t_tokentype);
 }
 
-constexpr auto is_terminator(const TokenType t_tokentype) -> bool
-{
-  bool result{false};
+DEFINE_TOKEN_TYPE_HELPER(is_terminator,
+						 CASE_TOKEN_TYPE(SEMICOLON)
+						 CASE_TOKEN_TYPE(END_OF_LINE));
 
-  switch(t_tokentype) {
-    case TokenType::SEMICOLON:
-    case TokenType::END_OF_LINE:
-      result = true;
-      break;
+DEFINE_TOKEN_TYPE_HELPER(is_control_statement,
+						 CASE_TOKEN_TYPE(IF)
+						 CASE_TOKEN_TYPE(ELSE)
+						 CASE_TOKEN_TYPE(DO)
+						 CASE_TOKEN_TYPE(WHILE)
+						 CASE_TOKEN_TYPE(FOR));
 
-    default:
-      break;
-  }
+DEFINE_TOKEN_TYPE_HELPER(is_logical_junction,
+						 CASE_TOKEN_TYPE(AND)
+						 CASE_TOKEN_TYPE(OR));
 
-  return result;
-}
+DEFINE_TOKEN_TYPE_HELPER(is_comparison_operator,
+						 CASE_TOKEN_TYPE(LESS_THAN)
+						 CASE_TOKEN_TYPE(LESS_THAN_EQUAL)
+						 CASE_TOKEN_TYPE(EQUAL)
+						 CASE_TOKEN_TYPE(NOT_EQUAL)
+						 CASE_TOKEN_TYPE(GREATER_THAN)
+						 CASE_TOKEN_TYPE(GREATER_THAN_EQUAL));
 
-constexpr auto is_control_statement(const TokenType t_tokentype) -> bool
-{
-  bool result{false};
-
-  switch(t_tokentype) {
-    case TokenType::IF:
-    case TokenType::ELSE:
-    case TokenType::DO:
-    case TokenType::WHILE:
-    case TokenType::FOR:
-      result = true;
-      break;
-
-    default:
-      break;
-  }
-
-  return result;
-}
-
-constexpr auto is_logical_junction(const TokenType t_tokentype) -> bool
-{
-  bool result{false};
-
-  switch(t_tokentype) {
-    case TokenType::AND:
-    case TokenType::OR:
-      result = true;
-      break;
-
-    default:
-      break;
-  }
-
-  return result;
-}
-
-constexpr auto is_comparison_operator(const TokenType t_tokentype) -> bool
-{
-  bool result{false};
-
-  switch(t_tokentype) {
-    case TokenType::LESS_THAN:
-    case TokenType::LESS_THAN_EQUAL:
-
-    case TokenType::EQUAL:
-    case TokenType::NOT_EQUAL:
-
-    case TokenType::GREATER_THAN:
-    case TokenType::GREATER_THAN_EQUAL:
-      result = true;
-      break;
-
-    default:
-      break;
-  }
-
-  return result;
-}
+// clang-format on
 }; // namespace tokentype
 
 #endif // TOKEN_TYPE_HELPERS_H
