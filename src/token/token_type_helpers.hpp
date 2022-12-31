@@ -68,7 +68,7 @@ constexpr auto is_rvalue(const TokenType t_tokentype) -> bool
 
 DEFINE_TOKEN_TYPE_HELPER(is_terminator,
 						 CASE_TOKEN_TYPE(SEMICOLON)
-						 CASE_TOKEN_TYPE(END_OF_LINE));
+						 CASE_TOKEN_TYPE(NEWLINE));
 
 DEFINE_TOKEN_TYPE_HELPER(is_control_statement,
 						 CASE_TOKEN_TYPE(IF)

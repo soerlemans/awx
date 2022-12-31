@@ -93,7 +93,7 @@ enum class TokenType : u16 {
   // Miscellaneous:
   DOLLAR_SIGN,
   VERTICAL_BAR,
-  END_OF_LINE, // 58
+  NEWLINE, // 58
 };
 
 #endif // TOKEN_TYPE_H

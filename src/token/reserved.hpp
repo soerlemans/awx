@@ -149,7 +149,7 @@ namespace symbols {
   // Miscellaneous operators:
   DEFINE_RESERVED(g_dollar_sign,  '$',  DOLLAR_SIGN);
   DEFINE_RESERVED(g_vertical_bar, '|',  VERTICAL_BAR);
-  DEFINE_RESERVED(g_end_of_line,  '\n', END_OF_LINE);
+  DEFINE_RESERVED(g_newline,  '\n', NEWLINE);
 
   // TODO: Make these be generated automagically
   // TODO: Place these  somewhere else they are ugly
@@ -185,7 +185,7 @@ namespace symbols {
 
 	g_dollar_sign,
 	g_vertical_bar,
-	g_end_of_line
+	g_newline
   };
 
   constexpr std::array<ReservedWrapper<std::string_view>, 15>

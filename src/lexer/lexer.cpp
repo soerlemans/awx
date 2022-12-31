@@ -204,7 +204,7 @@ auto Lexer::literal_regex() -> Token
         quit = true;
         break;
 
-      case g_end_of_line.identifier():
+      case g_newline.identifier():
         // FIXME: Error on regex literals not being closed on the same line
         // For now just end REGEX on new line
         quit = true;
@@ -329,9 +329,9 @@ auto Lexer::tokenize() -> TokenStream
 
       if(std::isspace(character)) {
         // Just ignore whitespace, but do not ignore newlines
-        if(character == g_end_of_line.identifier()) {
+        if(character == g_newline.identifier()) {
           LOG(LogLevel::INFO, "NEWLINE");
-          add_token(Token{TokenType::END_OF_LINE});
+          add_token(Token{TokenType::NEWLINE});
         }
       } else if(character == '#') { // # Denotes comments
         // Stop lexing the current line and continue with the next!

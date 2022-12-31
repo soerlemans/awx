@@ -24,6 +24,15 @@ auto Parser::newline_opt() -> NodePtr
   LOG(LogLevel::INFO, "NEWLINE OPT");
   NodePtr node{nullptr};
 
+  for(; !eos(); next_token()) {
+    const auto tokentype{m_tokenstream.token().type()};
+
+    if(tokentype == TokenType::NEWLINE)
+      break;
+  }
+
+  m_tokenstream.prev();
+
   return node;
 }
 
