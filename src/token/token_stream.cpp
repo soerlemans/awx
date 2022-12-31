@@ -23,7 +23,7 @@ auto TokenStream::prev(const int dec) -> Token&
 {
   Token& result{(*this)[m_index]};
 
-  m_index += dec;
+  m_index -= dec;
 
   return result;
 }

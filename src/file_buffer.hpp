@@ -60,6 +60,8 @@ class FileBuffer
   auto eol() const -> bool;
   auto eof() const -> bool;
 
+  auto print() -> void;
+
   // Operators:
   auto operator[](std::size_t t_index) -> std::string&;
 
@@ -67,7 +69,5 @@ class FileBuffer
   virtual ~FileBuffer();
 };
 
-// Exported functions:
-auto print_filebuffer(const FileBuffer& t_fb) -> void;
 
 #endif // FILE_BUFFER_H

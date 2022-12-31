@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <tuple>
 
+#include "../enum.hpp"
 #include "../log.hpp"
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
@@ -27,7 +28,7 @@ auto Parser::newline_opt() -> NodePtr
   for(; !eos(); next_token()) {
     const auto tokentype{m_tokenstream.token().type()};
 
-    if(tokentype == TokenType::NEWLINE)
+    if(tokentype != TokenType::NEWLINE)
       break;
   }
 
@@ -53,6 +54,11 @@ auto Parser::unary_input_function() -> NodePtr
 {
   LOG(LogLevel::INFO, "UNARY_INPUT_FUNCTION");
   NodePtr node{nullptr};
+
+  // NodePtr lhs{unary_expr()};
+  // next_token();
+
+  // NodePtr rhs{simple_get()};
 
   return node;
 }
@@ -655,13 +661,13 @@ auto Parser::parse() -> Ast
   PRINT("=== PARSING ===");
 
   Ast ast;
-  for(; !eos(); next_token()) {
+  program();
+  // for(; !eos(); next_token()) {
     // Ast is pieced together from calling nested functions
     // That each return a NodePtr to eachother
     // ast.add(toplevel());
-  }
+  // }
 
-  program();
 
   PRINT();
   return ast;

@@ -29,22 +29,22 @@ auto Token::type() const -> TokenType
   return m_tokentype;
 }
 
-Token::~Token()
+auto Token::print() -> void
 {
-}
-
-// Exported functions:
-auto print_token(const Token& t_token) -> void
-{
-  std::cout << "Token - Type: " << enum2underlying_type(t_token.type());
+  std::cout << "Token - Type: " << enum2underlying_type(this->type());
 
   // TODO: Macro this away?
-  if(const auto verify{t_token.check<int>()}; verify)
+  if(const auto verify{this->check<int>()}; verify)
     std::cout << " Int: " << *verify << '\n';
-  else if(const auto verify{t_token.check<double>()}; verify)
+  else if(const auto verify{this->check<double>()}; verify)
     std::cout << " Double: " << *verify << '\n';
-  else if(const auto verify{t_token.check<std::string>()}; verify)
+  else if(const auto verify{this->check<std::string>()}; verify)
     std::cout << " String: " << *verify << '\n';
   else
     ; // TODO: Error handling
 }
+
+Token::~Token()
+{
+}
+

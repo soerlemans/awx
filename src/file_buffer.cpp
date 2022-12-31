@@ -135,6 +135,14 @@ auto FileBuffer::eof() const -> bool
   return m_lineno >= size();
 }
 
+auto FileBuffer::print() -> void
+{
+  std::cout << "FileBuffer - ";
+
+  for(; !this->eof(); this->next())
+    std::cout << "Line(" << this->lineno() << "): " << this->line() << '\n';
+}
+
 // Operators:
 auto FileBuffer::operator[](std::size_t t_index) -> std::string&
 {
@@ -144,13 +152,4 @@ auto FileBuffer::operator[](std::size_t t_index) -> std::string&
 // Destructor:
 FileBuffer::~FileBuffer()
 {
-}
-
-// Exported functions:
-auto print_filebuffer(const FileBuffer& t_fb) -> void
-{
-  std::cout << "FileBuffer - ";
-
-  for(; !t_fb.eof(); t_fb.next())
-    std::cout << "Line(" << t_fb.lineno() << "): " << t_fb.line() << '\n';
 }

@@ -58,14 +58,13 @@ class Token
     return std::get_if<T>(&m_value);
   }
 
+  auto print() -> void;
+
   // Operators
   auto operator=(const Token& t_token) -> Token& = default;
   auto operator=(Token&& t_token) -> Token& = default;
 
   virtual ~Token();
 };
-
-// Exported functions:
-auto print_token(const Token& t_token) -> void;
 
 #endif // TOKEN_H
