@@ -327,6 +327,7 @@ auto Lexer::tokenize() -> TokenStream
 
       const TokenType last_tokentype{m_tokenstream.back().type()};
 
+	  // TODO: String concatenation is not lexed right now
       if(std::isspace(character)) {
         // Just ignore whitespace, but do not ignore newlines
         if(character == g_newline.identifier()) {

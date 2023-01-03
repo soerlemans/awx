@@ -15,25 +15,15 @@ class TrinaryOperator;
 class DynamicOperator;
 
 // UnaryOperator derived classes:
-class PrefixIncrement;
-class PrefixDecrement;
-
-class PostfixIncrement;
-class PostfixDecrement;
+class Increment;
+class Decrement;
 
 // Logical:
 class Not;
 
 // BinaryOperator derived classes:
 // Arithmetic:
-class Power;
-
-class Multiply;
-class Divide;
-class Modulo;
-
-class Add;
-class Subtract;
+class Arithmetic;
 
 // String operations:
 class StringConcatenation;

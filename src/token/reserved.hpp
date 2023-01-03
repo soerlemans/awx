@@ -78,13 +78,14 @@ namespace keywords {
   DEFINE_RESERVED(g_while,    r_vw{"while"},    WHILE);
   DEFINE_RESERVED(g_for,      r_vw{"for"},      FOR);
   DEFINE_RESERVED(g_in,       r_vw{"in"},       IN);
+  DEFINE_RESERVED(g_print,    r_vw{"print"},    PRINT);
 
   // TODO: Use a std::map instead of an array as those have a faster lookup time
   // Then we wont need to loop through them either
   // TODO: Make these be generated automagically
   // TODO: Make this a constexpr vector? those have constexpr initializer_list constructor
-  constexpr std::array<ReservedWrapper<std::string_view>, 8> g_keywords{
-	g_function, g_return, g_if, g_else, g_do, g_while, g_for, g_in
+  constexpr std::array<ReservedWrapper<std::string_view>, 9> g_keywords{
+	g_function, g_return, g_if, g_else, g_do, g_while, g_for, g_in, g_print
   };
 }; // namespace keywords
 
@@ -146,14 +147,18 @@ namespace symbols {
   DEFINE_RESERVED(g_colon,        ':', COLON);
   DEFINE_RESERVED(g_semicolon,    ';', SEMICOLON);
 
+  // Output redirection:
+  DEFINE_RESERVED(g_trunc, '>', TRUNC);
+  DEFINE_RESERVED(g_append, r_vw{">>"}, APPEND);
+  DEFINE_RESERVED(g_pipe, '|', PIPE);
+
   // Miscellaneous operators:
   DEFINE_RESERVED(g_dollar_sign,  '$',  DOLLAR_SIGN);
-  DEFINE_RESERVED(g_vertical_bar, '|',  VERTICAL_BAR);
   DEFINE_RESERVED(g_newline,  '\n', NEWLINE);
 
   // TODO: Make these be generated automagically
   // TODO: Place these  somewhere else they are ugly
-  constexpr std::array<ReservedWrapper<char>, 25>
+  constexpr std::array<ReservedWrapper<char>, 26>
   g_single_symbols{
 	g_paren_open,
 	g_paren_close,
@@ -183,12 +188,14 @@ namespace symbols {
 	g_colon,
 	g_semicolon,
 
+	g_trunc,
+	g_pipe,
+
 	g_dollar_sign,
-	g_vertical_bar,
 	g_newline
   };
 
-  constexpr std::array<ReservedWrapper<std::string_view>, 15>
+  constexpr std::array<ReservedWrapper<std::string_view>, 16>
   g_multi_symbols{
 	g_increment,
 	g_decrement,
@@ -210,7 +217,9 @@ namespace symbols {
 	g_equal,
 	g_not_equal,
 
-	g_greater_than_equal
+	g_greater_than_equal,
+
+	g_append
   };
 
 // Contains symbols that have a special meaning but are not tied to a Token

@@ -5,26 +5,17 @@
 #include "unary_operator.hpp"
 
 
-// Postfix:
-class operators::PostfixIncrement : public operators::UnaryOperator
+class operators::Increment : public operators::UnaryOperator
 {
+  private:
+  bool m_prefix;
+
   public:
-  PostfixIncrement(NodePtr&& t_left);
+  Increment(NodePtr&& t_left, bool t_prefix);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
-  virtual ~PostfixIncrement();
+  virtual ~Increment();
 };
 
-// Prefix:
-class operators::PrefixIncrement : public operators::UnaryOperator
-{
-  public:
-  PrefixIncrement(NodePtr&& t_left);
-
-  auto accept(NodeVisitor t_visitor) -> void;
-
-  virtual ~PrefixIncrement();
-};
-
-#endif // INCREMENT_H
+#endif

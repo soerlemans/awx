@@ -5,26 +5,18 @@
 #include "unary_operator.hpp"
 
 
-// Postfix:
-class operators::PostfixDecrement : public operators::UnaryOperator
+class operators::Decrement : public operators::UnaryOperator
 {
+private:
+  bool m_prefix;
+
   public:
-  PostfixDecrement(NodePtr&& t_left);
+  Decrement(NodePtr&& t_left, bool t_prefix);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
-  virtual ~PostfixDecrement();
+  virtual ~Decrement();
 };
 
-// Prefix:
-class operators::PrefixDecrement : public operators::UnaryOperator
-{
-  public:
-  PrefixDecrement(NodePtr&& t_left);
-
-  auto accept(NodeVisitor t_visitor) -> void;
-
-  virtual ~PrefixDecrement();
-};
 
 #endif // DECREMENT_H

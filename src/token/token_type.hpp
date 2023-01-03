@@ -20,6 +20,7 @@ enum class TokenType : u16 {
   WHILE,
   FOR,
   IN,
+  PRINT,
 
   // Types:
   INTEGER,
@@ -90,10 +91,14 @@ enum class TokenType : u16 {
   COLON,
   SEMICOLON,
 
+  // Output redirection:
+  TRUNC,
+  APPEND,
+  PIPE,
+
   // Miscellaneous:
   DOLLAR_SIGN,
-  VERTICAL_BAR,
-  NEWLINE, // 56
+  NEWLINE, // 58
 };
 
 #endif // TOKEN_TYPE_H

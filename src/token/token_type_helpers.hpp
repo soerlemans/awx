@@ -61,6 +61,12 @@ DEFINE_TOKEN_TYPE_HELPER(is_literal,
 DEFINE_TOKEN_TYPE_HELPER(is_value,
 						 CASE_TOKEN_TYPE(IDENTIFIER));
 
+constexpr auto is_lvalue(const TokenType t_tokentype) -> bool
+{
+  // TODO: Implement
+
+  return false;
+}
 constexpr auto is_rvalue(const TokenType t_tokentype) -> bool
 {
   return is_literal(t_tokentype) || is_lvalue(t_tokentype);

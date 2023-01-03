@@ -14,8 +14,7 @@
 
 // Class definitions:
 Parser::Parser(TokenStream t_tokenstream): m_tokenstream{t_tokenstream}
-{
-}
+{}
 
 // Parsing grammar methods:
 // This rule is made purely to discard any amount of newlines
@@ -26,12 +25,12 @@ auto Parser::newline_opt() -> void
 {
   LOG(LogLevel::INFO, "NEWLINE OPT");
 
-  for(; !eos(); next_token()) {
-    const auto tokentype{m_tokenstream.token().type()};
+    for(; !eos(); next_token()) {
+      const auto tokentype{m_tokenstream.token().type()};
 
-    if(tokentype != TokenType::NEWLINE)
-      break;
-  }
+      if(tokentype != TokenType::NEWLINE)
+        break;
+    }
 
   m_tokenstream.prev();
 }
@@ -86,26 +85,26 @@ auto Parser::lvalue() -> NodePtr
   NodePtr node{nullptr};
 
   const auto token{next_token("Identifier or a $")};
-  switch(token.type()) {
-    case TokenType::IDENTIFIER: {
-	  // We really dont expect these next_tokens to fail
-	  const auto brace_open{next_token()};
+    switch(token.type()) {
+        case TokenType::IDENTIFIER: {
+          // We really dont expect these next_tokens to fail
+          const auto brace_open{next_token()};
 
-	  // What do with expr_list???
-	  expr_list();
+          // What do with expr_list???
+          expr_list();
 
-	  const auto brace_close{next_token()};
-      break;
+          const auto brace_close{next_token()};
+          break;
+        }
+
+        case TokenType::DOLLAR_SIGN: {
+          expr();
+          break;
+        }
+
+      default:
+        break;
     }
-
-    case TokenType::DOLLAR_SIGN: {
-	  expr();
-      break;
-    }
-
-    default:
-      break;
-  }
 
   return node;
 }
@@ -175,6 +174,17 @@ auto Parser::unary_print_expr() -> NodePtr
   LOG(LogLevel::INFO, "UNARY PRINT EXPR");
   NodePtr node{nullptr};
 
+  const auto prefix{next_token("either a + or -")};
+    if(prefix.type() == TokenType::PLUS || prefix.type() == TokenType::MINUS) {
+      print_expr();
+    } else {
+      unary_print_expr();
+
+      const auto op{next_token("expected operator")};
+
+      print_expr();
+    }
+
   return node;
 }
 
@@ -185,6 +195,12 @@ auto Parser::print_expr() -> NodePtr
 {
   LOG(LogLevel::INFO, "PRINT EXPR");
   NodePtr node{nullptr};
+
+    if(auto ptr{unary_print_expr()}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{non_unary_print_expr()}; ptr) {
+      node = std::move(ptr);
+  }
 
   return node;
 }
@@ -197,6 +213,17 @@ auto Parser::print_expr_list() -> NodePtr
   LOG(LogLevel::INFO, "PRINT EXPR LIST");
   NodePtr node{nullptr};
 
+  if(auto print_expr_ptr{print_expr()}; !print_expr_ptr)
+    ; // Error handling
+
+  const auto comma{next_token(",")};
+    if(comma.type() != TokenType::COMMA) {
+      m_tokenstream.prev();
+  }
+
+  newline_opt();
+  print_expr();
+
   return node;
 }
 
@@ -207,6 +234,8 @@ auto Parser::print_expr_list_opt() -> NodePtr
 {
   LOG(LogLevel::INFO, "PRINT EXPR LIST OPT");
   NodePtr node{nullptr};
+
+  print_expr_list();
 
   return node;
 }
@@ -301,6 +330,14 @@ auto Parser::expr() -> NodePtr
   LOG(LogLevel::INFO, "EXPR");
   NodePtr node{nullptr};
 
+    if(auto ptr{unary_expr()}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{non_unary_expr()}; ptr) {
+      node = std::move(ptr);
+    } else {
+      // TODO: Error handling
+    }
+
   return node;
 }
 
@@ -311,6 +348,10 @@ auto Parser::expr_opt() -> NodePtr
 {
   LOG(LogLevel::INFO, "EXPR OPT");
   NodePtr node{nullptr};
+
+    if(auto ptr{expr()}; ptr) {
+      node = std::move(ptr);
+  }
 
   return node;
 }
@@ -323,6 +364,7 @@ auto Parser::multiple_expr_list() -> NodePtr
   LOG(LogLevel::INFO, "MULTIPLE EXPR LIST");
   NodePtr node{nullptr};
 
+
   return node;
 }
 
@@ -334,6 +376,14 @@ auto Parser::expr_list() -> NodePtr
   LOG(LogLevel::INFO, "EXPR LIST");
   NodePtr node{nullptr};
 
+    if(auto ptr{expr()}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{multiple_expr_list()}; ptr) {
+      node = std::move(ptr);
+    } else {
+      // TODO: Error handling
+    }
+
   return node;
 }
 
@@ -343,7 +393,7 @@ auto Parser::expr_list() -> NodePtr
 auto Parser::expr_list_opt() -> NodePtr
 {
   LOG(LogLevel::INFO, "EXPR LIST OPT");
-  NodePtr node{nullptr};
+  NodePtr node{expr_list()};
 
   return node;
 }
@@ -356,6 +406,9 @@ auto Parser::output_redirection() -> NodePtr
 {
   LOG(LogLevel::INFO, "OUTPUT REDIRECTION");
   NodePtr node{nullptr};
+
+  const auto token{next_token(">, >> or |")};
+  expr();
 
   return node;
 }
@@ -464,22 +517,22 @@ auto Parser::terminated_statement() -> NodePtr
   const auto token{next_token(
     "Control statement token {if, while, for, ;, terminatable_statement}")};
 
-  switch(token.type()) {
-    case TokenType::IF:
-    case TokenType::WHILE:
-    case TokenType::FOR:
-    case TokenType::SEMICOLON:
-      newline_opt();
-      break;
+    switch(token.type()) {
+      case TokenType::IF:
+      case TokenType::WHILE:
+      case TokenType::FOR:
+      case TokenType::SEMICOLON:
+        newline_opt();
+        break;
 
-    default: {
-      terminatable_statement();
-      const auto terminator_token{next_token("\\n or ;")};
-      // TODO: Verify if is a is_terminator()
-      newline_opt();
-      break;
+        default: {
+          terminatable_statement();
+          const auto terminator_token{next_token("\\n or ;")};
+          // TODO: Verify if is a is_terminator()
+          newline_opt();
+          break;
+        }
     }
-  }
 
   return node;
 }
@@ -495,23 +548,23 @@ auto Parser::unterminated_statement_list() -> NodePtr
   NodePtr node{nullptr};
 
 
-  if(auto unterminated_statement_ptr{unterminated_statement()};
-     unterminated_statement_ptr) {
-    // Add to NodeList
+    if(auto unterminated_statement_ptr{unterminated_statement()};
+       unterminated_statement_ptr) {
+      // Add to NodeList
 
-    while(!eos()) {
-      auto ptr{unterminated_statement()};
+        while(!eos()) {
+          auto ptr{unterminated_statement()};
 
-      if(ptr) {
-        // Add to NodeList
-      } else {
-        break;
-      }
+            if(ptr) {
+              // Add to NodeList
+            } else {
+              break;
+            }
+        }
+    } else {
+      // TODO: Error handling
+      // EXCPECTED ATLEAST ONE...
     }
-  } else {
-    // TODO: Error handling
-    // EXCPECTED ATLEAST ONE...
-  }
 
   return node;
 }
@@ -526,23 +579,23 @@ auto Parser::terminated_statement_list() -> NodePtr
   LOG(LogLevel::INFO, "TERMINATED STATEMENT LIST");
   NodePtr node{nullptr};
 
-  if(auto terminated_statement_ptr{terminated_statement()};
-     terminated_statement_ptr) {
-    // Add to NodeList
+    if(auto terminated_statement_ptr{terminated_statement()};
+       terminated_statement_ptr) {
+      // Add to NodeList
 
-    while(!eos()) {
-      auto ptr{terminated_statement()};
+        while(!eos()) {
+          auto ptr{terminated_statement()};
 
-      if(ptr) {
-        // Add to NodeList
-      } else {
-        break;
-      }
+            if(ptr) {
+              // Add to NodeList
+            } else {
+              break;
+            }
+        }
+    } else {
+      // TODO: Error handling
+      // EXCPECTED ATLEAST ONE...
     }
-  } else {
-    // TODO: Error handling
-    // EXCPECTED ATLEAST ONE...
-  }
 
   return node;
 }
@@ -557,12 +610,12 @@ auto Parser::terminator() -> NodePtr
   LOG(LogLevel::INFO, "TERMINATOR");
   NodePtr node{nullptr};
 
-  for(; !eos(); next_token()) {
-    const auto tokentype{m_tokenstream.token().type()};
+    for(; !eos(); next_token()) {
+      const auto tokentype{m_tokenstream.token().type()};
 
-    if(!tokentype::is_terminator(tokentype))
-      break;
-  }
+      if(!tokentype::is_terminator(tokentype))
+        break;
+    }
 
   // if our last token was not a terminator go back to undo the lookahead
   m_tokenstream.prev();
@@ -584,14 +637,14 @@ auto Parser::action() -> NodePtr
 
   newline_opt();
 
-  if(auto terminated_ptr{terminated_statement_list()}; terminated_ptr) {
-    // DO SOMETHING!
-  } else if(auto unterminated_ptr{unterminated_statement_list()};
-            unterminated_ptr) {
-    // DO SOMETHING!
-  } else {
-    // TODO:: Error handling
-  }
+    if(auto terminated_ptr{terminated_statement_list()}; terminated_ptr) {
+      // DO SOMETHING!
+    } else if(auto unterminated_ptr{unterminated_statement_list()};
+              unterminated_ptr) {
+      // DO SOMETHING!
+    } else {
+      // TODO:: Error handling
+    }
 
   const auto accolade_close{next_token("{")};
 
@@ -606,6 +659,15 @@ auto Parser::special_pattern() -> NodePtr
   LOG(LogLevel::INFO, "SPECIAL PATTERN");
   NodePtr node{nullptr};
 
+  const auto token{next_token("BEGIN or END")};
+
+    if(const auto* identifier_ptr{token.check<std::string>()}; identifier_ptr) {
+        if(*identifier_ptr == "BEGIN") {
+      }
+        if(*identifier_ptr == "END") {
+      }
+  }
+
   return node;
 }
 
@@ -616,6 +678,16 @@ auto Parser::normal_pattern() -> NodePtr
 {
   LOG(LogLevel::INFO, "NORMAL PATTERN");
   NodePtr node{nullptr};
+
+    if(auto expr_ptr{expr()}; expr_ptr) {
+      const auto token{next_token(", or nothing")};
+        if(token.type() == TokenType::COMMA) {
+          newline_opt();
+          expr();
+        } else {
+          m_tokenstream.prev();
+        }
+  }
 
   return node;
 }
@@ -628,17 +700,18 @@ auto Parser::pattern() -> NodePtr
   LOG(LogLevel::INFO, "PATTERN");
   NodePtr node{nullptr};
 
-  if(auto normal_pattern_ptr{normal_pattern()}; normal_pattern_ptr) {
-    node = std::move(normal_pattern_ptr);
-  } else if(auto special_pattern_ptr{special_pattern()}; special_pattern_ptr) {
-    node = std::move(special_pattern_ptr);
+    if(auto normal_pattern_ptr{normal_pattern()}; normal_pattern_ptr) {
+      node = std::move(normal_pattern_ptr);
+    } else if(auto special_pattern_ptr{special_pattern()};
+              special_pattern_ptr) {
+      node = std::move(special_pattern_ptr);
   }
 
   return node;
 }
 
-// param_list       : NAME
-//                  | param_list ',' NAME
+// param_list       : NAME_ptr
+//                  | param_list ',' NAME_ptr
 //                  ;
 auto Parser::param_list() -> NodePtr
 {
@@ -658,8 +731,8 @@ auto Parser::param_list_opt() -> NodePtr
   LOG(LogLevel::INFO, "PARAM LIST OPT");
   NodePtr node{nullptr};
 
-  if(auto param_list_ptr{param_list()}; param_list_ptr) {
-    node = std::move(param_list_ptr);
+    if(auto param_list_ptr{param_list()}; param_list_ptr) {
+      node = std::move(param_list_ptr);
   }
 
   return node;
@@ -679,17 +752,17 @@ auto Parser::item() -> NodePtr
   LOG(LogLevel::INFO, "ITEM");
   NodePtr node{nullptr};
 
-  if(auto action_ptr{action()}; action_ptr) {
-    node = std::move(action_ptr);
-  } else if(auto pattern_ptr{pattern()}; pattern_ptr) {
-    auto action_ptr{action()};
+    if(auto action_ptr{action()}; action_ptr) {
+      node = std::move(action_ptr);
+    } else if(auto pattern_ptr{pattern()}; pattern_ptr) {
+      auto action_ptr{action()};
 
-    // Resolve this?
-    // How should we represent this in AST?
-  } else if(auto normal_pattern_ptr{normal_pattern()}; normal_pattern_ptr) {
-    node = std::move(normal_pattern_ptr);
-  } else if(true) {
-    // TODO: Implement function parsing for now ignore?
+      // Resolve this?
+      // How should we represent this in AST?
+    } else if(auto normal_pattern_ptr{normal_pattern()}; normal_pattern_ptr) {
+      node = std::move(normal_pattern_ptr);
+    } else if(true) {
+      // TODO: Implement function parsing for now ignore?
   }
 
   return node;
@@ -706,10 +779,10 @@ auto Parser::item_list() -> NodePtr
   LOG(LogLevel::INFO, "ITEM LIST");
   NodePtr node{nullptr};
 
-  // TODO Piece these together some way into an AST structure
-  if(auto item_ptr{item()}; item_ptr) {
-    item_list();
-    terminator();
+    // TODO Piece these together some way into an AST structure
+    if(auto item_ptr{item()}; item_ptr) {
+      item_list();
+      terminator();
   }
 
   return node;
@@ -726,8 +799,8 @@ auto Parser::program() -> NodePtr
   // TODO Piece these together some way into an AST structure
   node = item_list();
 
-  if(auto item_ptr{item()}; item_ptr) {
-    // item() is optional
+    if(auto item_ptr{item()}; item_ptr) {
+      // item() is optional
   }
 
   return node;
@@ -769,5 +842,4 @@ auto Parser::parse() -> Ast
 }
 
 Parser::~Parser()
-{
-}
+{}

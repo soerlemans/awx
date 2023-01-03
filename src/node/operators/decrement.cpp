@@ -3,32 +3,17 @@
 using namespace operators;
 
 
-// Postfix:
-PostfixDecrement::PostfixDecrement(NodePtr&& t_left)
-  : UnaryOperator{Precedence::PostfixIncDec, std::forward<NodePtr>(t_left)}
+Decrement::Decrement(NodePtr&& t_left, bool t_prefix)
+  : UnaryOperator{Precedence::PostfixIncDec, std::forward<NodePtr>(t_left)},
+    m_prefix{t_prefix}
 {
 }
 
-auto PostfixDecrement::accept([[maybe_unused]] NodeVisitor t_visitor) -> void
-{
-  //
-}
-
-PostfixDecrement::~PostfixDecrement()
-{
-}
-
-// Prefix:
-PrefixDecrement::PrefixDecrement(NodePtr&& t_left)
-  : UnaryOperator{Precedence::PrefixIncDec, std::forward<NodePtr>(t_left)}
-{
-}
-
-auto PrefixDecrement::accept([[maybe_unused]] NodeVisitor t_visitor) -> void
+auto Decrement::accept([[maybe_unused]] NodeVisitor t_visitor) -> void
 {
   //
 }
 
-PrefixDecrement::~PrefixDecrement()
+Decrement::~Decrement()
 {
 }
