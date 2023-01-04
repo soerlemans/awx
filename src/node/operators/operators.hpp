@@ -29,14 +29,7 @@ class Arithmetic;
 class StringConcatenation;
 
 // Comparison:
-class LessThan;
-class LessThanEqual;
-
-class NotEqual;
-class Equal;
-
-class GreaterThan;
-class GreaterThanEqual;
+class Comparison;
 
 // ERE:
 class EreMatch;

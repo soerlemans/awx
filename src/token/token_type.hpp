@@ -20,7 +20,9 @@ enum class TokenType : u16 {
   WHILE,
   FOR,
   IN,
+
   PRINT,
+  PRINTF,
 
   // Types:
   INTEGER,

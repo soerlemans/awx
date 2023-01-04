@@ -30,7 +30,7 @@ BraceWrapping:
   AfterUnion:      false
   BeforeCatch:     false
   BeforeElse:      false
-  IndentBraces:    true
+  IndentBraces:    false
   SplitEmptyFunction: false
   SplitEmptyRecord: false
   SplitEmptyNamespace: false

@@ -79,13 +79,14 @@ namespace keywords {
   DEFINE_RESERVED(g_for,      r_vw{"for"},      FOR);
   DEFINE_RESERVED(g_in,       r_vw{"in"},       IN);
   DEFINE_RESERVED(g_print,    r_vw{"print"},    PRINT);
+  DEFINE_RESERVED(g_printf,   r_vw{"printf"},   PRINTF);
 
   // TODO: Use a std::map instead of an array as those have a faster lookup time
   // Then we wont need to loop through them either
   // TODO: Make these be generated automagically
   // TODO: Make this a constexpr vector? those have constexpr initializer_list constructor
-  constexpr std::array<ReservedWrapper<std::string_view>, 9> g_keywords{
-	g_function, g_return, g_if, g_else, g_do, g_while, g_for, g_in, g_print
+  constexpr std::array<ReservedWrapper<std::string_view>, 10> g_keywords{
+	g_function, g_return, g_if, g_else, g_do, g_while, g_for, g_in, g_print, g_printf
   };
 }; // namespace keywords
 

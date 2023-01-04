@@ -7,9 +7,11 @@
 
 enum class ArithmeticOperation {
   POWER = 0,
+
   MULTIPLY,
   DIVIDE,
   MODULO,
+
   ADD,
   SUBTRACT
 };
