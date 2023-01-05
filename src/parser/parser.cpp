@@ -30,8 +30,8 @@ auto Parser::newline_opt() -> void
 {
   TRACE(LogLevel::DEBUG, "NEWLINE OPT");
 
-  for(; !eos(); next()) {
-    const auto tokentype{m_tokenstream.token().type()};
+  while(!eos()) {
+    const auto tokentype{next("\\n").type()};
 
     if(tokentype != TokenType::NEWLINE)
       break;
@@ -600,20 +600,20 @@ auto Parser::terminatable_statement() -> NodePtr
       break;
 
     case TokenType::EXIT:
-	  expr_opt();
+      expr_opt();
       break;
 
     case TokenType::RETURN:
-	  expr_opt();
+      expr_opt();
       break;
 
     case TokenType::DO:
-	  newline_opt();
-	  terminated_statement();
-	  expect(TokenType::WHILE, "while");
-	  expect(TokenType::PAREN_OPEN, "(");
-	  expr();
-	  expect(TokenType::PAREN_CLOSE, ")");
+      newline_opt();
+      terminated_statement();
+      expect(TokenType::WHILE, "while");
+      expect(TokenType::PAREN_OPEN, "(");
+      expr();
+      expect(TokenType::PAREN_CLOSE, ")");
       break;
 
     default:
@@ -796,8 +796,8 @@ auto Parser::terminator() -> void
   if(!tokentype::is_terminator(token.type()))
     std::runtime_error{"Expected a terminator!!!"};
 
-  for(; !eos(); next()) {
-    const auto tokentype{m_tokenstream.token().type()};
+  while(!eos()) {
+    const auto tokentype{next().type()};
 
     if(!tokentype::is_terminator(tokentype))
       break;
@@ -1055,8 +1055,7 @@ auto Parser::peek(const std::string t_msg) -> Token
   return token;
 }
 
-auto Parser::expect(TokenType t_tokentype, const std::string t_msg)
-  -> Token&
+auto Parser::expect(TokenType t_tokentype, const std::string t_msg) -> Token&
 {
   if(!check(t_tokentype)) {
     std::stringstream ss;
