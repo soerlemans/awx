@@ -70,11 +70,11 @@ class Parser
   virtual auto program() -> NodePtr;
 
   // Regular methods again:
-  // And create an unget_token() for going backwards and ungetting a token()
-  auto check_token(TokenType t_tokentype) -> bool;
-  auto next_token(const std::string t_msg = "") -> Token&;
-  auto peek_token(const std::string t_msg = "") -> Token;
-  auto expect_token(TokenType t_tokentype, const std::string t_msg) -> Token&;
+  // And create an unget() for going backwards and ungetting a token()
+  auto check(TokenType t_tokentype) -> bool;
+  auto next(const std::string t_msg = "") -> Token&;
+  auto peek(const std::string t_msg = "") -> Token;
+  auto expect(TokenType t_tokentype, const std::string t_msg) -> Token&;
   auto eos() -> bool;
 
   // The parse() method should be virtual cause in the future we may want to
