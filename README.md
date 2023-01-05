@@ -71,3 +71,9 @@ Credit
 ------
 I sourced some scripts from Tim Sherwood for the purpose of testing the implementation.
 I got them from his personal website [Some Useful Gawk Scripts](https://sites.cs.ucsb.edu/~sherwood/awk/).
+
+TODO
+----
++ Better diagnostics for the parsing errors
++ Tokens should know their position in a file (store it in some kind of struct)
++ Exceptions should have a better class structure for accurately displaying error information

@@ -573,6 +573,8 @@ auto Parser::terminated_statement() -> NodePtr
       break;
 
     default: {
+	  m_tokenstream.prev();
+
       terminatable_statement();
       const auto terminator_token{next_token("\\n or ;")};
       // TODO: Verify if is a is_terminator()

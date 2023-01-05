@@ -17,6 +17,7 @@ using NodePtr = std::unique_ptr<Node>;
 // Enum definitions:
 enum class NodeType {
   LITERAL,
+  ARRAY,
   VARIABLE, // Variables are the only allowed LValue
   NODE_LIST,
   EXPRESSION,
