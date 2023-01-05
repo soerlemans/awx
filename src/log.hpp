@@ -7,8 +7,7 @@
 #include "types.hpp"
 
 
-namespace log
-{
+namespace log {
 // Enums:
 // Different logging levels
 enum class LogLevel : u16 {
@@ -23,13 +22,23 @@ enum class LogLevel : u16 {
 #if DEVELOPMENT
 
 // Macros:
-#define PRINT(...) \
-  log::print(__VA_ARGS__)
+#define PRINT(...) log::print(__VA_ARGS__)
 
 #define LOG(loglevel, ...) \
   log::log(__FILE__, __FUNCTION__, __LINE__, log::loglevel, __VA_ARGS__)
 
 #define SET_LOGLEVEL(loglevel) set_loglevel(loglevel)
+
+// Helper macros for TRACE:
+#define CONCAT(a, b)       CONCAT_INNER(a, b)
+#define CONCAT_INNER(a, b) a##b
+
+  // TRACE is intended for presenting readable stack traces
+#define TRACE(str)                 \
+  Trace CONCAT(trace, __COUNTER__) \
+  {                                \
+    str                            \
+  }
 
 // Functions:
 template<typename... Args>
@@ -64,6 +73,9 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
   print(std::forward<Args>(t_args)...);
 }
 
+// The Trace class is intended for tracing function calls
+class Trace;
+
 #else
 
 // Stub the macros if we are not on the debugging build
@@ -77,6 +89,10 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
 
 #define SET_LEVEL(level) \
   do {                   \
+  } while(0)
+
+#define TRACE() \
+  do {          \
   } while(0)
 
 #endif // DEBUG

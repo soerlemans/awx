@@ -14,8 +14,10 @@ enum class TokenType : u16 {
   // Keywords:
   FUNCTION,
   RETURN,
+
   IF,
   ELSE,
+
   DO,
   WHILE,
   FOR,

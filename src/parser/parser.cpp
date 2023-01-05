@@ -43,6 +43,8 @@ auto Parser::simple_get() -> NodePtr
   LOG(LogLevel::INFO, "SIMPLE GET");
   NodePtr node{nullptr};
 
+  // TODO: Implement GETLINE token
+
   // lvalue();
   return node;
 }
@@ -561,8 +563,8 @@ auto Parser::terminated_statement() -> NodePtr
       const auto paren_open{next_token("(")};
       expr();
       const auto paren_close{next_token(")")};
-	  newline_opt();
-	  terminated_statement();
+      newline_opt();
+      terminated_statement();
     }
 
     case TokenType::FOR:
@@ -573,7 +575,7 @@ auto Parser::terminated_statement() -> NodePtr
       break;
 
     default: {
-	  m_tokenstream.prev();
+      m_tokenstream.prev();
 
       terminatable_statement();
       const auto terminator_token{next_token("\\n or ;")};
@@ -683,8 +685,10 @@ auto Parser::action() -> NodePtr
 
   // TODO: Figure a way out to cleanly compare these two
   const auto accolade_open{next_token("}")};
-  if(accolade_open.type() != TokenType::ACCOLADE_OPEN)
+  if(accolade_open.type() != TokenType::ACCOLADE_OPEN) {
+    m_tokenstream.prev();
     return node;
+  }
 
   newline_opt();
 
@@ -714,11 +718,14 @@ auto Parser::special_pattern() -> NodePtr
 
   const auto token{next_token("BEGIN or END")};
 
-  if(const auto* identifier_ptr{token.check<std::string>()}; identifier_ptr) {
-    if(*identifier_ptr == "BEGIN") {
-    }
-    if(*identifier_ptr == "END") {
-    }
+  if(token.type() == TokenType::BEGIN) {
+    LOG(LogLevel::DEBUG, "Found BEGIN!");
+
+  } else if(token.type() == TokenType::END) {
+    LOG(LogLevel::DEBUG, "Found END!");
+
+  } else {
+    m_tokenstream.prev();
   }
 
   return node;
@@ -730,6 +737,7 @@ auto Parser::special_pattern() -> NodePtr
 auto Parser::normal_pattern() -> NodePtr
 {
   LOG(LogLevel::INFO, "NORMAL PATTERN");
+  PRINT("{");
   NodePtr node{nullptr};
 
   if(auto expr_ptr{expr()}; expr_ptr) {
@@ -741,6 +749,8 @@ auto Parser::normal_pattern() -> NodePtr
       m_tokenstream.prev();
     }
   }
+
+  PRINT("}");
 
   return node;
 }

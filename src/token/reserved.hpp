@@ -26,8 +26,7 @@ concept ReservedIdentifierConcept =
   std::same_as<T, std::string_view> || std::same_as<T, char>;
 
 // AWX reserved keywords and symbols
-namespace reserved
-{
+namespace reserved {
 // Aliases:
 // Shorthand for string_view do not use outside of this namespace
 using r_vw = std::string_view;
@@ -35,8 +34,7 @@ using r_vw = std::string_view;
 // Helper class for the Reserved global variable definitions
 template<typename T = char>
   requires ReservedIdentifierConcept<T>
-class ReservedWrapper
-{
+class ReservedWrapper {
   private:
   const T m_identifier;
   const TokenType m_tokentype;
@@ -46,8 +44,7 @@ class ReservedWrapper
   // std::string_view explicitly
   constexpr ReservedWrapper(T t_indentifier, TokenType t_tokentype)
     : m_identifier{t_indentifier}, m_tokentype{t_tokentype}
-  {
-  }
+  {}
 
   constexpr auto identifier() const -> T
   {
@@ -72,12 +69,14 @@ class ReservedWrapper
 namespace keywords {
   DEFINE_RESERVED(g_function, r_vw{"function"}, FUNCTION);
   DEFINE_RESERVED(g_return,   r_vw{"return"},   RETURN);
-  DEFINE_RESERVED(g_if,       r_vw{"if"},       IF);
-  DEFINE_RESERVED(g_else,     r_vw{"else"},     ELSE);
-  DEFINE_RESERVED(g_do,       r_vw{"do"},       DO);
-  DEFINE_RESERVED(g_while,    r_vw{"while"},    WHILE);
-  DEFINE_RESERVED(g_for,      r_vw{"for"},      FOR);
-  DEFINE_RESERVED(g_in,       r_vw{"in"},       IN);
+
+  DEFINE_RESERVED(g_if,   r_vw{"if"},   IF);
+  DEFINE_RESERVED(g_else, r_vw{"else"}, ELSE);
+
+  DEFINE_RESERVED(g_do,    r_vw{"do"},    DO);
+  DEFINE_RESERVED(g_while, r_vw{"while"}, WHILE);
+  DEFINE_RESERVED(g_for,   r_vw{"for"},   FOR);
+  DEFINE_RESERVED(g_in,    r_vw{"in"},    IN);
 
   DEFINE_RESERVED(g_print,  r_vw{"print"},  PRINT);
   DEFINE_RESERVED(g_printf, r_vw{"printf"}, PRINTF);
