@@ -12,7 +12,9 @@ class operators::Not : public operators::UnaryOperator
   public:
   Not(NodePtr&& t_left);
 
-  auto accept(NodeVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void override;
+
+  auto print()const -> void override;
 
   virtual ~Not();
 };
@@ -23,7 +25,9 @@ class operators::And : public operators::BinaryOperator
   public:
   And(NodePtr&& t_left, NodePtr&& t_right);
 
-  auto accept(NodeVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void override;
+
+  auto print()const -> void override;
 
   virtual ~And();
 };
@@ -34,7 +38,9 @@ class operators::Or : public operators::BinaryOperator
   public:
   Or(NodePtr&& t_left, NodePtr&& t_right);
 
-  auto accept(NodeVisitor t_visitor) -> void;
+  auto accept(NodeVisitor t_visitor) -> void override;
+
+  auto print()const -> void override;
 
   virtual ~Or();
 };

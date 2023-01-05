@@ -19,7 +19,7 @@ enum ExitCode {
 auto print_help() -> void
 {
   std::cout << "AWX - Help Manual\n"
-            << "Usage: awx <flags> <file>\n"
+            << "Usage: awx <flags> '<awx program>'\n"
             << "Flags:\n"
             << " <-f program file> \n"
             << " <-h> Displays this help manual\n"
@@ -50,7 +50,7 @@ auto parse_args(const int t_argc, char* t_argv[]) -> void
 auto run(int argc, char* argv[]) -> void
 {
   // Set loglevel for now for debugging purposes
-  SET_LOGLEVEL(log::LogLevel::DEBUG);
+  SET_LOGLEVEL(log::LogLevel::INFO);
 
   auto& config{Config::get_instance()};
 

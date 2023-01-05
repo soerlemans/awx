@@ -22,7 +22,7 @@ enum class LogLevel : u16 {
 #if DEVELOPMENT
 
 // Macros:
-#define PRINT(...) log::print(__VA_ARGS__)
+#define LOG_PRINT(...) log::print(__VA_ARGS__)
 
 #define LOG(loglevel, ...) \
   log::log(__FILE__, __FUNCTION__, __LINE__, log::loglevel, __VA_ARGS__)
@@ -30,6 +30,10 @@ enum class LogLevel : u16 {
 #define SET_LOGLEVEL(loglevel) set_loglevel(loglevel)
 
 // Functions:
+auto is_lower_loglevel(const LogLevel t_loglevel) -> bool;
+auto loglevel2str(const LogLevel t_loglevel) -> std::string_view;
+auto set_loglevel(const LogLevel t_loglevel) -> void;
+
 template<typename... Args>
 auto print(Args&&... t_args) -> void
 {
@@ -37,9 +41,6 @@ auto print(Args&&... t_args) -> void
   (std::clog << ... << t_args) << '\n';
 }
 
-auto is_lower_loglevel(const LogLevel t_loglevel) -> bool;
-auto loglevel2str(const LogLevel t_loglevel) -> std::string_view;
-auto set_loglevel(const LogLevel t_loglevel) -> void;
 
 // Do not use this function with non primitive types it will not know how to
 // Handle them and give an obscure tuple error
@@ -49,24 +50,24 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
          LogLevel t_loglevel, Args&&... t_args) -> void
 {
   // Ignore higher log levels
-  if(!is_lower_loglevel(t_loglevel))
-    return;
+  if(is_lower_loglevel(t_loglevel)) {
 
-  // Denote loglevel
-  std::clog << '[' << loglevel2str(t_loglevel) << ']';
+    // Denote loglevel
+    std::clog << '[' << loglevel2str(t_loglevel) << ']';
 
-  // Module information
-  std::clog << '[' << t_file << ':' << t_lineno << " -> " << t_function
-            << "()] => ";
+    // Module information
+    std::clog << '[' << t_file << ':' << t_lineno << " -> " << t_function
+              << "()] => ";
 
-  print(std::forward<Args>(t_args)...);
+    print(std::forward<Args>(t_args)...);
+  }
 }
 
 #else
 
 // Stub the macros if we are not on the debugging build
-#define PRINT(...) \
-  do {             \
+#define LOG_PRINT(...) \
+  do {                 \
   } while(0)
 
 #define LOG(...) \
@@ -78,5 +79,6 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
   } while(0)
 
 #endif // DEBUG
+} // namespace log
+
 #endif // LOG_H
-};

@@ -6,9 +6,10 @@
 #include <stdexcept>
 #include <tuple>
 
-#include "../enum.hpp"
 #include "../debug/log.hpp"
 #include "../debug/trace.hpp"
+#include "../enum.hpp"
+#include "../node/operators/logical.hpp"
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
 
@@ -24,7 +25,7 @@ Parser::Parser(TokenStream t_tokenstream): m_tokenstream{t_tokenstream}
 //                  ;
 auto Parser::newline_opt() -> void
 {
-  LOG(LogLevel::INFO, "NEWLINE OPT");
+  TRACE(LogLevel::DEBUG, "NEWLINE OPT");
 
   for(; !eos(); next_token()) {
     const auto tokentype{m_tokenstream.token().type()};
@@ -41,7 +42,7 @@ auto Parser::newline_opt() -> void
 //                  ;
 auto Parser::simple_get() -> NodePtr
 {
-  LOG(LogLevel::INFO, "SIMPLE GET");
+  TRACE(LogLevel::DEBUG, "SIMPLE GET");
   NodePtr node{nullptr};
 
   // TODO: Implement GETLINE token
@@ -54,7 +55,7 @@ auto Parser::simple_get() -> NodePtr
 //                  ;
 auto Parser::unary_input_function() -> NodePtr
 {
-  LOG(LogLevel::INFO, "UNARY_INPUT_FUNCTION");
+  TRACE(LogLevel::DEBUG, "UNARY_INPUT_FUNCTION");
   NodePtr node{nullptr};
 
   NodePtr lhs{unary_expr()};
@@ -72,7 +73,7 @@ auto Parser::unary_input_function() -> NodePtr
 //                  ;
 auto Parser::non_unary_input_function() -> NodePtr
 {
-  LOG(LogLevel::INFO, "NON_UNARY_INPUT_FUNCTION");
+  TRACE(LogLevel::DEBUG, "NON_UNARY_INPUT_FUNCTION");
   NodePtr node{nullptr};
 
   return node;
@@ -84,19 +85,21 @@ auto Parser::non_unary_input_function() -> NodePtr
 //                  ;
 auto Parser::lvalue() -> NodePtr
 {
-  LOG(LogLevel::INFO, "LVALUE");
+  TRACE(LogLevel::DEBUG, "LVALUE");
   NodePtr node{nullptr};
 
   const auto token{next_token("Identifier or a $")};
   switch(token.type()) {
     case TokenType::IDENTIFIER: {
       // We really dont expect these next_tokens to fail
-      const auto brace_open{next_token()};
+      if(next_token("[").type() == TokenType::BRACE_OPEN) {
 
-      // What do with expr_list???
-      expr_list();
+        // What do with expr_list???
+        expr_list();
 
-      const auto brace_close{next_token()};
+        if(next_token("]").type() != TokenType::BRACE_CLOSE)
+          ; // TODO: Error handling
+      }
       break;
     }
 
@@ -150,7 +153,7 @@ auto Parser::lvalue() -> NodePtr
 //                  ;
 auto Parser::non_unary_print_expr() -> NodePtr
 {
-  LOG(LogLevel::INFO, "NON UNARY PRINT EXPR");
+  TRACE(LogLevel::DEBUG, "NON UNARY PRINT EXPR");
   NodePtr node{nullptr};
 
   return node;
@@ -174,7 +177,7 @@ auto Parser::non_unary_print_expr() -> NodePtr
 //                  ;
 auto Parser::unary_print_expr() -> NodePtr
 {
-  LOG(LogLevel::INFO, "UNARY PRINT EXPR");
+  TRACE(LogLevel::DEBUG, "UNARY PRINT EXPR");
   NodePtr node{nullptr};
 
   const auto prefix{next_token("either a + or -")};
@@ -196,7 +199,7 @@ auto Parser::unary_print_expr() -> NodePtr
 //                  ;
 auto Parser::print_expr() -> NodePtr
 {
-  LOG(LogLevel::INFO, "PRINT EXPR");
+  TRACE(LogLevel::DEBUG, "PRINT EXPR");
   NodePtr node{nullptr};
 
   if(auto ptr{unary_print_expr()}; ptr) {
@@ -213,7 +216,7 @@ auto Parser::print_expr() -> NodePtr
 //                  ;
 auto Parser::print_expr_list() -> NodePtr
 {
-  LOG(LogLevel::INFO, "PRINT EXPR LIST");
+  TRACE(LogLevel::DEBUG, "PRINT EXPR LIST");
   NodePtr node{nullptr};
 
   if(auto print_expr_ptr{print_expr()}; !print_expr_ptr)
@@ -235,7 +238,7 @@ auto Parser::print_expr_list() -> NodePtr
 //                  ;
 auto Parser::print_expr_list_opt() -> NodePtr
 {
-  LOG(LogLevel::INFO, "PRINT EXPR LIST OPT");
+  TRACE(LogLevel::DEBUG, "PRINT EXPR LIST OPT");
   NodePtr node{nullptr};
 
   print_expr_list();
@@ -286,10 +289,63 @@ auto Parser::print_expr_list_opt() -> NodePtr
 //                  | BUILTIN_FUNC_NAME
 //                  | non_unary_input_function
 //                  ;
+// TODO: Split these functions
 auto Parser::non_unary_expr() -> NodePtr
 {
-  LOG(LogLevel::INFO, "NON UNARY EXPR");
+  TRACE(LogLevel::DEBUG, "NON UNARY EXPR");
   NodePtr node{nullptr};
+
+  const auto token{next_token("")};
+
+  bool is_nue{true};
+  // We still need to fix ERE, NUMBER? FUNC_NAME and BUILTIN_FUNC_NAME
+  switch(token.type()) {
+    case TokenType::PAREN_OPEN:
+      if(auto ptr{expr()}; ptr) {
+        // TODO: Do something
+      } else if(auto ptr{multiple_expr_list()}; ptr) {
+        // TODO: Do something
+      }
+
+      if(next_token(")").type() != TokenType::PAREN_CLOSE)
+        ; // TODO: ERROR HANDLING
+
+      break;
+
+    case TokenType::NOT:
+      node = std::make_unique<operators::Not>(expr());
+      break;
+
+    // TODO: Token in the grammar calls for NUMBER? These are not treated
+    // differently?
+    case TokenType::INTEGER:
+      break;
+
+    case TokenType::STRING:
+      break;
+
+    // TOOD: ERE?
+    case TokenType::INCREMENT:
+	  LOG(LogLevel::INFO, "Found prefix Increment");
+      lvalue();
+      break;
+
+    case TokenType::DECREMENT:
+	  LOG(LogLevel::INFO, "Found prefix Decrement");
+      lvalue();
+      break;
+
+    default:
+      m_tokenstream.prev();
+      is_nue = false;
+      break;
+  }
+
+  if(is_nue) {
+    if(auto ptr{lvalue()}; ptr) {
+    } else if(auto ptr{non_unary_input_function()}; ptr) {
+    }
+  }
 
   return node;
 }
@@ -319,7 +375,7 @@ auto Parser::non_unary_expr() -> NodePtr
 //                  ;
 auto Parser::unary_expr() -> NodePtr
 {
-  LOG(LogLevel::INFO, "UNARY EXPR");
+  TRACE(LogLevel::DEBUG, "UNARY EXPR");
   NodePtr node{nullptr};
 
   return node;
@@ -330,7 +386,7 @@ auto Parser::unary_expr() -> NodePtr
 //                  ;
 auto Parser::expr() -> NodePtr
 {
-  LOG(LogLevel::INFO, "EXPR");
+  TRACE(LogLevel::DEBUG, "EXPR");
   NodePtr node{nullptr};
 
   if(auto ptr{unary_expr()}; ptr) {
@@ -349,7 +405,7 @@ auto Parser::expr() -> NodePtr
 //                  ;
 auto Parser::expr_opt() -> NodePtr
 {
-  LOG(LogLevel::INFO, "EXPR OPT");
+  TRACE(LogLevel::DEBUG, "EXPR OPT");
   NodePtr node{nullptr};
 
   if(auto ptr{expr()}; ptr) {
@@ -364,7 +420,7 @@ auto Parser::expr_opt() -> NodePtr
 //                  ;
 auto Parser::multiple_expr_list() -> NodePtr
 {
-  LOG(LogLevel::INFO, "MULTIPLE EXPR LIST");
+  TRACE(LogLevel::DEBUG, "MULTIPLE EXPR LIST");
   NodePtr node{nullptr};
 
 
@@ -376,7 +432,7 @@ auto Parser::multiple_expr_list() -> NodePtr
 //                  ;
 auto Parser::expr_list() -> NodePtr
 {
-  LOG(LogLevel::INFO, "EXPR LIST");
+  TRACE(LogLevel::DEBUG, "EXPR LIST");
   NodePtr node{nullptr};
 
   if(auto ptr{expr()}; ptr) {
@@ -395,7 +451,7 @@ auto Parser::expr_list() -> NodePtr
 //                  ;
 auto Parser::expr_list_opt() -> NodePtr
 {
-  LOG(LogLevel::INFO, "EXPR LIST OPT");
+  TRACE(LogLevel::DEBUG, "EXPR LIST OPT");
   NodePtr node{expr_list()};
 
   return node;
@@ -407,7 +463,7 @@ auto Parser::expr_list_opt() -> NodePtr
 //                  ;
 auto Parser::output_redirection() -> NodePtr
 {
-  LOG(LogLevel::INFO, "OUTPUT REDIRECTION");
+  TRACE(LogLevel::DEBUG, "OUTPUT REDIRECTION");
   NodePtr node{nullptr};
 
   const auto token{next_token(">, >> or |")};
@@ -439,7 +495,7 @@ auto Parser::output_redirection() -> NodePtr
 //                  ;
 auto Parser::simple_print_statement() -> NodePtr
 {
-  LOG(LogLevel::INFO, "SIMPLE PRINT STATEMENT");
+  TRACE(LogLevel::DEBUG, "SIMPLE PRINT STATEMENT");
   NodePtr node{nullptr};
 
   const auto print(next_token("Expected a print statement"));
@@ -455,7 +511,7 @@ auto Parser::simple_print_statement() -> NodePtr
 //                  ;
 auto Parser::print_statement() -> NodePtr
 {
-  LOG(LogLevel::INFO, "PRINT STATEMENT");
+  TRACE(LogLevel::DEBUG, "PRINT STATEMENT");
   NodePtr node{nullptr};
 
   return node;
@@ -467,7 +523,7 @@ auto Parser::print_statement() -> NodePtr
 //                  ;
 auto Parser::simple_statement() -> NodePtr
 {
-  LOG(LogLevel::INFO, "SIMPLE STATEMENT");
+  TRACE(LogLevel::DEBUG, "SIMPLE STATEMENT");
   NodePtr node{nullptr};
 
   return node;
@@ -478,7 +534,7 @@ auto Parser::simple_statement() -> NodePtr
 //                  ;
 auto Parser::simple_statement_opt() -> NodePtr
 {
-  LOG(LogLevel::INFO, "SIMPLE STATEMENT OPT");
+  TRACE(LogLevel::DEBUG, "SIMPLE STATEMENT OPT");
   NodePtr node{nullptr};
 
   return node;
@@ -494,7 +550,7 @@ auto Parser::simple_statement_opt() -> NodePtr
 //                  ;
 auto Parser::terminatable_statement() -> NodePtr
 {
-  LOG(LogLevel::INFO, "TERMINATABLE STATEMENT");
+  TRACE(LogLevel::DEBUG, "TERMINATABLE STATEMENT");
   NodePtr node{nullptr};
 
   return node;
@@ -513,7 +569,7 @@ auto Parser::terminatable_statement() -> NodePtr
 //                  ;
 auto Parser::unterminated_statement() -> NodePtr
 {
-  LOG(LogLevel::INFO, "UNTERMINATED STATEMENT");
+  TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT");
   NodePtr node{nullptr};
 
   return node;
@@ -535,7 +591,7 @@ auto Parser::unterminated_statement() -> NodePtr
 //                  ;
 auto Parser::terminated_statement() -> NodePtr
 {
-  LOG(LogLevel::INFO, "TERMINATED STATEMENT");
+  TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT");
   NodePtr node{nullptr};
 
   const auto token{next_token(
@@ -551,6 +607,8 @@ auto Parser::terminated_statement() -> NodePtr
       terminated_statement();
 
       if(!eos() && peek_token().type() == TokenType::ELSE) {
+        next_token("else");
+
         newline_opt();
         terminated_statement();
 
@@ -596,7 +654,7 @@ auto Parser::terminated_statement() -> NodePtr
 //                  ;
 auto Parser::unterminated_statement_list() -> NodePtr
 {
-  LOG(LogLevel::INFO, "UNTERMINATED STATEMENT LIST");
+  TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT LIST");
   NodePtr node{nullptr};
 
 
@@ -628,7 +686,7 @@ auto Parser::unterminated_statement_list() -> NodePtr
 //                  ;
 auto Parser::terminated_statement_list() -> NodePtr
 {
-  LOG(LogLevel::INFO, "TERMINATED STATEMENT LIST");
+  TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT LIST");
   NodePtr node{nullptr};
 
   if(auto terminated_statement_ptr{terminated_statement()};
@@ -658,8 +716,8 @@ auto Parser::terminated_statement_list() -> NodePtr
 //                  ;
 auto Parser::terminator() -> NodePtr
 {
-  LOG(LogLevel::INFO, "TERMINATOR IS NOT TESTED WARNING!!!!!");
-  LOG(LogLevel::INFO, "TERMINATOR");
+  TRACE(LogLevel::DEBUG, "TERMINATOR IS NOT TESTED WARNING!!!!!");
+  TRACE(LogLevel::DEBUG, "TERMINATOR");
   NodePtr node{nullptr};
 
   for(; !eos(); next_token()) {
@@ -681,7 +739,7 @@ auto Parser::terminator() -> NodePtr
 //                  ;
 auto Parser::action() -> NodePtr
 {
-  LOG(LogLevel::INFO, "ACTION");
+  TRACE(LogLevel::DEBUG, "ACTION");
   NodePtr node{nullptr};
 
   // TODO: Figure a way out to cleanly compare these two
@@ -714,16 +772,16 @@ auto Parser::action() -> NodePtr
 //                  ;
 auto Parser::special_pattern() -> NodePtr
 {
-  LOG(LogLevel::INFO, "SPECIAL PATTERN");
+  TRACE(LogLevel::DEBUG, "SPECIAL PATTERN");
   NodePtr node{nullptr};
 
   const auto token{next_token("BEGIN or END")};
 
   if(token.type() == TokenType::BEGIN) {
-    LOG(LogLevel::DEBUG, "Found BEGIN!");
+    TRACE(LogLevel::DEBUG, "Found BEGIN!");
 
   } else if(token.type() == TokenType::END) {
-    LOG(LogLevel::DEBUG, "Found END!");
+    TRACE(LogLevel::DEBUG, "Found END!");
 
   } else {
     m_tokenstream.prev();
@@ -737,8 +795,7 @@ auto Parser::special_pattern() -> NodePtr
 //                  ;
 auto Parser::normal_pattern() -> NodePtr
 {
-  LOG(LogLevel::INFO, "NORMAL PATTERN");
-  PRINT("{");
+  TRACE(LogLevel::DEBUG, "NORMAL PATTERN");
   NodePtr node{nullptr};
 
   if(auto expr_ptr{expr()}; expr_ptr) {
@@ -751,8 +808,6 @@ auto Parser::normal_pattern() -> NodePtr
     }
   }
 
-  PRINT("}");
-
   return node;
 }
 
@@ -761,7 +816,7 @@ auto Parser::normal_pattern() -> NodePtr
 //                  ;
 auto Parser::pattern() -> NodePtr
 {
-  LOG(LogLevel::INFO, "PATTERN");
+  TRACE(LogLevel::DEBUG, "PATTERN");
   NodePtr node{nullptr};
 
   if(auto normal_pattern_ptr{normal_pattern()}; normal_pattern_ptr) {
@@ -778,7 +833,8 @@ auto Parser::pattern() -> NodePtr
 //                  ;
 auto Parser::param_list() -> NodePtr
 {
-  LOG(LogLevel::INFO, "PARAM LIST");
+  TRACE(LogLevel::DEBUG, "PARAM LIST");
+  // TRACE(LogLevel::DEBUG, "PARAM LIST");
   NodePtr node{nullptr};
 
   // const auto token{next_token()};
@@ -791,7 +847,8 @@ auto Parser::param_list() -> NodePtr
 //                  ;
 auto Parser::param_list_opt() -> NodePtr
 {
-  LOG(LogLevel::INFO, "PARAM LIST OPT");
+  // TRACE(LogLevel::DEBUG, "PARAM LIST OPT");
+  TRACE(LogLevel::DEBUG, "PARAM LIST OPT");
   NodePtr node{nullptr};
 
   if(auto param_list_ptr{param_list()}; param_list_ptr) {
@@ -812,7 +869,8 @@ auto Parser::param_list_opt() -> NodePtr
 //                  ;
 auto Parser::item() -> NodePtr
 {
-  LOG(LogLevel::INFO, "ITEM");
+  // TRACE(LogLevel::DEBUG, "ITEM");
+  TRACE(LogLevel::DEBUG, "ITEM");
   NodePtr node{nullptr};
 
   if(auto ptr{action()}; ptr) {
@@ -842,7 +900,8 @@ auto Parser::item() -> NodePtr
 //                  ;
 auto Parser::item_list() -> NodePtr
 {
-  LOG(LogLevel::INFO, "ITEM LIST");
+  // TRACE(LogLevel::DEBUG, "ITEM LIST");
+  TRACE(LogLevel::DEBUG, "ITEM LIST");
   NodePtr node{nullptr};
 
   // TODO Piece these together some way into an AST structure
@@ -859,7 +918,8 @@ auto Parser::item_list() -> NodePtr
 //                  ;
 auto Parser::program() -> NodePtr
 {
-  LOG(LogLevel::INFO, "PROGRAM");
+  // TRACE(LogLevel::DEBUG, "PROGRAM");
+  TRACE(LogLevel::DEBUG, "PROGRAM");
   NodePtr node{nullptr};
 
   // TODO Piece these together some way into an AST structure
@@ -875,6 +935,7 @@ auto Parser::program() -> NodePtr
 // Regular methods again:
 auto Parser::next_token(const std::string t_msg) -> Token&
 {
+  // TODO: Make a function for this
   std::stringstream ss;
   ss << "Incomplete expression due to reaching EOS\n";
   ss << "Expected -> ";
@@ -890,6 +951,7 @@ auto Parser::next_token(const std::string t_msg) -> Token&
 
 auto Parser::peek_token(const std::string t_msg) -> Token
 {
+  // TODO: Make a function for this
   std::stringstream ss;
   ss << "Attempted to peek at EOS\n";
   ss << "Expected -> ";
@@ -905,6 +967,19 @@ auto Parser::peek_token(const std::string t_msg) -> Token
   return token;
 }
 
+auto Parser::check_token(TokenType t_tokentype)
+  -> bool
+{
+  std::stringstream ss;
+  ss << "Checking token at EOS!";
+
+  if(eos())
+    throw std::runtime_error{ss.str()};
+
+  const auto tokentype{m_tokenstream.token().type()};
+  return tokentype == t_tokentype;
+}
+
 auto Parser::eos() -> bool
 {
   return m_tokenstream.eos();
@@ -914,13 +989,13 @@ auto Parser::parse() -> Ast
 {
   using namespace reserved;
 
-  PRINT("=== PARSING ===");
+  LOG_PRINT("=== PARSING ===");
 
   Ast ast;
 
   program();
 
-  PRINT();
+  LOG_PRINT();
   return ast;
 }
 

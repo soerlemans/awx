@@ -4,36 +4,40 @@
 #include "log.hpp"
 
 
-// Only log if we are on the development build
+// Only facilitate trace if we are on DEVELOPMENT build
 #if DEVELOPMENT
 
 // Helper macros for TRACE:
 #define CONCAT(a, b)       CONCAT_INNER(a, b)
 #define CONCAT_INNER(a, b) a##b
 
-// TRACE is intended for presenting readable stack traces
-#define TRACE(str)                 \
+// TRACE is intended for showing which functions call which in a tree like
+// manner
+#define TRACE(loglevel, str)       \
   Trace CONCAT(trace, __COUNTER__) \
   {                                \
-    str                            \
+    log::loglevel, str             \
   }
-
 
 // Trace class used for figuring out
 class Trace {
   private:
-  static unsigned int m_counter;
+  static int m_counter;
 
   public:
-  Trace();
+  Trace(log::LogLevel t_loglevel, std::string t_msg);
 
   virtual ~Trace();
 };
 
 #else
 
-#define TRACE() \
-  do {          \
+#define TRACE(str) \
+  do {             \
+  } while(0)
+
+#define TRACE_END(str) \
+  do {                 \
   } while(0)
 
 #endif // DEBUG
