@@ -21,7 +21,7 @@ class operators::Arithmetic : public operators::BinaryOperator {
   ArithmeticOperation m_operation;
 
   public:
-  Arithmetic(NodePtr&& t_left, NodePtr&& t_right, ArithmeticOperation t_operation);
+  Arithmetic(ArithmeticOperation t_operation, NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 

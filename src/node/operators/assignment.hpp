@@ -5,81 +5,30 @@
 #include "operators.hpp"
 
 
-// Power assignment:
-class operators::PowerAssignment : public operators::BinaryOperator
-{
-  public:
-  PowerAssignment(NodePtr&& t_left, NodePtr&& t_right);
+enum AssignmentOperation {
+  POWER = 0,
 
-  auto accept(NodeVisitor t_visitor) -> void;
+  MULTIPLY,
+  DIVIDE,
+  MODULO,
 
-  virtual ~PowerAssignment();
+  ADD,
+  SUBTRACT,
+
+  REGULAR
 };
 
-// Multiply assignment:
-class operators::MultiplyAssignment : public operators::BinaryOperator
-{
+class operators::Assignment : public operators::BinaryOperator {
+  private:
+  AssignmentOperation m_operation;
+
   public:
-  MultiplyAssignment(NodePtr&& t_left, NodePtr&& t_right);
+  Assignment(AssignmentOperation t_operation, NodePtr&& t_left, NodePtr&& t_right);
 
-  auto accept(NodeVisitor t_visitor) -> void;
-
-  virtual ~MultiplyAssignment();
-};
-
-// Divide assignemnt:
-class operators::DivideAssignment : public operators::BinaryOperator
-{
-  public:
-  DivideAssignment(NodePtr&& t_left, NodePtr&& t_right);
-
-  auto accept(NodeVisitor t_visitor) -> void;
-
-  virtual ~DivideAssignment();
-};
-
-// Modulo assignment:
-class operators::ModuloAssignment : public operators::BinaryOperator
-{
-  public:
-  ModuloAssignment(NodePtr&& t_left, NodePtr&& t_right);
-
-  auto accept(NodeVisitor t_visitor) -> void;
-
-  virtual ~ModuloAssignment();
-};
-
-// Add assignment:
-class operators::AddAssignment : public operators::BinaryOperator
-{
-  public:
-  AddAssignment(NodePtr&& t_left, NodePtr&& t_right);
-
-  auto accept(NodeVisitor t_visitor) -> void;
-
-  virtual ~AddAssignment();
-};
-
-// Subtract assignment:
-class operators::SubtractAssignment : public operators::BinaryOperator
-{
-  public:
-  SubtractAssignment(NodePtr&& t_left, NodePtr&& t_right);
-
-  auto accept(NodeVisitor t_visitor) -> void;
-
-  virtual ~SubtractAssignment();
-};
-
-// Assignemnt
-class operators::Assignment : public operators::BinaryOperator
-{
-  public:
-  Assignment(NodePtr&& t_left, NodePtr&& t_right);
-
-  auto accept(NodeVisitor t_visitor) -> void;
+  virtual auto accept(NodeVisitor t_visitor) -> void override;
+  virtual auto print() const -> void override;
 
   virtual ~Assignment();
 };
 
-#endif // ASIGNMENT_H
+#endif // ASSIGNMENT_H

@@ -5,8 +5,7 @@
 // All Operator classes are part of this namespace
 // These forward declarations are also used by NodeVisitor
 // To declare its overload functions for visit()
-namespace operators
-{
+namespace operators {
 // Abstract Base classes:
 class UnaryOperator;
 class BinaryOperator;
@@ -39,20 +38,14 @@ class EreNonMatch;
 class ArrayMembership;
 class ArrayMultiDimensionalMembership;
 
+// Delete:
+class Delete;
+
 // Logical:
 class And;
 class Or;
 
 // Assignment:
-class PowerAssignment;
-
-class MultiplyAssignment;
-class DivideAssignment;
-class ModuloAssignment;
-
-class AddAssignment;
-class SubtractAssignment;
-
 class Assignment;
 
 // TrinaryOperator derived classes:

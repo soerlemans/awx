@@ -14,6 +14,9 @@ auto Increment::accept([[maybe_unused]] NodeVisitor t_visitor) -> void
   //
 }
 
+auto Increment::print() const -> void
+{}
+
 Increment::~Increment()
 {
 }

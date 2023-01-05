@@ -53,7 +53,7 @@ class Parser
   virtual auto unterminated_statement_list() -> NodePtr;
   virtual auto terminated_statement_list() -> NodePtr;
 
-  virtual auto terminator() -> NodePtr;
+  virtual auto terminator() -> void;
 
   virtual auto action() -> NodePtr;
 
@@ -70,11 +70,11 @@ class Parser
   virtual auto program() -> NodePtr;
 
   // Regular methods again:
-  // TODO: Create a peek_token() for when you are not sure if it is done
   // And create an unget_token() for going backwards and ungetting a token()
+  auto check_token(TokenType t_tokentype) -> bool;
   auto next_token(const std::string t_msg = "") -> Token&;
   auto peek_token(const std::string t_msg = "") -> Token;
-  auto check_token(TokenType t_tokentype) -> bool;
+  auto expect_token(TokenType t_tokentype, const std::string t_msg) -> Token&;
   auto eos() -> bool;
 
   // The parse() method should be virtual cause in the future we may want to

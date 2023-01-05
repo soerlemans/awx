@@ -37,6 +37,7 @@ class Expression : public Node
   auto precedence() -> Precedence;
 
   virtual auto accept(NodeVisitor t_visitor) -> void = 0;
+  virtual auto print() const -> void = 0;
 
   virtual ~Expression();
 };

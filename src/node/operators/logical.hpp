@@ -12,9 +12,8 @@ class operators::Not : public operators::UnaryOperator
   public:
   Not(NodePtr&& t_left);
 
-  auto accept(NodeVisitor t_visitor) -> void override;
-
-  auto print()const -> void override;
+  virtual auto accept(NodeVisitor t_visitor) -> void override;
+  virtual auto print() const -> void override;
 
   virtual ~Not();
 };

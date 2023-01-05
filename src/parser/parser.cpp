@@ -9,9 +9,12 @@
 #include "../debug/log.hpp"
 #include "../debug/trace.hpp"
 #include "../enum.hpp"
-#include "../node/operators/logical.hpp"
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
+
+#include "../node/operators/decrement.hpp"
+#include "../node/operators/increment.hpp"
+#include "../node/operators/logical.hpp"
 
 
 // Class definitions:
@@ -60,7 +63,7 @@ auto Parser::unary_input_function() -> NodePtr
 
   NodePtr lhs{unary_expr()};
 
-  const auto token{next_token("|")};
+  const auto token{expect_token(TokenType::PIPE, "|")};
 
   NodePtr rhs{simple_get()};
 
@@ -92,14 +95,12 @@ auto Parser::lvalue() -> NodePtr
   switch(token.type()) {
     case TokenType::IDENTIFIER: {
       // We really dont expect these next_tokens to fail
-      if(next_token("[").type() == TokenType::BRACE_OPEN) {
+      expect_token(TokenType::BRACE_OPEN, "[");
 
-        // What do with expr_list???
-        expr_list();
+      // What do with expr_list???
+      expr_list();
 
-        if(next_token("]").type() != TokenType::BRACE_CLOSE)
-          ; // TODO: Error handling
-      }
+      expect_token(TokenType::BRACE_CLOSE, "]");
       break;
     }
 
@@ -307,12 +308,11 @@ auto Parser::non_unary_expr() -> NodePtr
         // TODO: Do something
       }
 
-      if(next_token(")").type() != TokenType::PAREN_CLOSE)
-        ; // TODO: ERROR HANDLING
-
+      expect_token(TokenType::PAREN_CLOSE, ")");
       break;
 
     case TokenType::NOT:
+      LOG(LogLevel::INFO, "Found Not expression");
       node = std::make_unique<operators::Not>(expr());
       break;
 
@@ -326,13 +326,13 @@ auto Parser::non_unary_expr() -> NodePtr
 
     // TOOD: ERE?
     case TokenType::INCREMENT:
-	  LOG(LogLevel::INFO, "Found prefix Increment");
-      lvalue();
+      LOG(LogLevel::INFO, "Found prefix Increment");
+      node = std::make_unique<operators::Increment>(lvalue(), true);
       break;
 
     case TokenType::DECREMENT:
-	  LOG(LogLevel::INFO, "Found prefix Decrement");
-      lvalue();
+      LOG(LogLevel::INFO, "Found prefix Decrement");
+      node = std::make_unique<operators::Decrement>(lvalue(), true);
       break;
 
     default:
@@ -499,9 +499,26 @@ auto Parser::simple_print_statement() -> NodePtr
   NodePtr node{nullptr};
 
   const auto print(next_token("Expected a print statement"));
-  peek_token();
-  next_token(")");
+  if(print.type() == TokenType::PRINT) {
+    const auto paren_open{peek_token()};
 
+    if(paren_open.type() == TokenType::PAREN_OPEN) {
+      multiple_expr_list();
+      expect_token(TokenType::PAREN_CLOSE, ")");
+    } else {
+      print_expr_list_opt();
+    }
+
+  } else if(print.type() == TokenType::PRINTF) {
+    const auto paren_open{peek_token()};
+
+    if(paren_open.type() == TokenType::PAREN_OPEN) {
+      multiple_expr_list();
+      expect_token(TokenType::PAREN_CLOSE, ")");
+    } else {
+      print_expr_list();
+    }
+  }
 
   return node;
 }
@@ -513,6 +530,11 @@ auto Parser::print_statement() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "PRINT STATEMENT");
   NodePtr node{nullptr};
+
+  if(auto ptr{simple_print_statement()}; ptr) {
+    if(auto redirection_ptr{output_redirection()}; redirection_ptr) {
+    }
+  }
 
   return node;
 }
@@ -526,6 +548,19 @@ auto Parser::simple_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "SIMPLE STATEMENT");
   NodePtr node{nullptr};
 
+  if(peek_token().type() == TokenType::DELETE) {
+    next_token();
+
+    expect_token(TokenType::IDENTIFIER, "Name");
+    expect_token(TokenType::BRACE_OPEN, "[");
+    expr_list();
+    expect_token(TokenType::BRACE_CLOSE, "]");
+  } else if(auto ptr{expr()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{print_statement()}; ptr) {
+    node = std::move(ptr);
+  }
+
   return node;
 }
 
@@ -535,9 +570,8 @@ auto Parser::simple_statement() -> NodePtr
 auto Parser::simple_statement_opt() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "SIMPLE STATEMENT OPT");
-  NodePtr node{nullptr};
 
-  return node;
+  return simple_statement();
 }
 
 // terminatable_statement : simple_statement
@@ -552,6 +586,44 @@ auto Parser::terminatable_statement() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "TERMINATABLE STATEMENT");
   NodePtr node{nullptr};
+
+  bool is_keyword{true};
+  const auto keyword{next_token("{break, continue, next, exit, return, do}")};
+  switch(keyword.type()) {
+    case TokenType::BREAK:
+      break;
+
+    case TokenType::CONTINUE:
+      break;
+
+    case TokenType::NEXT:
+      break;
+
+    case TokenType::EXIT:
+	  expr_opt();
+      break;
+
+    case TokenType::RETURN:
+	  expr_opt();
+      break;
+
+    case TokenType::DO:
+	  newline_opt();
+	  terminated_statement();
+	  expect_token(TokenType::WHILE, "while");
+	  expect_token(TokenType::PAREN_OPEN, "(");
+	  expr();
+	  expect_token(TokenType::PAREN_CLOSE, ")");
+      break;
+
+    default:
+      is_keyword = false;
+      break;
+  }
+
+  if(!is_keyword) {
+    node = simple_statement();
+  }
 
   return node;
 }
@@ -599,9 +671,9 @@ auto Parser::terminated_statement() -> NodePtr
 
   switch(token.type()) {
     case TokenType::IF: {
-      const auto paren_open{next_token("(")};
+      check_token(TokenType::PAREN_OPEN);
       expr();
-      const auto paren_close{next_token(")")};
+      check_token(TokenType::PAREN_CLOSE);
 
       newline_opt();
       terminated_statement();
@@ -714,11 +786,15 @@ auto Parser::terminated_statement_list() -> NodePtr
 //                  |            ';'
 //                  |            NEWLINE
 //                  ;
-auto Parser::terminator() -> NodePtr
+auto Parser::terminator() -> void
 {
   TRACE(LogLevel::DEBUG, "TERMINATOR IS NOT TESTED WARNING!!!!!");
   TRACE(LogLevel::DEBUG, "TERMINATOR");
-  NodePtr node{nullptr};
+
+  const auto token{next_token("; or \\n")};
+  // TODO: Improve
+  if(!tokentype::is_terminator(token.type()))
+    std::runtime_error{"Expected a terminator!!!"};
 
   for(; !eos(); next_token()) {
     const auto tokentype{m_tokenstream.token().type()};
@@ -729,8 +805,6 @@ auto Parser::terminator() -> NodePtr
 
   // if our last token was not a terminator go back to undo the lookahead
   m_tokenstream.prev();
-
-  return node;
 }
 
 // action           : '{' newline_opt                             '}'
@@ -834,7 +908,6 @@ auto Parser::pattern() -> NodePtr
 auto Parser::param_list() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "PARAM LIST");
-  // TRACE(LogLevel::DEBUG, "PARAM LIST");
   NodePtr node{nullptr};
 
   // const auto token{next_token()};
@@ -847,7 +920,6 @@ auto Parser::param_list() -> NodePtr
 //                  ;
 auto Parser::param_list_opt() -> NodePtr
 {
-  // TRACE(LogLevel::DEBUG, "PARAM LIST OPT");
   TRACE(LogLevel::DEBUG, "PARAM LIST OPT");
   NodePtr node{nullptr};
 
@@ -869,7 +941,6 @@ auto Parser::param_list_opt() -> NodePtr
 //                  ;
 auto Parser::item() -> NodePtr
 {
-  // TRACE(LogLevel::DEBUG, "ITEM");
   TRACE(LogLevel::DEBUG, "ITEM");
   NodePtr node{nullptr};
 
@@ -900,13 +971,15 @@ auto Parser::item() -> NodePtr
 //                  ;
 auto Parser::item_list() -> NodePtr
 {
-  // TRACE(LogLevel::DEBUG, "ITEM LIST");
   TRACE(LogLevel::DEBUG, "ITEM LIST");
   NodePtr node{nullptr};
 
-  // TODO Piece these together some way into an AST structure
-  if(auto item_ptr{item()}; item_ptr) {
-    item_list();
+  while(true) {
+    node = item();
+
+    if(!node)
+      break;
+
     terminator();
   }
 
@@ -918,7 +991,6 @@ auto Parser::item_list() -> NodePtr
 //                  ;
 auto Parser::program() -> NodePtr
 {
-  // TRACE(LogLevel::DEBUG, "PROGRAM");
   TRACE(LogLevel::DEBUG, "PROGRAM");
   NodePtr node{nullptr};
 
@@ -933,32 +1005,48 @@ auto Parser::program() -> NodePtr
 }
 
 // Regular methods again:
+auto Parser::check_token(TokenType t_tokentype) -> bool
+{
+  if(eos()) {
+    std::stringstream ss;
+    ss << "Checking token at EOS!";
+
+    throw std::runtime_error{ss.str()};
+  }
+
+  const auto tokentype{m_tokenstream.token().type()};
+  const bool check{tokentype == t_tokentype};
+
+  return check;
+}
+
 auto Parser::next_token(const std::string t_msg) -> Token&
 {
-  // TODO: Make a function for this
-  std::stringstream ss;
-  ss << "Incomplete expression due to reaching EOS\n";
-  ss << "Expected -> ";
-  ss << t_msg;
-
   // TODO: Add a way for calls to next_token that are out of bounds to throw
   // A custom error message on what they expect either via overloading or
-  if(eos())
+  if(eos()) {
+    // TODO: Make a function for this
+    std::stringstream ss;
+    ss << "Incomplete expression due to reaching EOS\n";
+    ss << "Expected -> ";
+    ss << t_msg;
+
     throw std::runtime_error{ss.str()};
+  }
 
   return m_tokenstream.next();
 }
 
 auto Parser::peek_token(const std::string t_msg) -> Token
 {
-  // TODO: Make a function for this
-  std::stringstream ss;
-  ss << "Attempted to peek at EOS\n";
-  ss << "Expected -> ";
-  ss << t_msg;
-
-  if(eos())
+  if(eos()) {
+    // TODO: Make a function for this
+    std::stringstream ss;
+    ss << "Attempted to peek at EOS\n";
+    ss << "Expected -> ";
+    ss << t_msg;
     throw std::runtime_error{ss.str()};
+  }
 
   const auto token{m_tokenstream.next()};
 
@@ -967,17 +1055,18 @@ auto Parser::peek_token(const std::string t_msg) -> Token
   return token;
 }
 
-auto Parser::check_token(TokenType t_tokentype)
-  -> bool
+auto Parser::expect_token(TokenType t_tokentype, const std::string t_msg)
+  -> Token&
 {
-  std::stringstream ss;
-  ss << "Checking token at EOS!";
+  if(!check_token(t_tokentype)) {
+    std::stringstream ss;
+    ss << "Expected -> ";
+    ss << t_msg;
 
-  if(eos())
     throw std::runtime_error{ss.str()};
+  }
 
-  const auto tokentype{m_tokenstream.token().type()};
-  return tokentype == t_tokentype;
+  return next_token();
 }
 
 auto Parser::eos() -> bool

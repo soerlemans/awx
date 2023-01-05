@@ -15,13 +15,26 @@ enum class TokenType : u16 {
   FUNCTION,
   RETURN,
 
+  // Branching keywords:
   IF,
   ELSE,
 
+  // Loop keywords:
   DO,
   WHILE,
   FOR,
   IN,
+
+  // Flow control keywords:
+  BREAK,
+  CONTINUE,
+
+  // Rule control keywords:
+  NEXT,
+  EXIT,
+
+  // Delete keyword:
+  DELETE,
 
   // Function keywords:
   PRINT,

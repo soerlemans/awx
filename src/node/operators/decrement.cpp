@@ -14,6 +14,9 @@ auto Decrement::accept([[maybe_unused]] NodeVisitor t_visitor) -> void
   //
 }
 
+auto Decrement::print() const -> void
+{}
+
 Decrement::~Decrement()
 {
 }

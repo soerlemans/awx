@@ -2,8 +2,8 @@
 
 using namespace operators;
 
-Arithmetic::Arithmetic(NodePtr&& t_left, NodePtr&& t_right,
-                       ArithmeticOperation t_operation)
+Arithmetic::Arithmetic(ArithmeticOperation t_operation, NodePtr&& t_left,
+                       NodePtr&& t_right)
   : BinaryOperator{Precedence::ArithmeticMuDiMo, Associativity::RIGHT,
                    std::forward<NodePtr>(t_left),
                    std::forward<NodePtr>(t_right)},
