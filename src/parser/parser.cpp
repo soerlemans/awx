@@ -12,6 +12,7 @@
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
 
+#include "../node/lvalue/field_reference.hpp"
 #include "../node/operators/decrement.hpp"
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
@@ -95,17 +96,20 @@ auto Parser::lvalue() -> NodePtr
   switch(token.type()) {
     case TokenType::IDENTIFIER: {
       // We really dont expect these next_tokens to fail
-      expect(TokenType::BRACE_OPEN, "[");
+      if(peek("[").type() == TokenType::BRACE_OPEN) {
 
-      // What do with expr_list???
-      expr_list();
+        // What do with expr_list???
+        expr_list();
 
-      expect(TokenType::BRACE_CLOSE, "]");
+        expect(TokenType::BRACE_CLOSE, "]");
+      } else{
+
+	  }
       break;
     }
 
     case TokenType::DOLLAR_SIGN: {
-      expr();
+	  node = std::make_unique<FieldReference>(expr());
       break;
     }
 
@@ -800,7 +804,7 @@ auto Parser::terminator() -> void
     const auto tokentype{next().type()};
 
     if(tokentype != TokenType::NEWLINE)
-	  break;
+      break;
   }
 
   // if our last token was not a terminator go back to undo the lookahead

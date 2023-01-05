@@ -17,15 +17,15 @@ class Parser
 
   // Parsing grammar methods:
   virtual auto newline_opt() -> void;
-  virtual auto simple_get() -> NodePtr;
 
+  virtual auto simple_get() -> NodePtr;
   virtual auto unary_input_function() -> NodePtr;
   virtual auto non_unary_input_function() -> NodePtr;
 
   virtual auto lvalue() -> NodePtr;
+
   virtual auto non_unary_print_expr() -> NodePtr;
   virtual auto unary_print_expr() -> NodePtr;
-
   virtual auto print_expr() -> NodePtr;
   virtual auto print_expr_list() -> NodePtr;
   virtual auto print_expr_list_opt() -> NodePtr;
