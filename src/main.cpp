@@ -6,7 +6,7 @@
 #include "config/config.hpp"
 #include "parser/parser.hpp"
 
-#include "log.hpp"
+#include "debug/log.hpp"
 
 
 // Enums:

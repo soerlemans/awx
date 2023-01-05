@@ -7,7 +7,8 @@
 #include <tuple>
 
 #include "../enum.hpp"
-#include "../log.hpp"
+#include "../debug/log.hpp"
+#include "../debug/trace.hpp"
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
 

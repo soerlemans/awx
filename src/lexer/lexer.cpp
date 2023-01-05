@@ -8,7 +8,7 @@
 #include <utility>
 
 #include "../exception/syntax_error.hpp"
-#include "../log.hpp"
+#include "../debug/log.hpp"
 #include "../token/token_type_helpers.hpp"
 
 

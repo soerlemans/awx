@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string_view>
 
-#include "types.hpp"
+#include "../types.hpp"
 
 
 namespace log {
@@ -28,17 +28,6 @@ enum class LogLevel : u16 {
   log::log(__FILE__, __FUNCTION__, __LINE__, log::loglevel, __VA_ARGS__)
 
 #define SET_LOGLEVEL(loglevel) set_loglevel(loglevel)
-
-// Helper macros for TRACE:
-#define CONCAT(a, b)       CONCAT_INNER(a, b)
-#define CONCAT_INNER(a, b) a##b
-
-  // TRACE is intended for presenting readable stack traces
-#define TRACE(str)                 \
-  Trace CONCAT(trace, __COUNTER__) \
-  {                                \
-    str                            \
-  }
 
 // Functions:
 template<typename... Args>
@@ -73,9 +62,6 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
   print(std::forward<Args>(t_args)...);
 }
 
-// The Trace class is intended for tracing function calls
-class Trace;
-
 #else
 
 // Stub the macros if we are not on the debugging build
@@ -89,10 +75,6 @@ class Trace;
 
 #define SET_LEVEL(level) \
   do {                   \
-  } while(0)
-
-#define TRACE() \
-  do {          \
   } while(0)
 
 #endif // DEBUG
