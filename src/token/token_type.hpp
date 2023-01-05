@@ -21,8 +21,13 @@ enum class TokenType : u16 {
   FOR,
   IN,
 
+  // Function keywords:
   PRINT,
   PRINTF,
+
+  // Action keywords:
+  BEGIN,
+  END,
 
   // Types:
   INTEGER,
