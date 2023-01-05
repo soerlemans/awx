@@ -799,8 +799,8 @@ auto Parser::terminator() -> void
   while(!eos()) {
     const auto tokentype{next().type()};
 
-    if(!tokentype::is_terminator(tokentype))
-      break;
+    if(tokentype != TokenType::NEWLINE)
+	  break;
   }
 
   // if our last token was not a terminator go back to undo the lookahead
@@ -820,6 +820,7 @@ auto Parser::action() -> NodePtr
   const auto accolade_open{next("}")};
   if(accolade_open.type() != TokenType::ACCOLADE_OPEN) {
     m_tokenstream.prev();
+
     return node;
   }
 
@@ -834,9 +835,7 @@ auto Parser::action() -> NodePtr
     // TODO:: Error handling
   }
 
-  const auto accolade_close{next("}")};
-  if(accolade_close.type() != TokenType::ACCOLADE_CLOSE)
-    ; // TODO: Error handling
+  expect(TokenType::ACCOLADE_CLOSE, "}");
 
   return node;
 }

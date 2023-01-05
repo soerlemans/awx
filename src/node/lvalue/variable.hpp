@@ -1,7 +1,7 @@
 #ifndef VARIABLE_H
 #define VARIABLE_H
 
-#include "node.hpp"
+#include "../node.hpp"
 
 class Variable : public Node
 {
