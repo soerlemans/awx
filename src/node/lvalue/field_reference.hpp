@@ -17,5 +17,4 @@ public:
   virtual ~FieldReference();
 };
 
-
 #endif // FIELD_REFERENCE_H

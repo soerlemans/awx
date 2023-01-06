@@ -3,11 +3,15 @@
 
 #include "../node.hpp"
 
-class Variable : public Node
-{
+class Variable : public Node {
   private:
+  std::string m_name;
+
   public:
-  Variable();
+  Variable(const std::string t_name);
+
+  virtual auto accept(NodeVisitor t_visitor) -> void override;
+  virtual auto print() const -> void override;
 
   virtual ~Variable();
 };

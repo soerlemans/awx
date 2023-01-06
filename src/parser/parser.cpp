@@ -13,6 +13,8 @@
 #include "../token/token_type_helpers.hpp"
 
 #include "../node/lvalue/field_reference.hpp"
+#include "../node/lvalue/variable.hpp"
+
 #include "../node/operators/decrement.hpp"
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
@@ -103,7 +105,7 @@ auto Parser::lvalue() -> NodePtr
 
         expect(TokenType::BRACE_CLOSE, "]");
       } else{
-
+		node = std::make_unique<Variable>(token.value<std::string>());
 	  }
       break;
     }
