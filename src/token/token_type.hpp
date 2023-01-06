@@ -39,6 +39,7 @@ enum class TokenType : u16 {
   // Function keywords:
   PRINT,
   PRINTF,
+  GETLINE,
 
   // Action keywords:
   BEGIN,

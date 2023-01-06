@@ -12,6 +12,7 @@
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
 
+#include "../node/lvalue/array.hpp"
 #include "../node/lvalue/field_reference.hpp"
 #include "../node/lvalue/variable.hpp"
 
@@ -36,6 +37,8 @@ auto Parser::newline_opt() -> void
   while(!eos()) {
     const auto tokentype{next("\\n").type()};
 
+    TRACE_PRINT(LogLevel::DEBUG, "Found newline!");
+
     if(tokentype != TokenType::NEWLINE)
       break;
   }
@@ -51,9 +54,11 @@ auto Parser::simple_get() -> NodePtr
   TRACE(LogLevel::DEBUG, "SIMPLE GET");
   NodePtr node{nullptr};
 
-  // TODO: Implement GETLINE token
-
-  // lvalue();
+  if(peek("getline").type() == TokenType::GETLINE) {
+    if(auto ptr{lvalue()}; ptr) {
+      // TODO: Figure out more?
+    }
+  }
   return node;
 }
 
@@ -66,6 +71,7 @@ auto Parser::unary_input_function() -> NodePtr
 
   NodePtr lhs{unary_expr()};
 
+  // FIXME: Maybe sould not expect?
   const auto token{expect(TokenType::PIPE, "|")};
 
   NodePtr rhs{simple_get()};
@@ -101,17 +107,20 @@ auto Parser::lvalue() -> NodePtr
       if(peek("[").type() == TokenType::BRACE_OPEN) {
 
         // What do with expr_list???
+        // TODO: Include expr_list somehow sometime
         expr_list();
 
         expect(TokenType::BRACE_CLOSE, "]");
-      } else{
-		node = std::make_unique<Variable>(token.value<std::string>());
-	  }
+
+        node = std::make_unique<Array>(token.value<std::string>());
+      } else {
+        node = std::make_unique<Variable>(token.value<std::string>());
+      }
       break;
     }
 
     case TokenType::DOLLAR_SIGN: {
-	  node = std::make_unique<FieldReference>(expr());
+      node = std::make_unique<FieldReference>(expr());
       break;
     }
 
@@ -823,25 +832,24 @@ auto Parser::action() -> NodePtr
   NodePtr node{nullptr};
 
   // TODO: Figure a way out to cleanly compare these two
-  const auto accolade_open{next("}")};
-  if(accolade_open.type() != TokenType::ACCOLADE_OPEN) {
-    m_tokenstream.prev();
+  const auto accolade_open{m_tokenstream.token()};
+  if(accolade_open.type() == TokenType::ACCOLADE_OPEN) {
+	next("}");
+    TRACE_PRINT(LogLevel::DEBUG, "Found }");
 
-    return node;
+    newline_opt();
+
+    if(auto terminated_ptr{terminated_statement_list()}; terminated_ptr) {
+      // DO SOMETHING!
+    } else if(auto unterminated_ptr{unterminated_statement_list()};
+              unterminated_ptr) {
+      // DO SOMETHING!
+    } else {
+      // TODO:: Error handling
+    }
+
+    expect(TokenType::ACCOLADE_CLOSE, "}");
   }
-
-  newline_opt();
-
-  if(auto terminated_ptr{terminated_statement_list()}; terminated_ptr) {
-    // DO SOMETHING!
-  } else if(auto unterminated_ptr{unterminated_statement_list()};
-            unterminated_ptr) {
-    // DO SOMETHING!
-  } else {
-    // TODO:: Error handling
-  }
-
-  expect(TokenType::ACCOLADE_CLOSE, "}");
 
   return node;
 }
@@ -857,10 +865,10 @@ auto Parser::special_pattern() -> NodePtr
   const auto token{next("BEGIN or END")};
 
   if(token.type() == TokenType::BEGIN) {
-    TRACE(LogLevel::DEBUG, "Found BEGIN!");
+    TRACE_PRINT(LogLevel::DEBUG, "Found BEGIN!");
 
   } else if(token.type() == TokenType::END) {
-    TRACE(LogLevel::DEBUG, "Found END!");
+    TRACE_PRINT(LogLevel::DEBUG, "Found END!");
 
   } else {
     m_tokenstream.prev();
@@ -877,7 +885,7 @@ auto Parser::normal_pattern() -> NodePtr
   TRACE(LogLevel::DEBUG, "NORMAL PATTERN");
   NodePtr node{nullptr};
 
-  if(auto expr_ptr{expr()}; expr_ptr) {
+  if(auto ptr{expr()}; ptr) {
     const auto token{next(", or nothing")};
     if(token.type() == TokenType::COMMA) {
       newline_opt();

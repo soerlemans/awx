@@ -19,6 +19,13 @@
     log::loglevel, str             \
   }
 
+// Creates a trace object in an enclosed scope, usefull for printing TRACE info
+// on the same level within a function
+#define TRACE_PRINT(loglevel, str)                        \
+  do {                                                    \
+    Trace CONCAT(trace, __COUNTER__){log::loglevel, str}; \
+  } while(false)
+
 // Trace class used for figuring out
 class Trace {
   private:
@@ -32,13 +39,13 @@ class Trace {
 
 #else
 
-#define TRACE(str) \
-  do {             \
-  } while(0)
+#define TRACE(loglevel, str) \
+  do {                       \
+  } while(false)
 
-#define TRACE_END(str) \
-  do {                 \
-  } while(0)
+#define TRACE_PRINT(loglevel, str) \
+  do {                             \
+  } while(false)
 
 #endif // DEBUG
 #endif // TRACE_H

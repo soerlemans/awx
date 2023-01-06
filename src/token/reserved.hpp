@@ -86,8 +86,9 @@ namespace keywords {
 
   DEFINE_RESERVED(g_delete,    r_vw{"delete"}, DELETE);
 
-  DEFINE_RESERVED(g_print,  r_vw{"print"},  PRINT);
-  DEFINE_RESERVED(g_printf, r_vw{"printf"}, PRINTF);
+  DEFINE_RESERVED(g_print,   r_vw{"print"},   PRINT);
+  DEFINE_RESERVED(g_printf,  r_vw{"printf"},  PRINTF);
+  DEFINE_RESERVED(g_getline, r_vw{"getline"}, GETLINE);
 
   DEFINE_RESERVED(g_begin, r_vw{"BEGIN"}, BEGIN);
   DEFINE_RESERVED(g_end,   r_vw{"END"},   END);
@@ -96,14 +97,14 @@ namespace keywords {
   // Then we wont need to loop through them either
   // TODO: Make these be generated automagically
   // TODO: Make this a constexpr vector? those have constexpr initializer_list constructor
-  constexpr std::array<ReservedWrapper<std::string_view>, 17> g_keywords{
+  constexpr std::array<ReservedWrapper<std::string_view>, 18> g_keywords{
 	g_function, g_return,
 	g_if, g_else,
 	g_do, g_while, g_for, g_in,
 	g_break, g_continue,
 	g_next, g_exit,
 	g_delete,
-	g_print, g_printf,
+	g_print, g_printf, g_getline,
 	g_begin, g_end
   };
 }; // namespace keywords
