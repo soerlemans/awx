@@ -6,7 +6,7 @@ using namespace operators;
 
 Assignment::Assignment(AssignmentOperation t_operation, NodePtr&& t_left,
                        NodePtr&& t_right)
-  : BinaryOperator{Precedence::Assignment, Associativity::RIGHT,
+  : BinaryOperator{Precedence::ASSIGNMENT, Associativity::RIGHT,
                    std::forward<NodePtr>(t_left),
                    std::forward<NodePtr>(t_right)},
     m_operation{t_operation}

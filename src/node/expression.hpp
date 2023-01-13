@@ -7,27 +7,26 @@
 // Enum definitions:
 // TODO: Name these more accurately later
 enum class Precedence : u16 {
-  Grouping = 0,     // (a)
-  FieldReference,   // $a
-  PostfixIncDec,    // a++, a--
-  PrefixIncDec,     // ++a, --a
-  Power,            // a ^ b
-  UnaryPrefix,      // !a, +a, -a
-  ArithmeticMuDiMo, // a * b, a / b, a % b (Multiply, Divide, Modulo)
-  ArithmeticAddSub, // a + b, a - b (Addition, Subtraction)
-  StringConcat,     // a b
-  Comparison,       // a < b, a <= b, a != b, a == b, a > b, a >= b
-  ERE,              // a ~ b, a ~! b (Extended Regular Expression)
-  ArrayMembership,  // a in b, (a) in b
-  LogicalAnd,       // a && b
-  LogicalOr,        // a || b
-  Conditional,      // a ? b : c
-  Assignment,       // a ^= b, a %= b, a *= b, a /= b, a += b, a -= b, a = b
+  GROUPING = 0,        // (a)
+  FIELD_REFERENCE,     // $a
+  POSTFIX_INC_DEC,     // a++, a--
+  PREFIX_INC_DEC,      // ++a, --a
+  POWER,               // a ^ b
+  UNARY_PREFIX,        // !a, +a, -a
+  ARITHMETIC_MU_DI_MO, // a * b, a / b, a % b (Multiply, Divide, Modulo)
+  ARITHMETIC_ADD_SUB,  // a + b, a - b (Addition, Subtraction)
+  STRING_CONCAT,       // a b
+  COMPARISON,          // a < b, a <= b, a != b, a == b, a > b, a >= b
+  ERE,                 // a ~ b, a ~! b (Extended Regular Expression)
+  ARRAY_MEMBERSHIP,    // a in b, (a) in b
+  LOGICAL_AND,         // a && b
+  LOGICAL_OR,          // a || b
+  TERNARY,         // a ? b : c
+  ASSIGNMENT,          // a ^= b, a %= b, a *= b, a /= b, a += b, a -= b, a = b
 };
 
 // Have UnaryOperator and BinaryOperator derive from this
-class Expression : public Node
-{
+class Expression : public Node {
   protected:
   Precedence m_precedence;
 

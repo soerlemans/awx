@@ -1,16 +1,17 @@
-#ifndef TRINARY_OPERATOR_H
-#define TRINARY_OPERATOR_H
+#ifndef TERNARY_H
+#define TERNARY_H
 
-#include "binary_operator.hpp"
 #include "operators.hpp"
+#include "binary_operator.hpp"
 
-class operators::TrinaryOperator : public operators::BinaryOperator
+
+class operators::Ternary : public operators::BinaryOperator
 {
   protected:
   NodePtr m_third;
 
   public:
-  explicit TrinaryOperator(Precedence t_precedence,
+  explicit Ternary(Precedence t_precedence,
                            Associativity t_associativity, NodePtr&& t_left,
                            NodePtr&& t_middle, NodePtr&& t_right);
 
@@ -18,7 +19,8 @@ class operators::TrinaryOperator : public operators::BinaryOperator
 
   virtual auto accept(NodeVisitor t_visitor) -> void = 0;
 
-  virtual ~TrinaryOperator();
+  virtual ~Ternary();
 };
 
-#endif // TRINARY_OPERATOR_H
+
+#endif // TERNARY_H

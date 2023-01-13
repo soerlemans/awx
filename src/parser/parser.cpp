@@ -55,6 +55,7 @@ auto Parser::simple_get() -> NodePtr
   NodePtr node{nullptr};
 
   if(peek("getline").type() == TokenType::GETLINE) {
+    next("getline");
     if(auto ptr{lvalue()}; ptr) {
       // TODO: Figure out more?
     }
@@ -69,12 +70,13 @@ auto Parser::unary_input_function() -> NodePtr
   TRACE(LogLevel::DEBUG, "UNARY_INPUT_FUNCTION");
   NodePtr node{nullptr};
 
-  NodePtr lhs{unary_expr()};
+  if(NodePtr lhs{unary_expr()}; lhs) {
 
-  // FIXME: Maybe sould not expect?
-  const auto token{expect(TokenType::PIPE, "|")};
+    // FIXME: Maybe sould not expect?
+    const auto token{expect(TokenType::PIPE, "|")};
 
-  NodePtr rhs{simple_get()};
+    NodePtr rhs{simple_get()};
+  }
 
   return node;
 }
@@ -392,6 +394,20 @@ auto Parser::unary_expr() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "UNARY EXPR");
   NodePtr node{nullptr};
+
+
+  const auto token{next("+, - or getline")};
+  if(tokentype::is_unary_operator(token.type())) {
+	auto expr_ptr{expr()};
+
+	if(!expr_ptr)
+	  ; // TODO: Error handling
+
+	 // {next("^, *, /, %, +, -, <, <=, !=, ==, >, >=, ~, ")};
+
+  } else {
+    // node = unary_input_function();
+  }
 
   return node;
 }
@@ -783,11 +799,8 @@ auto Parser::terminated_statement_list() -> NodePtr
     while(!eos()) {
       auto ptr{terminated_statement()};
 
-      if(ptr) {
-        // Add to NodeList
-      } else {
+      if(!ptr)
         break;
-      }
     }
   } else {
     // TODO: Error handling

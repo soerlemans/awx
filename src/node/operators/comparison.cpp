@@ -5,7 +5,7 @@ using namespace operators;
 
 Comparison::Comparison(NodePtr&& t_left, NodePtr&& t_right,
                                        ComparisonOperator t_operator)
-  : BinaryOperator{Precedence::Comparison, Associativity::NONE,
+  : BinaryOperator{Precedence::COMPARISON, Associativity::NONE,
                    std::forward<NodePtr>(t_left),
                    std::forward<NodePtr>(t_right)},
     m_operator{t_operator}

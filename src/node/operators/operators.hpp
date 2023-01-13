@@ -9,11 +9,11 @@ namespace operators {
 // Abstract Base classes:
 class UnaryOperator;
 class BinaryOperator;
-class TrinaryOperator;
 
 class DynamicOperator;
 
 // UnaryOperator derived classes:
+class UnaryPrefix;
 class Increment;
 class Decrement;
 
@@ -48,8 +48,8 @@ class Or;
 // Assignment:
 class Assignment;
 
-// TrinaryOperator derived classes:
-class Conditional;
+// Trinary operator:
+class Ternary;
 
 // DynamicOperators:
 class FunctionDefinition;

@@ -24,8 +24,7 @@
 // Functions intended for figuring out to what kind of class/property a token
 // Type specifier belongs, example is a token type a numerical or valid for
 // Usage as rvalue? Or could it produce a boolean result?
-namespace tokentype
-{
+namespace tokentype {
 // Functions declarations:
 constexpr auto is_int(const TokenType t_tokentype) -> bool;
 constexpr auto is_numeric(const TokenType t_tokentype) -> bool;
@@ -37,6 +36,7 @@ constexpr auto is_terminator(const TokenType t_tokentype) -> bool;
 constexpr auto is_control_statement(const TokenType t_tokentype) -> bool;
 
 constexpr auto is_logical_junction(const TokenType t_tokentype) -> bool;
+constexpr auto is_unary_operator(const TokenType t_tokentype) -> bool;
 constexpr auto is_comparison_operator(const TokenType t_tokentype) -> bool;
 
 // Function definitions:
@@ -79,6 +79,10 @@ DEFINE_TOKEN_TYPE_HELPER(is_control_statement,
 DEFINE_TOKEN_TYPE_HELPER(is_logical_junction,
 						 CASE_TOKEN_TYPE(AND)
 						 CASE_TOKEN_TYPE(OR));
+
+DEFINE_TOKEN_TYPE_HELPER(is_unary_operator,
+                         CASE_TOKEN_TYPE(PLUS)
+						 CASE_TOKEN_TYPE(MINUS));
 
 DEFINE_TOKEN_TYPE_HELPER(is_comparison_operator,
 						 CASE_TOKEN_TYPE(LESS_THAN)
