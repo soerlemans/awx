@@ -19,6 +19,7 @@
 #include "../node/operators/decrement.hpp"
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
+#include "../node/operators/unary_prefix.hpp"
 
 
 // Class definitions:
@@ -392,18 +393,24 @@ auto Parser::non_unary_expr() -> NodePtr
 //                  ;
 auto Parser::unary_expr() -> NodePtr
 {
+  using namespace operators;
+
   TRACE(LogLevel::DEBUG, "UNARY EXPR");
   NodePtr node{nullptr};
 
+  const auto tokentype{next("+ or -").type()};
+  if(tokentype::is_unary_operator(tokentype)) {
+    auto expr_ptr{expr()};
+    if(!expr_ptr)
+      ; // TODO: Error handling
 
-  const auto token{next("+, - or getline")};
-  if(tokentype::is_unary_operator(token.type())) {
-	auto expr_ptr{expr()};
+    NodePtr unary_prefix_ptr{nullptr};
 
-	if(!expr_ptr)
-	  ; // TODO: Error handling
+    auto unary_prefix_op{unary_prefix::tokentype2enum(tokentype)};
+    unary_prefix_ptr =
+      std::make_unique<UnaryPrefix>(unary_prefix_op, std::move(expr_ptr));
 
-	 // {next("^, *, /, %, +, -, <, <=, !=, ==, >, >=, ~, ")};
+    const auto op{next("^, *, /, %, +, -, <, <=, !=, ==, >, >=, ~, ")};
 
   } else {
     // node = unary_input_function();
@@ -848,7 +855,7 @@ auto Parser::action() -> NodePtr
   const auto accolade_open{m_tokenstream.token()};
   if(accolade_open.type() == TokenType::ACCOLADE_OPEN) {
     next("}");
-    TRACE_PRINT(LogLevel::DEBUG, "Found {");
+    TRACE_PRINT(LogLevel::INFO, "Found {");
 
     newline_opt();
 
@@ -878,10 +885,10 @@ auto Parser::special_pattern() -> NodePtr
   const auto token{next("BEGIN or END")};
 
   if(token.type() == TokenType::BEGIN) {
-    TRACE_PRINT(LogLevel::DEBUG, "Found BEGIN!");
+    TRACE_PRINT(LogLevel::INFO, "Found BEGIN!");
 
   } else if(token.type() == TokenType::END) {
-    TRACE_PRINT(LogLevel::DEBUG, "Found END!");
+    TRACE_PRINT(LogLevel::INFO, "Found END!");
 
   } else {
     m_tokenstream.prev();

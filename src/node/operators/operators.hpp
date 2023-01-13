@@ -24,7 +24,7 @@ class Not;
 // Arithmetic:
 class Arithmetic;
 
-// String operations:
+// String ops:
 class StringConcatenation;
 
 // Comparison:
@@ -34,7 +34,7 @@ class Comparison;
 class EreMatch;
 class EreNonMatch;
 
-// Array operations:
+// Array ops:
 class ArrayMembership;
 class ArrayMultiDimensionalMembership;
 

@@ -5,7 +5,7 @@
 #include "operators.hpp"
 
 
-enum AssignmentOperation {
+enum AssignmentOp {
   POWER = 0,
 
   MULTIPLY,
@@ -20,10 +20,10 @@ enum AssignmentOperation {
 
 class operators::Assignment : public operators::BinaryOperator {
   private:
-  AssignmentOperation m_operation;
+  AssignmentOp m_op;
 
   public:
-  Assignment(AssignmentOperation t_operation, NodePtr&& t_left, NodePtr&& t_right);
+  Assignment(AssignmentOp t_op, NodePtr&& t_left, NodePtr&& t_right);
 
   virtual auto accept(NodeVisitor t_visitor) -> void override;
   virtual auto print() const -> void override;

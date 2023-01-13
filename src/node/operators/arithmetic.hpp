@@ -5,7 +5,7 @@
 #include "operators.hpp"
 
 
-enum class ArithmeticOperation {
+enum class ArithmeticOp {
   POWER = 0,
 
   MULTIPLY,
@@ -18,10 +18,10 @@ enum class ArithmeticOperation {
 
 class operators::Arithmetic : public operators::BinaryOperator {
   private:
-  ArithmeticOperation m_operation;
+  ArithmeticOp m_op;
 
   public:
-  Arithmetic(ArithmeticOperation t_operation, NodePtr&& t_left, NodePtr&& t_right);
+  Arithmetic(ArithmeticOp t_op, NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void;
 
