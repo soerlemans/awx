@@ -44,7 +44,7 @@ auto Lexer::is_keyword(std::string_view t_identifier) -> TokenType
   // Having a centralized location for
   for(auto keyword : g_keywords)
     if(t_identifier == keyword.identifier())
-      return keyword.tokentype();
+      return TokenType{keyword};
 
   return TokenType::NONE;
 }
@@ -245,7 +245,7 @@ auto Lexer::is_multi_symbol() -> TokenType
       if(!eol())
         for(const auto multi : g_multi_symbols)
           if(ss.str() == multi.identifier()) {
-            tokentype = multi.tokentype();
+            tokentype = TokenType{multi};
 
             LOG(LogLevel::INFO, "MULTI SYMBOL: ", ss.str());
             break; // We found a multi symbol token!
@@ -273,7 +273,7 @@ auto Lexer::is_single_symbol() -> TokenType
 
   for(const auto single : g_single_symbols)
     if(character == single.identifier()) {
-      tokentype = single.tokentype();
+      tokentype = TokenType{single};
       LOG(LogLevel::INFO, "SINGLE SYMBOL: ", character);
       break;
     }
