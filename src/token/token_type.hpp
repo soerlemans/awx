@@ -69,7 +69,7 @@ enum class TokenType : u16 {
   INCREMENT,
   DECREMENT,
 
-  POWER,
+  CARET,
   PLUS,
   MINUS,
 

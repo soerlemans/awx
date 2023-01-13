@@ -128,6 +128,7 @@ auto Parser::lvalue() -> NodePtr
     }
 
     default:
+	  m_tokenstream.prev();
       break;
   }
 
@@ -200,7 +201,7 @@ auto Parser::unary_print_expr() -> NodePtr
   NodePtr node{nullptr};
 
   const auto prefix{next("either a + or -")};
-  if(prefix.type() == TokenType::PLUS || prefix.type() == TokenType::MINUS) {
+  if(tokentype::is_unary_operator(prefix.type())) {
     print_expr();
   } else {
     unary_print_expr();
@@ -261,6 +262,88 @@ auto Parser::print_expr_list_opt() -> NodePtr
   NodePtr node{nullptr};
 
   print_expr_list();
+
+  return node;
+}
+
+auto Parser::arithmetic(NodePtr& t_lhs) -> NodePtr
+{
+  using namespace reserved::symbols;
+
+  TRACE(LogLevel::DEBUG, "ARITHMETIC");
+  NodePtr node{nullptr};
+
+  const auto op{next("<operator>").type()};
+  switch(op) {
+    case g_caret.tokentype():
+      break;
+
+    case g_asterisk.tokentype():
+      break;
+
+    case g_slash.tokentype():
+      break;
+
+    case g_percent_sign.tokentype():
+      break;
+
+    case g_plus.tokentype():
+      break;
+
+    case g_minus.tokentype():
+      break;
+
+    default:
+      m_tokenstream.prev();
+      break;
+  }
+
+  return node;
+}
+
+auto Parser::comparison(NodePtr& t_lhs) -> NodePtr
+{
+  using namespace reserved::symbols;
+
+  TRACE(LogLevel::DEBUG, "COMPARISON");
+  NodePtr node{nullptr};
+
+  const auto op{next("<operator>").type()};
+  switch(op) {
+    case g_less_than.tokentype():
+      break;
+
+    case g_less_than_equal.tokentype():
+      break;
+
+    case g_not_equal.tokentype():
+      break;
+
+    case g_equal.tokentype():
+      break;
+
+    case g_greater_than.tokentype():
+      break;
+
+    default:
+      m_tokenstream.prev();
+      break;
+  }
+
+  return node;
+}
+// TODO: Not a grammar rule function, but a function intended for parsing binary
+// Operator statements
+auto Parser::binary_operator(NodePtr& t_lhs) -> NodePtr
+{
+  TRACE(LogLevel::DEBUG, "BINARY OPERATOR");
+  NodePtr node{nullptr};
+
+  if(auto ptr{arithmetic(t_lhs)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{comparison(t_lhs)}; ptr) {
+    node = std::move(ptr);
+  }
 
   return node;
 }
@@ -398,8 +481,10 @@ auto Parser::unary_expr() -> NodePtr
   TRACE(LogLevel::DEBUG, "UNARY EXPR");
   NodePtr node{nullptr};
 
-  const auto tokentype{next("+ or -").type()};
+  const auto tokentype{peek("+ or -").type()};
   if(tokentype::is_unary_operator(tokentype)) {
+    next();
+
     auto expr_ptr{expr()};
     if(!expr_ptr)
       ; // TODO: Error handling
@@ -410,9 +495,11 @@ auto Parser::unary_expr() -> NodePtr
     unary_prefix_ptr =
       std::make_unique<UnaryPrefix>(unary_prefix_op, std::move(expr_ptr));
 
+    // TODO: We should create an operator function function for this
     const auto op{next("^, *, /, %, +, -, <, <=, !=, ==, >, >=, ~, ")};
 
   } else {
+    // Only call to unary_input_function() embed the rule into this one?
     // node = unary_input_function();
   }
 
@@ -531,16 +618,22 @@ auto Parser::output_redirection() -> NodePtr
 //                  | Printf print_expr_list
 //                  | Printf '(' multiple_expr_list ')'
 //                  ;
+// TODO: Refactor!
 auto Parser::simple_print_statement() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "SIMPLE PRINT STATEMENT");
   NodePtr node{nullptr};
 
-  const auto print(next("Expected a print statement"));
+  const auto print(peek("Expected a print statement"));
   if(print.type() == TokenType::PRINT) {
+    TRACE_PRINT(LogLevel::DEBUG, "Found print!");
+
+	next("print");
     const auto paren_open{peek()};
 
     if(paren_open.type() == TokenType::PAREN_OPEN) {
+      // TODO: Create a function
+      next("(");
       multiple_expr_list();
       expect(TokenType::PAREN_CLOSE, ")");
     } else {
@@ -548,9 +641,14 @@ auto Parser::simple_print_statement() -> NodePtr
     }
 
   } else if(print.type() == TokenType::PRINTF) {
+    TRACE_PRINT(LogLevel::DEBUG, "Found printf!");
+
+	next("print");
     const auto paren_open{peek()};
 
     if(paren_open.type() == TokenType::PAREN_OPEN) {
+      // TODO: Create a function
+      next("(");
       multiple_expr_list();
       expect(TokenType::PAREN_CLOSE, ")");
     } else {

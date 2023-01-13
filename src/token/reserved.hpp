@@ -123,7 +123,7 @@ namespace symbols {
   DEFINE_RESERVED(g_assignment, '=', ASSIGNMENT);
 
   // Arithmetic operators:
-  DEFINE_RESERVED(g_power,        '^', POWER);
+  DEFINE_RESERVED(g_caret,        '^', CARET);
   DEFINE_RESERVED(g_plus,         '+', PLUS);
   DEFINE_RESERVED(g_minus,        '-', MINUS);
   DEFINE_RESERVED(g_asterisk,     '*', ASTERISK);
@@ -189,7 +189,7 @@ namespace symbols {
 
 	g_assignment,
 
-	g_power,
+	g_caret,
 	g_plus,
 	g_minus,
 	g_asterisk,

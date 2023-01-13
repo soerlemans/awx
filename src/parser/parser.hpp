@@ -30,6 +30,10 @@ class Parser
   virtual auto print_expr_list() -> NodePtr;
   virtual auto print_expr_list_opt() -> NodePtr;
 
+  virtual auto arithmetic(NodePtr& t_lhs) -> NodePtr;
+  virtual auto comparison(NodePtr& t_lhs) -> NodePtr;
+  virtual auto binary_operator(NodePtr& t_lhs) -> NodePtr;
+
   virtual auto non_unary_expr() -> NodePtr;
   virtual auto unary_expr() -> NodePtr;
 
