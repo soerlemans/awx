@@ -16,6 +16,7 @@
 #include "../node/lvalue/field_reference.hpp"
 #include "../node/lvalue/variable.hpp"
 
+#include "../node/operators/arithmetic.hpp"
 #include "../node/operators/decrement.hpp"
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
@@ -272,28 +273,45 @@ auto Parser::print_expr_list_opt() -> NodePtr
 auto Parser::arithmetic(NodePtr& t_lhs) -> NodePtr
 {
   using namespace reserved::symbols;
+  using namespace operators;
 
   TRACE(LogLevel::DEBUG, "ARITHMETIC");
   NodePtr node{nullptr};
 
+  // Little helper function to cut down on the bloat
+  auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
+    auto ptr{expr()};
+    if(!ptr)
+      throw std::runtime_error{"Expected Expression"};
+
+    return NodePtr{
+      std::make_unique<Arithmetic>(t_op, std::move(t_lhs), expr())};
+  };
+
   const auto op{next("<operator>").type()};
   switch(op) {
     case TokenType{g_caret}:
+      node = lambda(ArithmeticOp::POWER);
       break;
 
     case TokenType{g_asterisk}:
+      node = lambda(ArithmeticOp::MULTIPLY);
       break;
 
     case TokenType{g_slash}:
+      node = lambda(ArithmeticOp::DIVIDE);
       break;
 
     case TokenType{g_percent_sign}:
+      node = lambda(ArithmeticOp::MODULO);
       break;
 
     case TokenType{g_plus}:
+      node = lambda(ArithmeticOp::ADD);
       break;
 
     case TokenType{g_minus}:
+      node = lambda(ArithmeticOp::SUBTRACT);
       break;
 
     default:

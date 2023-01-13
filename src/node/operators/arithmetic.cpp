@@ -1,5 +1,6 @@
 #include "arithmetic.hpp"
 
+
 using namespace operators;
 
 Arithmetic::Arithmetic(ArithmeticOp t_op, NodePtr&& t_left,
@@ -11,10 +12,11 @@ Arithmetic::Arithmetic(ArithmeticOp t_op, NodePtr&& t_left,
     m_op{t_op}
 {}
 
-auto Arithmetic::accept([[maybe_unused]] NodeVisitor t_visitor) -> void
-{
-  //
-}
+auto Arithmetic::accept(NodeVisitor t_visitor) -> void
+{}
+
+auto Arithmetic::print() const -> void
+{}
 
 Arithmetic::~Arithmetic()
 {}
