@@ -14,7 +14,7 @@
 // std::string_view Macro used of defining/initializing a reserved keyword or
 // symbol
 #define DEFINE_RESERVED(name, id, token) \
-  constexpr ReservedWrapper name         \
+  constexpr TokenTypeWrapper name         \
   {                                      \
     id, TokenType::token                 \
   }
@@ -22,7 +22,7 @@
 // Concepts:
 // The Identifier is either one character or
 template<typename T>
-concept ReservedIdentifierConcept =
+concept TokenTypeWrapperIdentifierConcept =
   std::same_as<T, std::string_view> || std::same_as<T, char>;
 
 // AWX reserved keywords and symbols
@@ -33,8 +33,8 @@ using r_vw = std::string_view;
 
 // Helper class for the Reserved global variable definitions
 template<typename T = char>
-  requires ReservedIdentifierConcept<T>
-class ReservedWrapper {
+  requires TokenTypeWrapperIdentifierConcept<T>
+class TokenTypeWrapper {
   private:
   const T m_identifier;
   const TokenType m_tokentype;
@@ -42,7 +42,7 @@ class ReservedWrapper {
   public:
   // TODO: Use std::is_convertible<T, std::string_view> to not need to cast to
   // std::string_view explicitly
-  constexpr ReservedWrapper(T t_indentifier, TokenType t_tokentype)
+  constexpr TokenTypeWrapper(T t_indentifier, TokenType t_tokentype)
     : m_identifier{t_indentifier}, m_tokentype{t_tokentype}
   {}
 
@@ -67,7 +67,7 @@ class ReservedWrapper {
 	return m_tokentype;
   }
 
-  ~ReservedWrapper() = default;
+  ~TokenTypeWrapper() = default;
 };
 
 // clang-format off
@@ -103,7 +103,7 @@ namespace keywords {
   // Then we wont need to loop through them either
   // TODO: Make these be generated automagically
   // TODO: Make this a constexpr vector? those have constexpr initializer_list constructor
-  constexpr std::array<ReservedWrapper<std::string_view>, 18> g_keywords{
+  constexpr std::array<TokenTypeWrapper<std::string_view>, 18> g_keywords{
 	g_function, g_return,
 	g_if, g_else,
 	g_do, g_while, g_for, g_in,
@@ -184,7 +184,7 @@ namespace symbols {
 
   // TODO: Make these be generated automagically
   // TODO: Place these  somewhere else they are ugly
-  constexpr std::array<ReservedWrapper<char>, 26>
+  constexpr std::array<TokenTypeWrapper<char>, 26>
   g_single_symbols{
 	g_paren_open,
 	g_paren_close,
@@ -221,7 +221,7 @@ namespace symbols {
 	g_newline
   };
 
-  constexpr std::array<ReservedWrapper<std::string_view>, 16>
+  constexpr std::array<TokenTypeWrapper<std::string_view>, 16>
   g_multi_symbols{
 	g_increment,
 	g_decrement,
