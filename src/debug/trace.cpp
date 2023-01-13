@@ -12,13 +12,13 @@ Trace::Trace(log::LogLevel t_loglevel, std::string t_msg)
     std::stringstream ss;
     if(m_counter > 0) {
       ss << " ├";
-
-      for(int i{0}; i < m_counter - 1; i++)
-        ss << "─";
-
     } else {
       ss << "#.";
     }
+
+	// Adjust for the proper level of indentation
+    for(int i{0}; i < m_counter - 1; i++)
+      ss << "─";
 
     ss << "─> ";
     ss << t_msg;

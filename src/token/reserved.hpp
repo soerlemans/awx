@@ -61,6 +61,12 @@ class ReservedWrapper {
     return {m_identifier, m_tokentype};
   }
 
+  // Warning: The class can be explicitly converted
+  explicit constexpr operator TokenType() const
+  {
+	return m_tokentype;
+  }
+
   ~ReservedWrapper() = default;
 };
 

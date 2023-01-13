@@ -11,6 +11,7 @@ export CXXSTD := -std=c++2b
 export CXXFLAGS := $(CXXSTD) -g3 -DDEVELOPMENT -O2 $(WARNINGS)
 
 export CXX := clang++
+# export CXX := g++
 
 # TODO: Find a way around the shell escape
 SOURCES := $(shell find $(SRC)/ -name '*.cpp')

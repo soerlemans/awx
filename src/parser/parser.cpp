@@ -22,6 +22,9 @@
 #include "../node/operators/unary_prefix.hpp"
 
 
+// TODO: split the parser and its rules into multiple files, the parser should
+// be able to be done simpler or more properly structured
+
 // Class definitions:
 Parser::Parser(TokenStream t_tokenstream): m_tokenstream{t_tokenstream}
 {}
@@ -128,7 +131,7 @@ auto Parser::lvalue() -> NodePtr
     }
 
     default:
-	  m_tokenstream.prev();
+      m_tokenstream.prev();
       break;
   }
 
@@ -275,22 +278,22 @@ auto Parser::arithmetic(NodePtr& t_lhs) -> NodePtr
 
   const auto op{next("<operator>").type()};
   switch(op) {
-    case g_caret.tokentype():
+    case TokenType{g_caret}:
       break;
 
-    case g_asterisk.tokentype():
+    case TokenType{g_asterisk}:
       break;
 
-    case g_slash.tokentype():
+    case TokenType{g_slash}:
       break;
 
-    case g_percent_sign.tokentype():
+    case TokenType{g_percent_sign}:
       break;
 
-    case g_plus.tokentype():
+    case TokenType{g_plus}:
       break;
 
-    case g_minus.tokentype():
+    case TokenType{g_minus}:
       break;
 
     default:
@@ -310,19 +313,25 @@ auto Parser::comparison(NodePtr& t_lhs) -> NodePtr
 
   const auto op{next("<operator>").type()};
   switch(op) {
-    case g_less_than.tokentype():
+    case TokenType{g_less_than}:
       break;
 
-    case g_less_than_equal.tokentype():
+    case TokenType{g_less_than_equal}:
       break;
 
-    case g_not_equal.tokentype():
+    case TokenType{g_not_equal}:
       break;
 
-    case g_equal.tokentype():
+    case TokenType{g_equal}:
       break;
 
-    case g_greater_than.tokentype():
+    case TokenType{g_greater_than}:
+      break;
+
+    case TokenType{g_ere_match}:
+      break;
+
+    case TokenType{g_not_ere_match}:
       break;
 
     default:
@@ -628,7 +637,7 @@ auto Parser::simple_print_statement() -> NodePtr
   if(print.type() == TokenType::PRINT) {
     TRACE_PRINT(LogLevel::DEBUG, "Found print!");
 
-	next("print");
+    next("print");
     const auto paren_open{peek()};
 
     if(paren_open.type() == TokenType::PAREN_OPEN) {
@@ -643,7 +652,7 @@ auto Parser::simple_print_statement() -> NodePtr
   } else if(print.type() == TokenType::PRINTF) {
     TRACE_PRINT(LogLevel::DEBUG, "Found printf!");
 
-	next("print");
+    next("print");
     const auto paren_open{peek()};
 
     if(paren_open.type() == TokenType::PAREN_OPEN) {
@@ -967,7 +976,9 @@ auto Parser::action() -> NodePtr
     }
 
     expect(TokenType::ACCOLADE_CLOSE, "}");
+    TRACE_PRINT(LogLevel::INFO, "Found }");
   }
+
 
   return node;
 }
