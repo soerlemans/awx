@@ -37,10 +37,10 @@ auto Parser::newline_opt() -> void
   while(!eos()) {
     const auto tokentype{next("\\n").type()};
 
-    TRACE_PRINT(LogLevel::DEBUG, "Found newline!");
-
     if(tokentype != TokenType::NEWLINE)
       break;
+
+    TRACE_PRINT(LogLevel::DEBUG, "Found newline!");
   }
 
   m_tokenstream.prev();
@@ -834,8 +834,8 @@ auto Parser::action() -> NodePtr
   // TODO: Figure a way out to cleanly compare these two
   const auto accolade_open{m_tokenstream.token()};
   if(accolade_open.type() == TokenType::ACCOLADE_OPEN) {
-	next("}");
-    TRACE_PRINT(LogLevel::DEBUG, "Found }");
+    next("}");
+    TRACE_PRINT(LogLevel::DEBUG, "Found {");
 
     newline_opt();
 

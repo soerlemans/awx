@@ -33,8 +33,8 @@ auto parse_args(const int t_argc, char* t_argv[]) -> void
   auto& config{Config::get_instance()};
 
   const auto f_getopt{std::bind(getopt, t_argc, t_argv, "f:h")};
-  for(auto opt{f_getopt()}; opt != -1; opt = f_getopt())
-    switch(opt) {
+  for(auto option{f_getopt()}; option != -1; option = f_getopt())
+    switch(option) {
       case 'f': {
         config.add_file(fs::path{optarg});
         break;
