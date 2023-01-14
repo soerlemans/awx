@@ -17,6 +17,7 @@
 #include "../node/lvalue/variable.hpp"
 
 #include "../node/operators/arithmetic.hpp"
+#include "../node/operators/comparison.hpp"
 #include "../node/operators/decrement.hpp"
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
@@ -24,7 +25,10 @@
 
 
 // TODO: split the parser and its rules into multiple files, the parser should
-// be able to be done simpler or more properly structured
+// Be able to be done simpler or more properly structured, find a way for this
+// To be done properly splitting the parsing rules into multiple classes would
+// Be hard to logically justify in a manner that doesnt break logical
+// Consistency
 
 // Class definitions:
 Parser::Parser(TokenStream t_tokenstream): m_tokenstream{t_tokenstream}
@@ -285,32 +289,38 @@ auto Parser::arithmetic(NodePtr& t_lhs) -> NodePtr
       throw std::runtime_error{"Expected Expression"};
 
     return NodePtr{
-      std::make_unique<Arithmetic>(t_op, std::move(t_lhs), expr())};
+      std::make_unique<Arithmetic>(t_op, std::move(t_lhs), std::move(ptr))};
   };
 
   const auto op{next("<operator>").type()};
   switch(op) {
     case TokenType{g_caret}:
+      TRACE_PRINT(LogLevel::INFO, "Found ^!");
       node = lambda(ArithmeticOp::POWER);
       break;
 
     case TokenType{g_asterisk}:
+      TRACE_PRINT(LogLevel::INFO, "Found *!");
       node = lambda(ArithmeticOp::MULTIPLY);
       break;
 
     case TokenType{g_slash}:
+      TRACE_PRINT(LogLevel::INFO, "Found /!");
       node = lambda(ArithmeticOp::DIVIDE);
       break;
 
     case TokenType{g_percent_sign}:
+      TRACE_PRINT(LogLevel::INFO, "Found %!");
       node = lambda(ArithmeticOp::MODULO);
       break;
 
     case TokenType{g_plus}:
+      TRACE_PRINT(LogLevel::INFO, "Found +!");
       node = lambda(ArithmeticOp::ADD);
       break;
 
     case TokenType{g_minus}:
+      TRACE_PRINT(LogLevel::INFO, "Found -!");
       node = lambda(ArithmeticOp::SUBTRACT);
       break;
 
@@ -325,31 +335,62 @@ auto Parser::arithmetic(NodePtr& t_lhs) -> NodePtr
 auto Parser::comparison(NodePtr& t_lhs) -> NodePtr
 {
   using namespace reserved::symbols;
+  using namespace operators;
 
   TRACE(LogLevel::DEBUG, "COMPARISON");
   NodePtr node{nullptr};
 
+  auto lambda = [&](ComparisonOp t_op) -> NodePtr {
+    auto ptr{expr()};
+    if(!ptr)
+      throw std::runtime_error{"Expected Expression"};
+
+    return NodePtr{
+      std::make_unique<Comparison>(t_op, std::move(t_lhs), std::move(ptr))};
+  };
+
   const auto op{next("<operator>").type()};
   switch(op) {
     case TokenType{g_less_than}:
+      TRACE_PRINT(LogLevel::INFO, "Found '<'");
+      node = lambda(ComparisonOp::LESS_THAN);
       break;
 
     case TokenType{g_less_than_equal}:
-      break;
-
-    case TokenType{g_not_equal}:
+      TRACE_PRINT(LogLevel::INFO, "Found '<='");
+      node = lambda(ComparisonOp::LESS_THAN_EQUAL);
       break;
 
     case TokenType{g_equal}:
+      TRACE_PRINT(LogLevel::INFO, "Found '=='");
+      node = lambda(ComparisonOp::EQUAL);
+      break;
+
+    case TokenType{g_not_equal}:
+      TRACE_PRINT(LogLevel::INFO, "Found '!='");
+      node = lambda(ComparisonOp::NOT_EQUAL);
       break;
 
     case TokenType{g_greater_than}:
+      TRACE_PRINT(LogLevel::INFO, "Found '>'");
+      node = lambda(ComparisonOp::GREATER_THAN);
+      break;
+
+    case TokenType{g_greater_than_equal}:
+      TRACE_PRINT(LogLevel::INFO, "Found '>='");
+      node = lambda(ComparisonOp::GREATER_THAN_EQUAL);
       break;
 
     case TokenType{g_ere_match}:
+      TRACE_PRINT(LogLevel::INFO, "Found '~'");
+      // TODO: Figure out if ere should have its own class or not?
+      // Probably should have its own class
+      // node = lambda(ComparisonOp::SUBTRACT);
       break;
 
     case TokenType{g_not_ere_match}:
+      TRACE_PRINT(LogLevel::INFO, "Found '!~'");
+      // node = lambda(ComparisonOp::SUBTRACT);
       break;
 
     default:

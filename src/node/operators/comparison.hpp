@@ -4,7 +4,7 @@
 #include "binary_operator.hpp"
 #include "operators.hpp"
 
-enum class ComparisonOperator {
+enum class ComparisonOp {
   LESS_THAN,
   LESS_THAN_EQUAL,
 
@@ -17,13 +17,15 @@ enum class ComparisonOperator {
 
 class operators::Comparison : public operators::BinaryOperator {
   private:
-  ComparisonOperator m_operator;
+  ComparisonOp m_op;
 
   public:
-  Comparison(NodePtr&& t_left, NodePtr&& t_right,
-             ComparisonOperator t_operator);
+  Comparison(ComparisonOp t_op, NodePtr&& t_left, NodePtr&& t_right);
 
-  auto accept(NodeVisitor t_visitor) -> void;
+  auto op() const -> ComparisonOp;
+
+  virtual auto accept(NodeVisitor t_visitor) -> void override;
+  virtual auto print() const -> void override;
 
   virtual ~Comparison();
 };

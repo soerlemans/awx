@@ -3,18 +3,24 @@
 using namespace operators;
 
 
-Comparison::Comparison(NodePtr&& t_left, NodePtr&& t_right,
-                                       ComparisonOperator t_operator)
+Comparison::Comparison(ComparisonOp t_op, NodePtr&& t_left,
+                       NodePtr&& t_right)
   : BinaryOperator{Precedence::COMPARISON, Associativity::NONE,
                    std::forward<NodePtr>(t_left),
                    std::forward<NodePtr>(t_right)},
-    m_operator{t_operator}
+    m_op{t_op}
 {}
 
-auto Comparison::accept([[maybe_unused]] NodeVisitor t_visitor) -> void
+auto Comparison::op() const -> ComparisonOp
 {
-  //
+  return m_op;
 }
+
+auto Comparison::accept(NodeVisitor t_visitor) -> void
+{}
+
+auto Comparison::print() const -> void
+{}
 
 Comparison::~Comparison()
 {}

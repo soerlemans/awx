@@ -25,8 +25,7 @@ enum class NodeType {
 
 // Abstract Base Node class:
 // A node could either be a literal or some form of expression
-class Node
-{
+class Node {
   protected:
   NodeType m_nodetype;
 
@@ -39,6 +38,8 @@ class Node
   auto type() -> NodeType;
 
   // Needed for the visitor pattern
+  // TODO: Figure out if there is a way to not have to implement this in every
+  // Derived class
   virtual auto accept(NodeVisitor t_visitor) -> void = 0;
 
   // Needed for printing the AST
