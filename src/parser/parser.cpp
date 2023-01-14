@@ -549,7 +549,7 @@ auto Parser::unary_expr() -> NodePtr
   TRACE(LogLevel::DEBUG, "UNARY EXPR");
   NodePtr node{nullptr};
 
-  const auto tokentype{next("+ or -").type()};
+  const auto tokentype{get_token("+ or -").type()};
   if(tokentype::is_unary_operator(tokentype)) {
     next();
 
@@ -822,6 +822,7 @@ auto Parser::terminatable_statement() -> NodePtr
 
     default:
       is_keyword = false;
+	  m_tokenstream.prev();
       break;
   }
 
