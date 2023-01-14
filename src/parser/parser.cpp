@@ -63,7 +63,7 @@ auto Parser::simple_get() -> NodePtr
   TRACE(LogLevel::DEBUG, "SIMPLE GET");
   NodePtr node{nullptr};
 
-  if(peek("getline").type() == TokenType::GETLINE) {
+  if(get_token("getline").type() == TokenType::GETLINE) {
     next("getline");
     if(auto ptr{lvalue()}; ptr) {
       // TODO: Figure out more?
@@ -115,7 +115,7 @@ auto Parser::lvalue() -> NodePtr
   switch(token.type()) {
     case TokenType::IDENTIFIER: {
       // We really dont expect these next_tokens to fail
-      if(peek("[").type() == TokenType::BRACE_OPEN) {
+      if(get_token("[").type() == TokenType::BRACE_OPEN) {
 
         // What do with expr_list???
         // TODO: Include expr_list somehow sometime
@@ -549,7 +549,7 @@ auto Parser::unary_expr() -> NodePtr
   TRACE(LogLevel::DEBUG, "UNARY EXPR");
   NodePtr node{nullptr};
 
-  const auto tokentype{peek("+ or -").type()};
+  const auto tokentype{next("+ or -").type()};
   if(tokentype::is_unary_operator(tokentype)) {
     next();
 
@@ -692,12 +692,12 @@ auto Parser::simple_print_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "SIMPLE PRINT STATEMENT");
   NodePtr node{nullptr};
 
-  const auto print(peek("Expected a print statement"));
+  const auto print(get_token("Expected a print statement"));
   if(print.type() == TokenType::PRINT) {
     TRACE_PRINT(LogLevel::DEBUG, "Found print!");
 
     next("print");
-    const auto paren_open{peek()};
+    const auto paren_open{get_token()};
 
     if(paren_open.type() == TokenType::PAREN_OPEN) {
       // TODO: Create a function
@@ -712,7 +712,7 @@ auto Parser::simple_print_statement() -> NodePtr
     TRACE_PRINT(LogLevel::DEBUG, "Found printf!");
 
     next("print");
-    const auto paren_open{peek()};
+    const auto paren_open{get_token()};
 
     if(paren_open.type() == TokenType::PAREN_OPEN) {
       // TODO: Create a function
@@ -752,7 +752,7 @@ auto Parser::simple_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "SIMPLE STATEMENT");
   NodePtr node{nullptr};
 
-  if(peek().type() == TokenType::DELETE) {
+  if(get_token().type() == TokenType::DELETE) {
     next();
 
     expect(TokenType::IDENTIFIER, "Name");
@@ -875,14 +875,14 @@ auto Parser::terminated_statement() -> NodePtr
 
   switch(token.type()) {
     case TokenType::IF: {
-      check(TokenType::PAREN_OPEN);
+      expect(TokenType::PAREN_OPEN, "(");
       expr();
-      check(TokenType::PAREN_CLOSE);
+      expect(TokenType::PAREN_CLOSE, ")");
 
       newline_opt();
       terminated_statement();
 
-      if(!eos() && peek().type() == TokenType::ELSE) {
+      if(!eos() && get_token().type() == TokenType::ELSE) {
         next("else");
 
         newline_opt();
@@ -1238,22 +1238,18 @@ auto Parser::next(const std::string t_msg) -> Token&
   return m_tokenstream.next();
 }
 
-auto Parser::peek(const std::string t_msg) -> Token
+auto Parser::get_token(const std::string t_msg) -> Token
 {
   if(eos()) {
     // TODO: Make a function for this
     std::stringstream ss;
-    ss << "Attempted to peek at EOS\n";
+    ss << "Attempted to get token at EOS\n";
     ss << "Expected -> ";
     ss << t_msg;
     throw std::runtime_error{ss.str()};
   }
 
-  const auto token{m_tokenstream.next()};
-
-  m_tokenstream.prev();
-
-  return token;
+  return m_tokenstream.token();
 }
 
 auto Parser::expect(TokenType t_tokentype, const std::string t_msg) -> Token&

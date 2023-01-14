@@ -77,7 +77,7 @@ class Parser
   // And create an unget() for going backwards and ungetting a token()
   auto check(TokenType t_tokentype) -> bool;
   auto next(const std::string t_msg = "") -> Token&;
-  auto peek(const std::string t_msg = "") -> Token;
+  auto get_token(const std::string t_msg = "") -> Token;
   auto expect(TokenType t_tokentype, const std::string t_msg) -> Token&;
   auto eos() -> bool;
 
