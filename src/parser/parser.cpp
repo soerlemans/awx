@@ -295,32 +295,32 @@ auto Parser::arithmetic(NodePtr& t_lhs) -> NodePtr
   const auto op{next("<operator>").type()};
   switch(op) {
     case TokenType{g_caret}:
-      TRACE_PRINT(LogLevel::INFO, "Found ^!");
+      TRACE_PRINT(LogLevel::INFO, "Found '^'");
       node = lambda(ArithmeticOp::POWER);
       break;
 
     case TokenType{g_asterisk}:
-      TRACE_PRINT(LogLevel::INFO, "Found *!");
+      TRACE_PRINT(LogLevel::INFO, "Found '*'");
       node = lambda(ArithmeticOp::MULTIPLY);
       break;
 
     case TokenType{g_slash}:
-      TRACE_PRINT(LogLevel::INFO, "Found /!");
+      TRACE_PRINT(LogLevel::INFO, "Found '/'");
       node = lambda(ArithmeticOp::DIVIDE);
       break;
 
     case TokenType{g_percent_sign}:
-      TRACE_PRINT(LogLevel::INFO, "Found %!");
+      TRACE_PRINT(LogLevel::INFO, "Found '%'");
       node = lambda(ArithmeticOp::MODULO);
       break;
 
     case TokenType{g_plus}:
-      TRACE_PRINT(LogLevel::INFO, "Found +!");
+      TRACE_PRINT(LogLevel::INFO, "Found '+'");
       node = lambda(ArithmeticOp::ADD);
       break;
 
     case TokenType{g_minus}:
-      TRACE_PRINT(LogLevel::INFO, "Found -!");
+      TRACE_PRINT(LogLevel::INFO, "Found '-'");
       node = lambda(ArithmeticOp::SUBTRACT);
       break;
 
@@ -349,7 +349,7 @@ auto Parser::comparison(NodePtr& t_lhs) -> NodePtr
       std::make_unique<Comparison>(t_op, std::move(t_lhs), std::move(ptr))};
   };
 
-  const auto op{next("<operator>").type()};
+  const auto op{next("<logical operator>").type()};
   switch(op) {
     case TokenType{g_less_than}:
       TRACE_PRINT(LogLevel::INFO, "Found '<'");
@@ -400,6 +400,72 @@ auto Parser::comparison(NodePtr& t_lhs) -> NodePtr
 
   return node;
 }
+
+auto Parser::logical(NodePtr& t_lhs) -> NodePtr
+{
+  using namespace reserved::symbols;
+  using namespace operators;
+
+  TRACE(LogLevel::DEBUG, "LOGICAL");
+  NodePtr node{nullptr};
+
+  auto lambda = [&]<typename T>() -> NodePtr {
+    NodePtr rhs{nullptr};
+
+    // Optional newlines are allowed after && and ||
+    newline_opt();
+
+    if(auto ptr{print_expr()}; ptr) {
+      rhs = std::move(ptr);
+    } else if(auto ptr{expr()}; ptr) {
+      rhs = std::move(ptr);
+    } else {
+      throw std::runtime_error{"Expected Expression"};
+    }
+
+    return NodePtr{std::make_unique<T>(std::move(t_lhs), std::move(rhs))};
+  };
+
+  const auto op{next("<operator>").type()};
+  switch(op) {
+    case TokenType{g_and}:
+      TRACE_PRINT(LogLevel::INFO, "Found '&&'");
+	  // Invalid syntax?
+      // node = lambda<And>();
+      break;
+
+    case TokenType{g_or}:
+      TRACE_PRINT(LogLevel::INFO, "Found '||'");
+	  // Invalid syntax?
+      // node = lambda<Or>();
+      break;
+
+    default:
+      m_tokenstream.prev();
+      break;
+  }
+
+  return node;
+}
+
+auto Parser::ternary(NodePtr& t_lhs) -> NodePtr
+{
+  using namespace reserved::symbols;
+
+  TRACE(LogLevel::DEBUG, "TERNARY");
+  NodePtr node{nullptr};
+
+
+  const auto op{get_token("?").type()};
+  if(op == TokenType{g_questionmark}) {
+    next("?");
+
+    // TODO: Handle Ternary expression
+  }
+
+  return node;
+}
+
 // TODO: Not a grammar rule function, but a function intended for parsing binary
 // Operator statements
 auto Parser::binary_operator(NodePtr& t_lhs) -> NodePtr
@@ -407,9 +473,15 @@ auto Parser::binary_operator(NodePtr& t_lhs) -> NodePtr
   TRACE(LogLevel::DEBUG, "BINARY OPERATOR");
   NodePtr node{nullptr};
 
+  // TODO: Create lambda for these call chains?
+  // Or a macro?
   if(auto ptr{arithmetic(t_lhs)}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{comparison(t_lhs)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{logical(t_lhs)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{ternary(t_lhs)}; ptr) {
     node = std::move(ptr);
   }
 
@@ -563,9 +635,7 @@ auto Parser::unary_expr() -> NodePtr
     unary_prefix_ptr =
       std::make_unique<UnaryPrefix>(unary_prefix_op, std::move(expr_ptr));
 
-    // TODO: We should create an operator function function for this
-    const auto op{next("^, *, /, %, +, -, <, <=, !=, ==, >, >=, ~, ")};
-
+	node = binary_operator(unary_prefix_ptr);
   } else {
     // Only call to unary_input_function() embed the rule into this one?
     // node = unary_input_function();
@@ -822,7 +892,7 @@ auto Parser::terminatable_statement() -> NodePtr
 
     default:
       is_keyword = false;
-	  m_tokenstream.prev();
+      m_tokenstream.prev();
       break;
   }
 

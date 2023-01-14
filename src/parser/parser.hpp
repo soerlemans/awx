@@ -15,25 +15,31 @@ class Parser
   public:
   Parser(TokenStream t_tokenstream);
 
-  // Parsing grammar methods:
+  // Parsing grammar/rule methods:
   virtual auto newline_opt() -> void;
 
+  // Input rules:
   virtual auto simple_get() -> NodePtr;
   virtual auto unary_input_function() -> NodePtr;
   virtual auto non_unary_input_function() -> NodePtr;
 
   virtual auto lvalue() -> NodePtr;
 
+  // Print rules:
   virtual auto non_unary_print_expr() -> NodePtr;
   virtual auto unary_print_expr() -> NodePtr;
   virtual auto print_expr() -> NodePtr;
   virtual auto print_expr_list() -> NodePtr;
   virtual auto print_expr_list_opt() -> NodePtr;
 
+  // These are helper functions for the expression rules!:
   virtual auto arithmetic(NodePtr& t_lhs) -> NodePtr;
   virtual auto comparison(NodePtr& t_lhs) -> NodePtr;
+  virtual auto logical(NodePtr& t_lhs) -> NodePtr;
+  virtual auto ternary(NodePtr& t_lhs) -> NodePtr;
   virtual auto binary_operator(NodePtr& t_lhs) -> NodePtr;
 
+  // Expression rules:
   virtual auto non_unary_expr() -> NodePtr;
   virtual auto unary_expr() -> NodePtr;
 
@@ -44,10 +50,12 @@ class Parser
   virtual auto expr_list() -> NodePtr;
   virtual auto expr_list_opt() -> NodePtr;
 
+  // IO rules:
   virtual auto output_redirection() -> NodePtr;
   virtual auto simple_print_statement() -> NodePtr;
   virtual auto print_statement() -> NodePtr;
 
+  // Statement rules:
   virtual auto simple_statement() -> NodePtr;
   virtual auto simple_statement_opt() -> NodePtr;
 
@@ -61,6 +69,7 @@ class Parser
 
   virtual auto action() -> NodePtr;
 
+  // Patterns:
   virtual auto special_pattern() -> NodePtr;
   virtual auto normal_pattern() -> NodePtr;
   virtual auto pattern() -> NodePtr;
