@@ -3,8 +3,7 @@
 using namespace nodes;
 
 Ast::Ast(): m_root{nullptr}, m_current{nullptr}, m_list{}
-{
-}
+{}
 
 auto Ast::add(NodePtr&& t_node) -> void
 {
@@ -12,10 +11,13 @@ auto Ast::add(NodePtr&& t_node) -> void
 }
 
 Ast::~Ast()
+{}
+
+auto Ast::current() const -> Node*
 {
+  return m_current;
 }
 
 // Exported functions:
 auto print_ast(const Ast& t_ast) -> void
-{
-}
+{}

@@ -26,6 +26,8 @@ class Ast
 
   auto add(NodePtr&& t_node) -> void;
 
+  auto current() const -> nodes::Node*;
+
   virtual ~Ast();
 };
 

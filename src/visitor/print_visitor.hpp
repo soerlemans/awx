@@ -9,8 +9,8 @@
 
 
 // Visitor made for printing the AST Node per node
-class PrintVisitor : public VisitorInterface
-{
+// Has a unique overload for every print
+class PrintVisitor : public VisitorInterface {
   private:
   Ast& m_ast;
 

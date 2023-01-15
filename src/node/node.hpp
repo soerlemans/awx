@@ -4,10 +4,10 @@
 #include <memory>
 #include <type_traits>
 
-#include "nodes.hpp"
-
 #include "../types.hpp"
 #include "../visitor/node_visitor.hpp"
+
+#include "nodes.hpp"
 
 
 // Aliases:

@@ -8,8 +8,7 @@
 // Implementation of the Visitor design pattern for Nodes
 // This creates a recursive dependency on the different kind of nodes
 // So all nodes need to be forward declared in this header
-class NodeVisitor : public VisitorInterface
-{
+class NodeVisitor : public VisitorInterface {
   private:
   public:
   NodeVisitor();
