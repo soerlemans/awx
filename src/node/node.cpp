@@ -5,9 +5,10 @@
 #include "node.hpp"
 
 
+using namespace nodes;
+
 Node::Node(NodeType t_nodetype): m_nodetype{t_nodetype}
-{
-}
+{}
 
 auto Node::type() -> NodeType
 {
@@ -15,5 +16,4 @@ auto Node::type() -> NodeType
 }
 
 Node::~Node()
-{
-}
+{}

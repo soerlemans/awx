@@ -12,6 +12,7 @@
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
 
+#include "../node/rvalue/rvalue.hpp"
 #include "../node/rvalue/literal.hpp"
 
 #include "../node/lvalue/array.hpp"
@@ -110,6 +111,8 @@ auto Parser::non_unary_input_function() -> NodePtr
 //                  ;
 auto Parser::lvalue() -> NodePtr
 {
+  using namespace nodes::lvalue;
+
   TRACE(LogLevel::DEBUG, "LVALUE");
   NodePtr node{nullptr};
 
@@ -279,7 +282,7 @@ auto Parser::print_expr_list_opt() -> NodePtr
 auto Parser::arithmetic(NodePtr& t_lhs) -> NodePtr
 {
   using namespace reserved::symbols;
-  using namespace operators;
+  using namespace nodes::operators;
 
   TRACE(LogLevel::DEBUG, "ARITHMETIC");
   NodePtr node{nullptr};
@@ -337,7 +340,7 @@ auto Parser::arithmetic(NodePtr& t_lhs) -> NodePtr
 auto Parser::comparison(NodePtr& t_lhs) -> NodePtr
 {
   using namespace reserved::symbols;
-  using namespace operators;
+  using namespace nodes::operators;
 
   TRACE(LogLevel::DEBUG, "COMPARISON");
   NodePtr node{nullptr};
@@ -406,7 +409,7 @@ auto Parser::comparison(NodePtr& t_lhs) -> NodePtr
 auto Parser::logical(NodePtr& t_lhs) -> NodePtr
 {
   using namespace reserved::symbols;
-  using namespace operators;
+  using namespace nodes::operators;
 
   TRACE(LogLevel::DEBUG, "LOGICAL");
   NodePtr node{nullptr};
@@ -536,6 +539,9 @@ auto Parser::binary_operator(NodePtr& t_lhs) -> NodePtr
 // TODO: Split these functions
 auto Parser::non_unary_expr() -> NodePtr
 {
+  using namespace nodes::operators;
+  using namespace nodes::rvalue;
+
   TRACE(LogLevel::DEBUG, "NON UNARY EXPR");
   NodePtr node{nullptr};
 
@@ -556,34 +562,36 @@ auto Parser::non_unary_expr() -> NodePtr
 
     case TokenType::NOT:
       LOG(LogLevel::INFO, "Found Not expression");
-      node = std::make_unique<operators::Not>(expr());
+      node = std::make_unique<Not>(expr());
       break;
 
     // TODO: Token in the grammar calls for NUMBER? These are not treated
     // differently?
     case TokenType::FLOAT:
-      node = std::make_unique<Float>(token.get<double>());
+	  //TODO: Fix these
+      // node = std::make_unique<Float>(token.get<double>());
       break;
 
     case TokenType::HEX:
       [[fallthrough]];
     case TokenType::INTEGER:
-      node = std::make_unique<Integer>(token.get<int>());
+	  //TODO: Fix these
+      // node = std::make_unique<Integer>(token.get<int>());
       break;
 
     case TokenType::STRING:
-      node = std::make_unique<Integer>(token.get<std::string>());
+      node = std::make_unique<String>(token.get<std::string>());
       break;
 
     // TOOD: ERE?
     case TokenType::INCREMENT:
       LOG(LogLevel::INFO, "Found prefix Increment");
-      node = std::make_unique<operators::Increment>(lvalue(), true);
+      node = std::make_unique<Increment>(lvalue(), true);
       break;
 
     case TokenType::DECREMENT:
       LOG(LogLevel::INFO, "Found prefix Decrement");
-      node = std::make_unique<operators::Decrement>(lvalue(), true);
+      node = std::make_unique<Decrement>(lvalue(), true);
       break;
 
     default:
@@ -626,7 +634,7 @@ auto Parser::non_unary_expr() -> NodePtr
 //                  ;
 auto Parser::unary_expr() -> NodePtr
 {
-  using namespace operators;
+  using namespace nodes::operators;
 
   TRACE(LogLevel::DEBUG, "UNARY EXPR");
   NodePtr node{nullptr};
