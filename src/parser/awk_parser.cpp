@@ -42,8 +42,6 @@ auto AwkParser::newline_opt() -> void
 
     TRACE_PRINT(LogLevel::DEBUG, "Found newline!");
   }
-
-  prev();
 }
 
 auto AwkParser::simple_get() -> NodePtr
@@ -1094,15 +1092,7 @@ auto AwkParser::terminator() -> void
   if(!tokentype::is_terminator(token.type()))
     std::runtime_error{"Expected a terminator!!!"};
 
-  while(!eos()) {
-    const auto tokentype{next().type()};
-
-    if(tokentype != TokenType::NEWLINE)
-      break;
-  }
-
-  // if our last token was not a terminator go back to undo the lookahead
-  prev();
+  newline_opt();
 }
 
 // action           : '{' newline_opt                             '}'
