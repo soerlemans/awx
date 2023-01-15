@@ -37,11 +37,8 @@ auto AwkParser::newline_opt() -> void
 {
   TRACE(LogLevel::DEBUG, "NEWLINE OPT");
 
-  while(!eos()) {
-    const auto tokentype{next("\\n").type()};
-
-    if(tokentype != TokenType::NEWLINE)
-      break;
+  while(!eos() && check(TokenType::NEWLINE)) {
+    next("\\n");
 
     TRACE_PRINT(LogLevel::DEBUG, "Found newline!");
   }
@@ -978,7 +975,7 @@ auto AwkParser::terminated_statement() -> NodePtr
       newline_opt();
       terminated_statement();
 
-      if(!eos() && get_token().type() == TokenType::ELSE) {
+      if(check(TokenType::ELSE)) {
         next("else");
 
         newline_opt();
@@ -991,14 +988,17 @@ auto AwkParser::terminated_statement() -> NodePtr
     }
 
     case TokenType::WHILE: {
-      const auto paren_open{next("(")};
+      expect(TokenType::PAREN_OPEN, "(");
       expr();
-      const auto paren_close{next(")")};
+      expect(TokenType::PAREN_CLOSE, ")");
       newline_opt();
       terminated_statement();
     }
 
     case TokenType::FOR:
+      expect(TokenType::PAREN_OPEN, "(");
+
+      // TODO: Do rest
       break;
 
     case TokenType::SEMICOLON:
@@ -1009,8 +1009,10 @@ auto AwkParser::terminated_statement() -> NodePtr
       prev();
 
       terminatable_statement();
-      const auto terminator_token{next("\\n or ;")};
-      // TODO: Verify if is a is_terminator()
+
+      if(!tokentype::is_terminator(next("\\n or ;").type()))
+        throw std::runtime_error{"Statement is improperly terminated"};
+
       newline_opt();
       break;
     }
@@ -1259,12 +1261,8 @@ auto AwkParser::item() -> NodePtr
   return node;
 }
 
-
-// FIXME: This rule creates infinite recursion
-// Possibly swap the order? This would seem to not affect the grammar
-// item_list        : /* empty */
-//                  | item_list item terminator
-//                  ;
+// item list exists out of an item followed by a terminator
+// Till there are are no more items
 auto AwkParser::item_list() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "ITEM LIST");
@@ -1273,8 +1271,9 @@ auto AwkParser::item_list() -> NodePtr
   do {
     node = item();
 
-    if(node)
+    if(node) {
       terminator();
+    }
   } while(node);
 
   return node;
@@ -1300,15 +1299,13 @@ auto AwkParser::program() -> NodePtr
 
 auto AwkParser::parse() -> Ast
 {
-  using namespace reserved;
-
   LOG_PRINT("=== PARSING ===");
 
   Ast ast;
-
   program();
 
   LOG_PRINT();
+
   return ast;
 }
 
