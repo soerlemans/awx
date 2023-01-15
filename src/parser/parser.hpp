@@ -13,88 +13,23 @@ class Parser
   TokenStream m_tokenstream;
 
   public:
-  Parser(TokenStream t_tokenstream);
+  Parser(TokenStream&& t_tokenstream);
 
-  // Parsing grammar/rule methods:
-  virtual auto newline_opt() -> void;
-
-  // Input rules:
-  virtual auto simple_get() -> NodePtr;
-  virtual auto unary_input_function() -> NodePtr;
-  virtual auto non_unary_input_function() -> NodePtr;
-
-  virtual auto lvalue() -> NodePtr;
-
-  // Print rules:
-  virtual auto non_unary_print_expr() -> NodePtr;
-  virtual auto unary_print_expr() -> NodePtr;
-  virtual auto print_expr() -> NodePtr;
-  virtual auto print_expr_list() -> NodePtr;
-  virtual auto print_expr_list_opt() -> NodePtr;
-
-  // These are helper functions for the expression rules!:
-  virtual auto arithmetic(NodePtr& t_lhs) -> NodePtr;
-  virtual auto comparison(NodePtr& t_lhs) -> NodePtr;
-  virtual auto logical(NodePtr& t_lhs) -> NodePtr;
-  virtual auto ternary(NodePtr& t_lhs) -> NodePtr;
-  virtual auto binary_operator(NodePtr& t_lhs) -> NodePtr;
-
-  // Expression rules:
-  virtual auto non_unary_expr() -> NodePtr;
-  virtual auto unary_expr() -> NodePtr;
-
-  virtual auto expr() -> NodePtr;
-  virtual auto expr_opt() -> NodePtr;
-
-  virtual auto multiple_expr_list() -> NodePtr;
-  virtual auto expr_list() -> NodePtr;
-  virtual auto expr_list_opt() -> NodePtr;
-
-  // IO rules:
-  virtual auto output_redirection() -> NodePtr;
-  virtual auto simple_print_statement() -> NodePtr;
-  virtual auto print_statement() -> NodePtr;
-
-  // Statement rules:
-  virtual auto simple_statement() -> NodePtr;
-  virtual auto simple_statement_opt() -> NodePtr;
-
-  virtual auto terminatable_statement() -> NodePtr;
-  virtual auto unterminated_statement() -> NodePtr;
-  virtual auto terminated_statement() -> NodePtr;
-  virtual auto unterminated_statement_list() -> NodePtr;
-  virtual auto terminated_statement_list() -> NodePtr;
-
-  virtual auto terminator() -> void;
-
-  virtual auto action() -> NodePtr;
-
-  // Patterns:
-  virtual auto special_pattern() -> NodePtr;
-  virtual auto normal_pattern() -> NodePtr;
-  virtual auto pattern() -> NodePtr;
-
-  virtual auto param_list() -> NodePtr;
-  virtual auto param_list_opt() -> NodePtr;
-
-  virtual auto item() -> NodePtr;
-  virtual auto item_list() -> NodePtr;
-
-  virtual auto program() -> NodePtr;
-
-  // Regular methods again:
   // And create an unget() for going backwards and ungetting a token()
-  auto check(TokenType t_tokentype) -> bool;
-  auto next(const std::string t_msg = "") -> Token&;
-  auto get_token(const std::string t_msg = "") -> Token;
-  auto expect(TokenType t_tokentype, const std::string t_msg) -> Token&;
   auto eos() -> bool;
+  auto error(const std::string_view t_msg) -> void;
+
+  auto check(const TokenType t_tokentype) -> bool;
+  auto next(const std::string t_msg = "") -> Token&;
+  auto prev() -> Token&;
+  auto expect(const TokenType t_tokentype, const std::string t_msg) -> Token&;
+  auto get_token(const std::string t_msg = "") -> Token;
 
   // The parse() method should be virtual cause in the future we may want to
   // have different dialects of AWX
-  virtual auto parse() -> Ast;
+  virtual auto parse() -> Ast = 0;
 
-  ~Parser();
+  virtual ~Parser();
 };
 
 #endif /* PARSER_H */

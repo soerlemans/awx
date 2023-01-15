@@ -15,15 +15,17 @@ class TokenStream : public std::vector<Token>
   std::size_t m_index;
 
   public:
+  // Constructors:
   TokenStream(const std::size_t t_reserve = 256);
 
-  auto next(const int inc = 1) -> Token&;
-  auto prev(const int dec = 1) -> Token&;
+  auto next(const std::size_t inc = 1) -> Token&;
+  auto prev(const std::size_t dec = 1) -> Token&;
 
   auto token() -> Token&;
 
   auto eos() const -> bool;
 
+  // Destructors:
   virtual ~TokenStream();
 };
 

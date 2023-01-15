@@ -43,22 +43,6 @@ auto FileBuffer::path() const -> fs::path
   return m_path;
 }
 
-auto FileBuffer::next() -> std::string&
-{
-  // Changing lines resets the column number
-  m_columnno = 0;
-
-  return m_filebuffer[m_lineno++];
-}
-
-auto FileBuffer::prev() -> std::string&
-{
-  // Changing lines resets the column number
-  m_columnno = 0;
-
-  return m_filebuffer[m_lineno--];
-}
-
 auto FileBuffer::next() const -> std::string
 {
   // Changing lines resets the column number
@@ -69,10 +53,16 @@ auto FileBuffer::next() const -> std::string
 
 auto FileBuffer::prev() const -> std::string
 {
+  std::string result{m_filebuffer[m_lineno]};
+
   // Changing lines resets the column number
   m_columnno = 0;
 
-  return m_filebuffer[m_lineno--];
+  // Logically you can go past a stream but not in front of a stream
+  if(m_lineno)
+    m_lineno--;
+
+  return result;
 }
 
 auto FileBuffer::forward() const -> char
@@ -82,12 +72,12 @@ auto FileBuffer::forward() const -> char
 
 auto FileBuffer::backward() const -> char
 {
-  return m_filebuffer[m_lineno][m_columnno--];
-}
+  const char character{m_filebuffer[m_lineno][m_columnno]};
 
-auto FileBuffer::line() -> std::string&
-{
-  return m_filebuffer[m_lineno];
+  if(m_columnno)
+	m_columnno--;
+
+  return character;
 }
 
 auto FileBuffer::line() const -> std::string

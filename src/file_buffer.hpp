@@ -22,6 +22,7 @@ class FileBuffer
   File m_filebuffer;
 
   public:
+  // Constructors:
   FileBuffer() = delete;
   FileBuffer(fs::path t_path);
 
@@ -32,9 +33,6 @@ class FileBuffer
   auto path() const -> fs::path;
 
   // Line movement
-  auto next() -> std::string&;
-  auto prev() -> std::string&;
-
   auto next() const -> std::string;
   auto prev() const -> std::string;
 
@@ -43,7 +41,6 @@ class FileBuffer
   auto backward() const -> char;
 
   // Get current line
-  auto line() -> std::string&;
   auto line() const -> std::string;
 
   // Get current character
@@ -65,9 +62,8 @@ class FileBuffer
   // Operators:
   auto operator[](std::size_t t_index) -> std::string&;
 
-  // Destructors
+  // Destructors:
   virtual ~FileBuffer();
 };
-
 
 #endif // FILE_BUFFER_H

@@ -4,7 +4,7 @@
 #include <unistd.h>
 
 #include "config/config.hpp"
-#include "parser/parser.hpp"
+#include "parser/awk_parser.hpp"
 
 #include "debug/log.hpp"
 
@@ -61,9 +61,9 @@ auto run(int argc, char* argv[]) -> void
   FileBuffer fb{config.get_files().front()};
 
   Lexer lexer{fb};
-  TokenStream token_stream{lexer.tokenize()};
+  TokenStream tokenstream{lexer.tokenize()};
 
-  Parser parser{token_stream};
+  AwkParser parser{tokenstream};
   auto ast{parser.parse()};
 }
 

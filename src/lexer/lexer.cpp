@@ -107,7 +107,7 @@ auto Lexer::literal_numeric() -> Token
 
   Token token;
 
-  bool hex{is_hex_literal()};
+  bool is_hex{is_hex_literal()};
   bool is_float{false};
 
   std::stringstream ss;
@@ -117,7 +117,7 @@ auto Lexer::literal_numeric() -> Token
     // is_valid_character for different type of integer literals
     if(std::isdigit(character)) {
       ss << next_char();
-    } else if(hex && std::isxdigit(character)) {
+    } else if(is_hex && std::isxdigit(character)) {
       // The following check is probably not needed, but implement it one
       // day just in case to be sure
       // if(is_float)
@@ -130,7 +130,7 @@ auto Lexer::literal_numeric() -> Token
       // Cant be a hex literal with a floating point at the same time in
       // the future we might have primitive types be classes ruby style so
       // someday this could be a feature But for now give an error on this
-      if(hex)
+      if(is_hex)
         syntax_error("Found a . in a hex literal");
 
       is_float = true;
@@ -143,9 +143,8 @@ auto Lexer::literal_numeric() -> Token
     }
   }
 
-
   // Determine what must be returned:
-  if(hex) {
+  if(is_hex) {
 	int number{(int)std::stoul(ss.str(), nullptr, 16)};
     token = Token{TokenType::HEX, number};
   } else if(is_float) {
