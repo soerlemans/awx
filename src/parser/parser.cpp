@@ -32,10 +32,9 @@ auto Parser::check(const TokenType t_tokentype) -> bool
 {
   error("Tried to check for token at EOS!");
 
-  const auto tokentype{m_tokenstream.token().type()};
-  const bool check{tokentype == t_tokentype};
+  const auto token{m_tokenstream.token()};
 
-  return check;
+  return token.type() == t_tokentype;
 }
 
 auto Parser::next(const std::string t_msg) -> Token&
@@ -50,7 +49,7 @@ auto Parser::prev() -> Token&
   return m_tokenstream.prev();
 }
 
-auto Parser::get_token(const std::string t_msg) -> Token
+auto Parser::get_token() -> Token
 {
   error("Tried to return get token at EOS!");
 

@@ -19,6 +19,7 @@
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
 #include "../node/operators/unary_prefix.hpp"
+#include <stdexcept>
 
 // TODO: split the parser and its rules into multiple files, the parser should
 // Be able to be done simpler or more properly structured, find a way for this
@@ -53,7 +54,7 @@ auto AwkParser::simple_get() -> NodePtr
   TRACE(LogLevel::DEBUG, "SIMPLE GET");
   NodePtr node{nullptr};
 
-  if(get_token("getline").type() == TokenType::GETLINE) {
+  if(check(TokenType::GETLINE)) {
     next("getline");
     if(auto ptr{lvalue()}; ptr) {
       // TODO: Figure out more?
@@ -102,7 +103,8 @@ auto AwkParser::lvalue() -> NodePtr
   switch(token.type()) {
     case TokenType::IDENTIFIER: {
       // We really dont expect these next_tokens to fail
-      if(get_token("[").type() == TokenType::BRACE_OPEN) {
+      if(check(TokenType::BRACE_OPEN)) {
+        next("(");
 
         // What do with expr_list???
         // TODO: Include expr_list somehow sometime
@@ -235,16 +237,17 @@ auto AwkParser::print_expr_list() -> NodePtr
   TRACE(LogLevel::DEBUG, "PRINT EXPR LIST");
   NodePtr node{nullptr};
 
-  if(auto print_expr_ptr{print_expr()}; !print_expr_ptr)
-    ; // Error handling
+  if(auto ptr{print_expr()}; ptr) {
+    if(check(TokenType::COMMA)) {
+      next();
 
-  const auto comma{next(",")};
-  if(comma.type() != TokenType::COMMA) {
-    prev();
+      // TODO: Set expr
+      newline_opt();
+      print_expr();
+    } else {
+      // Create print_expr node??
+    }
   }
-
-  newline_opt();
-  print_expr();
 
   return node;
 }
@@ -407,7 +410,9 @@ auto AwkParser::logical(NodePtr& t_lhs) -> NodePtr
       rhs = std::move(ptr);
     } else if(auto ptr{expr()}; ptr) {
       rhs = std::move(ptr);
-    } else {
+    }
+
+    if(!rhs) {
       throw std::runtime_error{"Expected Expression"};
     }
 
@@ -443,9 +448,7 @@ auto AwkParser::ternary(NodePtr& t_lhs) -> NodePtr
   TRACE(LogLevel::DEBUG, "TERNARY");
   NodePtr node{nullptr};
 
-
-  const auto op{get_token("?").type()};
-  if(op == TokenType{g_questionmark}) {
+  if(check(TokenType{g_questionmark})) {
     next("?");
 
     // TODO: Handle Ternary expression
@@ -624,13 +627,15 @@ auto AwkParser::unary_expr() -> NodePtr
   TRACE(LogLevel::DEBUG, "UNARY EXPR");
   NodePtr node{nullptr};
 
-  const auto tokentype{get_token("+ or -").type()};
+  const auto tokentype{get_token().type()};
   if(tokentype::is_unary_operator(tokentype)) {
     next();
 
     auto expr_ptr{expr()};
-    if(!expr_ptr)
-      ; // TODO: Error handling
+    if(!expr_ptr) {
+      // TODO: Error handling
+      throw std::runtime_error{"Expected expression"};
+    }
 
     NodePtr lhs{nullptr};
 
@@ -765,14 +770,12 @@ auto AwkParser::simple_print_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "SIMPLE PRINT STATEMENT");
   NodePtr node{nullptr};
 
-  const auto print(get_token("Expected a print statement"));
-  if(print.type() == TokenType::PRINT) {
+  if(check(TokenType::PRINT)) {
     TRACE_PRINT(LogLevel::DEBUG, "Found print!");
 
     next("print");
-    const auto paren_open{get_token()};
 
-    if(paren_open.type() == TokenType::PAREN_OPEN) {
+    if(check(TokenType::PAREN_OPEN)) {
       // TODO: Create a function
       next("(");
       multiple_expr_list();
@@ -781,13 +784,12 @@ auto AwkParser::simple_print_statement() -> NodePtr
       print_expr_list_opt();
     }
 
-  } else if(print.type() == TokenType::PRINTF) {
+  } else if(check(TokenType::PRINTF)) {
     TRACE_PRINT(LogLevel::DEBUG, "Found printf!");
 
     next("print");
-    const auto paren_open{get_token()};
 
-    if(paren_open.type() == TokenType::PAREN_OPEN) {
+    if(check(TokenType::PAREN_OPEN)) {
       // TODO: Create a function
       next("(");
       multiple_expr_list();
@@ -825,7 +827,7 @@ auto AwkParser::simple_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "SIMPLE STATEMENT");
   NodePtr node{nullptr};
 
-  if(get_token().type() == TokenType::DELETE) {
+  if(check(TokenType::DELETE)) {
     next();
 
     expect(TokenType::IDENTIFIER, "Name");
@@ -1027,7 +1029,6 @@ auto AwkParser::unterminated_statement_list() -> NodePtr
   TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT LIST");
   NodePtr node{nullptr};
 
-
   if(auto unterminated_statement_ptr{unterminated_statement()};
      unterminated_statement_ptr) {
     // Add to NodeList
@@ -1111,9 +1112,7 @@ auto AwkParser::action() -> NodePtr
   TRACE(LogLevel::DEBUG, "ACTION");
   NodePtr node{nullptr};
 
-  // TODO: Figure a way out to cleanly compare these two
-  const auto accolade_open{get_token()};
-  if(accolade_open.type() == TokenType::ACCOLADE_OPEN) {
+  if(check(TokenType::ACCOLADE_OPEN)) {
     next("}");
     TRACE_PRINT(LogLevel::INFO, "Found {");
 
@@ -1188,10 +1187,10 @@ auto AwkParser::pattern() -> NodePtr
   TRACE(LogLevel::DEBUG, "PATTERN");
   NodePtr node{nullptr};
 
-  if(auto normal_pattern_ptr{normal_pattern()}; normal_pattern_ptr) {
-    node = std::move(normal_pattern_ptr);
-  } else if(auto special_pattern_ptr{special_pattern()}; special_pattern_ptr) {
-    node = std::move(special_pattern_ptr);
+  if(auto ptr{normal_pattern()}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{special_pattern()}; ptr) {
+    node = std::move(ptr);
   }
 
   return node;
@@ -1218,8 +1217,8 @@ auto AwkParser::param_list_opt() -> NodePtr
   TRACE(LogLevel::DEBUG, "PARAM LIST OPT");
   NodePtr node{nullptr};
 
-  if(auto param_list_ptr{param_list()}; param_list_ptr) {
-    node = std::move(param_list_ptr);
+  if(auto ptr{param_list()}; ptr) {
+    node = std::move(ptr);
   }
 
   return node;
@@ -1244,13 +1243,15 @@ auto AwkParser::item() -> NodePtr
   } else if(auto pattern_ptr{pattern()}; pattern_ptr) {
     auto action_ptr{action()};
 
-    if(!action_ptr)
-      throw 20; // TODO: Properly throw an error
+    if(!action_ptr) {
+      // TODO: Properly throw later
+      throw std::runtime_error{"Expected Expression"};
+    }
 
     // Resolve this?
     // How should we represent this in AST?
-  } else if(auto normal_pattern_ptr{normal_pattern()}; normal_pattern_ptr) {
-    node = std::move(normal_pattern_ptr);
+  } else if(auto ptr{normal_pattern()}; ptr) {
+    node = std::move(ptr);
   } else if(true) {
     // TODO: Implement function parsing for now ignore?
   }
@@ -1269,14 +1270,12 @@ auto AwkParser::item_list() -> NodePtr
   TRACE(LogLevel::DEBUG, "ITEM LIST");
   NodePtr node{nullptr};
 
-  while(true) {
+  do {
     node = item();
 
-    if(!node)
-      break;
-
-    terminator();
-  }
+    if(node)
+      terminator();
+  } while(node);
 
   return node;
 }

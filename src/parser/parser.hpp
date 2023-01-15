@@ -23,7 +23,7 @@ class Parser
   auto next(const std::string t_msg = "") -> Token&;
   auto prev() -> Token&;
   auto expect(const TokenType t_tokentype, const std::string t_msg) -> Token&;
-  auto get_token(const std::string t_msg = "") -> Token;
+  auto get_token() -> Token;
 
   // The parse() method should be virtual cause in the future we may want to
   // have different dialects of AWX
