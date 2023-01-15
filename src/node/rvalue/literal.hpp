@@ -6,8 +6,8 @@
 
 #include "../../types.hpp"
 
-#include "../nodes.hpp"
 #include "../node.hpp"
+#include "../nodes.hpp"
 
 
 namespace nodes::rvalue {
@@ -18,7 +18,7 @@ class Literal : public Node {
   T m_value;
 
   public:
-  Literal(const T t_value): m_value{t_value}
+  Literal(const T t_value): Node{NodeType::LITERAL}, m_value{t_value}
   {}
 
   auto get() -> T
@@ -26,8 +26,11 @@ class Literal : public Node {
     return m_value;
   }
 
-  virtual auto accept(NodeVisitor t_visitor) -> void override;
-  virtual auto print() const -> void override;
+  virtual auto accept(NodeVisitor t_visitor) -> void override
+  {}
+
+  virtual auto print() const -> void override
+  {}
 
   virtual ~Literal()
   {}

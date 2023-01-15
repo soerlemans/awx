@@ -569,18 +569,18 @@ auto Parser::non_unary_expr() -> NodePtr
     // differently?
     case TokenType::FLOAT:
 	  //TODO: Fix these
-      // node = std::make_unique<Float>(token.get<double>());
+      // node = std::make_unique<Float>(token.value<double>());
       break;
 
     case TokenType::HEX:
       [[fallthrough]];
     case TokenType::INTEGER:
 	  //TODO: Fix these
-      // node = std::make_unique<Integer>(token.get<int>());
+      // node = std::make_unique<Integer>(token.value<int>());
       break;
 
     case TokenType::STRING:
-      node = std::make_unique<String>(token.get<std::string>());
+      node = std::make_unique<String>(token.value<std::string>());
       break;
 
     // TOOD: ERE?
