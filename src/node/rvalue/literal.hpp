@@ -4,20 +4,13 @@
 #include <string>
 #include <variant>
 
-#include "../types.hpp"
+#include "../../types.hpp"
 
-#include "node.hpp"
+#include "../nodes.hpp"
+#include "../node.hpp"
 
 
-// Forward declarations:
-template<typename T>
-class Literal;
-
-// Aliases:
-using Integer = Literal<int>;
-using Float = Literal<double>;
-using String = Literal<std::string>;
-
+namespace nodes::rvalue {
 // Classes:
 template<typename T>
 class Literal : public Node {
@@ -36,5 +29,6 @@ class Literal : public Node {
   virtual ~Literal()
   {}
 };
+}; // namespace nodes::rvalue
 
 #endif // LITERAL_H

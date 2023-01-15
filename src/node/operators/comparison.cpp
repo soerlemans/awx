@@ -1,7 +1,7 @@
 #include "comparison.hpp"
 
-using namespace operators;
 
+using namespace nodes::operators;
 
 Comparison::Comparison(ComparisonOp t_op, NodePtr&& t_left,
                        NodePtr&& t_right)
