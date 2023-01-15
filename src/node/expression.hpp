@@ -21,12 +21,12 @@ enum class Precedence : u16 {
   ARRAY_MEMBERSHIP,    // a in b, (a) in b
   LOGICAL_AND,         // a && b
   LOGICAL_OR,          // a || b
-  TERNARY,         // a ? b : c
+  TERNARY,             // a ? b : c
   ASSIGNMENT,          // a ^= b, a %= b, a *= b, a /= b, a += b, a -= b, a = b
 };
 
 // Have UnaryOperator and BinaryOperator derive from this
-class Expression : public Node {
+class nodes::Expression : public nodes::Node {
   protected:
   Precedence m_precedence;
 

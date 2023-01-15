@@ -5,9 +5,8 @@
 
 #include "operators.hpp"
 
-
-class operators::UnaryOperator : public Expression
-{
+namespace nodes {
+class operators::UnaryOperator : public Expression {
   protected:
   NodePtr m_first;
 
@@ -21,5 +20,6 @@ class operators::UnaryOperator : public Expression
 
   virtual ~UnaryOperator();
 };
+}; // namespace nodes
 
 #endif // UNARY_OPERATOR_H

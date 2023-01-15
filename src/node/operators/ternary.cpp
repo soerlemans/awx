@@ -3,7 +3,7 @@
 #include <utility>
 
 
-using namespace operators;
+using namespace nodes::operators;
 
 // Power assignment:
 Ternary::Ternary(Precedence t_precedence,

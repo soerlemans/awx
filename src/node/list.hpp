@@ -1,9 +1,9 @@
-#ifndef NODE_LIST_H
-#define NODE_LIST_H
+#ifndef LIST_H
+#define LIST_H
 
 #include <list>
 
-#include "expression.hpp"
+#include "nodes.hpp"
 #include "node.hpp"
 
 
@@ -11,14 +11,14 @@
 // This is a list in the sense of a list of expressions or similar
 // Think a list of nodes separated by commas like function arguments
 // Or function call separated nodes
-class NodeList : public Node
+class nodes::List : public nodes::Node
 {
   private:
   std::list<NodePtr> m_list;
 
   public:
-  NodeList();
-  NodeList(NodeList&& t_ast) = default;
+  List();
+  List(List&& t_ast) = default;
 
   auto begin() -> std::list<NodePtr>::iterator;
   auto end() -> std::list<NodePtr>::iterator;
@@ -29,4 +29,4 @@ class NodeList : public Node
   auto print() const -> void override;
 };
 
-#endif // NODE_LIST_H
+#endif // LIST_H

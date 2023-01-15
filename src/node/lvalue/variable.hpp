@@ -3,6 +3,10 @@
 
 #include "../node.hpp"
 
+#include "lvalue.hpp"
+
+
+namespace nodes::lvalue {
 class Variable : public Node {
   private:
   std::string m_name;
@@ -15,5 +19,6 @@ class Variable : public Node {
 
   virtual ~Variable();
 };
+}; // namespace nodes::lvalue
 
 #endif // VARIABLE_H

@@ -20,15 +20,13 @@ using String = Literal<std::string>;
 
 // Classes:
 template<typename T>
-class Literal : public Node
-{
+class Literal : public Node {
   private:
   T m_value;
 
   public:
   Literal(const T t_value): m_value{t_value}
-  {
-  }
+  {}
 
   auto get() -> T
   {
@@ -36,8 +34,7 @@ class Literal : public Node
   }
 
   virtual ~Literal()
-  {
-  }
+  {}
 };
 
 #endif // LITERAL_H

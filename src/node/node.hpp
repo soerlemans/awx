@@ -4,15 +4,14 @@
 #include <memory>
 #include <type_traits>
 
+#include "nodes.hpp"
+
 #include "../types.hpp"
 #include "../visitor/node_visitor.hpp"
 
 
-// Forward declarations:
-class Node;
-
 // Aliases:
-using NodePtr = std::unique_ptr<Node>;
+using NodePtr = std::unique_ptr<nodes::Node>;
 
 // Enum definitions:
 enum class NodeType {
@@ -25,7 +24,7 @@ enum class NodeType {
 
 // Abstract Base Node class:
 // A node could either be a literal or some form of expression
-class Node {
+class nodes::Node {
   protected:
   NodeType m_nodetype;
 

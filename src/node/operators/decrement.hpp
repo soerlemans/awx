@@ -5,7 +5,8 @@
 #include "unary_operator.hpp"
 
 
-class operators::Decrement : public operators::UnaryOperator
+namespace nodes::operators {
+class Decrement : public UnaryOperator
 {
 private:
   bool m_prefix;
@@ -18,6 +19,6 @@ private:
 
   virtual ~Decrement();
 };
-
+};
 
 #endif // DECREMENT_H

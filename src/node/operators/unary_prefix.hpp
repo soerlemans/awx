@@ -10,7 +10,8 @@
 enum class UnaryPrefixOp { PLUS, MINUS };
 
 // Classes:
-class operators::UnaryPrefix : public operators::UnaryOperator {
+namespace nodes::operators {
+class UnaryPrefix : public UnaryOperator {
   private:
   UnaryPrefixOp m_op;
 
@@ -30,5 +31,6 @@ namespace unary_prefix {
 // Convert TokenType enum to matching UnaryPrefixOp token
 auto tokentype2enum(const TokenType t_tokentype) -> UnaryPrefixOp;
 }; // namespace unary_prefix
+}; // namespace nodes::operators
 
 #endif // UNARY_PREFIX_H

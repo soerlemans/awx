@@ -4,6 +4,7 @@
 #include "binary_operator.hpp"
 #include "operators.hpp"
 
+
 enum class ComparisonOp {
   LESS_THAN,
   LESS_THAN_EQUAL,
@@ -15,7 +16,8 @@ enum class ComparisonOp {
   GREATER_THAN_EQUAL,
 };
 
-class operators::Comparison : public operators::BinaryOperator {
+namespace nodes::operators {
+class Comparison : public BinaryOperator {
   private:
   ComparisonOp m_op;
 
@@ -29,5 +31,6 @@ class operators::Comparison : public operators::BinaryOperator {
 
   virtual ~Comparison();
 };
+}; // namespace nodes::operators
 
 #endif // COMPARISON_H

@@ -4,11 +4,12 @@
 #include "../node.hpp"
 
 
+namespace nodes::lvalue {
 class FieldReference : public Node {
-private:
+  private:
   NodePtr m_expr;
 
-public:
+  public:
   FieldReference(NodePtr&& t_expr);
 
   virtual auto accept(NodeVisitor t_visitor) -> void override;
@@ -16,5 +17,6 @@ public:
 
   virtual ~FieldReference();
 };
+}; // namespace nodes::lvalue
 
 #endif // FIELD_REFERENCE_H

@@ -11,8 +11,8 @@ enum Associativity : u16 {
   RIGHT,
 };
 
-class operators::BinaryOperator : public operators::UnaryOperator
-{
+namespace nodes::operators {
+class BinaryOperator : public UnaryOperator {
   protected:
   Associativity m_associativity;
   NodePtr m_second;
@@ -29,4 +29,6 @@ class operators::BinaryOperator : public operators::UnaryOperator
 
   virtual ~BinaryOperator();
 };
+}; // namespace nodes::operators
+
 #endif // BINARY_OPERATOR_H

@@ -16,7 +16,8 @@ enum class ArithmeticOp {
   SUBTRACT
 };
 
-class operators::Arithmetic : public operators::BinaryOperator {
+namespace nodes::operators {
+class Arithmetic : public BinaryOperator {
   private:
   ArithmeticOp m_op;
 
@@ -28,5 +29,6 @@ class operators::Arithmetic : public operators::BinaryOperator {
 
   virtual ~Arithmetic();
 };
+}; // namespace nodes::operators
 
 #endif

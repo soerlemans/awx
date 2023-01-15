@@ -12,6 +12,8 @@
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
 
+#include "../node/rvalue/literal.hpp"
+
 #include "../node/lvalue/array.hpp"
 #include "../node/lvalue/field_reference.hpp"
 #include "../node/lvalue/variable.hpp"
@@ -430,13 +432,13 @@ auto Parser::logical(NodePtr& t_lhs) -> NodePtr
   switch(op) {
     case TokenType{g_and}:
       TRACE_PRINT(LogLevel::INFO, "Found '&&'");
-	  // Invalid syntax?
+      // Invalid syntax?
       // node = lambda<And>();
       break;
 
     case TokenType{g_or}:
       TRACE_PRINT(LogLevel::INFO, "Found '||'");
-	  // Invalid syntax?
+      // Invalid syntax?
       // node = lambda<Or>();
       break;
 
@@ -559,10 +561,18 @@ auto Parser::non_unary_expr() -> NodePtr
 
     // TODO: Token in the grammar calls for NUMBER? These are not treated
     // differently?
+    case TokenType::FLOAT:
+      node = std::make_unique<Float>(token.get<double>());
+      break;
+
+    case TokenType::HEX:
+      [[fallthrough]];
     case TokenType::INTEGER:
+      node = std::make_unique<Integer>(token.get<int>());
       break;
 
     case TokenType::STRING:
+      node = std::make_unique<Integer>(token.get<std::string>());
       break;
 
     // TOOD: ERE?
@@ -635,7 +645,7 @@ auto Parser::unary_expr() -> NodePtr
     unary_prefix_ptr =
       std::make_unique<UnaryPrefix>(unary_prefix_op, std::move(expr_ptr));
 
-	node = binary_operator(unary_prefix_ptr);
+    node = binary_operator(unary_prefix_ptr);
   } else {
     // Only call to unary_input_function() embed the rule into this one?
     // node = unary_input_function();

@@ -18,7 +18,8 @@ enum AssignmentOp {
   REGULAR
 };
 
-class operators::Assignment : public operators::BinaryOperator {
+namespace nodes::operators {
+class Assignment : public BinaryOperator {
   private:
   AssignmentOp m_op;
 
@@ -30,5 +31,6 @@ class operators::Assignment : public operators::BinaryOperator {
 
   virtual ~Assignment();
 };
+}; // namespace nodes::operators
 
 #endif // ASSIGNMENT_H

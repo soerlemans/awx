@@ -1,7 +1,7 @@
 #include "logical.hpp"
 
-using namespace operators;
 
+using namespace nodes::operators;
 
 // Not:
 Not::Not(NodePtr&& t_left)

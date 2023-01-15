@@ -7,11 +7,13 @@
 #include "operators.hpp"
 
 
-class operators::DynamicOperator : public Expression
-{
+namespace nodes::operators {
+class DynamicOperator : public Expression {
+  private:
   std::vector<NodePtr> m_nodes;
 
   public:
 };
+}; // namespace nodes::operators
 
 #endif // DYNAMIC_OPERATOR_H

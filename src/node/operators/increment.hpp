@@ -5,8 +5,8 @@
 #include "unary_operator.hpp"
 
 
-class operators::Increment : public operators::UnaryOperator
-{
+namespace nodes::operators {
+class Increment : public UnaryOperator {
   private:
   bool m_prefix;
 
@@ -18,5 +18,6 @@ class operators::Increment : public operators::UnaryOperator
 
   virtual ~Increment();
 };
+}; // namespace nodes::operators
 
 #endif

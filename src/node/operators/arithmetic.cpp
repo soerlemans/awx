@@ -1,10 +1,9 @@
 #include "arithmetic.hpp"
 
 
-using namespace operators;
+using namespace nodes::operators;
 
-Arithmetic::Arithmetic(ArithmeticOp t_op, NodePtr&& t_left,
-                       NodePtr&& t_right)
+Arithmetic::Arithmetic(ArithmeticOp t_op, NodePtr&& t_left, NodePtr&& t_right)
   // TODO: Fix the selection of the precedence
   : BinaryOperator{Precedence::ARITHMETIC_MU_DI_MO, Associativity::RIGHT,
                    std::forward<NodePtr>(t_left),

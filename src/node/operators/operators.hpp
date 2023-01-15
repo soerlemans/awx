@@ -1,11 +1,12 @@
 #ifndef OPERATORS_H
 #define OPERATORS_H
 
+#include "../nodes.hpp"
 
 // All Operator classes are part of this namespace
 // These forward declarations are also used by NodeVisitor
 // To declare its overload functions for visit()
-namespace operators {
+namespace nodes::operators {
 // Abstract Base classes:
 class UnaryOperator;
 class BinaryOperator;

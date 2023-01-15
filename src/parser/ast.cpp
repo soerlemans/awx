@@ -1,5 +1,6 @@
 #include "ast.hpp"
 
+using namespace nodes;
 
 Ast::Ast(): m_root{nullptr}, m_current{nullptr}, m_list{}
 {

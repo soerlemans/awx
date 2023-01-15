@@ -1,6 +1,7 @@
 #include "binary_operator.hpp"
 
-using namespace operators;
+using namespace nodes::operators;
+
 
 BinaryOperator::BinaryOperator(Precedence t_precedence,
                                Associativity t_associativity,

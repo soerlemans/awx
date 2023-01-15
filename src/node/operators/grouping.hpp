@@ -5,11 +5,12 @@
 #include "unary_operator.hpp"
 
 
-class operators::Grouping : public operators::UnaryOperator
-{
+namespace nodess::operators {
+class Grouping : public UnaryOperator {
   private:
   public:
   virtual ~Grouping();
 };
+}; // namespace nodess::operators
 
 #endif // GROUPING_H

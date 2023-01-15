@@ -35,6 +35,9 @@ class Lexer
   auto identifier() -> Token;
 
   auto is_hex_literal() -> bool;
+  auto handle_hex() -> void;
+  auto handle_float() -> void;
+
   auto literal_numeric() -> Token;
   auto literal_string() -> Token;
   auto literal_regex() -> Token;

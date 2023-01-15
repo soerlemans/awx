@@ -1,24 +1,24 @@
 #ifndef ERE_H
 #define ERE_H
 
-#include "binary_operator.hpp"
 #include "operators.hpp"
+#include "binary_operator.hpp"
 
 
+namespace nodes::operators {
 // EreMatch:
-class operators::EreMatch : public operators::BinaryOperator
-{
+class EreMatch : public BinaryOperator {
   private:
   public:
   virtual ~EreMatch();
 };
 
 // EreNonMatch:
-class operators::EreNonMatch : public operator ::BinaryOperator
-{
+class EreNonMatch : public BinaryOperator {
   private:
   public:
   virtual ~EreNonMatch();
 };
+}; // namespace nodes::operators
 
 #endif // ERE_H

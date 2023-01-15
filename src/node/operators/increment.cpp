@@ -1,7 +1,7 @@
 #include "increment.hpp"
 
-using namespace operators;
 
+using namespace nodes::operators;
 
 // Postfix:
 Increment::Increment(NodePtr&& t_left, bool t_prefix)

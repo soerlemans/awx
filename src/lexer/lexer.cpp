@@ -7,8 +7,8 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../exception/syntax_error.hpp"
 #include "../debug/log.hpp"
+#include "../exception/syntax_error.hpp"
 #include "../token/token_type_helpers.hpp"
 
 
@@ -32,8 +32,7 @@ auto Lexer::syntax_error(std::string_view t_msg) const -> void
 
 // Public constructors:
 Lexer::Lexer(FileBuffer& t_filebuffer): m_filebuffer{t_filebuffer}
-{
-}
+{}
 
 // Public methods:
 auto Lexer::is_keyword(std::string_view t_identifier) -> TokenType
@@ -94,6 +93,13 @@ auto Lexer::is_hex_literal() -> bool
   return false;
 }
 
+// TODO: Implement!
+auto Lexer::handle_hex() -> void
+{}
+
+auto Lexer::handle_float() -> void
+{}
+
 // TODO: Split int, hex and float part into separate functions
 auto Lexer::literal_numeric() -> Token
 {
@@ -140,10 +146,12 @@ auto Lexer::literal_numeric() -> Token
 
   // Determine what must be returned:
   if(hex)
+	// TODO: Should convert ss.str()
     token = Token{TokenType::HEX, ss.str()};
   else if(is_float)
     token = Token{TokenType::FLOAT, std::stod(ss.str())};
   else
+	// TODO: Convert string to int
     token = Token{TokenType::INTEGER, ss.str()};
 
   LOG(LogLevel::INFO, "NUMERIC: ", ss.str());
@@ -327,7 +335,7 @@ auto Lexer::tokenize() -> TokenStream
 
       const TokenType last_tokentype{m_tokenstream.back().type()};
 
-	  // TODO: String concatenation is not lexed right now
+      // TODO: String concatenation is not lexed right now
       if(std::isspace(character)) {
         // Just ignore whitespace, but do not ignore newlines
         if(character == g_newline.identifier()) {
@@ -358,5 +366,4 @@ auto Lexer::tokenize() -> TokenStream
 }
 
 Lexer::~Lexer()
-{
-}
+{}

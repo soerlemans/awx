@@ -1,6 +1,6 @@
 #include "unary_operator.hpp"
 
-using namespace operators;
+using namespace nodes::operators;
 
 
 UnaryOperator::UnaryOperator(Precedence t_precedence, NodePtr&& t_stmnt)

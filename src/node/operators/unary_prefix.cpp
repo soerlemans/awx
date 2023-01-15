@@ -1,6 +1,6 @@
 #include "unary_prefix.hpp"
 
-using namespace operators;
+using namespace nodes::operators;
 
 
 UnaryPrefix::UnaryPrefix(UnaryPrefixOp t_op, NodePtr t_left)
