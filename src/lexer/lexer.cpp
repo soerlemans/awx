@@ -145,14 +145,14 @@ auto Lexer::literal_numeric() -> Token
 
 
   // Determine what must be returned:
-  if(hex)
-	// TODO: Should convert ss.str()
-    token = Token{TokenType::HEX, ss.str()};
-  else if(is_float)
+  if(hex) {
+	int number{(int)std::stoul(ss.str(), nullptr, 16)};
+    token = Token{TokenType::HEX, number};
+  } else if(is_float) {
     token = Token{TokenType::FLOAT, std::stod(ss.str())};
-  else
-	// TODO: Convert string to int
-    token = Token{TokenType::INTEGER, ss.str()};
+  } else {
+    token = Token{TokenType::INTEGER, std::stoi(ss.str())};
+  }
 
   LOG(LogLevel::INFO, "NUMERIC: ", ss.str());
   return token;
