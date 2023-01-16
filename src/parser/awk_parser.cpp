@@ -586,7 +586,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
       break;
   }
 
-  if(!is_nue) {
+  if(is_nue) {
   } else {
     if(auto ptr{lvalue()}; ptr) {
     } else if(auto ptr{non_unary_input_function()}; ptr) {
@@ -1003,8 +1003,11 @@ auto AwkParser::terminated_statement() -> NodePtr
 
       terminatable_statement();
 
-      if(!tokentype::is_terminator(next().type()))
+      if(tokentype::is_terminator(next().type())) {
+		TRACE_PRINT(LogLevel::INFO, "Found ';' or NEWLINE");
+      } else {
         throw std::runtime_error{"Statement is improperly terminated"};
+      }
 
       newline_opt();
       break;
