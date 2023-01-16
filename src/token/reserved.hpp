@@ -14,7 +14,7 @@
 // std::string_view Macro used of defining/initializing a reserved keyword or
 // symbol
 #define DEFINE_RESERVED(name, id, token) \
-  constexpr TokenTypeWrapper name         \
+  constexpr TokenTypeWrapper name        \
   {                                      \
     id, TokenType::token                 \
   }
@@ -27,12 +27,9 @@ concept TokenTypeWrapperIdentifierConcept =
 
 // AWX reserved keywords and symbols
 namespace reserved {
-// Aliases:
-// Shorthand for string_view do not use outside of this namespace
-using r_vw = std::string_view;
-
 // Helper class for the Reserved global variable definitions
-template<typename T = char>
+// Is intended for attaching some more important data to a certain TokenType
+template<typename T = std::string_view>
   requires TokenTypeWrapperIdentifierConcept<T>
 class TokenTypeWrapper {
   private:
@@ -42,8 +39,12 @@ class TokenTypeWrapper {
   public:
   // TODO: Use std::is_convertible<T, std::string_view> to not need to cast to
   // std::string_view explicitly
-  constexpr TokenTypeWrapper(T t_indentifier, TokenType t_tokentype)
-    : m_identifier{t_indentifier}, m_tokentype{t_tokentype}
+  constexpr TokenTypeWrapper(T t_identifier, TokenType t_tokentype)
+    : m_identifier{t_identifier}, m_tokentype{t_tokentype}
+  {}
+
+  constexpr TokenTypeWrapper(const char* t_identifier, TokenType t_tokentype)
+    : m_identifier{t_identifier}, m_tokentype{t_tokentype}
   {}
 
   constexpr auto identifier() const -> T
@@ -64,7 +65,7 @@ class TokenTypeWrapper {
   // Warning: The class can be explicitly converted
   explicit constexpr operator TokenType() const
   {
-	return m_tokentype;
+    return m_tokentype;
   }
 
   ~TokenTypeWrapper() = default;
@@ -73,31 +74,31 @@ class TokenTypeWrapper {
 // clang-format off
 // Language reserved keywords
 namespace keywords {
-  DEFINE_RESERVED(g_function, r_vw{"function"}, FUNCTION);
-  DEFINE_RESERVED(g_return,   r_vw{"return"},   RETURN);
+  DEFINE_RESERVED(g_function, "function", FUNCTION);
+  DEFINE_RESERVED(g_return,   "return",   RETURN);
 
-  DEFINE_RESERVED(g_if,   r_vw{"if"},   IF);
-  DEFINE_RESERVED(g_else, r_vw{"else"}, ELSE);
+  DEFINE_RESERVED(g_if,   "if",   IF);
+  DEFINE_RESERVED(g_else, "else", ELSE);
 
-  DEFINE_RESERVED(g_do,    r_vw{"do"},    DO);
-  DEFINE_RESERVED(g_while, r_vw{"while"}, WHILE);
-  DEFINE_RESERVED(g_for,   r_vw{"for"},   FOR);
-  DEFINE_RESERVED(g_in,    r_vw{"in"},    IN);
+  DEFINE_RESERVED(g_do,    "do",    DO);
+  DEFINE_RESERVED(g_while, "while", WHILE);
+  DEFINE_RESERVED(g_for,   "for",   FOR);
+  DEFINE_RESERVED(g_in,    "in",    IN);
 
-  DEFINE_RESERVED(g_break,    r_vw{"break"},    BREAK);
-  DEFINE_RESERVED(g_continue, r_vw{"continue"}, CONTINUE);
+  DEFINE_RESERVED(g_break,    "break",    BREAK);
+  DEFINE_RESERVED(g_continue, "continue", CONTINUE);
 
-  DEFINE_RESERVED(g_next, r_vw{"next"}, NEXT);
-  DEFINE_RESERVED(g_exit, r_vw{"exit"}, EXIT);
+  DEFINE_RESERVED(g_next, "next", NEXT);
+  DEFINE_RESERVED(g_exit, "exit", EXIT);
 
-  DEFINE_RESERVED(g_delete,    r_vw{"delete"}, DELETE);
+  DEFINE_RESERVED(g_delete, "delete", DELETE);
 
-  DEFINE_RESERVED(g_print,   r_vw{"print"},   PRINT);
-  DEFINE_RESERVED(g_printf,  r_vw{"printf"},  PRINTF);
-  DEFINE_RESERVED(g_getline, r_vw{"getline"}, GETLINE);
+  DEFINE_RESERVED(g_print,   "print",   PRINT);
+  DEFINE_RESERVED(g_printf,  "printf",  PRINTF);
+  DEFINE_RESERVED(g_getline, "getline", GETLINE);
 
-  DEFINE_RESERVED(g_begin, r_vw{"BEGIN"}, BEGIN);
-  DEFINE_RESERVED(g_end,   r_vw{"END"},   END);
+  DEFINE_RESERVED(g_begin, "BEGIN", BEGIN);
+  DEFINE_RESERVED(g_end,   "END",   END);
 
   // TODO: Use a std::map instead of an array as those have a faster lookup time
   // Then we wont need to loop through them either
@@ -137,34 +138,34 @@ namespace symbols {
   DEFINE_RESERVED(g_percent_sign, '%', PERCENT_SIGN);
 
   // Assignment variants of Arithmetic operators:
-  DEFINE_RESERVED(g_increment, r_vw{"++"}, INCREMENT);
-  DEFINE_RESERVED(g_decrement, r_vw{"--"}, DECREMENT);
+  DEFINE_RESERVED(g_increment, "++", INCREMENT);
+  DEFINE_RESERVED(g_decrement, "--", DECREMENT);
 
   // TODO: Rename or structure these better in the future?
-  DEFINE_RESERVED(g_power_assignment,    r_vw{"^="}, POWER_ASSIGNMENT);
-  DEFINE_RESERVED(g_add_assignment,      r_vw{"+="}, ADD_ASSIGNMENT);
-  DEFINE_RESERVED(g_subtract_assignment, r_vw{"-="}, SUBTRACT_ASSIGNMENT);
-  DEFINE_RESERVED(g_multiply_assignment, r_vw{"*="}, MULTIPLY_ASSIGNMENT);
-  DEFINE_RESERVED(g_divide_assignment,   r_vw{"/="}, DIVIDE_ASSIGNMENT);
-  DEFINE_RESERVED(g_modulo_assignment,   r_vw{"%="}, MODULO_ASSIGNMENT);
+  DEFINE_RESERVED(g_power_assignment,    "^=", POWER_ASSIGNMENT);
+  DEFINE_RESERVED(g_add_assignment,      "+=", ADD_ASSIGNMENT);
+  DEFINE_RESERVED(g_subtract_assignment, "-=", SUBTRACT_ASSIGNMENT);
+  DEFINE_RESERVED(g_multiply_assignment, "*=", MULTIPLY_ASSIGNMENT);
+  DEFINE_RESERVED(g_divide_assignment,   "/=", DIVIDE_ASSIGNMENT);
+  DEFINE_RESERVED(g_modulo_assignment,   "%=", MODULO_ASSIGNMENT);
 
   // Regex operators:
-  DEFINE_RESERVED(g_ere_match,          '~',   ERE_MATCH);
-  DEFINE_RESERVED(g_not_ere_match, r_vw{"!~"}, NOT_ERE_MATCH);
+  DEFINE_RESERVED(g_ere_match,     '~',  ERE_MATCH);
+  DEFINE_RESERVED(g_not_ere_match, "!~", NOT_ERE_MATCH);
 
   // Logic operators:
-  DEFINE_RESERVED(g_or,  r_vw{"||"}, OR);
-  DEFINE_RESERVED(g_and, r_vw{"&&"}, AND);
+  DEFINE_RESERVED(g_or,  "||", OR);
+  DEFINE_RESERVED(g_and, "&&", AND);
 
-  DEFINE_RESERVED(g_not,                  '!',   NOT);
-  DEFINE_RESERVED(g_less_than,            '<',   LESS_THAN);
-  DEFINE_RESERVED(g_less_than_equal, r_vw{"<="}, LESS_THAN_EQUAL);
+  DEFINE_RESERVED(g_not,             '!',   NOT);
+  DEFINE_RESERVED(g_less_than,       '<',   LESS_THAN);
+  DEFINE_RESERVED(g_less_than_equal, "<=", LESS_THAN_EQUAL);
 
-  DEFINE_RESERVED(g_equal,     r_vw{"=="}, EQUAL);
-  DEFINE_RESERVED(g_not_equal, r_vw{"!="}, NOT_EQUAL);
+  DEFINE_RESERVED(g_equal,     "==", EQUAL);
+  DEFINE_RESERVED(g_not_equal, "!=", NOT_EQUAL);
 
-  DEFINE_RESERVED(g_greater_than,            '>',   GREATER_THAN);
-  DEFINE_RESERVED(g_greater_than_equal, r_vw{">="}, GREATER_THAN_EQUAL);
+  DEFINE_RESERVED(g_greater_than,       '>',   GREATER_THAN);
+  DEFINE_RESERVED(g_greater_than_equal, ">=", GREATER_THAN_EQUAL);
 
   // Control flow symbols:
   DEFINE_RESERVED(g_comma,        ',', COMMA);
@@ -174,9 +175,9 @@ namespace symbols {
   DEFINE_RESERVED(g_semicolon,    ';', SEMICOLON);
 
   // Output redirection:
-  DEFINE_RESERVED(g_trunc, '>', TRUNC);
-  DEFINE_RESERVED(g_append, r_vw{">>"}, APPEND);
-  DEFINE_RESERVED(g_pipe, '|', PIPE);
+  DEFINE_RESERVED(g_trunc,  '>',  TRUNC);
+  DEFINE_RESERVED(g_append, ">>", APPEND);
+  DEFINE_RESERVED(g_pipe,   '|',  PIPE);
 
   // Miscellaneous operators:
   DEFINE_RESERVED(g_dollar_sign,  '$',  DOLLAR_SIGN);

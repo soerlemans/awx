@@ -3,6 +3,7 @@
 
 #include <unistd.h>
 
+#include "enum.hpp"
 #include "config/config.hpp"
 #include "parser/awk_parser.hpp"
 
@@ -62,6 +63,10 @@ auto run(int argc, char* argv[]) -> void
 
   Lexer lexer{fb};
   TokenStream tokenstream{lexer.tokenize()};
+
+  for(; !tokenstream.eos(); tokenstream.next())
+	std::cout << enum2underlying_type(tokenstream.token().type()) << '\n';
+
 
   AwkParser parser{tokenstream};
   auto ast{parser.parse()};
