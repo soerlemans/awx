@@ -1,8 +1,8 @@
 #ifndef DELETE_H
 #define DELETE_H
 
-#include "operators.hpp"
 #include "../node.hpp"
+#include "operators.hpp"
 
 
 namespace nodes::operators {

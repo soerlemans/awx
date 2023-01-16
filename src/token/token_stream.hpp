@@ -9,8 +9,7 @@
 // Manages a TokenStream in a statefull way so it is aware
 // If the use for a stream that knows its position is need for more objects
 // Make this a general class that accepts a template argument
-class TokenStream : public std::vector<Token>
-{
+class TokenStream : public std::vector<Token> {
   private:
   std::size_t m_index;
 

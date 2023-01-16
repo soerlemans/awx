@@ -3,8 +3,8 @@
 
 // This actually executes the program creates functions
 class Program {
-private:
-public:
+  private:
+  public:
   Program();
 
   virtual ~Program();

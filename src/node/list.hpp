@@ -3,16 +3,15 @@
 
 #include <list>
 
-#include "nodes.hpp"
 #include "node.hpp"
+#include "nodes.hpp"
 
 
 // TODO: Inherit from std::list itself or shadow std::list functions
 // This is a list in the sense of a list of expressions or similar
 // Think a list of nodes separated by commas like function arguments
 // Or function call separated nodes
-class nodes::List : public nodes::Node
-{
+class nodes::List : public nodes::Node {
   private:
   std::list<NodePtr> m_list;
 

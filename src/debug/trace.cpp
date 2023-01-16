@@ -16,7 +16,7 @@ Trace::Trace(log::LogLevel t_loglevel, std::string t_msg)
       ss << "#.";
     }
 
-	// Adjust for the proper level of indentation
+    // Adjust for the proper level of indentation
     for(int i{0}; i < m_counter - 1; i++)
       ss << "─";
 

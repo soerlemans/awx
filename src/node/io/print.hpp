@@ -2,8 +2,8 @@
 #define PRINT_H
 
 class Print {
-private:
-public:
+  private:
+  public:
   Print();
 
   virtual ~Print();

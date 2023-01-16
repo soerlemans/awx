@@ -3,8 +3,8 @@
 
 #include <unistd.h>
 
-#include "enum.hpp"
 #include "config/config.hpp"
+#include "enum.hpp"
 #include "parser/awk_parser.hpp"
 
 #include "debug/log.hpp"

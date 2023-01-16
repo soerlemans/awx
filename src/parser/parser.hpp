@@ -7,8 +7,7 @@
 
 
 // This is a recursive descent parser so each rule needs its own function
-class Parser
-{
+class Parser {
   private:
   TokenStream m_tokenstream;
 

@@ -10,8 +10,7 @@
 
 namespace fs = std::filesystem;
 
-class FileBuffer
-{
+class FileBuffer {
   private:
   // Alisases:
   using File = std::vector<std::string>;

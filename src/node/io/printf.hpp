@@ -2,8 +2,8 @@
 #define PRINTF_H
 
 class Printf {
-private:
-public:
+  private:
+  public:
   Printf();
 
   virtual ~Printf();

@@ -1,8 +1,8 @@
 #ifndef ERE_H
 #define ERE_H
 
-#include "operators.hpp"
 #include "binary_operator.hpp"
+#include "operators.hpp"
 
 
 namespace nodes::operators {

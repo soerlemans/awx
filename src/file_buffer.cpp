@@ -31,8 +31,8 @@ auto FileBuffer::load() -> void
     std::string line;
     std::getline(ifs, line);
 
-	// Dont discard newlines
-	line += '\n';
+    // Dont discard newlines
+    line += '\n';
 
     m_filebuffer.push_back(line);
   }
@@ -75,7 +75,7 @@ auto FileBuffer::backward() const -> char
   const char character{m_filebuffer[m_lineno][m_columnno]};
 
   if(m_columnno)
-	m_columnno--;
+    m_columnno--;
 
   return character;
 }
@@ -141,5 +141,4 @@ auto FileBuffer::operator[](std::size_t t_index) -> std::string&
 
 // Destructor:
 FileBuffer::~FileBuffer()
-{
-}
+{}

@@ -3,14 +3,13 @@
 
 // Contains all classes properly namespaced
 namespace nodes {
-  // Abstract base Node class
-  class Node;
+// Abstract base Node class
+class Node;
 
-  class List;
+class List;
 
-  // Most Node types inherit from Expression
-  class Expression;
-};
+// Most Node types inherit from Expression
+class Expression;
+}; // namespace nodes
 
 #endif // NODES_H
-

@@ -2,8 +2,7 @@
 #define VISITOR_INTERFACE_H
 
 
-class VisitorInterface
-{
+class VisitorInterface {
   private:
   public:
   VisitorInterface();

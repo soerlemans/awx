@@ -3,14 +3,13 @@
 
 #include "../types.hpp"
 
-#include "../node/node.hpp"
 #include "../node/list.hpp"
+#include "../node/node.hpp"
 #include "../visitor/node_visitor.hpp"
 
 
 // The Abstract Syntax Tree management class
-class Ast
-{
+class Ast {
   private:
   // We use raw pointers for determining where we are in the AST
   // This is fine as it is for traversal purposes

@@ -7,8 +7,7 @@
 
 // Error classes intended for being thrown as exceptions
 // When a mistake is made
-class SyntaxError : public std::exception
-{
+class SyntaxError : public std::exception {
   protected:
   std::string m_error;
   std::string m_path;

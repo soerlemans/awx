@@ -14,8 +14,7 @@
 // Aliases:
 // using TokenStream = std::vector<Token>;
 
-class Lexer
-{
+class Lexer {
   private:
   FileBuffer& m_filebuffer;
   TokenStream m_tokenstream;

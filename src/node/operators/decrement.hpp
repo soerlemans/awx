@@ -6,9 +6,8 @@
 
 
 namespace nodes::operators {
-class Decrement : public UnaryOperator
-{
-private:
+class Decrement : public UnaryOperator {
+  private:
   bool m_prefix;
 
   public:
@@ -19,6 +18,6 @@ private:
 
   virtual ~Decrement();
 };
-};
+}; // namespace nodes::operators
 
 #endif // DECREMENT_H

@@ -145,7 +145,7 @@ auto Lexer::literal_numeric() -> Token
 
   // Determine what must be returned:
   if(is_hex) {
-	int number{(int)std::stoul(ss.str(), nullptr, 16)};
+    int number{(int)std::stoul(ss.str(), nullptr, 16)};
     token = Token{TokenType::HEX, number};
   } else if(is_float) {
     token = Token{TokenType::FLOAT, std::stod(ss.str())};
