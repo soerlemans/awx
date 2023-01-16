@@ -50,11 +50,11 @@ auto Parser::next_if(const TokenType t_tokentype) -> bool
   error("Tried to move to next if Token is equal to expected token at EOS!");
 
   // Only go to next token if we find the token we expect
-  bool equal{check(t_tokentype)};
-  if(equal)
+  bool advance{check(t_tokentype)};
+  if(advance)
     next();
 
-  return equal;
+  return advance;
 }
 
 auto Parser::prev() -> Token&

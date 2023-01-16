@@ -1,5 +1,7 @@
 #include "awk_parser.hpp"
 
+#include <stdexcept>
+
 #include "../debug/log.hpp"
 #include "../debug/trace.hpp"
 #include "../enum.hpp"
@@ -19,7 +21,6 @@
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
 #include "../node/operators/unary_prefix.hpp"
-#include <stdexcept>
 
 // TODO: split the parser and its rules into multiple files, the parser should
 // Be able to be done simpler or more properly structured, find a way for this
@@ -38,7 +39,7 @@ auto AwkParser::newline_opt() -> void
   TRACE(LogLevel::DEBUG, "NEWLINE OPT");
 
   while(!eos() && next_if(TokenType::NEWLINE)) {
-    TRACE_PRINT(LogLevel::DEBUG, "Found 'newline");
+    TRACE_PRINT(LogLevel::DEBUG, "Found NEWLINE");
   }
 }
 
@@ -109,17 +110,19 @@ auto AwkParser::lvalue() -> NodePtr
         // What do with expr_list???
         // TODO: Include expr_list somehow sometime
         expr_list();
-
         expect(TokenType::BRACE_CLOSE, "]");
 
+        TRACE_PRINT(LogLevel::INFO, "Found Array subscript");
         node = std::make_unique<Array>(token.value<std::string>());
       } else {
+        TRACE_PRINT(LogLevel::INFO, "Found VARIABLE");
         node = std::make_unique<Variable>(token.value<std::string>());
       }
       break;
     }
 
     case TokenType::DOLLAR_SIGN: {
+      TRACE_PRINT(LogLevel::INFO, "Found Field reference");
       node = std::make_unique<FieldReference>(expr());
       break;
     }
@@ -583,7 +586,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
       break;
   }
 
-  if(is_nue) {
+  if(!is_nue) {
   } else {
     if(auto ptr{lvalue()}; ptr) {
     } else if(auto ptr{non_unary_input_function()}; ptr) {
@@ -626,6 +629,7 @@ auto AwkParser::unary_expr() -> NodePtr
   const auto tokentype{get_token().type()};
   if(tokentype::is_unary_operator(tokentype)) {
     next();
+    TRACE_PRINT(LogLevel::INFO, "Found unary operator");
 
     auto expr_ptr{expr()};
     if(!expr_ptr) {
@@ -657,9 +661,9 @@ auto AwkParser::expr() -> NodePtr
   NodePtr node{nullptr};
 
   // TODO: unary_expr() calls expr() which calls unary_expr(), etc etc FIX THIS!
-  if(auto ptr{unary_expr()}; ptr) {
+  if(auto ptr{non_unary_expr()}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{non_unary_expr()}; ptr) {
+  } else if(auto ptr{unary_expr()}; ptr) {
     node = std::move(ptr);
   } else {
     // TODO: Error handling
@@ -1096,14 +1100,13 @@ auto AwkParser::action() -> NodePtr
   NodePtr node{nullptr};
 
   if(next_if(TokenType::ACCOLADE_OPEN)) {
-    TRACE_PRINT(LogLevel::INFO, "Found '{");
+    TRACE_PRINT(LogLevel::INFO, "Found '{'");
 
     newline_opt();
 
-    if(auto terminated_ptr{terminated_statement_list()}; terminated_ptr) {
+    if(auto ptr{terminated_statement_list()}; ptr) {
       // DO SOMETHING!
-    } else if(auto unterminated_ptr{unterminated_statement_list()};
-              unterminated_ptr) {
+    } else if(auto ptr{unterminated_statement_list()}; ptr) {
       // DO SOMETHING!
     } else {
       // TODO:: Error handling
@@ -1112,7 +1115,6 @@ auto AwkParser::action() -> NodePtr
     expect(TokenType::ACCOLADE_CLOSE, "}");
     TRACE_PRINT(LogLevel::INFO, "Found '}'");
   }
-
 
   return node;
 }
@@ -1125,16 +1127,11 @@ auto AwkParser::special_pattern() -> NodePtr
   TRACE(LogLevel::DEBUG, "SPECIAL PATTERN");
   NodePtr node{nullptr};
 
-  const auto token{next()};
-
-  if(token.type() == TokenType::BEGIN) {
+  if(next_if(TokenType::BEGIN)) {
     TRACE_PRINT(LogLevel::INFO, "Found 'BEGIN'");
 
-  } else if(token.type() == TokenType::END) {
+  } else if(next_if(TokenType::END)) {
     TRACE_PRINT(LogLevel::INFO, "Found 'END'");
-
-  } else {
-    prev();
   }
 
   return node;
