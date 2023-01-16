@@ -38,7 +38,7 @@ auto AwkParser::newline_opt() -> void
   TRACE(LogLevel::DEBUG, "NEWLINE OPT");
 
   while(!eos() && next_if(TokenType::NEWLINE)) {
-    TRACE_PRINT(LogLevel::DEBUG, "Found newline!");
+    TRACE_PRINT(LogLevel::DEBUG, "Found 'newline");
   }
 }
 
@@ -80,6 +80,16 @@ auto AwkParser::non_unary_input_function() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "NON UNARY INPUT FUNCTION");
   NodePtr node{nullptr};
+
+  // Recursive causes endless loop
+  // if(auto ptr{simple_get()}; ptr) {
+  //   if(next_if(TokenType::LESS_THAN)) {
+  // 	  This is recursive causes endless loop
+  // 	  expr();
+  //   }
+  // } else
+  // if(auto ptr{non_unary_expr()}; ptr) {
+  // }
 
   return node;
 }
@@ -248,7 +258,7 @@ auto AwkParser::print_expr_list_opt() -> NodePtr
   TRACE(LogLevel::DEBUG, "PRINT EXPR LIST OPT");
   NodePtr node{nullptr};
 
-  print_expr_list();
+  node = print_expr_list();
 
   return node;
 }
@@ -540,19 +550,19 @@ auto AwkParser::non_unary_expr() -> NodePtr
     // TODO: Token in the grammar calls for NUMBER? These are not treated
     // differently?
     case TokenType::FLOAT:
-      TRACE_PRINT(LogLevel::DEBUG, "Found FLOAT");
+      TRACE_PRINT(LogLevel::DEBUG, "Found FLOAT literal");
       node = std::make_unique<Float>(token.value<double>());
       break;
 
     case TokenType::HEX:
       [[fallthrough]];
     case TokenType::INTEGER:
-      TRACE_PRINT(LogLevel::DEBUG, "Found INTEGER");
+      TRACE_PRINT(LogLevel::DEBUG, "Found INTEGER literal");
       node = std::make_unique<Integer>(token.value<int>());
       break;
 
     case TokenType::STRING:
-      TRACE_PRINT(LogLevel::DEBUG, "Found STRING");
+      TRACE_PRINT(LogLevel::DEBUG, "Found STRING literal");
       node = std::make_unique<String>(token.value<std::string>());
       break;
 
@@ -646,6 +656,7 @@ auto AwkParser::expr() -> NodePtr
   TRACE(LogLevel::DEBUG, "EXPR");
   NodePtr node{nullptr};
 
+  // TODO: unary_expr() calls expr() which calls unary_expr(), etc etc FIX THIS!
   if(auto ptr{unary_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{non_unary_expr()}; ptr) {
@@ -757,7 +768,7 @@ auto AwkParser::simple_print_statement() -> NodePtr
   NodePtr node{nullptr};
 
   if(next_if(TokenType::PRINT)) {
-    TRACE_PRINT(LogLevel::DEBUG, "Found print!");
+    TRACE_PRINT(LogLevel::DEBUG, "Found 'print'");
 
     if(next_if(TokenType::PAREN_OPEN)) {
       multiple_expr_list();
@@ -768,7 +779,7 @@ auto AwkParser::simple_print_statement() -> NodePtr
 
   } else if(next_if(TokenType::PRINTF)) {
     // TODO: Create a function
-    TRACE_PRINT(LogLevel::DEBUG, "Found printf!");
+    TRACE_PRINT(LogLevel::DEBUG, "Found 'printf");
 
     if(next_if(TokenType::PAREN_OPEN)) {
       // TODO: Create a function
@@ -944,8 +955,8 @@ auto AwkParser::terminated_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT");
   NodePtr node{nullptr};
 
-  const auto token{next()};
-  switch(token.type()) {
+  // TODO: Handle each one of these clauses in separate functions
+  switch(next().type()) {
     case TokenType::IF: {
       expect(TokenType::PAREN_OPEN, "(");
       expr();
@@ -979,6 +990,7 @@ auto AwkParser::terminated_statement() -> NodePtr
       break;
 
     case TokenType::SEMICOLON:
+      TRACE_PRINT(LogLevel::DEBUG, "Found ';");
       newline_opt();
       break;
 
@@ -1084,7 +1096,7 @@ auto AwkParser::action() -> NodePtr
   NodePtr node{nullptr};
 
   if(next_if(TokenType::ACCOLADE_OPEN)) {
-    TRACE_PRINT(LogLevel::INFO, "Found {");
+    TRACE_PRINT(LogLevel::INFO, "Found '{");
 
     newline_opt();
 
@@ -1098,7 +1110,7 @@ auto AwkParser::action() -> NodePtr
     }
 
     expect(TokenType::ACCOLADE_CLOSE, "}");
-    TRACE_PRINT(LogLevel::INFO, "Found }");
+    TRACE_PRINT(LogLevel::INFO, "Found '}'");
   }
 
 
@@ -1116,10 +1128,10 @@ auto AwkParser::special_pattern() -> NodePtr
   const auto token{next()};
 
   if(token.type() == TokenType::BEGIN) {
-    TRACE_PRINT(LogLevel::INFO, "Found BEGIN!");
+    TRACE_PRINT(LogLevel::INFO, "Found 'BEGIN'");
 
   } else if(token.type() == TokenType::END) {
-    TRACE_PRINT(LogLevel::INFO, "Found END!");
+    TRACE_PRINT(LogLevel::INFO, "Found 'END'");
 
   } else {
     prev();

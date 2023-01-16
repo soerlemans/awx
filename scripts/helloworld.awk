@@ -1,8 +1,6 @@
 #!/usr/bin/awk -f
 BEGIN {
-
-
-	+10 - 20;
-	print "Hello World!"
+	+10 - 20
+	print "Hello World!";
 }
 
