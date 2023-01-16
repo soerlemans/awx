@@ -49,10 +49,11 @@ auto AwkParser::simple_get() -> NodePtr
   NodePtr node{nullptr};
 
   if(next_if(TokenType::GETLINE)) {
-    if(auto ptr{lvalue()}; ptr) {
-      // TODO: Figure out more?
-    }
+    auto ptr{lvalue()};
+
+    // TODO: Create Getline object
   }
+
   return node;
 }
 
@@ -175,6 +176,22 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "NON UNARY PRINT EXPR");
   NodePtr node{nullptr};
+
+  if(next_if(TokenType::PAREN_OPEN)) {
+    if(auto ptr{expr()}; ptr) {
+      // TODO: Grouping?
+      node = std::move(ptr);
+    } else if(auto ptr{multiple_expr_list()}; ptr) {
+      expect(TokenType::IN, "In");
+      expect(TokenType::IDENTIFIER, "Identifier");
+
+      // TODO: Grouping?
+      node = std::move(ptr);
+    }
+  } else if(next_if(TokenType::NOT)) {
+    print_expr();
+  } else {
+  }
 
   return node;
 }
@@ -1004,7 +1021,7 @@ auto AwkParser::terminated_statement() -> NodePtr
       terminatable_statement();
 
       if(tokentype::is_terminator(next().type())) {
-		TRACE_PRINT(LogLevel::INFO, "Found ';' or NEWLINE");
+        TRACE_PRINT(LogLevel::INFO, "Found ';' or NEWLINE");
       } else {
         throw std::runtime_error{"Statement is improperly terminated"};
       }
@@ -1109,6 +1126,7 @@ auto AwkParser::action() -> NodePtr
 
     if(auto ptr{terminated_statement_list()}; ptr) {
       // DO SOMETHING!
+      // TODO: We dont reach here cause of some reason??????
     } else if(auto ptr{unterminated_statement_list()}; ptr) {
       // DO SOMETHING!
     } else {
