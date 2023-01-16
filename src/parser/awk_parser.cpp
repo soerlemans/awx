@@ -945,7 +945,6 @@ auto AwkParser::terminated_statement() -> NodePtr
   NodePtr node{nullptr};
 
   const auto token{next()};
-
   switch(token.type()) {
     case TokenType::IF: {
       expect(TokenType::PAREN_OPEN, "(");
