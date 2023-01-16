@@ -64,10 +64,6 @@ auto run(int argc, char* argv[]) -> void
   Lexer lexer{fb};
   TokenStream tokenstream{lexer.tokenize()};
 
-  for(; !tokenstream.eos(); tokenstream.next())
-	std::cout << enum2underlying_type(tokenstream.token().type()) << '\n';
-
-
   AwkParser parser{tokenstream};
   auto ast{parser.parse()};
 }

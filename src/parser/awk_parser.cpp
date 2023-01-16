@@ -37,9 +37,7 @@ auto AwkParser::newline_opt() -> void
 {
   TRACE(LogLevel::DEBUG, "NEWLINE OPT");
 
-  while(!eos() && check(TokenType::NEWLINE)) {
-    next("\\n");
-
+  while(!eos() && next_if(TokenType::NEWLINE)) {
     TRACE_PRINT(LogLevel::DEBUG, "Found newline!");
   }
 }
@@ -49,8 +47,7 @@ auto AwkParser::simple_get() -> NodePtr
   TRACE(LogLevel::DEBUG, "SIMPLE GET");
   NodePtr node{nullptr};
 
-  if(check(TokenType::GETLINE)) {
-    next("getline");
+  if(next_if(TokenType::GETLINE)) {
     if(auto ptr{lvalue()}; ptr) {
       // TODO: Figure out more?
     }
@@ -94,13 +91,11 @@ auto AwkParser::lvalue() -> NodePtr
   TRACE(LogLevel::DEBUG, "LVALUE");
   NodePtr node{nullptr};
 
-  const auto token{next("Identifier or a $")};
+  const auto token{next()};
   switch(token.type()) {
     case TokenType::IDENTIFIER: {
       // We really dont expect these next_tokens to fail
-      if(check(TokenType::BRACE_OPEN)) {
-        next("(");
-
+      if(next_if(TokenType::BRACE_OPEN)) {
         // What do with expr_list???
         // TODO: Include expr_list somehow sometime
         expr_list();
@@ -192,14 +187,14 @@ auto AwkParser::unary_print_expr() -> NodePtr
   TRACE(LogLevel::DEBUG, "UNARY PRINT EXPR");
   NodePtr node{nullptr};
 
-  const auto prefix{next("either a + or -")};
+  const auto prefix{next()};
   if(tokentype::is_unary_operator(prefix.type())) {
     print_expr();
   } else {
     unary_print_expr();
 
     // TODO: Call to operators?
-    const auto op{next("expected operator")};
+    const auto op{next()};
 
     print_expr();
   }
@@ -233,9 +228,7 @@ auto AwkParser::print_expr_list() -> NodePtr
   NodePtr node{nullptr};
 
   if(auto ptr{print_expr()}; ptr) {
-    if(check(TokenType::COMMA)) {
-      next();
-
+    if(next_if(TokenType::COMMA)) {
       // TODO: Set expr
       newline_opt();
       print_expr();
@@ -278,7 +271,7 @@ auto AwkParser::arithmetic(NodePtr& t_lhs) -> NodePtr
       std::make_unique<Arithmetic>(t_op, std::move(t_lhs), std::move(ptr))};
   };
 
-  const auto op{next("<operator>").type()};
+  const auto op{next().type()};
   switch(op) {
     case TokenType{g_caret}:
       TRACE_PRINT(LogLevel::INFO, "Found '^'");
@@ -335,7 +328,7 @@ auto AwkParser::comparison(NodePtr& t_lhs) -> NodePtr
       std::make_unique<Comparison>(t_op, std::move(t_lhs), std::move(ptr))};
   };
 
-  const auto op{next("<logical operator>").type()};
+  const auto op{next().type()};
   switch(op) {
     case TokenType{g_less_than}:
       TRACE_PRINT(LogLevel::INFO, "Found '<'");
@@ -414,7 +407,7 @@ auto AwkParser::logical(NodePtr& t_lhs) -> NodePtr
     return NodePtr{std::make_unique<T>(std::move(t_lhs), std::move(rhs))};
   };
 
-  const auto op{next("<operator>").type()};
+  const auto op{next().type()};
   switch(op) {
     case TokenType{g_and}:
       TRACE_PRINT(LogLevel::INFO, "Found '&&'");
@@ -443,9 +436,7 @@ auto AwkParser::ternary(NodePtr& t_lhs) -> NodePtr
   TRACE(LogLevel::DEBUG, "TERNARY");
   NodePtr node{nullptr};
 
-  if(check(TokenType{g_questionmark})) {
-    next("?");
-
+  if(next_if(TokenType{g_questionmark})) {
     // TODO: Handle Ternary expression
   }
 
@@ -526,7 +517,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
   TRACE(LogLevel::DEBUG, "NON UNARY EXPR");
   NodePtr node{nullptr};
 
-  const auto token{next("")};
+  const auto token{next()};
 
   bool is_nue{true};
   // We still need to fix ERE, NUMBER? FUNC_NAME and BUILTIN_FUNC_NAME
@@ -732,7 +723,7 @@ auto AwkParser::output_redirection() -> NodePtr
   TRACE(LogLevel::DEBUG, "OUTPUT REDIRECTION");
   NodePtr node{nullptr};
 
-  const auto token{next(">, >> or |")};
+  const auto token{next()};
 
   switch(token.type()) {
     case TokenType::TRUNC:
@@ -765,28 +756,22 @@ auto AwkParser::simple_print_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "SIMPLE PRINT STATEMENT");
   NodePtr node{nullptr};
 
-  if(check(TokenType::PRINT)) {
+  if(next_if(TokenType::PRINT)) {
     TRACE_PRINT(LogLevel::DEBUG, "Found print!");
 
-    next("print");
-
-    if(check(TokenType::PAREN_OPEN)) {
-      // TODO: Create a function
-      next("(");
+    if(next_if(TokenType::PAREN_OPEN)) {
       multiple_expr_list();
       expect(TokenType::PAREN_CLOSE, ")");
     } else {
       print_expr_list_opt();
     }
 
-  } else if(check(TokenType::PRINTF)) {
+  } else if(next_if(TokenType::PRINTF)) {
+    // TODO: Create a function
     TRACE_PRINT(LogLevel::DEBUG, "Found printf!");
 
-    next("print");
-
-    if(check(TokenType::PAREN_OPEN)) {
+    if(next_if(TokenType::PAREN_OPEN)) {
       // TODO: Create a function
-      next("(");
       multiple_expr_list();
       expect(TokenType::PAREN_CLOSE, ")");
     } else {
@@ -822,9 +807,7 @@ auto AwkParser::simple_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "SIMPLE STATEMENT");
   NodePtr node{nullptr};
 
-  if(check(TokenType::DELETE)) {
-    next();
-
+  if(next_if(TokenType::DELETE)) {
     expect(TokenType::IDENTIFIER, "Name");
     expect(TokenType::BRACE_OPEN, "[");
     expr_list();
@@ -862,7 +845,7 @@ auto AwkParser::terminatable_statement() -> NodePtr
   NodePtr node{nullptr};
 
   bool is_keyword{true};
-  const auto keyword{next("{break, continue, next, exit, return, do}")};
+  const auto keyword{next()};
   switch(keyword.type()) {
     case TokenType::BREAK:
       break;
@@ -961,8 +944,7 @@ auto AwkParser::terminated_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT");
   NodePtr node{nullptr};
 
-  const auto token{next(
-    "Control statement token {if, while, for, ;, terminatable_statement}")};
+  const auto token{next()};
 
   switch(token.type()) {
     case TokenType::IF: {
@@ -973,9 +955,7 @@ auto AwkParser::terminated_statement() -> NodePtr
       newline_opt();
       terminated_statement();
 
-      if(check(TokenType::ELSE)) {
-        next("else");
-
+      if(next_if(TokenType::ELSE)) {
         newline_opt();
         terminated_statement();
 
@@ -1008,7 +988,7 @@ auto AwkParser::terminated_statement() -> NodePtr
 
       terminatable_statement();
 
-      if(!tokentype::is_terminator(next("\\n or ;").type()))
+      if(!tokentype::is_terminator(next().type()))
         throw std::runtime_error{"Statement is improperly terminated"};
 
       newline_opt();
@@ -1087,7 +1067,7 @@ auto AwkParser::terminator() -> void
   TRACE(LogLevel::DEBUG, "TERMINATOR IS NOT TESTED WARNING!!!!!");
   TRACE(LogLevel::DEBUG, "TERMINATOR");
 
-  const auto token{next("; or \\n")};
+  const auto token{next()};
   // TODO: Improve
   if(!tokentype::is_terminator(token.type()))
     std::runtime_error{"Expected a terminator!!!"};
@@ -1104,8 +1084,7 @@ auto AwkParser::action() -> NodePtr
   TRACE(LogLevel::DEBUG, "ACTION");
   NodePtr node{nullptr};
 
-  if(check(TokenType::ACCOLADE_OPEN)) {
-    next("}");
+  if(next_if(TokenType::ACCOLADE_OPEN)) {
     TRACE_PRINT(LogLevel::INFO, "Found {");
 
     newline_opt();
@@ -1135,7 +1114,7 @@ auto AwkParser::special_pattern() -> NodePtr
   TRACE(LogLevel::DEBUG, "SPECIAL PATTERN");
   NodePtr node{nullptr};
 
-  const auto token{next("BEGIN or END")};
+  const auto token{next()};
 
   if(token.type() == TokenType::BEGIN) {
     TRACE_PRINT(LogLevel::INFO, "Found BEGIN!");
@@ -1159,7 +1138,7 @@ auto AwkParser::normal_pattern() -> NodePtr
   NodePtr node{nullptr};
 
   if(auto ptr{expr()}; ptr) {
-    const auto token{next(", or nothing")};
+    const auto token{next()};
     if(token.type() == TokenType::COMMA) {
       newline_opt();
       expr();

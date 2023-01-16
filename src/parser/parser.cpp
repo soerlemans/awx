@@ -3,6 +3,7 @@
 #include <memory>
 #include <sstream>
 #include <stdexcept>
+#include <utility>
 
 
 // Class definitions:
@@ -37,11 +38,23 @@ auto Parser::check(const TokenType t_tokentype) -> bool
   return token.type() == t_tokentype;
 }
 
-auto Parser::next(const std::string t_msg) -> Token&
+auto Parser::next() -> Token&
 {
   error("Tried to move to next Token at EOS!");
 
   return m_tokenstream.next();
+}
+
+auto Parser::next_if(const TokenType t_tokentype) -> bool
+{
+  error("Tried to move to next if Token is equal to expected token at EOS!");
+
+  // Only go to next token if we find the token we expect
+  bool equal{check(t_tokentype)};
+  if(equal)
+    next();
+
+  return equal;
 }
 
 auto Parser::prev() -> Token&

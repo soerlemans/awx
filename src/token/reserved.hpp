@@ -20,7 +20,7 @@
   }
 
 // Concepts:
-// The Identifier is either one character or
+// The Identifier is either one character or a string_view
 template<typename T>
 concept TokenTypeWrapperIdentifierConcept =
   std::same_as<T, std::string_view> || std::same_as<T, char>;

@@ -20,7 +20,8 @@ class Parser
   auto error(const std::string_view t_msg) -> void;
 
   auto check(const TokenType t_tokentype) -> bool;
-  auto next(const std::string t_msg = "") -> Token&;
+  auto next() -> Token&;
+  auto next_if(const TokenType t_tokentype) -> bool;
   auto prev() -> Token&;
   auto expect(const TokenType t_tokentype, const std::string t_msg) -> Token&;
   auto get_token() -> Token;
