@@ -1,8 +1,7 @@
 #ifndef TRACE_H
 #define TRACE_H
 
-#include <cstddef>
-#include <sstream>
+#include <string>
 
 #include "log.hpp"
 
@@ -32,31 +31,25 @@
 // Trace class used for figuring out
 class Trace {
   private:
+  // Counter that denotes the indent level
   static int m_counter;
+
+  // Denotes if the message should be printed?
+  bool m_print;
 
   public:
   template<typename... Args>
   Trace(log::LogLevel t_loglevel, Args&&... t_args)
+    : m_print{log::is_lower_loglevel(t_loglevel)}
   {
-    if(log::is_lower_loglevel(t_loglevel)) {
-      std::stringstream ss;
-      if(m_counter > 0) {
-        ss << " ├";
-      } else {
-        ss << "#.";
-      }
+    if(m_print) {
+      LOG_PRINT(indent_text(), std::forward<Args>(t_args)...);
 
-      // Adjust for the proper level of indentation
-      for(int i{0}; i < m_counter - 1; i++)
-        ss << "─";
-
-      ss << "─> ";
-
-      LOG_PRINT(ss.str(), std::forward<Args>(t_args)...);
+      m_counter++;
     }
-
-    m_counter++;
   }
+
+  virtual auto indent_text() const -> std::string;
 
   virtual ~Trace();
 };
