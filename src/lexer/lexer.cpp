@@ -150,7 +150,7 @@ auto Lexer::literal_numeric() -> Token
   } else if(is_float) {
     token = Token{TokenType::FLOAT, std::stod(ss.str())};
   } else {
-	// Does not work?
+    // Does not work?
     // token = Token{TokenType::INTEGER, std::stoi(ss.str())};
     token = Token{TokenType::INTEGER, (int)std::stoul(ss.str())};
   }

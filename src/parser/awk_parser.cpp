@@ -1024,13 +1024,13 @@ auto AwkParser::terminated_statement() -> NodePtr
     default: {
       prev();
 
-      terminatable_statement();
+      node = terminatable_statement();
 
       if(const auto tokentype{get_token().type()};
          tokentype::is_terminator(tokentype)) {
         next();
         TRACE_PRINT(LogLevel::INFO, "Found ",
-                    (tokentype == TokenType::SEMICOLON) ? ";" : "NEWLINE");
+                    (tokentype == TokenType::SEMICOLON) ? "';'" : "NEWLINE");
       } else {
         throw std::runtime_error{"Statement is improperly terminated"};
       }
@@ -1088,7 +1088,7 @@ auto AwkParser::terminated_statement_list() -> NodePtr
 
   // TODO: Change into do while?
   if(auto ptr{terminated_statement()}; ptr) {
-	node = std::make_unique<List>();
+    node = std::make_unique<List>();
     node->push_back(std::move(ptr));
 
     while(!eos()) {
