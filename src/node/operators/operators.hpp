@@ -23,6 +23,7 @@ class Not;
 
 // BinaryOperator derived classes:
 // Arithmetic:
+enum class ArithmeticOp;
 class Arithmetic;
 
 // String ops:

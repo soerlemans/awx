@@ -5,6 +5,7 @@
 #include "operators.hpp"
 
 
+namespace nodes::operators {
 enum class ArithmeticOp {
   POWER = 0,
 
@@ -16,7 +17,6 @@ enum class ArithmeticOp {
   SUBTRACT
 };
 
-namespace nodes::operators {
 class Arithmetic : public BinaryOperator {
   private:
   ArithmeticOp m_op;

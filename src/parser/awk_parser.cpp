@@ -1,5 +1,6 @@
 #include "awk_parser.hpp"
 
+#include <memory>
 #include <stdexcept>
 
 #include "../debug/log.hpp"
@@ -7,6 +8,8 @@
 #include "../enum.hpp"
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
+
+#include "../node/io/getline.hpp"
 
 #include "../node/rvalue/literal.hpp"
 #include "../node/rvalue/rvalue.hpp"
@@ -45,13 +48,14 @@ auto AwkParser::newline_opt() -> void
 
 auto AwkParser::simple_get() -> NodePtr
 {
+  using namespace nodes::io;
+
   TRACE(LogLevel::DEBUG, "SIMPLE GET");
   NodePtr node{nullptr};
 
   if(next_if(TokenType::GETLINE)) {
-    auto ptr{lvalue()};
-
-    // TODO: Create Getline object
+    // TODO: Think about how to implement < redirection
+    node = std::make_unique<Getline>(lvalue());
   }
 
   return node;
@@ -1020,8 +1024,11 @@ auto AwkParser::terminated_statement() -> NodePtr
 
       terminatable_statement();
 
-      if(tokentype::is_terminator(next().type())) {
-        TRACE_PRINT(LogLevel::INFO, "Found ';' or NEWLINE");
+      const auto tokentype{get_token().type()};
+      if(tokentype::is_terminator(tokentype)) {
+        next();
+        TRACE_PRINT(LogLevel::INFO, "Found ",
+                    (tokentype == TokenType::SEMICOLON) ? ";" : "NEWLINE");
       } else {
         throw std::runtime_error{"Statement is improperly terminated"};
       }

@@ -19,6 +19,7 @@ enum class NodeType {
   ARRAY,
   VARIABLE, // Variables are the only allowed LValue
   NODE_LIST,
+  IO,
   EXPRESSION,
 };
 
