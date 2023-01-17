@@ -4,8 +4,13 @@
 #include "parser.hpp"
 
 
+// TODO: Some day split the Parser into different components that can be
+// Individually extended and changed as of now its all put together into the
+// Same file
+
 // Classes:
 class AwkParser : public Parser {
+  private:
   public:
   // Constructors:
   AwkParser(TokenStream t_tokenstream);
@@ -21,9 +26,12 @@ class AwkParser : public Parser {
   virtual auto lvalue() -> NodePtr;
 
   // Binary expression handlers:
+  // TODO: Add a bool defaultargument to denote that it is a print exprssion or
+  // not?
   virtual auto string_concatenation(NodePtr& t_lhs) -> NodePtr;
   virtual auto ere(NodePtr& t_lhs) -> NodePtr;
   virtual auto arithmetic(NodePtr& t_lhs) -> NodePtr;
+  virtual auto assignment(NodePtr& t_lhs) -> NodePtr;
   virtual auto comparison(NodePtr& t_lhs) -> NodePtr;
   virtual auto logical(NodePtr& t_lhs) -> NodePtr;
   virtual auto ternary(NodePtr& t_lhs) -> NodePtr;

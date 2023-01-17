@@ -22,6 +22,7 @@
 #include "../node/lvalue/variable.hpp"
 
 #include "../node/operators/arithmetic.hpp"
+#include "../node/operators/assignment.hpp"
 #include "../node/operators/comparison.hpp"
 #include "../node/operators/decrement.hpp"
 #include "../node/operators/increment.hpp"
@@ -254,6 +255,28 @@ auto AwkParser::arithmetic(NodePtr& t_lhs) -> NodePtr
   return node;
 }
 
+auto AwkParser::assignment(NodePtr& t_lhs) -> NodePtr
+{
+  using namespace reserved::symbols;
+  using namespace nodes::operators;
+
+  TRACE(LogLevel::DEBUG, "COMPARISON");
+  NodePtr node{nullptr};
+
+  // TODO: Create an actual function for this that we can call instead of
+  // Defining a separate lambda in each function
+  auto lambda = [&](AssignmentOp t_op) -> NodePtr {
+    auto ptr{expr()};
+    if(!ptr)
+      throw std::runtime_error{"Expected Expression"};
+
+    return NodePtr{
+      std::make_unique<Assignment>(t_op, std::move(t_lhs), std::move(ptr))};
+  };
+
+  return node;
+}
+
 auto AwkParser::comparison(NodePtr& t_lhs) -> NodePtr
 {
   using namespace reserved::symbols;
@@ -267,8 +290,7 @@ auto AwkParser::comparison(NodePtr& t_lhs) -> NodePtr
     if(!ptr)
       throw std::runtime_error{"Expected Expression"};
 
-    return NodePtr{
-      std::make_unique<Comparison>(t_op, std::move(t_lhs), std::move(ptr))};
+    return std::make_unique<Comparison>(t_op, std::move(t_lhs), std::move(ptr));
   };
 
   const auto op{next().type()};
@@ -332,7 +354,7 @@ auto AwkParser::logical(NodePtr& t_lhs) -> NodePtr
       throw std::runtime_error{"Expected Expression"};
     }
 
-    return NodePtr{std::make_unique<T>(std::move(t_lhs), std::move(rhs))};
+    return std::make_unique<T>(std::move(t_lhs), std::move(rhs));
   };
 
   const auto op{next().type()};

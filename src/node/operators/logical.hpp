@@ -19,6 +19,7 @@ class Not : public UnaryOperator {
   virtual ~Not();
 };
 
+// TODO: Create one function out of AND and OR???
 // And:
 class And : public BinaryOperator {
   public:
