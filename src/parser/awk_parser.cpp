@@ -6,10 +6,13 @@
 #include "../debug/log.hpp"
 #include "../debug/trace.hpp"
 #include "../enum.hpp"
+
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
 
 #include "../node/io/getline.hpp"
+#include "../node/io/print.hpp"
+#include "../node/io/printf.hpp"
 
 #include "../node/rvalue/literal.hpp"
 #include "../node/rvalue/rvalue.hpp"
@@ -18,8 +21,6 @@
 #include "../node/lvalue/field_reference.hpp"
 #include "../node/lvalue/variable.hpp"
 
-#include "../node/operators/arithmetic.hpp"
-#include "../node/operators/comparison.hpp"
 #include "../node/operators/decrement.hpp"
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
@@ -90,6 +91,9 @@ auto AwkParser::non_unary_input_function() -> NodePtr
 
   // Recursive causes endless loop
   if(auto ptr{simple_get()}; ptr) {
+    // TODO: Implement output redirection
+    node = std::move(ptr);
+
     if(next_if(TokenType::LESS_THAN)) {
       // This is recursive causes endless loop expr();
       expr();
@@ -225,14 +229,12 @@ auto AwkParser::unary_print_expr() -> NodePtr
 
   const auto prefix{next()};
   if(tokentype::is_unary_operator(prefix.type())) {
-    print_expr();
-  } else {
-    unary_print_expr();
+    auto lhs{print_expr()};
 
-    // TODO: Call to operators?
-    const auto op{next()};
-
-    print_expr();
+    if(auto ptr{arithmetic(lhs)}; ptr) {
+      // TODO: Implement
+      // } else if(auto ptr{arithmetic(lhs)}; ptr) {
+    }
   }
 
   return node;
@@ -285,218 +287,6 @@ auto AwkParser::print_expr_list_opt() -> NodePtr
   NodePtr node{nullptr};
 
   node = print_expr_list();
-
-  return node;
-}
-
-auto AwkParser::arithmetic(NodePtr& t_lhs) -> NodePtr
-{
-  using namespace reserved::symbols;
-  using namespace nodes::operators;
-
-  TRACE(LogLevel::DEBUG, "ARITHMETIC");
-  NodePtr node{nullptr};
-
-  // Little helper function to cut down on the bloat
-  auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
-    auto ptr{expr()};
-    if(!ptr)
-      throw std::runtime_error{"Expected Expression"};
-
-    return NodePtr{
-      std::make_unique<Arithmetic>(t_op, std::move(t_lhs), std::move(ptr))};
-  };
-
-  const auto op{next().type()};
-  switch(op) {
-    case TokenType{g_caret}:
-      TRACE_PRINT(LogLevel::INFO, "Found '^'");
-      node = lambda(ArithmeticOp::POWER);
-      break;
-
-    case TokenType{g_asterisk}:
-      TRACE_PRINT(LogLevel::INFO, "Found '*'");
-      node = lambda(ArithmeticOp::MULTIPLY);
-      break;
-
-    case TokenType{g_slash}:
-      TRACE_PRINT(LogLevel::INFO, "Found '/'");
-      node = lambda(ArithmeticOp::DIVIDE);
-      break;
-
-    case TokenType{g_percent_sign}:
-      TRACE_PRINT(LogLevel::INFO, "Found '%'");
-      node = lambda(ArithmeticOp::MODULO);
-      break;
-
-    case TokenType{g_plus}:
-      TRACE_PRINT(LogLevel::INFO, "Found '+'");
-      node = lambda(ArithmeticOp::ADD);
-      break;
-
-    case TokenType{g_minus}:
-      TRACE_PRINT(LogLevel::INFO, "Found '-'");
-      node = lambda(ArithmeticOp::SUBTRACT);
-      break;
-
-    default:
-      prev();
-      break;
-  }
-
-  return node;
-}
-
-auto AwkParser::comparison(NodePtr& t_lhs) -> NodePtr
-{
-  using namespace reserved::symbols;
-  using namespace nodes::operators;
-
-  TRACE(LogLevel::DEBUG, "COMPARISON");
-  NodePtr node{nullptr};
-
-  auto lambda = [&](ComparisonOp t_op) -> NodePtr {
-    auto ptr{expr()};
-    if(!ptr)
-      throw std::runtime_error{"Expected Expression"};
-
-    return NodePtr{
-      std::make_unique<Comparison>(t_op, std::move(t_lhs), std::move(ptr))};
-  };
-
-  const auto op{next().type()};
-  switch(op) {
-    case TokenType{g_less_than}:
-      TRACE_PRINT(LogLevel::INFO, "Found '<'");
-      node = lambda(ComparisonOp::LESS_THAN);
-      break;
-
-    case TokenType{g_less_than_equal}:
-      TRACE_PRINT(LogLevel::INFO, "Found '<='");
-      node = lambda(ComparisonOp::LESS_THAN_EQUAL);
-      break;
-
-    case TokenType{g_equal}:
-      TRACE_PRINT(LogLevel::INFO, "Found '=='");
-      node = lambda(ComparisonOp::EQUAL);
-      break;
-
-    case TokenType{g_not_equal}:
-      TRACE_PRINT(LogLevel::INFO, "Found '!='");
-      node = lambda(ComparisonOp::NOT_EQUAL);
-      break;
-
-    case TokenType{g_greater_than}:
-      TRACE_PRINT(LogLevel::INFO, "Found '>'");
-      node = lambda(ComparisonOp::GREATER_THAN);
-      break;
-
-    case TokenType{g_greater_than_equal}:
-      TRACE_PRINT(LogLevel::INFO, "Found '>='");
-      node = lambda(ComparisonOp::GREATER_THAN_EQUAL);
-      break;
-
-    case TokenType{g_ere_match}:
-      TRACE_PRINT(LogLevel::INFO, "Found '~'");
-      // TODO: Figure out if ere should have its own class or not?
-      // Probably should have its own class
-      // node = lambda(ComparisonOp::SUBTRACT);
-      break;
-
-    case TokenType{g_not_ere_match}:
-      TRACE_PRINT(LogLevel::INFO, "Found '!~'");
-      // node = lambda(ComparisonOp::SUBTRACT);
-      break;
-
-    default:
-      prev();
-      break;
-  }
-
-  return node;
-}
-
-auto AwkParser::logical(NodePtr& t_lhs) -> NodePtr
-{
-  using namespace reserved::symbols;
-  using namespace nodes::operators;
-
-  TRACE(LogLevel::DEBUG, "LOGICAL");
-  NodePtr node{nullptr};
-
-  auto lambda = [&]<typename T>() -> NodePtr {
-    NodePtr rhs{nullptr};
-
-    // Optional newlines are allowed after && and ||
-    newline_opt();
-
-    if(auto ptr{print_expr()}; ptr) {
-      rhs = std::move(ptr);
-    } else if(auto ptr{expr()}; ptr) {
-      rhs = std::move(ptr);
-    }
-
-    if(!rhs) {
-      throw std::runtime_error{"Expected Expression"};
-    }
-
-    return NodePtr{std::make_unique<T>(std::move(t_lhs), std::move(rhs))};
-  };
-
-  const auto op{next().type()};
-  switch(op) {
-    case TokenType{g_and}:
-      TRACE_PRINT(LogLevel::INFO, "Found '&&'");
-      // Invalid syntax?
-      // node = lambda<And>();
-      break;
-
-    case TokenType{g_or}:
-      TRACE_PRINT(LogLevel::INFO, "Found '||'");
-      // Invalid syntax?
-      // node = lambda<Or>();
-      break;
-
-    default:
-      prev();
-      break;
-  }
-
-  return node;
-}
-
-auto AwkParser::ternary(NodePtr& t_lhs) -> NodePtr
-{
-  using namespace reserved::symbols;
-
-  TRACE(LogLevel::DEBUG, "TERNARY");
-  NodePtr node{nullptr};
-
-  if(next_if(TokenType{g_questionmark})) {
-    // TODO: Handle Ternary expression
-  }
-
-  return node;
-}
-
-// TODO: Not a grammar rule function, but a function intended for parsing binary
-// Operator statements
-auto AwkParser::binary_operator(NodePtr& t_lhs) -> NodePtr
-{
-  TRACE(LogLevel::DEBUG, "BINARY OPERATOR");
-  NodePtr node{nullptr};
-
-  // TODO: Create lambda for these call chains?
-  // Or a macro?
-  if(auto ptr{arithmetic(t_lhs)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{comparison(t_lhs)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{logical(t_lhs)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{ternary(t_lhs)}; ptr) {
-    node = std::move(ptr);
-  }
 
   return node;
 }
@@ -612,7 +402,9 @@ auto AwkParser::non_unary_expr() -> NodePtr
   if(is_nue) {
   } else {
     if(auto ptr{lvalue()}; ptr) {
+      // TODO: Increment, Decrement, Assignment
     } else if(auto ptr{non_unary_input_function()}; ptr) {
+      node = std::move(ptr);
     }
   }
 
@@ -683,7 +475,8 @@ auto AwkParser::expr() -> NodePtr
   TRACE(LogLevel::DEBUG, "EXPR");
   NodePtr node{nullptr};
 
-  // TODO: unary_expr() calls expr() which calls unary_expr(), etc etc FIX THIS!
+  // TODO: unary_expr() calls expr() which calls unary_expr(), etc etc FIX
+  // THIS!
   if(auto ptr{non_unary_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{unary_expr()}; ptr) {
@@ -791,30 +584,33 @@ auto AwkParser::output_redirection() -> NodePtr
 // TODO: Refactor!
 auto AwkParser::simple_print_statement() -> NodePtr
 {
+  using namespace nodes::io;
+
   TRACE(LogLevel::DEBUG, "SIMPLE PRINT STATEMENT");
   NodePtr node{nullptr};
+
+  // Convenience macro
+  auto lambda = [&]() -> NodePtr {
+    NodePtr node{nullptr};
+
+    if(next_if(TokenType::PAREN_OPEN)) {
+      node = multiple_expr_list();
+      expect(TokenType::PAREN_CLOSE, ")");
+    } else {
+      node = print_expr_list_opt();
+    }
+
+    return node;
+  };
 
   if(next_if(TokenType::PRINT)) {
     TRACE_PRINT(LogLevel::DEBUG, "Found 'print'");
 
-    if(next_if(TokenType::PAREN_OPEN)) {
-      multiple_expr_list();
-      expect(TokenType::PAREN_CLOSE, ")");
-    } else {
-      print_expr_list_opt();
-    }
-
+    node = std::make_unique<Print>(lambda());
   } else if(next_if(TokenType::PRINTF)) {
-    // TODO: Create a function
     TRACE_PRINT(LogLevel::DEBUG, "Found 'printf");
 
-    if(next_if(TokenType::PAREN_OPEN)) {
-      // TODO: Create a function
-      multiple_expr_list();
-      expect(TokenType::PAREN_CLOSE, ")");
-    } else {
-      print_expr_list();
-    }
+    node = std::make_unique<Printf>(lambda());
   }
 
   return node;
@@ -829,6 +625,8 @@ auto AwkParser::print_statement() -> NodePtr
   NodePtr node{nullptr};
 
   if(auto ptr{simple_print_statement()}; ptr) {
+    // TODO: Implement output redirection for print statements
+    node = std::move(ptr);
     if(auto redirection_ptr{output_redirection()}; redirection_ptr) {
     }
   }
@@ -1050,18 +848,18 @@ auto AwkParser::terminated_statement() -> NodePtr
 //                  ;
 auto AwkParser::unterminated_statement_list() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT LIST");
-  NodePtr node{nullptr};
+  using namespace nodes;
 
-  if(auto unterminated_statement_ptr{unterminated_statement()};
-     unterminated_statement_ptr) {
-    // Add to NodeList
+  TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT LIST");
+  NodeListPtr node{nullptr};
+
+  if(auto ptr{unterminated_statement()}; ptr) {
+    node = std::make_unique<List>();
+    node->push_back(std::move(ptr));
 
     while(!eos()) {
-      auto ptr{unterminated_statement()};
-
-      if(ptr) {
-        // Add to NodeList
+      if(auto ptr{unterminated_statement()}; ptr) {
+        node->push_back(std::move(ptr));
       } else {
         break;
       }
@@ -1071,7 +869,7 @@ auto AwkParser::unterminated_statement_list() -> NodePtr
     // EXCPECTED ATLEAST ONE...
   }
 
-  return node;
+  return NodePtr{node.release()};
 }
 
 // This rule is made to match atleast one terminated statement
@@ -1086,7 +884,6 @@ auto AwkParser::terminated_statement_list() -> NodePtr
   TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT LIST");
   NodeListPtr node{nullptr};
 
-  // TODO: Change into do while?
   if(auto ptr{terminated_statement()}; ptr) {
     node = std::make_unique<List>();
     node->push_back(std::move(ptr));

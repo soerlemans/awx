@@ -1,15 +1,17 @@
 #ifndef AWK_PARSER_H
 #define AWK_PARSER_H
 
-#include "parser.hpp"
+#include "operator_parser.hpp"
 
-class AwkParser : public Parser {
+
+// Classes:
+class AwkParser : public OperatorParser {
   public:
   // Constructors:
   AwkParser(TokenStream t_tokenstream);
 
   // Parsing grammar/rule methods:
-  virtual auto newline_opt() -> void;
+  virtual auto newline_opt() -> void override;
 
   // Input rules:
   virtual auto simple_get() -> NodePtr;
@@ -25,18 +27,11 @@ class AwkParser : public Parser {
   virtual auto print_expr_list() -> NodePtr;
   virtual auto print_expr_list_opt() -> NodePtr;
 
-  // These are helper functions for the expression rules!:
-  virtual auto arithmetic(NodePtr& t_lhs) -> NodePtr;
-  virtual auto comparison(NodePtr& t_lhs) -> NodePtr;
-  virtual auto logical(NodePtr& t_lhs) -> NodePtr;
-  virtual auto ternary(NodePtr& t_lhs) -> NodePtr;
-  virtual auto binary_operator(NodePtr& t_lhs) -> NodePtr;
-
   // Expression rules:
   virtual auto non_unary_expr() -> NodePtr;
   virtual auto unary_expr() -> NodePtr;
 
-  virtual auto expr() -> NodePtr;
+  virtual auto expr() -> NodePtr override;
   virtual auto expr_opt() -> NodePtr;
 
   virtual auto multiple_expr_list() -> NodePtr;

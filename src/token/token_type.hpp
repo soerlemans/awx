@@ -89,7 +89,7 @@ enum class TokenType : u16 {
 
   // REGEX Tokens:
   ERE_MATCH,
-  NOT_ERE_MATCH,
+  ERE_NO_MATCH,
 
   // Comparison Tokens:
   LESS_THAN,

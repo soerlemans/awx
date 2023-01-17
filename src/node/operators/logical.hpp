@@ -25,7 +25,6 @@ class And : public BinaryOperator {
   And(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void override;
-
   auto print() const -> void override;
 
   virtual ~And();
@@ -37,7 +36,6 @@ class Or : public BinaryOperator {
   Or(NodePtr&& t_left, NodePtr&& t_right);
 
   auto accept(NodeVisitor t_visitor) -> void override;
-
   auto print() const -> void override;
 
   virtual ~Or();

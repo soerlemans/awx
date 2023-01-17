@@ -1,15 +1,11 @@
 #include "parser.hpp"
 
-#include <memory>
-#include <sstream>
-#include <stdexcept>
-#include <utility>
-
 
 // Class definitions:
 Parser::Parser(TokenStream&& t_tokenstream)
   : m_tokenstream{std::forward<TokenStream>(t_tokenstream)}
 {}
+
 
 auto Parser::eos() -> bool
 {

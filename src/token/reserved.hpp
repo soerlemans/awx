@@ -150,8 +150,8 @@ namespace symbols {
   DEFINE_RESERVED(g_modulo_assignment,   "%=", MODULO_ASSIGNMENT);
 
   // Regex operators:
-  DEFINE_RESERVED(g_ere_match,     '~',  ERE_MATCH);
-  DEFINE_RESERVED(g_not_ere_match, "!~", NOT_ERE_MATCH);
+  DEFINE_RESERVED(g_ere_match,    '~',  ERE_MATCH);
+  DEFINE_RESERVED(g_ere_no_match, "!~", ERE_NO_MATCH);
 
   // Logic operators:
   DEFINE_RESERVED(g_or,  "||", OR);
@@ -234,7 +234,7 @@ namespace symbols {
 	g_divide_assignment,
 	g_modulo_assignment,
 
-	g_not_ere_match,
+	g_ere_no_match,
 
 	g_or,
 	g_and,

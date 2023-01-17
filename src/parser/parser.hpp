@@ -14,7 +14,7 @@ class Parser {
   public:
   Parser(TokenStream&& t_tokenstream);
 
-  // And create an unget() for going backwards and ungetting a token()
+  // These are m_tokenstream helper methods:
   auto eos() -> bool;
   auto error(const std::string_view t_msg) -> void;
 
@@ -29,6 +29,7 @@ class Parser {
   // have different dialects of AWX
   virtual auto parse() -> Ast = 0;
 
+  // Destructor:
   virtual ~Parser();
 };
 

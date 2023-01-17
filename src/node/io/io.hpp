@@ -2,9 +2,9 @@
 #define IO_H
 
 namespace nodes::io {
-class Getline;
 class Print;
 class Printf;
+class Getline;
 }; // namespace nodes::io
 
 #endif // IO_H
