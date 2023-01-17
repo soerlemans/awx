@@ -56,6 +56,7 @@ class Trace {
 
 #else
 
+// Stub the macros if we are not on the debugging build
 #define TRACE(loglevel, ...) \
   do {                       \
   } while(false)

@@ -2,30 +2,30 @@
 #define LIST_H
 
 #include <list>
+#include <memory>
 
 #include "node.hpp"
 #include "nodes.hpp"
 
 
+namespace nodes {
+
+using NodeListPtr = std::unique_ptr<List>;
+
 // TODO: Inherit from std::list itself or shadow std::list functions
 // This is a list in the sense of a list of expressions or similar
 // Think a list of nodes separated by commas like function arguments
 // Or function call separated nodes
-class nodes::List : public nodes::Node {
-  private:
-  std::list<NodePtr> m_list;
-
+class List : public Node, public std::list<NodePtr> {
   public:
   List();
   List(List&& t_ast) = default;
 
-  auto begin() -> std::list<NodePtr>::iterator;
-  auto end() -> std::list<NodePtr>::iterator;
-
-  auto add(NodePtr&& t_node) -> void;
-
   auto accept(NodeVisitor t_visitor) -> void override;
   auto print() const -> void override;
+
+  virtual ~List();
 };
+}; // namespace nodes
 
 #endif // LIST_H

@@ -54,6 +54,7 @@ auto AwkParser::simple_get() -> NodePtr
   NodePtr node{nullptr};
 
   if(next_if(TokenType::GETLINE)) {
+    TRACE_PRINT(LogLevel::INFO, "Found GETLINE");
     // TODO: Think about how to implement < redirection
     node = std::make_unique<Getline>(lvalue());
   }
@@ -63,7 +64,7 @@ auto AwkParser::simple_get() -> NodePtr
 
 auto AwkParser::unary_input_function() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "UNARY_INPUT_FUNCTION");
+  TRACE(LogLevel::DEBUG, "UNARY INPUT FUNCTION");
   NodePtr node{nullptr};
 
   if(NodePtr lhs{unary_expr()}; lhs) {
@@ -88,14 +89,15 @@ auto AwkParser::non_unary_input_function() -> NodePtr
   NodePtr node{nullptr};
 
   // Recursive causes endless loop
-  // if(auto ptr{simple_get()}; ptr) {
-  //   if(next_if(TokenType::LESS_THAN)) {
-  // 	  This is recursive causes endless loop
-  // 	  expr();
-  //   }
-  // } else
-  // if(auto ptr{non_unary_expr()}; ptr) {
-  // }
+  if(auto ptr{simple_get()}; ptr) {
+    if(next_if(TokenType::LESS_THAN)) {
+      // This is recursive causes endless loop expr();
+      expr();
+    }
+  }
+  // else
+  //  if(auto ptr{non_unary_expr()}; ptr) {
+  //  }
 
   return node;
 }
@@ -1024,8 +1026,8 @@ auto AwkParser::terminated_statement() -> NodePtr
 
       terminatable_statement();
 
-      const auto tokentype{get_token().type()};
-      if(tokentype::is_terminator(tokentype)) {
+      if(const auto tokentype{get_token().type()};
+         tokentype::is_terminator(tokentype)) {
         next();
         TRACE_PRINT(LogLevel::INFO, "Found ",
                     (tokentype == TokenType::SEMICOLON) ? ";" : "NEWLINE");
@@ -1079,25 +1081,30 @@ auto AwkParser::unterminated_statement_list() -> NodePtr
 //                  ;
 auto AwkParser::terminated_statement_list() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT LIST");
-  NodePtr node{nullptr};
+  using namespace nodes;
 
-  if(auto terminated_statement_ptr{terminated_statement()};
-     terminated_statement_ptr) {
-    // Add to NodeList
+  TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT LIST");
+  NodeListPtr node{nullptr};
+
+  // TODO: Change into do while?
+  if(auto ptr{terminated_statement()}; ptr) {
+	node = std::make_unique<List>();
+    node->push_back(std::move(ptr));
 
     while(!eos()) {
-      auto ptr{terminated_statement()};
-
-      if(!ptr)
+      if(auto ptr{terminated_statement()}; ptr) {
+        node->push_back(std::move(ptr));
+      } else {
         break;
+      }
     }
   } else {
     // TODO: Error handling
     // EXCPECTED ATLEAST ONE...
   }
 
-  return node;
+  // Create a NodeListPtr from the NodePtrList
+  return NodePtr{node.release()};
 }
 
 // terminator       : terminator NEWLINE
