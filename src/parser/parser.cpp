@@ -1,12 +1,12 @@
 #include "parser.hpp"
 
 
-// Class definitions:
+// Constructor:
 Parser::Parser(TokenStream&& t_tokenstream)
   : m_tokenstream{std::forward<TokenStream>(t_tokenstream)}
 {}
 
-
+// Methods:
 auto Parser::eos() -> bool
 {
   return m_tokenstream.eos();
@@ -79,5 +79,6 @@ auto Parser::expect(const TokenType t_tokentype, const std::string t_msg)
   return next();
 }
 
+// Destructor:
 Parser::~Parser()
 {}

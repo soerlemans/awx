@@ -7,8 +7,9 @@
 class OperatorParser : public Parser {
   private:
   public:
-  OperatorParser();
+  OperatorParser(TokenStream t_tokenstream);
 
+  // Methods:
   // These are pure virtual since they are expected to be defined in derived
   // parsers
   virtual auto expr() -> NodePtr = 0;
@@ -23,6 +24,10 @@ class OperatorParser : public Parser {
   virtual auto ternary(NodePtr& t_lhs) -> NodePtr;
   virtual auto binary_operator(NodePtr& t_lhs) -> NodePtr;
 
+  // Delay implementation till later
+  virtual auto parse() -> Ast = 0;
+
+  // Destructor:
   virtual ~OperatorParser();
 };
 

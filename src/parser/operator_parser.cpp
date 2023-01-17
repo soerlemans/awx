@@ -13,6 +13,12 @@
 #include "../node/operators/logical.hpp"
 
 
+// Constructor:
+OperatorParser::OperatorParser(TokenStream t_tokenstream)
+  : Parser{std::move(t_tokenstream)}
+{}
+
+// Methods:
 auto OperatorParser::string_concatenation(NodePtr& t_lhs) -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "ARITHMETIC");
@@ -257,3 +263,8 @@ auto OperatorParser::binary_operator(NodePtr& t_lhs) -> NodePtr
 
   return node;
 }
+
+// Destructor:
+OperatorParser::~OperatorParser()
+{}
+

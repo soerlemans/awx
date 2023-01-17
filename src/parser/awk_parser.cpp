@@ -34,7 +34,7 @@
 
 // Constructors:
 AwkParser::AwkParser(TokenStream t_tokenstream)
-  : Parser{std::move(t_tokenstream)}
+  : OperatorParser{std::move(t_tokenstream)}
 {}
 
 // Parsing rule/grammar rules:
