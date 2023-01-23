@@ -149,25 +149,26 @@ auto AwkParser::lvalue() -> NodePtr
   return node;
 }
 
-auto AwkParser::string_concatenation(NodePtr& t_lhs) -> NodePtr
+auto AwkParser::string_concatenation(NodePtr& t_lhs, const ParserFunc& t_rhs)
+  -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "ARITHMETIC");
+  TRACE(LogLevel::DEBUG, "STRING CONCAT");
   NodePtr node{nullptr};
 
   return node;
 }
 
-auto AwkParser::ere(NodePtr& t_lhs) -> NodePtr
+auto AwkParser::ere(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
   using namespace reserved::symbols;
   using namespace nodes::operators;
 
-  TRACE(LogLevel::DEBUG, "ARITHMETIC");
+  TRACE(LogLevel::DEBUG, "ERE");
   NodePtr node{nullptr};
 
   // Little helper function to cut down on the bloat
   auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
-    auto ptr{expr()};
+    auto ptr{t_rhs()};
     if(!ptr)
       throw std::runtime_error{"Expected Expression"};
 
@@ -197,7 +198,7 @@ auto AwkParser::ere(NodePtr& t_lhs) -> NodePtr
   return node;
 }
 
-auto AwkParser::arithmetic(NodePtr& t_lhs) -> NodePtr
+auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
   using namespace reserved::symbols;
   using namespace nodes::operators;
@@ -207,7 +208,7 @@ auto AwkParser::arithmetic(NodePtr& t_lhs) -> NodePtr
 
   // Little helper function to cut down on the bloat
   auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
-    auto ptr{expr()};
+    auto ptr{t_rhs()};
     if(!ptr)
       throw std::runtime_error{"Expected Expression"};
 
@@ -255,7 +256,7 @@ auto AwkParser::arithmetic(NodePtr& t_lhs) -> NodePtr
   return node;
 }
 
-auto AwkParser::assignment(NodePtr& t_lhs) -> NodePtr
+auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
   using namespace reserved::symbols;
   using namespace nodes::operators;
@@ -266,7 +267,7 @@ auto AwkParser::assignment(NodePtr& t_lhs) -> NodePtr
   // TODO: Create an actual function for this that we can call instead of
   // Defining a separate lambda in each function
   auto lambda = [&](AssignmentOp t_op) -> NodePtr {
-    auto ptr{expr()};
+    auto ptr{t_rhs()};
     if(!ptr)
       throw std::runtime_error{"Expected Expression"};
 
@@ -277,7 +278,7 @@ auto AwkParser::assignment(NodePtr& t_lhs) -> NodePtr
   return node;
 }
 
-auto AwkParser::comparison(NodePtr& t_lhs) -> NodePtr
+auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
   using namespace reserved::symbols;
   using namespace nodes::operators;
@@ -286,7 +287,7 @@ auto AwkParser::comparison(NodePtr& t_lhs) -> NodePtr
   NodePtr node{nullptr};
 
   auto lambda = [&](ComparisonOp t_op) -> NodePtr {
-    auto ptr{expr()};
+    auto ptr{t_rhs()};
     if(!ptr)
       throw std::runtime_error{"Expected Expression"};
 
@@ -333,7 +334,7 @@ auto AwkParser::comparison(NodePtr& t_lhs) -> NodePtr
   return node;
 }
 
-auto AwkParser::logical(NodePtr& t_lhs) -> NodePtr
+auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
   using namespace reserved::symbols;
   using namespace nodes::operators;
@@ -346,7 +347,7 @@ auto AwkParser::logical(NodePtr& t_lhs) -> NodePtr
 
     // Optional newlines are allowed after && and ||
     newline_opt();
-    if(auto ptr{expr()}; ptr) {
+    if(auto ptr{t_rhs()}; ptr) {
       rhs = std::move(ptr);
     }
 
@@ -379,7 +380,7 @@ auto AwkParser::logical(NodePtr& t_lhs) -> NodePtr
   return node;
 }
 
-auto AwkParser::ternary(NodePtr& t_lhs) -> NodePtr
+auto AwkParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
   using namespace reserved::symbols;
 
@@ -395,20 +396,21 @@ auto AwkParser::ternary(NodePtr& t_lhs) -> NodePtr
 
 // TODO: Not a grammar rule function, but a function intended for parsing
 // binary Operator statements
-auto AwkParser::binary_operator(NodePtr& t_lhs) -> NodePtr
+auto AwkParser::binary_operator(NodePtr& t_lhs, const ParserFunc& t_rhs)
+  -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "BINARY OPERATOR");
   NodePtr node{nullptr};
 
   // TODO: Create lambda for these call chains?
   // Or a macro?
-  if(auto ptr{arithmetic(t_lhs)}; ptr) {
+  if(auto ptr{arithmetic(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{comparison(t_lhs)}; ptr) {
+  } else if(auto ptr{comparison(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{logical(t_lhs)}; ptr) {
+  } else if(auto ptr{logical(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{ternary(t_lhs)}; ptr) {
+  } else if(auto ptr{ternary(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
   }
 
@@ -500,7 +502,11 @@ auto AwkParser::unary_print_expr() -> NodePtr
   if(tokentype::is_unary_operator(prefix.type())) {
     auto lhs{print_expr()};
 
-    if(auto ptr{arithmetic(lhs)}; ptr) {
+    auto lambda = [&]() -> NodePtr {
+      return this->print_expr();
+    };
+
+    if(auto ptr{arithmetic(lhs, lambda)}; ptr) {
       // TODO: Implement
       // } else if(auto ptr{arithmetic(lhs)}; ptr) {
     }
@@ -553,11 +559,8 @@ auto AwkParser::print_expr_list() -> NodePtr
 auto AwkParser::print_expr_list_opt() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "PRINT EXPR LIST OPT");
-  NodePtr node{nullptr};
 
-  node = print_expr_list();
-
-  return node;
+  return print_expr_list();
 }
 
 // non_unary_expr   : '(' expr ')'
@@ -621,7 +624,10 @@ auto AwkParser::non_unary_expr() -> NodePtr
       if(auto ptr{expr()}; ptr) {
         // TODO: Do something
       } else if(auto ptr{multiple_expr_list()}; ptr) {
+        expect(TokenType::IN, "in");
         // TODO: Do something
+      } else {
+        // TODO: Error handling
       }
 
       expect(TokenType::PAREN_CLOSE, ")");
@@ -726,7 +732,10 @@ auto AwkParser::unary_expr() -> NodePtr
     auto op{unary_prefix::tokentype2enum(tokentype)};
     lhs = std::make_unique<UnaryPrefix>(op, std::move(expr_ptr));
 
-    node = binary_operator(lhs);
+    auto lambda = [&]() -> NodePtr {
+      return this->expr();
+    };
+    node = binary_operator(lhs, lambda);
   } else {
     // unary_input_function is recursive to unary_expr
     // NodePtr lhs{unary_input_function()};

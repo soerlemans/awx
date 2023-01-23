@@ -1,12 +1,22 @@
 #ifndef AWK_PARSER_H
 #define AWK_PARSER_H
 
+#include <functional>
+
 #include "parser.hpp"
 
 
 // TODO: Some day split the Parser into different components that can be
 // Individually extended and changed as of now its all put together into the
 // Same file
+
+// Forward declarations:
+class AwkParser;
+
+// Aliases:
+// Used for functions that need to have different parsing rules dependent on
+// Context
+using ParserFunc = std::function<NodePtr()>;
 
 // Classes:
 class AwkParser : public Parser {
@@ -28,14 +38,16 @@ class AwkParser : public Parser {
   // Binary expression handlers:
   // TODO: Add a bool defaultargument to denote that it is a print exprssion or
   // not?
-  virtual auto string_concatenation(NodePtr& t_lhs) -> NodePtr;
-  virtual auto ere(NodePtr& t_lhs) -> NodePtr;
-  virtual auto arithmetic(NodePtr& t_lhs) -> NodePtr;
-  virtual auto assignment(NodePtr& t_lhs) -> NodePtr;
-  virtual auto comparison(NodePtr& t_lhs) -> NodePtr;
-  virtual auto logical(NodePtr& t_lhs) -> NodePtr;
-  virtual auto ternary(NodePtr& t_lhs) -> NodePtr;
-  virtual auto binary_operator(NodePtr& t_lhs) -> NodePtr;
+  virtual auto string_concatenation(NodePtr& t_lhs, const ParserFunc& t_rhs)
+    -> NodePtr;
+  virtual auto ere(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
+  virtual auto arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
+  virtual auto assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
+  virtual auto comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
+  virtual auto logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
+  virtual auto ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
+  virtual auto binary_operator(NodePtr& t_lhs, const ParserFunc& t_rhs)
+    -> NodePtr;
 
   // Print rules:
   virtual auto non_unary_print_expr() -> NodePtr;
