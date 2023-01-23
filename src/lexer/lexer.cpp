@@ -93,73 +93,84 @@ auto Lexer::is_hex_literal() -> bool
   return false;
 }
 
-// TODO: Implement!
-auto Lexer::handle_hex() -> void
+auto Lexer::handle_hex() -> Token
 {
-  // while(!eol())
-	
-}
-
-auto Lexer::handle_float() -> void
-{}
-
-// TODO: Split int, hex and float part into separate functions
-auto Lexer::literal_numeric() -> Token
-{
-  using namespace reserved::symbols;
-
-  Token token;
-
-  bool is_hex{is_hex_literal()};
-  bool is_float{false};
-
   std::stringstream ss;
+
   while(!eol()) {
     const char character{m_filebuffer.character()};
 
-    // is_valid_character for different type of integer literals
-    if(std::isdigit(character)) {
+    if(std::isxdigit(character)) {
       ss << next_char();
-    } else if(is_hex && std::isxdigit(character)) {
-      // The following check is probably not needed, but implement it one
-      // day just in case to be sure
-      // if(is_float)
-      //   syntax_error("Illegal character in ");
-
-      ss << next_char();
-
-      // FIXME: If we encounter a second dot we should throw a syntax error
-    } else if(!is_float && character == g_dot.identifier()) {
-      // Cant be a hex literal with a floating point at the same time in
-      // the future we might have primitive types be classes ruby style so
-      // someday this could be a feature But for now give an error on this
-      if(is_hex)
-        syntax_error("Found a . in a hex literal");
-
-      is_float = true;
-      ss << next_char();
-    } else { // Quit if digit ends
-      // We go back one since we add till we find a character that does not
-      // Match so we have to unget it
+    } else {
       m_filebuffer.backward();
       break;
     }
   }
 
-  // Determine what must be returned:
-  if(is_hex) {
-    int number{(int)std::stoul(ss.str(), nullptr, 16)};
-    token = Token{TokenType::HEX, number};
-  } else if(is_float) {
-    token = Token{TokenType::FLOAT, std::stod(ss.str())};
-  } else {
-    // Does not work?
-    // token = Token{TokenType::INTEGER, std::stoi(ss.str())};
-    token = Token{TokenType::INTEGER, (int)std::stoul(ss.str())};
+  LOG(LogLevel::INFO, "HEX: ", ss.str());
+  const int number{(int)std::stoul(ss.str(), nullptr, 16)};
+
+  return Token{TokenType::HEX, number};
+}
+
+auto Lexer::handle_float(std::string_view t_str) -> Token
+{
+  using namespace reserved::symbols;
+
+  std::stringstream ss;
+
+  ss << t_str;
+  while(!eol()) {
+    const char character{m_filebuffer.character()};
+
+    if(std::isdigit(character)) {
+    } else if(character == g_dot.identifier()) {
+      syntax_error("Cant have a second '.' in a float literal.");
+    } else {
+	  m_filebuffer.backward();
+	  break;
+    }
   }
 
-  LOG(LogLevel::INFO, "NUMERIC: ", ss.str());
-  return token;
+  LOG(LogLevel::INFO, "FLOAT: ", ss.str());
+  return Token{TokenType::FLOAT, std::stod(ss.str())};
+}
+
+auto Lexer::handle_integer() -> Token
+{
+  using namespace reserved::symbols;
+
+  std::stringstream ss;
+
+  while(!eol()) {
+    const char character{m_filebuffer.character()};
+
+    if(std::isdigit(character)) {
+      ss << next_char();
+    } else if(character == g_dot.identifier()) {
+      // Handle float as a float
+      return handle_float(ss.str());
+    } else {
+      m_filebuffer.backward();
+      break;
+    }
+  }
+
+  LOG(LogLevel::INFO, "INTEGER: ", ss.str());
+  return Token{TokenType::INTEGER, (int)std::stoul(ss.str())};
+}
+
+// TODO: Split int, hex and float part into separate functions
+auto Lexer::literal_numeric() -> Token
+{
+  // Just forward to the apropiate numeric literal handle function
+  if(is_hex_literal()) {
+    return handle_hex();
+  } else {
+	// handle_integer() may also forward to handle_float
+    return handle_integer();
+  }
 }
 
 auto Lexer::literal_string() -> Token
@@ -203,10 +214,10 @@ auto Lexer::literal_regex() -> Token
   // Discard starting / character
   next_char();
 
-  // TODO: As of now regex literals perform no checks if the identifier in front
-  // of the literal has an integer type or not, as of now we just assume it is a
-  // regex expression we should also throw an error or assume a division if we
-  // do not find a corresponding / before the EOL
+  // TODO: As of now regex literals perform no checks if the identifier in
+  // front of the literal has an integer type or not, as of now we just assume
+  // it is a regex expression we should also throw an error or assume a
+  // division if we do not find a corresponding / before the EOL
   bool quit{false};
   while(!quit && !eol()) {
     const char character{m_filebuffer.character()};

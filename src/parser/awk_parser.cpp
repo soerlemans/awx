@@ -1093,7 +1093,7 @@ auto AwkParser::terminated_statement() -> NodePtr
       prev();
 
       if(auto ptr{terminatable_statement()}; ptr) {
-		node = std::move(ptr);
+        node = std::move(ptr);
 
         if(const auto tokentype{get_token().type()};
            tokentype::is_terminator(tokentype)) {
@@ -1386,7 +1386,6 @@ auto AwkParser::parse() -> Ast
   program();
 
   LOG_PRINT();
-
   return ast;
 }
 

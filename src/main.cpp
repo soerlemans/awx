@@ -55,9 +55,6 @@ auto parse_args(const int t_argc, char* t_argv[]) -> void
 
 auto run(int argc, char* argv[]) -> void
 {
-  // Set loglevel for now for debugging purposes
-  SET_LOGLEVEL(log::LogLevel::DEBUG);
-
   auto& config{Config::get_instance()};
 
   // TODO: Remove this is temporary testing code
@@ -75,6 +72,10 @@ auto run(int argc, char* argv[]) -> void
 
 auto main(int argc, char* argv[]) -> int
 {
+  // Set loglevel for now for debugging purposes
+  SET_LOGLEVEL(log::LogLevel::DEBUG);
+  LOG_PRINT("=== BEGIN ===");
+
   parse_args(argc, argv);
 
   try {
@@ -85,5 +86,6 @@ auto main(int argc, char* argv[]) -> int
     return ExitCode::EXCEPTION;
   }
 
+  LOG_PRINT("=== END ===");
   return ExitCode::OK;
 }

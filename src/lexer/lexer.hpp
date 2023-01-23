@@ -34,8 +34,9 @@ class Lexer {
   auto identifier() -> Token;
 
   auto is_hex_literal() -> bool;
-  auto handle_hex() -> void;
-  auto handle_float() -> void;
+  auto handle_hex() -> Token;
+  auto handle_float(std::string_view t_str) -> Token;
+  auto handle_integer() -> Token;
 
   auto literal_numeric() -> Token;
   auto literal_string() -> Token;
