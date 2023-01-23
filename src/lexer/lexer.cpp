@@ -78,16 +78,14 @@ auto Lexer::identifier() -> Token
 auto Lexer::is_hex_literal() -> bool
 {
   // Octal literals are not specified in the POSIX AWK standard
-  // So just discard leading zeros
-  if(m_filebuffer.character() == '0') {
-    // TODO: Define reserved hex literal symbol
-    // If the next character is a 'x' it must be a hex literal
-    next_char();
-    if(m_filebuffer.character() == 'x') {
-      next_char();
+  // So just treat leading zeroes as as normal
+  if(next_char() == '0' && m_filebuffer.character() == 'x') {
+    next_char(); // Discard 'x'
 
-      return true;
-    }
+    return true;
+  } else {
+    // If we just have a zero we should go back to not discard the zero
+    m_filebuffer.backward();
   }
 
   return false;
@@ -114,22 +112,34 @@ auto Lexer::handle_hex() -> Token
   return Token{TokenType::HEX, number};
 }
 
-auto Lexer::handle_float(std::string_view t_str) -> Token
+// t_str and t_dot have default arguments
+// t_str contains is for if you already have part of a string to continue on
+// t_dot indicates if there is already a dot in the string
+auto Lexer::handle_float(std::string_view t_str, bool t_dot) -> Token
 {
   using namespace reserved::symbols;
 
   std::stringstream ss;
 
   ss << t_str;
+
+  if(t_dot)
+    next_char();
+
   while(!eol()) {
     const char character{m_filebuffer.character()};
 
     if(std::isdigit(character)) {
+	  ss << next_char();
     } else if(character == g_dot.identifier()) {
-      syntax_error("Cant have a second '.' in a float literal.");
+      if(t_dot) {
+        syntax_error("Cant have a second '.' in a float literal.");
+      } else {
+        t_dot = true;
+      }
     } else {
-	  m_filebuffer.backward();
-	  break;
+      m_filebuffer.backward();
+      break;
     }
   }
 
@@ -150,7 +160,7 @@ auto Lexer::handle_integer() -> Token
       ss << next_char();
     } else if(character == g_dot.identifier()) {
       // Handle float as a float
-      return handle_float(ss.str());
+      return handle_float(ss.str(), true);
     } else {
       m_filebuffer.backward();
       break;
@@ -158,7 +168,7 @@ auto Lexer::handle_integer() -> Token
   }
 
   LOG(LogLevel::INFO, "INTEGER: ", ss.str());
-  return Token{TokenType::INTEGER, (int)std::stoul(ss.str())};
+  return Token{TokenType::INTEGER, (int)std::stoi(ss.str())};
 }
 
 // TODO: Split int, hex and float part into separate functions
@@ -168,7 +178,7 @@ auto Lexer::literal_numeric() -> Token
   if(is_hex_literal()) {
     return handle_hex();
   } else {
-	// handle_integer() may also forward to handle_float
+    // handle_integer() may also forward to handle_float()
     return handle_integer();
   }
 }
