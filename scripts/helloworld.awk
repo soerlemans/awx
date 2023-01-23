@@ -2,8 +2,7 @@
 BEGIN {
 	+10 - 20
 
-	getline var;
+	getline var
 
 	print "Hello World!"
 }
-

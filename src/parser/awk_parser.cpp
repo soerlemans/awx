@@ -836,6 +836,7 @@ auto AwkParser::output_redirection() -> NodePtr
       break;
 
     default:
+      prev();
       break;
   }
 
@@ -1091,19 +1092,21 @@ auto AwkParser::terminated_statement() -> NodePtr
     default: {
       prev();
 
-      node = terminatable_statement();
+      if(auto ptr{terminatable_statement()}; ptr) {
+		node = std::move(ptr);
 
-      if(const auto tokentype{get_token().type()};
-         tokentype::is_terminator(tokentype)) {
-        next();
-        TRACE_PRINT(LogLevel::INFO, "Found ",
-                    (tokentype == TokenType::SEMICOLON) ? "';'" : "NEWLINE");
-      } else {
-        throw std::runtime_error{"Statement is improperly terminated"};
+        if(const auto tokentype{get_token().type()};
+           tokentype::is_terminator(tokentype)) {
+          next();
+          TRACE_PRINT(LogLevel::INFO, "Found ",
+                      (tokentype == TokenType::SEMICOLON) ? "';'" : "NEWLINE");
+        } else {
+          throw std::runtime_error{"Expected a TERMINATOR"};
+        }
+
+        newline_opt();
+        break;
       }
-
-      newline_opt();
-      break;
     }
   }
 

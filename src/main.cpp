@@ -19,11 +19,12 @@ enum ExitCode {
 // Functions:
 auto print_help() -> void
 {
-  std::cout << "AWX - Help Manual\n"
-            << "Usage: awx <flags> '<awx program>'\n"
-            << "Flags:\n"
-            << " <-f program file> \n"
-            << " <-h> Displays this help manual\n"
+  // TODO: Implement [--]
+  // TODO: Implement [File]
+  std::cout << "Usage: awx [Options]\n"
+            << "Options:\n"
+            << "    -f program-file\n"
+            << "    -h Displays this help manual\n"
             << '\n';
 }
 
@@ -34,18 +35,22 @@ auto parse_args(const int t_argc, char* t_argv[]) -> void
   auto& config{Config::get_instance()};
 
   const auto f_getopt{std::bind(getopt, t_argc, t_argv, "f:h")};
-  for(auto option{f_getopt()}; option != -1; option = f_getopt())
-    switch(option) {
-      case 'f': {
-        config.add_file(fs::path{optarg});
-        break;
-      }
+  if(auto option{f_getopt()}; option != -1) {
+    for(; option != -1; option = f_getopt())
+      switch(option) {
+        case 'f': {
+          config.add_file(fs::path{optarg});
+          break;
+        }
 
-      case 'h':
-      default:
-        print_help();
-        break;
-    }
+        case 'h':
+        default:
+          print_help();
+          break;
+      }
+  } else {
+    print_help();
+  }
 }
 
 auto run(int argc, char* argv[]) -> void

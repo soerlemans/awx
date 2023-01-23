@@ -95,7 +95,10 @@ auto Lexer::is_hex_literal() -> bool
 
 // TODO: Implement!
 auto Lexer::handle_hex() -> void
-{}
+{
+  // while(!eol())
+	
+}
 
 auto Lexer::handle_float() -> void
 {}
