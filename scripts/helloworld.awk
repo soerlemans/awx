@@ -4,5 +4,7 @@ BEGIN {
 
 	getline var
 
+	var += 0xFF;
+
 	print "Hello World!"
 }

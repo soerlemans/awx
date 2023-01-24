@@ -38,6 +38,7 @@ class AwkParser : public Parser {
   // Binary expression handlers:
   // TODO: Find a way to maybe elegantly loop through the options instead of
   // Having switch cases???
+  // TODO: Maybe replace these switch cases with macros?
   virtual auto string_concatenation(NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> NodePtr;
   virtual auto ere(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
