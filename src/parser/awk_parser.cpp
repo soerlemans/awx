@@ -264,7 +264,7 @@ auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   using namespace reserved::symbols;
   using namespace nodes::operators;
 
-  TRACE(LogLevel::DEBUG, "COMPARISON");
+  TRACE(LogLevel::DEBUG, "ASSIGNMENT");
   NodePtr node{nullptr};
 
   // TODO: Create an actual function for this that we can call instead of
@@ -721,10 +721,41 @@ auto AwkParser::non_unary_expr() -> NodePtr
       break;
   }
 
+  auto lambda_expr = [&]() {
+    return this->expr();
+  };
+
   if(is_nue) {
+
+    auto lambda_nue = [&]() {
+      return this->non_unary_expr();
+    };
+
+    if(auto ptr{arithmetic(node, lambda_expr)}; ptr) {
+      node = std::move(ptr);
+
+      // Note: String concatenation accepts lambda_nue
+    } else if(auto ptr{string_concatenation(node, lambda_nue)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{comparison(node, lambda_expr)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{ere(node, lambda_expr)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{logical(node, lambda_expr)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{ternary(node, lambda_expr)}; ptr) {
+      node = std::move(ptr);
+    }
   } else {
+    // TODO: Analyze the grammar rules to see if this is correct????
+    // If 'lvalue <assignmenet> expr' is a valid nue than this should be before
+    // The arithmetic, comparison, ere, logical, etc...
     if(auto ptr{lvalue()}; ptr) {
-      // TODO: Increment, Decrement, Assignment
+      if(auto assign_ptr{assignment(ptr, lambda_expr)}; assign_ptr) {
+        node = std::move(assign_ptr);
+        // TODO: Increment, Decrement
+        // } else if(auto ptr) {
+      }
     } else if(auto ptr{non_unary_input_function()}; ptr) {
       node = std::move(ptr);
     }
