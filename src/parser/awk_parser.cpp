@@ -155,6 +155,9 @@ auto AwkParser::string_concatenation(NodePtr& t_lhs, const ParserFunc& t_rhs)
   TRACE(LogLevel::DEBUG, "STRING CONCAT");
   NodePtr node{nullptr};
 
+  // TODO: Create StringConcat class
+  // t_rhs();
+
   return node;
 }
 
@@ -167,7 +170,7 @@ auto AwkParser::ere(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   NodePtr node{nullptr};
 
   // Little helper function to cut down on the bloat
-  auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
+  const auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
     auto ptr{t_rhs()};
     if(!ptr)
       throw std::runtime_error{"Expected Expression"};
@@ -207,7 +210,7 @@ auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   NodePtr node{nullptr};
 
   // Little helper function to cut down on the bloat
-  auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
+  const auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
     auto ptr{t_rhs()};
     if(!ptr)
       throw std::runtime_error{"Expected Expression"};
@@ -266,7 +269,7 @@ auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
   // TODO: Create an actual function for this that we can call instead of
   // Defining a separate lambda in each function
-  auto lambda = [&](AssignmentOp t_op) -> NodePtr {
+  const auto lambda = [&](AssignmentOp t_op) -> NodePtr {
     auto ptr{t_rhs()};
     if(!ptr)
       throw std::runtime_error{"Expected Expression"};
@@ -274,6 +277,48 @@ auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
     return NodePtr{
       std::make_unique<Assignment>(t_op, std::move(t_lhs), std::move(ptr))};
   };
+
+  const auto op{next().type()};
+  switch(op) {
+    case TokenType{g_power_assignment}:
+      TRACE_PRINT(LogLevel::INFO, "Found '^='");
+      node = lambda(AssignmentOp::POWER);
+      break;
+
+    case TokenType{g_multiply_assignment}:
+      TRACE_PRINT(LogLevel::INFO, "Found '*='");
+      node = lambda(AssignmentOp::MULTIPLY);
+      break;
+
+    case TokenType{g_divide_assignment}:
+      TRACE_PRINT(LogLevel::INFO, "Found '/='");
+      node = lambda(AssignmentOp::DIVIDE);
+      break;
+
+    case TokenType{g_modulo_assignment}:
+      TRACE_PRINT(LogLevel::INFO, "Found '%='");
+      node = lambda(AssignmentOp::MODULO);
+      break;
+
+    case TokenType{g_add_assignment}:
+      TRACE_PRINT(LogLevel::INFO, "Found '+='");
+      node = lambda(AssignmentOp::ADD);
+      break;
+
+    case TokenType{g_subtract_assignment}:
+      TRACE_PRINT(LogLevel::INFO, "Found '-='");
+      node = lambda(AssignmentOp::SUBTRACT);
+      break;
+
+    case TokenType{g_assignment}:
+      TRACE_PRINT(LogLevel::INFO, "Found '='");
+      node = lambda(AssignmentOp::REGULAR);
+      break;
+
+    default:
+      prev();
+      break;
+  }
 
   return node;
 }
@@ -286,7 +331,7 @@ auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   TRACE(LogLevel::DEBUG, "COMPARISON");
   NodePtr node{nullptr};
 
-  auto lambda = [&](ComparisonOp t_op) -> NodePtr {
+  const auto lambda = [&](ComparisonOp t_op) -> NodePtr {
     auto ptr{t_rhs()};
     if(!ptr)
       throw std::runtime_error{"Expected Expression"};
@@ -342,13 +387,15 @@ auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   TRACE(LogLevel::DEBUG, "LOGICAL");
   NodePtr node{nullptr};
 
-  auto lambda = [&]<typename T>() -> NodePtr {
+  const auto lambda = [&]<typename T>() -> NodePtr {
     NodePtr rhs{nullptr};
 
     // Optional newlines are allowed after && and ||
     newline_opt();
     if(auto ptr{t_rhs()}; ptr) {
       rhs = std::move(ptr);
+    } else {
+      // TODO: Error handling empty rhs expression is not allowed
     }
 
     if(!rhs) {
@@ -502,7 +549,7 @@ auto AwkParser::unary_print_expr() -> NodePtr
   if(tokentype::is_unary_operator(prefix.type())) {
     auto lhs{print_expr()};
 
-    auto lambda = [&]() -> NodePtr {
+    const auto lambda = [&]() -> NodePtr {
       return this->print_expr();
     };
 
@@ -729,12 +776,13 @@ auto AwkParser::unary_expr() -> NodePtr
 
     NodePtr lhs{nullptr};
 
-    auto op{unary_prefix::tokentype2enum(tokentype)};
+    const auto op{unary_prefix::tokentype2enum(tokentype)};
     lhs = std::make_unique<UnaryPrefix>(op, std::move(expr_ptr));
 
-    auto lambda = [&]() -> NodePtr {
+    const auto lambda = [&]() -> NodePtr {
       return this->expr();
     };
+
     node = binary_operator(lhs, lambda);
   } else {
     // unary_input_function is recursive to unary_expr
@@ -868,8 +916,8 @@ auto AwkParser::simple_print_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "SIMPLE PRINT STATEMENT");
   NodePtr node{nullptr};
 
-  // Convenience macro
-  auto lambda = [&]() -> NodePtr {
+  // Convenience lambda
+  const auto lambda = [&]() -> NodePtr {
     NodePtr node{nullptr};
 
     if(next_if(TokenType::PAREN_OPEN)) {

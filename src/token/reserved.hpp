@@ -126,9 +126,6 @@ namespace symbols {
   DEFINE_RESERVED(g_brace_open,     '[', BRACE_OPEN);
   DEFINE_RESERVED(g_brace_close,    ']', BRACE_CLOSE);
 
-  // Assignment
-  DEFINE_RESERVED(g_assignment, '=', ASSIGNMENT);
-
   // Arithmetic operators:
   DEFINE_RESERVED(g_caret,        '^', CARET);
   DEFINE_RESERVED(g_plus,         '+', PLUS);
@@ -141,13 +138,18 @@ namespace symbols {
   DEFINE_RESERVED(g_increment, "++", INCREMENT);
   DEFINE_RESERVED(g_decrement, "--", DECREMENT);
 
+  // Assignment:
   // TODO: Rename or structure these better in the future?
   DEFINE_RESERVED(g_power_assignment,    "^=", POWER_ASSIGNMENT);
-  DEFINE_RESERVED(g_add_assignment,      "+=", ADD_ASSIGNMENT);
-  DEFINE_RESERVED(g_subtract_assignment, "-=", SUBTRACT_ASSIGNMENT);
+
   DEFINE_RESERVED(g_multiply_assignment, "*=", MULTIPLY_ASSIGNMENT);
   DEFINE_RESERVED(g_divide_assignment,   "/=", DIVIDE_ASSIGNMENT);
   DEFINE_RESERVED(g_modulo_assignment,   "%=", MODULO_ASSIGNMENT);
+
+  DEFINE_RESERVED(g_add_assignment,      "+=", ADD_ASSIGNMENT);
+  DEFINE_RESERVED(g_subtract_assignment, "-=", SUBTRACT_ASSIGNMENT);
+
+  DEFINE_RESERVED(g_assignment, '=', ASSIGNMENT);
 
   // Regex operators:
   DEFINE_RESERVED(g_ere_match,    '~',  ERE_MATCH);
@@ -228,11 +230,13 @@ namespace symbols {
 	g_decrement,
 
 	g_power_assignment,
-	g_add_assignment,
-	g_subtract_assignment,
+
 	g_multiply_assignment,
 	g_divide_assignment,
 	g_modulo_assignment,
+
+	g_add_assignment,
+	g_subtract_assignment,
 
 	g_ere_no_match,
 

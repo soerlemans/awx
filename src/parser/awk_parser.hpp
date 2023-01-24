@@ -36,8 +36,8 @@ class AwkParser : public Parser {
   virtual auto lvalue() -> NodePtr;
 
   // Binary expression handlers:
-  // TODO: Add a bool defaultargument to denote that it is a print exprssion or
-  // not?
+  // TODO: Find a way to maybe elegantly loop through the options instead of
+  // Having switch cases???
   virtual auto string_concatenation(NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> NodePtr;
   virtual auto ere(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
