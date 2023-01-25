@@ -1,25 +1,25 @@
-#ifndef PRINT_H
-#define PRINT_H
+#ifndef PIPE_H
+#define PIPE_H
 
 #include "../node.hpp"
 
 #include "io.hpp"
 
 
-// TODO: Merge Print and Printf into one?
 namespace nodes::io {
-class Print : public Node {
+class Pipe : public Node {
   private:
   NodePtr m_expr;
+  NodePtr m_getline;
 
   public:
-  Print(NodePtr&& t_expr);
+  Pipe(NodePtr&& t_expr, NodePtr&& t_getline);
 
   virtual auto accept(NodeVisitor t_visitor) -> void override;
   virtual auto print() const -> void override;
 
-  virtual ~Print();
+  virtual ~Pipe();
 };
 }; // namespace nodes::io
 
-#endif // PRINT_H
+#endif // PIPE_H

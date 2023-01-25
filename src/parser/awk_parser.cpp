@@ -11,6 +11,7 @@
 #include "../token/token_type_helpers.hpp"
 
 #include "../node/io/getline.hpp"
+#include "../node/io/pipe.hpp"
 #include "../node/io/print.hpp"
 #include "../node/io/printf.hpp"
 
@@ -68,16 +69,15 @@ auto AwkParser::simple_get() -> NodePtr
 
 auto AwkParser::unary_input_function() -> NodePtr
 {
+  using namespace nodes::io;
+
   TRACE(LogLevel::DEBUG, "UNARY INPUT FUNCTION");
   NodePtr node{nullptr};
 
   if(NodePtr lhs{unary_expr()}; lhs) {
+    expect(TokenType::PIPE, "|");
 
-    const auto token{expect(TokenType::PIPE, "|")};
-
-    NodePtr rhs{simple_get()};
-
-    // TODO: Process
+    node = std::make_unique<Pipe>(std::move(lhs), simple_get());
   }
 
   return node;

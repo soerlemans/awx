@@ -5,6 +5,8 @@ namespace nodes::io {
 class Print;
 class Printf;
 class Getline;
+
+class Pipe;
 }; // namespace nodes::io
 
 #endif // IO_H
