@@ -19,7 +19,7 @@ using NodeListPtr = std::unique_ptr<List>;
 class List : public Node, public std::list<NodePtr> {
   public:
   List();
-  List(List&& t_ast) = default;
+  List(List&& t_list) = default;
 
   auto accept(NodeVisitor t_visitor) -> void override;
   auto print() const -> void override;

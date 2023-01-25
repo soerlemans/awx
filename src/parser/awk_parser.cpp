@@ -10,6 +10,8 @@
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
 
+#include "../node/list.hpp"
+
 #include "../node/io/getline.hpp"
 #include "../node/io/pipe.hpp"
 #include "../node/io/print.hpp"
@@ -93,13 +95,12 @@ auto AwkParser::non_unary_input_function() -> NodePtr
   NodePtr node{nullptr};
 
   // Recursive causes endless loop
-  if(auto ptr{simple_get()}; ptr) {
-    // TODO: Implement output redirection
-    node = std::move(ptr);
-
+  if(auto lhs{simple_get()}; lhs) {
     if(next_if(TokenType::LESS_THAN)) {
       // This is recursive causes endless loop expr();
       expr();
+    } else {
+      node = std::move(lhs);
     }
   }
   // else
@@ -121,13 +122,10 @@ auto AwkParser::lvalue() -> NodePtr
     case TokenType::IDENTIFIER: {
       // We really dont expect these next_tokens to fail
       if(next_if(TokenType::BRACE_OPEN)) {
-        // What do with expr_list???
-        // TODO: Include expr_list somehow sometime
-        expr_list();
-        expect(TokenType::BRACE_CLOSE, "]");
-
         TRACE_PRINT(LogLevel::INFO, "Found Array subscript");
-        node = std::make_unique<Array>(token.value<std::string>());
+        node = std::make_unique<Array>(token.value<std::string>(), expr_list());
+
+        expect(TokenType::BRACE_CLOSE, "]");
       } else {
         TRACE_PRINT(LogLevel::INFO, "Found VARIABLE");
         node = std::make_unique<Variable>(token.value<std::string>());
@@ -662,10 +660,10 @@ auto AwkParser::non_unary_expr() -> NodePtr
   TRACE(LogLevel::DEBUG, "NON UNARY EXPR");
   NodePtr node{nullptr};
 
-  const auto token{next()};
-
   bool is_nue{true};
-  // We still need to fix ERE, NUMBER? FUNC_NAME and BUILTIN_FUNC_NAME
+
+  // We still need to do ERE, NUMBER? FUNC_NAME and BUILTIN_FUNC_NAME
+  const auto token{next()};
   switch(token.type()) {
     case TokenType::PAREN_OPEN:
       if(auto ptr{expr()}; ptr) {
@@ -755,7 +753,9 @@ auto AwkParser::non_unary_expr() -> NodePtr
         node = std::move(assign_ptr);
         // TODO: Increment, Decrement
         // } else if(auto ptr) {
-      }
+      }else{
+		node = std::move(ptr);
+	  }
     } else if(auto ptr{non_unary_input_function()}; ptr) {
       node = std::move(ptr);
     }
@@ -865,24 +865,42 @@ auto AwkParser::expr_opt() -> NodePtr
 //                  ;
 auto AwkParser::multiple_expr_list() -> NodePtr
 {
+  using namespace nodes;
+
   TRACE(LogLevel::DEBUG, "MULTIPLE EXPR LIST");
-  NodePtr node{nullptr};
+  NodeListPtr nodes{std::make_unique<List>()};
 
+  while(!eos()) {
+    if(auto ptr{expr()}; ptr) {
+      TRACE_PRINT(LogLevel::INFO, "Found EXPR");
+      nodes->push_back(std::move(ptr));
 
-  return node;
+      if(next_if(TokenType::COMMA)) {
+        newline_opt();
+      } else {
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+
+  if(!nodes->size()) {
+    // throw std::runtime_error{"expected atleast on expr in expr_list"};
+  }
+
+  // TODO: If we only have one node in the list flatten it to a single NodePtr
+
+  return nodes;
 }
 
-// expr_list        : expr
-//                  | multiple_expr_list
-//                  ;
 auto AwkParser::expr_list() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "EXPR LIST");
   NodePtr node{nullptr};
 
-  if(auto ptr{expr()}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{multiple_expr_list()}; ptr) {
+  // multiple_expr_list allows one or multiple expr
+  if(auto ptr{multiple_expr_list()}; ptr) {
     node = std::move(ptr);
   } else {
     // TODO: Error handling
@@ -1202,66 +1220,52 @@ auto AwkParser::terminated_statement() -> NodePtr
 }
 
 // This rule is made to match atleast one unterminated statement
-// Unterminated statements end on a -> \n
-// unterminated_statement_list : unterminated_statement
-//                  | terminated_statement_list unterminated_statement
-//                  ;
+// Unterminated statements end on a -> '\n'
 auto AwkParser::unterminated_statement_list() -> NodePtr
 {
   using namespace nodes;
 
   TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT LIST");
-  NodeListPtr node{nullptr};
+  NodeListPtr nodes{std::make_unique<List>()};
 
-  if(auto ptr{unterminated_statement()}; ptr) {
-    node = std::make_unique<List>();
-    node->push_back(std::move(ptr));
-
-    while(!eos()) {
-      if(auto ptr{unterminated_statement()}; ptr) {
-        node->push_back(std::move(ptr));
-      } else {
-        break;
-      }
+  while(!eos()) {
+    if(auto ptr{unterminated_statement()}; ptr) {
+      nodes->push_back(std::move(ptr));
+    } else {
+      break;
     }
-  } else {
-    // TODO: Error handling
-    // EXCPECTED ATLEAST ONE...
   }
 
-  return NodePtr{node.release()};
+  if(!nodes->size()) {
+    throw std::runtime_error{"expected atleast on expr in expr_list"};
+  }
+
+  return nodes;
 }
 
 // This rule is made to match atleast one terminated statement
-// Terminated statements end on a -> ;
-// terminated_statement_list : terminated_statement
-//                  | terminated_statement_list terminated_statement
-//                  ;
+// Terminated statements end on a -> ';'
 auto AwkParser::terminated_statement_list() -> NodePtr
 {
   using namespace nodes;
 
   TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT LIST");
-  NodeListPtr node{nullptr};
+  NodeListPtr nodes{std::make_unique<List>()};
 
-  if(auto ptr{terminated_statement()}; ptr) {
-    node = std::make_unique<List>();
-    node->push_back(std::move(ptr));
-
-    while(!eos()) {
-      if(auto ptr{terminated_statement()}; ptr) {
-        node->push_back(std::move(ptr));
-      } else {
-        break;
-      }
+  while(!eos()) {
+    if(auto ptr{terminated_statement()}; ptr) {
+      nodes->push_back(std::move(ptr));
+    } else {
+      break;
     }
-  } else {
-    // TODO: Error handling
-    // EXCPECTED ATLEAST ONE...
+  }
+
+  if(!nodes->size()) {
+    throw std::runtime_error{"expected atleast on expr in expr_list"};
   }
 
   // Create a NodeListPtr from the NodePtrList
-  return NodePtr{node.release()};
+  return nodes;
 }
 
 // terminator       : terminator NEWLINE

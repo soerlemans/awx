@@ -20,6 +20,7 @@ enum class NodeType {
   VARIABLE, // Variables are the only allowed LValue
   NODE_LIST,
   IO,
+  CONTROL_STATEMENT,
   EXPRESSION,
 };
 
