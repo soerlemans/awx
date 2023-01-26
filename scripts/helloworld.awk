@@ -4,10 +4,12 @@ BEGIN {
 
 	# var && var;
 	var += 10;
+	var += 0xFF;
 
-	var[name];
+	# Parser fails after returning of array subscript
+	# Nullptr being returned somehwere?
+	# var[name]
 
-	# var += 0xFF;
 
 	print "Hello World!"
 }

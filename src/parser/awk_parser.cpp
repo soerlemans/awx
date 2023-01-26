@@ -686,32 +686,41 @@ auto AwkParser::non_unary_expr() -> NodePtr
     // TODO: Token in the grammar calls for NUMBER? These are not treated
     // differently?
     case TokenType::FLOAT:
-      TRACE_PRINT(LogLevel::DEBUG, "Found FLOAT literal");
+      TRACE_PRINT(LogLevel::INFO, "Found FLOAT literal");
       node = std::make_unique<Float>(token.value<double>());
       break;
 
     case TokenType::HEX:
       [[fallthrough]];
     case TokenType::INTEGER:
-      TRACE_PRINT(LogLevel::DEBUG, "Found INTEGER literal");
+      TRACE_PRINT(LogLevel::INFO, "Found INTEGER literal");
       node = std::make_unique<Integer>(token.value<int>());
       break;
 
     case TokenType::STRING:
-      TRACE_PRINT(LogLevel::DEBUG, "Found STRING literal");
+      TRACE_PRINT(LogLevel::INFO, "Found STRING literal");
       node = std::make_unique<String>(token.value<std::string>());
       break;
 
-    // TOOD: ERE?
-    case TokenType::INCREMENT:
-      LOG(LogLevel::INFO, "Found prefix Increment");
-      node = std::make_unique<Increment>(lvalue(), true);
+    case TokenType::INCREMENT: {
+      TRACE_PRINT(LogLevel::INFO, "Found --INCREMENT");
+      if(auto ptr{lvalue()}; ptr) {
+        node = std::make_unique<Increment>(std::move(ptr), true);
+      } else {
+        // TODO: Error handling
+      }
       break;
+    }
 
-    case TokenType::DECREMENT:
-      LOG(LogLevel::INFO, "Found prefix Decrement");
-      node = std::make_unique<Decrement>(lvalue(), true);
+    case TokenType::DECREMENT: {
+      TRACE_PRINT(LogLevel::INFO, "Found --DECREMENT");
+      if(auto ptr{lvalue()}; ptr) {
+        node = std::make_unique<Decrement>(std::move(ptr), true);
+      } else {
+        // TODO: Error handling
+      }
       break;
+    }
 
     default:
       prev();
@@ -719,21 +728,20 @@ auto AwkParser::non_unary_expr() -> NodePtr
       break;
   }
 
+
   auto lambda_expr = [&]() {
     return this->expr();
   };
 
   if(is_nue) {
-
     auto lambda_nue = [&]() {
       return this->non_unary_expr();
     };
 
     if(auto ptr{arithmetic(node, lambda_expr)}; ptr) {
       node = std::move(ptr);
-
-      // Note: String concatenation accepts lambda_nue
     } else if(auto ptr{string_concatenation(node, lambda_nue)}; ptr) {
+      // Note: String concatenation uses lambda_nue
       node = std::move(ptr);
     } else if(auto ptr{comparison(node, lambda_expr)}; ptr) {
       node = std::move(ptr);
@@ -746,16 +754,21 @@ auto AwkParser::non_unary_expr() -> NodePtr
     }
   } else {
     // TODO: Analyze the grammar rules to see if this is correct????
-    // If 'lvalue <assignmenet> expr' is a valid nue than this should be before
-    // The arithmetic, comparison, ere, logical, etc...
-    if(auto ptr{lvalue()}; ptr) {
-      if(auto assign_ptr{assignment(ptr, lambda_expr)}; assign_ptr) {
-        node = std::move(assign_ptr);
+    // If 'lvalue <assignmenet> expr' is a valid nue than this should be
+    // before The arithmetic, comparison, ere, logical, etc...
+    if(auto lhs{lvalue()}; lhs) {
+      if(auto ptr{assignment(lhs, lambda_expr)}; ptr) {
+        node = std::move(ptr);
         // TODO: Increment, Decrement
-        // } else if(auto ptr) {
-      }else{
-		node = std::move(ptr);
-	  }
+      } else if(next_if(TokenType::INCREMENT)) {
+        TRACE_PRINT(LogLevel::INFO, "Found INCREMENT++");
+        node = std::make_unique<Increment>(std::move(lhs), false);
+      } else if(next_if(TokenType::DECREMENT)) {
+        TRACE_PRINT(LogLevel::INFO, "Found DECREMENT++");
+        node = std::make_unique<Decrement>(std::move(lhs), false);
+      } else {
+        node = std::move(ptr);
+      }
     } else if(auto ptr{non_unary_input_function()}; ptr) {
       node = std::move(ptr);
     }
@@ -1174,6 +1187,7 @@ auto AwkParser::terminated_statement() -> NodePtr
       } else {
         // TODO: Create If node
       }
+      break;
     }
 
     case TokenType::WHILE: {
@@ -1182,18 +1196,21 @@ auto AwkParser::terminated_statement() -> NodePtr
       expect(TokenType::PAREN_CLOSE, ")");
       newline_opt();
       terminated_statement();
+      break;
     }
 
-    case TokenType::FOR:
+    case TokenType::FOR: {
       expect(TokenType::PAREN_OPEN, "(");
 
       // TODO: Do rest
       break;
+    }
 
-    case TokenType::SEMICOLON:
+    case TokenType::SEMICOLON: {
       TRACE_PRINT(LogLevel::DEBUG, "Found ';");
       newline_opt();
       break;
+    }
 
     default: {
       prev();
