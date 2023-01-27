@@ -91,6 +91,8 @@ auto AwkParser::unary_input_function() -> NodePtr
 //                  ;
 auto AwkParser::non_unary_input_function() -> NodePtr
 {
+  using namespace nodes::io;
+
   TRACE(LogLevel::DEBUG, "NON UNARY INPUT FUNCTION");
   NodePtr node{nullptr};
 
@@ -102,10 +104,11 @@ auto AwkParser::non_unary_input_function() -> NodePtr
     } else {
       node = std::move(lhs);
     }
+  } else if(auto lhs{non_unary_expr()}; lhs) {
+    expect(TokenType::PIPE, "|");
+
+    node = std::make_unique<Pipe>(std::move(lhs), simple_get());
   }
-  // else
-  //  if(auto ptr{non_unary_expr()}; ptr) {
-  //  }
 
   return node;
 }
