@@ -23,7 +23,6 @@ class Not;
 
 // BinaryOperator derived classes:
 // Arithmetic:
-enum class ArithmeticOp;
 class Arithmetic;
 
 // String ops:
@@ -38,7 +37,6 @@ class EreNonMatch;
 
 // Array ops:
 class ArrayMembership;
-class ArrayMultiDimensionalMembership;
 
 // Delete:
 class Delete;

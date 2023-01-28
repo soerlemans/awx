@@ -30,6 +30,7 @@
 #include "../node/operators/decrement.hpp"
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
+#include "../node/operators/string_concatenation.hpp"
 #include "../node/operators/unary_prefix.hpp"
 
 // TODO: split the parser and its rules into multiple files, the parser should
@@ -150,19 +151,6 @@ auto AwkParser::lvalue() -> NodePtr
       prev();
       break;
   }
-
-  return node;
-}
-
-// FIXME: Is a separate string concatenation function even necessary
-auto AwkParser::string_concatenation(NodePtr& t_lhs, const ParserFunc& t_rhs)
-  -> NodePtr
-{
-  TRACE(LogLevel::DEBUG, "STRING CONCAT");
-  NodePtr node{nullptr};
-
-  // TODO: Create StringConcat class
-  // t_rhs();
 
   return node;
 }
@@ -592,14 +580,11 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
 
   // TOOD: Make this call separate functions
   if(is_nupe) {
-    auto lambda_nupe = [&]() {
-      return this->non_unary_print_expr();
-    };
-
-    if(auto ptr{arithmetic(node, lambda_expr)}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{string_concatenation(node, lambda_nupe)}; ptr) {
-      // Note: String concatenation uses lambda_nupe
+    if(auto rhs{non_unary_print_expr()}; rhs) {
+      TRACE_PRINT(LogLevel::INFO, "Found STRING CONCAT");
+      node =
+        std::make_unique<StringConcatenation>(std::move(node), std::move(rhs));
+    } else if(auto ptr{arithmetic(node, lambda_expr)}; ptr) {
       node = std::move(ptr);
     } else if(auto ptr{ere(node, lambda_expr)}; ptr) {
       node = std::move(ptr);
@@ -647,23 +632,41 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
 //                  | unary_print_expr OR  newline_opt print_expr
 //                  | unary_print_expr '?' print_expr ':' print_expr
 //                  ;
+// TODO: Unary expr is very similar create a function for both
 auto AwkParser::unary_print_expr() -> NodePtr
 {
+  using namespace nodes::operators;
+
   TRACE(LogLevel::DEBUG, "UNARY PRINT EXPR");
   NodePtr node{nullptr};
 
-  const auto prefix{next()};
-  if(tokentype::is_unary_operator(prefix.type())) {
-    auto lhs{print_expr()};
+  const auto tokentype{get_token().type()};
+  if(tokentype::is_unary_operator(tokentype)) {
+    next();
+    TRACE_PRINT(LogLevel::INFO, "Found unary operator");
+
+    auto ptr{print_expr()};
+    if(!ptr) {
+      // TODO: Error handling
+      throw std::runtime_error{"Expected print expression"};
+    }
+
+    const auto op{unary_prefix::tokentype2enum(tokentype)};
+    NodePtr lhs{std::make_unique<UnaryPrefix>(op, std::move(ptr))};
 
     const auto lambda = [&]() -> NodePtr {
       return this->print_expr();
     };
 
-    if(auto ptr{arithmetic(lhs, lambda)}; ptr) {
-      // TODO: Implement
-      // } else if(auto ptr{arithmetic(lhs)}; ptr) {
+    if(auto binop_ptr{binary_operator(lhs, lambda)}; binop_ptr) {
+      node = std::move(binop_ptr);
+    } else {
+      node = std::move(lhs);
     }
+  } else {
+    // unary_input_function is recursive to unary_expr
+    // NodePtr lhs{unary_input_function()};
+    // node = binary_operator(lhs);
   }
 
   return node;
@@ -685,6 +688,8 @@ auto AwkParser::print_expr() -> NodePtr
 
 auto AwkParser::print_expr_list() -> NodePtr
 {
+  using namespace nodes;
+
   TRACE(LogLevel::DEBUG, "PRINT EXPR LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
@@ -709,7 +714,7 @@ auto AwkParser::print_expr_list() -> NodePtr
 
   // TODO: If we only have one node in the list flatten it to a single NodePtr
 
-  return node;
+  return nodes;
 }
 
 auto AwkParser::print_expr_list_opt() -> NodePtr
@@ -844,14 +849,11 @@ auto AwkParser::non_unary_expr() -> NodePtr
   };
 
   if(is_nue) {
-    auto lambda_nupe = [&]() {
-      return this->non_unary_expr();
-    };
-
-    if(auto ptr{arithmetic(node, lambda_expr)}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{string_concatenation(node, lambda_nupe)}; ptr) {
-      // Note: String concatenation uses lambda_nue
+    if(auto rhs{non_unary_expr()}; rhs) {
+      TRACE_PRINT(LogLevel::INFO, "Found STRING CONCAT");
+      node =
+        std::make_unique<StringConcatenation>(std::move(node), std::move(rhs));
+    } else if(auto ptr{arithmetic(node, lambda_expr)}; ptr) {
       node = std::move(ptr);
     } else if(auto ptr{comparison(node, lambda_expr)}; ptr) {
       node = std::move(ptr);
@@ -922,22 +924,24 @@ auto AwkParser::unary_expr() -> NodePtr
     next();
     TRACE_PRINT(LogLevel::INFO, "Found unary operator");
 
-    auto expr_ptr{expr()};
-    if(!expr_ptr) {
+    auto ptr{expr()};
+    if(!ptr) {
       // TODO: Error handling
       throw std::runtime_error{"Expected expression"};
     }
 
-    NodePtr lhs{nullptr};
-
     const auto op{unary_prefix::tokentype2enum(tokentype)};
-    lhs = std::make_unique<UnaryPrefix>(op, std::move(expr_ptr));
+    NodePtr lhs{std::make_unique<UnaryPrefix>(op, std::move(ptr))};
 
     const auto lambda = [&]() -> NodePtr {
       return this->expr();
     };
 
-    node = binary_operator(lhs, lambda);
+    if(auto binop_ptr{binary_operator(lhs, lambda)}; binop_ptr) {
+      node = std::move(binop_ptr);
+    } else {
+      node = std::move(lhs);
+    }
   } else {
     // unary_input_function is recursive to unary_expr
     // NodePtr lhs{unary_input_function()};
@@ -1125,7 +1129,7 @@ auto AwkParser::simple_statement() -> NodePtr
     expr_list();
     expect(TokenType::BRACE_CLOSE, "]");
 
-	// TODO: Return Delete statement
+    // TODO: Return Delete statement
   } else if(auto ptr{expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{print_statement()}; ptr) {

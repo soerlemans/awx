@@ -130,7 +130,7 @@ auto Lexer::handle_float(std::string_view t_str, bool t_dot) -> Token
     const char character{m_filebuffer.character()};
 
     if(std::isdigit(character)) {
-	  ss << next_char();
+      ss << next_char();
     } else if(character == g_dot.identifier()) {
       if(t_dot) {
         syntax_error("Cant have a second '.' in a float literal.");
@@ -211,7 +211,7 @@ auto Lexer::literal_string() -> Token
     }
   }
 
-  LOG(LogLevel::INFO, "STRING: ", ss.str());
+  LOG(LogLevel::INFO, "STRING: ", '"', ss.str(), '"');
   return Token{TokenType::STRING, ss.str()};
 }
 

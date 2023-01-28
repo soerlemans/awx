@@ -3,7 +3,7 @@
 using namespace nodes::operators;
 
 
-UnaryPrefix::UnaryPrefix(UnaryPrefixOp t_op, NodePtr t_left)
+UnaryPrefix::UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left)
   : UnaryOperator{Precedence::UNARY_PREFIX, std::forward<NodePtr>(t_left)},
     m_op{t_op}
 {}

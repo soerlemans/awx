@@ -16,7 +16,7 @@ class UnaryPrefix : public UnaryOperator {
   UnaryPrefixOp m_op;
 
   public:
-  UnaryPrefix(UnaryPrefixOp t_op, NodePtr t_left);
+  UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left);
 
   virtual auto op() const -> UnaryPrefixOp;
 

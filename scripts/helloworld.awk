@@ -8,6 +8,6 @@ BEGIN {
 	# Nullptr being returned somehwere?
 	# var[name]
 
-	print "Hello World!"
-	print "Hello World!" && 10
+	print "Hello" " " "World!"
+	# print "Hello World!" && 10
 }

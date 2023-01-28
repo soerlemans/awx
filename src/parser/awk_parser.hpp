@@ -36,11 +36,7 @@ class AwkParser : public Parser {
   virtual auto lvalue() -> NodePtr;
 
   // Binary expression handlers:
-  // TODO: Find a way to maybe elegantly loop through the options instead of
-  // Having switch cases???
-  // TODO: Maybe replace these switch cases with macros?
-  virtual auto string_concatenation(NodePtr& t_lhs, const ParserFunc& t_rhs)
-    -> NodePtr;
+  // TODO: Maybe replace the switch cases in these functions with macros?
   virtual auto ere(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
   virtual auto arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
   virtual auto assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
