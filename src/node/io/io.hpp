@@ -3,11 +3,15 @@
 
 
 namespace nodes::io {
+// Output:
 class Print;
 class Printf;
+
+// Input:
 class Getline;
 
-class Pipe;
+// Redirection of IO:
+class Redirection;
 }; // namespace nodes::io
 
 #endif // IO_H

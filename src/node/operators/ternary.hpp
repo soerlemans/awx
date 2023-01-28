@@ -11,12 +11,12 @@ class Ternary : public BinaryOperator {
   NodePtr m_third;
 
   public:
-  explicit Ternary(Precedence t_precedence, Associativity t_associativity,
-                   NodePtr&& t_left, NodePtr&& t_middle, NodePtr&& t_right);
+  explicit Ternary(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else);
 
   auto third() -> NodePtr&;
 
-  virtual auto accept(NodeVisitor t_visitor) -> void = 0;
+  virtual auto accept(NodeVisitor t_visitor) -> void override;
+  virtual auto print() const -> void override;
 
   virtual ~Ternary();
 };

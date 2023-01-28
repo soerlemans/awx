@@ -1,15 +1,13 @@
 #!/usr/bin/awk -f
 BEGIN {
-	getline var
+	# file = "/tmp/jfjfafj.txt"
+	# getline var < file
 
-	# var && var;
-	var += 10;
-	var += 0xFF;
 
 	# Parser fails after returning of array subscript
 	# Nullptr being returned somehwere?
 	# var[name]
 
-
 	print "Hello World!"
+	print "Hello World!" && 10
 }

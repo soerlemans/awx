@@ -6,12 +6,17 @@
 using namespace nodes::operators;
 
 // Power assignment:
-Ternary::Ternary(Precedence t_precedence, Associativity t_associativity,
-                 NodePtr&& t_left, NodePtr&& t_middle, NodePtr&& t_right)
+Ternary::Ternary(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else)
   : BinaryOperator{Precedence::TERNARY, Associativity::RIGHT,
-                   std::forward<NodePtr>(t_left),
-                   std::forward<NodePtr>(t_middle)},
-    m_third{std::forward<NodePtr>(t_right)}
+                   std::forward<NodePtr>(t_condition),
+                   std::forward<NodePtr>(t_then)},
+    m_third{std::forward<NodePtr>(t_else)}
+{}
+
+auto Ternary::accept(NodeVisitor t_visitor) -> void
+{}
+
+auto Ternary::print() const -> void
 {}
 
 Ternary::~Ternary()

@@ -13,9 +13,9 @@
 #include "../node/list.hpp"
 
 #include "../node/io/getline.hpp"
-#include "../node/io/pipe.hpp"
 #include "../node/io/print.hpp"
 #include "../node/io/printf.hpp"
+#include "../node/io/redirection.hpp"
 
 #include "../node/rvalue/literal.hpp"
 #include "../node/rvalue/rvalue.hpp"
@@ -79,7 +79,8 @@ auto AwkParser::unary_input_function() -> NodePtr
   if(NodePtr lhs{unary_expr()}; lhs) {
     expect(TokenType::PIPE, "|");
 
-    node = std::make_unique<Pipe>(std::move(lhs), simple_get());
+    node = std::make_unique<Redirection>(RedirectionOp::PIPE, std::move(lhs),
+                                         simple_get());
   }
 
   return node;
@@ -99,16 +100,19 @@ auto AwkParser::non_unary_input_function() -> NodePtr
   // Recursive causes endless loop
   if(auto lhs{simple_get()}; lhs) {
     if(next_if(TokenType::LESS_THAN)) {
-      // This is recursive causes endless loop expr();
-      expr();
+      node = std::make_unique<Redirection>(RedirectionOp::READ, std::move(lhs),
+                                           expr());
     } else {
       node = std::move(lhs);
     }
-  } else if(auto lhs{non_unary_expr()}; lhs) {
-    expect(TokenType::PIPE, "|");
-
-    node = std::make_unique<Pipe>(std::move(lhs), simple_get());
   }
+  // TODO: Fix recursion
+  //  else if(auto lhs{non_unary_expr()}; lhs) {
+  //   expect(TokenType::PIPE, "|");
+
+  //   node = std::make_unique<Redirection>(RedirectionOp::PIPE, std::move(lhs),
+  //                                        simple_get());
+  // }
 
   return node;
 }
@@ -150,6 +154,7 @@ auto AwkParser::lvalue() -> NodePtr
   return node;
 }
 
+// FIXME: Is a separate string concatenation function even necessary
 auto AwkParser::string_concatenation(NodePtr& t_lhs, const ParserFunc& t_rhs)
   -> NodePtr
 {
@@ -428,6 +433,7 @@ auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   return node;
 }
 
+// TODO: Add extra parameter for ternary expression
 auto AwkParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
   using namespace reserved::symbols;
@@ -501,25 +507,125 @@ auto AwkParser::binary_operator(NodePtr& t_lhs, const ParserFunc& t_rhs)
 //                  | BUILTIN_FUNC_NAME '(' expr_list_opt ')'
 //                  | BUILTIN_FUNC_NAME
 //                  ;
+// FIXME: This is all very similar to non_unary_expr, create a generic helper
+// Function that both can use
 auto AwkParser::non_unary_print_expr() -> NodePtr
 {
+  using namespace nodes::operators;
+  using namespace nodes::rvalue;
+
   TRACE(LogLevel::DEBUG, "NON UNARY PRINT EXPR");
   NodePtr node{nullptr};
 
-  if(next_if(TokenType::PAREN_OPEN)) {
-    if(auto ptr{expr()}; ptr) {
-      // TODO: Grouping?
-      node = std::move(ptr);
-    } else if(auto ptr{multiple_expr_list()}; ptr) {
-      expect(TokenType::IN, "In");
-      expect(TokenType::IDENTIFIER, "Identifier");
+  bool is_nupe{true};
 
-      // TODO: Grouping?
+  // TODO: non_unary_expr and non_unary_print_expr have the exact same part for
+  // This
+  const auto token{next()};
+  switch(token.type()) {
+    case TokenType::PAREN_OPEN:
+      if(auto ptr{expr()}; ptr) {
+        // TODO: Do something
+      } else if(auto ptr{multiple_expr_list()}; ptr) {
+        expect(TokenType::IN, "in");
+        // TODO: Do something
+      } else {
+        // TODO: Error handling
+      }
+
+      expect(TokenType::PAREN_CLOSE, ")");
+      break;
+
+    case TokenType::NOT:
+      LOG(LogLevel::INFO, "Found Not expression");
+      node = std::make_unique<Not>(expr());
+      break;
+
+    // TODO: Token in the grammar calls for NUMBER? These are not treated
+    // differently?
+    case TokenType::FLOAT:
+      TRACE_PRINT(LogLevel::INFO, "Found FLOAT literal");
+      node = std::make_unique<Float>(token.value<double>());
+      break;
+
+    case TokenType::HEX:
+      [[fallthrough]];
+    case TokenType::INTEGER:
+      TRACE_PRINT(LogLevel::INFO, "Found INTEGER literal");
+      node = std::make_unique<Integer>(token.value<int>());
+      break;
+
+    case TokenType::STRING:
+      TRACE_PRINT(LogLevel::INFO, "Found STRING literal");
+      node = std::make_unique<String>(token.value<std::string>());
+      break;
+
+    case TokenType::INCREMENT: {
+      TRACE_PRINT(LogLevel::INFO, "Found --INCREMENT");
+      if(auto ptr{lvalue()}; ptr) {
+        node = std::make_unique<Increment>(std::move(ptr), true);
+      } else {
+        // TODO: Error handling
+      }
+      break;
+    }
+
+    case TokenType::DECREMENT: {
+      TRACE_PRINT(LogLevel::INFO, "Found --DECREMENT");
+      if(auto ptr{lvalue()}; ptr) {
+        node = std::make_unique<Decrement>(std::move(ptr), true);
+      } else {
+        // TODO: Error handling
+      }
+      break;
+    }
+
+    default:
+      prev();
+      is_nupe = false;
+      break;
+  }
+
+  auto lambda_expr = [&]() {
+    return this->print_expr();
+  };
+
+  // TOOD: Make this call separate functions
+  if(is_nupe) {
+    auto lambda_nupe = [&]() {
+      return this->non_unary_print_expr();
+    };
+
+    if(auto ptr{arithmetic(node, lambda_expr)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{string_concatenation(node, lambda_nupe)}; ptr) {
+      // Note: String concatenation uses lambda_nupe
+      node = std::move(ptr);
+    } else if(auto ptr{ere(node, lambda_expr)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{logical(node, lambda_expr)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{ternary(node, lambda_expr)}; ptr) {
       node = std::move(ptr);
     }
-  } else if(next_if(TokenType::NOT)) {
-    print_expr();
   } else {
+    // TODO: Analyze the grammar rules to see if this is correct????
+    // If 'lvalue <assignmenet> expr' is a valid nue than this should be
+    // before The arithmetic, comparison, ere, logical, etc...
+    if(auto lhs{lvalue()}; lhs) {
+      if(auto ptr{assignment(lhs, lambda_expr)}; ptr) {
+        node = std::move(ptr);
+        // TODO: Increment, Decrement
+      } else if(next_if(TokenType::INCREMENT)) {
+        TRACE_PRINT(LogLevel::INFO, "Found INCREMENT++");
+        node = std::make_unique<Increment>(std::move(lhs), false);
+      } else if(next_if(TokenType::DECREMENT)) {
+        TRACE_PRINT(LogLevel::INFO, "Found DECREMENT++");
+        node = std::make_unique<Decrement>(std::move(lhs), false);
+      } else {
+        node = std::move(lhs);
+      }
+    }
   }
 
   return node;
@@ -563,9 +669,6 @@ auto AwkParser::unary_print_expr() -> NodePtr
   return node;
 }
 
-// print_expr       : unary_print_expr
-//                  | non_unary_print_expr
-//                  ;
 auto AwkParser::print_expr() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "PRINT EXPR");
@@ -580,30 +683,35 @@ auto AwkParser::print_expr() -> NodePtr
   return node;
 }
 
-// print_expr_list  : print_expr
-//                  | print_expr_list ',' newline_opt print_expr
-//                  ;
 auto AwkParser::print_expr_list() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "PRINT EXPR LIST");
-  NodePtr node{nullptr};
+  NodeListPtr nodes{std::make_unique<List>()};
 
-  if(auto ptr{print_expr()}; ptr) {
-    if(next_if(TokenType::COMMA)) {
-      // TODO: Set expr
-      newline_opt();
-      print_expr();
+  while(!eos()) {
+    if(auto ptr{print_expr()}; ptr) {
+      TRACE_PRINT(LogLevel::INFO, "Found PRINT EXPR");
+      nodes->push_back(std::move(ptr));
+
+      if(next_if(TokenType::COMMA)) {
+        newline_opt();
+      } else {
+        break;
+      }
     } else {
-      // Create print_expr node??
+      break;
     }
   }
+
+  if(!nodes->size()) {
+    // throw std::runtime_error{"expected atleast on expr in expr_list"};
+  }
+
+  // TODO: If we only have one node in the list flatten it to a single NodePtr
 
   return node;
 }
 
-// print_expr_list_opt : /* empty */
-//                  | print_expr_list
-//                  ;
 auto AwkParser::print_expr_list_opt() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "PRINT EXPR LIST OPT");
@@ -731,19 +839,18 @@ auto AwkParser::non_unary_expr() -> NodePtr
       break;
   }
 
-
   auto lambda_expr = [&]() {
     return this->expr();
   };
 
   if(is_nue) {
-    auto lambda_nue = [&]() {
+    auto lambda_nupe = [&]() {
       return this->non_unary_expr();
     };
 
     if(auto ptr{arithmetic(node, lambda_expr)}; ptr) {
       node = std::move(ptr);
-    } else if(auto ptr{string_concatenation(node, lambda_nue)}; ptr) {
+    } else if(auto ptr{string_concatenation(node, lambda_nupe)}; ptr) {
       // Note: String concatenation uses lambda_nue
       node = std::move(ptr);
     } else if(auto ptr{comparison(node, lambda_expr)}; ptr) {
@@ -770,7 +877,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
         TRACE_PRINT(LogLevel::INFO, "Found DECREMENT++");
         node = std::make_unique<Decrement>(std::move(lhs), false);
       } else {
-        node = std::move(ptr);
+        node = std::move(lhs);
       }
     } else if(auto ptr{non_unary_input_function()}; ptr) {
       node = std::move(ptr);
@@ -840,9 +947,6 @@ auto AwkParser::unary_expr() -> NodePtr
   return node;
 }
 
-// expr             : unary_expr
-//                  | non_unary_expr
-//                  ;
 auto AwkParser::expr() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "EXPR");
@@ -861,19 +965,11 @@ auto AwkParser::expr() -> NodePtr
   return node;
 }
 
-// expr_opt         : /* empty */
-//                  | expr
-//                  ;
 auto AwkParser::expr_opt() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "EXPR OPT");
-  NodePtr node{nullptr};
 
-  if(auto ptr{expr()}; ptr) {
-    node = std::move(ptr);
-  }
-
-  return node;
+  return expr();
 }
 
 // multiple_expr_list : expr ',' newline_opt expr
@@ -925,21 +1021,18 @@ auto AwkParser::expr_list() -> NodePtr
   return node;
 }
 
-// expr_list_opt    : /* empty */
-//                  | expr_list
-//                  ;
 auto AwkParser::expr_list_opt() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "EXPR LIST OPT");
-  NodePtr node{expr_list()};
 
-  return node;
+  return expr_list();
 }
 
 // output_redirection : '>'    expr
 //                  | APPEND expr
 //                  | '|'    expr
 //                  ;
+// TODO: Figure this one out
 auto AwkParser::output_redirection() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "OUTPUT REDIRECTION");
@@ -968,11 +1061,6 @@ auto AwkParser::output_redirection() -> NodePtr
   return node;
 }
 
-// simple_print_statement : Print  print_expr_list_opt
-//                  | Print  '(' multiple_expr_list ')'
-//                  | Printf print_expr_list
-//                  | Printf '(' multiple_expr_list ')'
-//                  ;
 // TODO: Refactor!
 auto AwkParser::simple_print_statement() -> NodePtr
 {
@@ -1008,9 +1096,6 @@ auto AwkParser::simple_print_statement() -> NodePtr
   return node;
 }
 
-// print_statement  : simple_print_statement
-//                  | simple_print_statement output_redirection
-//                  ;
 auto AwkParser::print_statement() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "PRINT STATEMENT");
@@ -1020,16 +1105,15 @@ auto AwkParser::print_statement() -> NodePtr
     // TODO: Implement output redirection for print statements
     node = std::move(ptr);
     if(auto redirection_ptr{output_redirection()}; redirection_ptr) {
+      // TODO: Think this one out, possibly return multiple return values?
     }
   }
 
   return node;
 }
 
+// TODO: Do list rule
 // simple_statement : Delete NAME '[' expr_list ']'
-//                  | expr
-//                  | print_statement
-//                  ;
 auto AwkParser::simple_statement() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "SIMPLE STATEMENT");
@@ -1040,6 +1124,8 @@ auto AwkParser::simple_statement() -> NodePtr
     expect(TokenType::BRACE_OPEN, "[");
     expr_list();
     expect(TokenType::BRACE_CLOSE, "]");
+
+	// TODO: Return Delete statement
   } else if(auto ptr{expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{print_statement()}; ptr) {
@@ -1049,9 +1135,6 @@ auto AwkParser::simple_statement() -> NodePtr
   return node;
 }
 
-// simple_statement_opt : /* empty */
-//                  | simple_statement
-//                  ;
 auto AwkParser::simple_statement_opt() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "SIMPLE STATEMENT OPT");
@@ -1059,6 +1142,7 @@ auto AwkParser::simple_statement_opt() -> NodePtr
   return simple_statement();
 }
 
+// TODO: Return these keyword objects
 // terminatable_statement : simple_statement
 //                  | Break
 //                  | Continue
