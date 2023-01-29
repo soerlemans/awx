@@ -18,8 +18,7 @@ class Redirection : public Node {
   public:
   Redirection(RedirectionOp t_op, NodePtr&& t_left, NodePtr&& t_right);
 
-  virtual auto accept(NodeVisitor t_visitor) -> void override;
-  virtual auto print() const -> void override;
+  virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~Redirection();
 };

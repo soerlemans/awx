@@ -3,21 +3,15 @@
 
 #include <iostream>
 
-#include "../parser/ast.hpp"
-
-#include "visitor_interface.hpp"
+#include "node_visitor.hpp"
 
 
 // Visitor made for printing the AST Node per node
 // Has a unique overload for every print
-class PrintVisitor : public VisitorInterface {
-  private:
-  Ast& m_ast;
+class PrintVisitor : public NodeVisitor {
 
   public:
-  PrintVisitor(Ast& t_ast);
-
-  auto visit() -> void override;
+  PrintVisitor();
 
   virtual ~PrintVisitor();
 };

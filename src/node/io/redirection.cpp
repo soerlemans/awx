@@ -11,12 +11,10 @@ Redirection::Redirection(RedirectionOp t_op, NodePtr&& t_left,
     m_right{std::forward<NodePtr>(t_right)}
 {}
 
-auto Redirection::accept(NodeVisitor t_visitor) -> void
-{}
-
-auto Redirection::print() const -> void
-{}
-
+auto Redirection::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
 
 Redirection::~Redirection()
 {}

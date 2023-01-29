@@ -13,8 +13,7 @@ class operators::Delete : public Node {
   public:
   Delete(NodePtr&& t_array);
 
-  virtual auto accept(NodeVisitor t_visitor) -> void override;
-  virtual auto print() const -> void override;
+  virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~Delete();
 };

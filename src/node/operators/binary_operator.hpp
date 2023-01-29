@@ -24,8 +24,7 @@ class BinaryOperator : public UnaryOperator {
 
   auto second() -> NodePtr&;
 
-  virtual auto accept(NodeVisitor t_visitor) -> void = 0;
-  virtual auto print() const -> void = 0;
+  virtual auto accept(NodeVisitor* t_visitor) -> void = 0;
 
   virtual ~BinaryOperator();
 };

@@ -26,11 +26,10 @@ class Literal : public Node {
     return m_value;
   }
 
-  virtual auto accept(NodeVisitor t_visitor) -> void override
-  {}
-
-  virtual auto print() const -> void override
-  {}
+  virtual auto accept(NodeVisitor* t_visitor) -> void override
+  {
+	t_visitor->visit(this);
+  }
 
   virtual ~Literal()
   {}

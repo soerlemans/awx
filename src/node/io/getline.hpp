@@ -14,8 +14,7 @@ class Getline : public Node {
   public:
   Getline(NodePtr&& t_var);
 
-  virtual auto accept(NodeVisitor t_visitor) -> void override;
-  virtual auto print() const -> void override;
+  virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~Getline();
 };

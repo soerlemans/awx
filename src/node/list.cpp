@@ -8,13 +8,9 @@ List::List(): Node{NodeType::NODE_LIST}, std::list<NodePtr>{}
 {}
 
 // Methods:
-auto List::accept([[maybe_unused]] NodeVisitor t_visitor) -> void
-{}
-
-auto List::print() const -> void
+auto List::accept(NodeVisitor* t_visitor) -> void
 {
-  for(auto& ptr : *this)
-    ptr->print();
+  t_visitor->visit(this);
 }
 
 // Destructor:

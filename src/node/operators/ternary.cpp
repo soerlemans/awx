@@ -13,11 +13,10 @@ Ternary::Ternary(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else)
     m_third{std::forward<NodePtr>(t_else)}
 {}
 
-auto Ternary::accept(NodeVisitor t_visitor) -> void
-{}
-
-auto Ternary::print() const -> void
-{}
+auto Ternary::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
 
 Ternary::~Ternary()
 {}

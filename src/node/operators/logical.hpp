@@ -13,8 +13,7 @@ class Not : public UnaryOperator {
   public:
   Not(NodePtr&& t_left);
 
-  virtual auto accept(NodeVisitor t_visitor) -> void override;
-  virtual auto print() const -> void override;
+  virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~Not();
 };
@@ -25,8 +24,7 @@ class And : public BinaryOperator {
   public:
   And(NodePtr&& t_left, NodePtr&& t_right);
 
-  auto accept(NodeVisitor t_visitor) -> void override;
-  auto print() const -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~And();
 };
@@ -36,8 +34,7 @@ class Or : public BinaryOperator {
   public:
   Or(NodePtr&& t_left, NodePtr&& t_right);
 
-  auto accept(NodeVisitor t_visitor) -> void override;
-  auto print() const -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~Or();
 };

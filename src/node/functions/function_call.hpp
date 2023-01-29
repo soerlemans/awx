@@ -18,8 +18,7 @@ class FunctionCall : public Node {
   public:
   FunctionCall(const std::string t_name, NodeListPtr&& t_args);
 
-  virtual auto accept(NodeVisitor t_visitor) -> void override;
-  virtual auto print() const -> void override;
+  virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~FunctionCall();
 };

@@ -10,9 +10,8 @@
 #include "nodes.hpp"
 
 
-// Aliases:
-using NodePtr = std::unique_ptr<nodes::Node>;
 
+namespace nodes {
 // Enum definitions:
 enum class NodeType {
   LITERAL,
@@ -27,7 +26,7 @@ enum class NodeType {
 
 // Abstract Base Node class:
 // A node could either be a literal or some form of expression
-class nodes::Node {
+class Node {
   protected:
   NodeType m_nodetype;
 
@@ -42,12 +41,10 @@ class nodes::Node {
   // Needed for the visitor pattern
   // TODO: Figure out if there is a way to not have to implement this in every
   // Derived class
-  virtual auto accept(NodeVisitor t_visitor) -> void = 0;
-
-  // Needed for printing the AST
-  virtual auto print() const -> void = 0;
+  virtual auto accept(NodeVisitor* t_visitor) -> void = 0;
 
   virtual ~Node();
 };
+}; // namespace nodes
 
 #endif // NODE_H

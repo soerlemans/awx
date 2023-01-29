@@ -13,11 +13,10 @@ auto UnaryPrefix::op() const -> UnaryPrefixOp
   return m_op;
 }
 
-auto UnaryPrefix::accept(NodeVisitor t_visitor) -> void
-{}
-
-auto UnaryPrefix::print() const -> void
-{}
+auto UnaryPrefix::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
 
 UnaryPrefix::~UnaryPrefix()
 {}

@@ -9,11 +9,10 @@ FunctionCall::FunctionCall(std::string t_name, NodeListPtr&& t_args)
     m_args{std::forward<NodeListPtr>(t_args)}
 {}
 
-auto FunctionCall::accept(NodeVisitor t_visitor) -> void
-{}
-
-auto FunctionCall::print() const -> void
-{}
+auto FunctionCall::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
 
 FunctionCall::~FunctionCall()
 {}

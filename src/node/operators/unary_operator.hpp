@@ -15,8 +15,7 @@ class operators::UnaryOperator : public Expression {
 
   auto first() -> NodePtr&;
 
-  virtual auto accept(NodeVisitor t_visitor) -> void = 0;
-  virtual auto print() const -> void = 0;
+  virtual auto accept(NodeVisitor* t_visitor) -> void = 0;
 
   virtual ~UnaryOperator();
 };

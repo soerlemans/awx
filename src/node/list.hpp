@@ -21,8 +21,7 @@ class List : public Node, public std::list<NodePtr> {
   List();
   List(List&& t_list) = default;
 
-  auto accept(NodeVisitor t_visitor) -> void override;
-  auto print() const -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~List();
 };

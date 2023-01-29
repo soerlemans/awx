@@ -9,13 +9,10 @@ Increment::Increment(NodePtr&& t_left, bool t_prefix)
     m_prefix{t_prefix}
 {}
 
-auto Increment::accept([[maybe_unused]] NodeVisitor t_visitor) -> void
+auto Increment::accept(NodeVisitor* t_visitor) -> void
 {
-  //
+  t_visitor->visit(this);
 }
-
-auto Increment::print() const -> void
-{}
 
 Increment::~Increment()
 {}

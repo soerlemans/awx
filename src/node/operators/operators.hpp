@@ -11,8 +11,6 @@ namespace nodes::operators {
 class UnaryOperator;
 class BinaryOperator;
 
-class DynamicOperator;
-
 // UnaryOperator derived classes:
 class UnaryPrefix;
 class Increment;

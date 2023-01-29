@@ -6,18 +6,22 @@
 
 
 namespace nodes::operators {
-// EreMatch:
-class EreMatch : public BinaryOperator {
-  private:
-  public:
-  virtual ~EreMatch();
+enum class EreOp {
+  MATCH,
+  NO_MATCH
 };
 
-// EreNonMatch:
-class EreNonMatch : public BinaryOperator {
+// EreMatch:
+class Ere : public BinaryOperator {
   private:
+  EreOp m_op;
+
   public:
-  virtual ~EreNonMatch();
+  Ere(EreOp t_op, NodePtr&& t_string, NodePtr&& t_pattern);
+
+  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+
+  virtual ~Ere();
 };
 }; // namespace nodes::operators
 

@@ -24,8 +24,7 @@ class Arithmetic : public BinaryOperator {
   public:
   Arithmetic(ArithmeticOp t_op, NodePtr&& t_left, NodePtr&& t_right);
 
-  virtual auto accept(NodeVisitor t_visitor) -> void override;
-  virtual auto print() const -> void override;
+  virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~Arithmetic();
 };

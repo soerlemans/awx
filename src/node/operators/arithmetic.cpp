@@ -11,10 +11,7 @@ Arithmetic::Arithmetic(ArithmeticOp t_op, NodePtr&& t_left, NodePtr&& t_right)
     m_op{t_op}
 {}
 
-auto Arithmetic::accept(NodeVisitor t_visitor) -> void
-{}
-
-auto Arithmetic::print() const -> void
+auto Arithmetic::accept(NodeVisitor* t_visitor) -> void
 {}
 
 Arithmetic::~Arithmetic()
