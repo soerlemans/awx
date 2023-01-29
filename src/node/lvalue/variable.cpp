@@ -3,8 +3,8 @@
 
 using namespace nodes::lvalue;
 
-Variable::Variable(const std::string t_name)
-  : Node{NodeType::VARIABLE}, m_name{t_name}
+Variable::Variable(std::string t_name)
+  : Node{NodeType::VARIABLE}, m_name{std::move(t_name)}
 {}
 
 auto Variable::accept(NodeVisitor t_visitor) -> void

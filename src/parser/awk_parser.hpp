@@ -35,8 +35,13 @@ class AwkParser : public Parser {
 
   virtual auto lvalue() -> NodePtr;
 
+  // Function expression handlers:
+  virtual auto function() -> NodePtr;
+  virtual auto function_call() -> NodePtr;
+
   // Binary expression handlers:
   // TODO: Maybe replace the switch cases in these functions with macros?
+  // TODO: Implement shunting yard algorithm for binary_operators
   virtual auto ere(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
   virtual auto arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
   virtual auto assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;

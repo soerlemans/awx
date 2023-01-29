@@ -12,7 +12,7 @@ class Variable : public Node {
   std::string m_name;
 
   public:
-  Variable(const std::string t_name);
+  Variable(std::string t_name);
 
   virtual auto accept(NodeVisitor t_visitor) -> void override;
   virtual auto print() const -> void override;

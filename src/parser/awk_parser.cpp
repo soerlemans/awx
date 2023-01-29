@@ -24,6 +24,9 @@
 #include "../node/lvalue/field_reference.hpp"
 #include "../node/lvalue/variable.hpp"
 
+#include "../node/functions/function.hpp"
+#include "../node/functions/function_call.hpp"
+
 #include "../node/operators/arithmetic.hpp"
 #include "../node/operators/assignment.hpp"
 #include "../node/operators/comparison.hpp"
@@ -130,7 +133,7 @@ auto AwkParser::lvalue() -> NodePtr
     case TokenType::IDENTIFIER: {
       // We really dont expect these next_tokens to fail
       if(next_if(TokenType::BRACE_OPEN)) {
-        TRACE_PRINT(LogLevel::INFO, "Found Array subscript");
+        TRACE_PRINT(LogLevel::INFO, "Found ARRAY SUBSCRIPT");
         node = std::make_unique<Array>(token.value<std::string>(), expr_list());
 
         expect(TokenType::BRACE_CLOSE, "]");
@@ -142,10 +145,64 @@ auto AwkParser::lvalue() -> NodePtr
     }
 
     case TokenType::DOLLAR_SIGN: {
-      TRACE_PRINT(LogLevel::INFO, "Found Field reference");
+      TRACE_PRINT(LogLevel::INFO, "Found FIELD REFERENCE");
       node = std::make_unique<FieldReference>(expr());
       break;
     }
+
+    default:
+      prev();
+      break;
+  }
+
+  return node;
+}
+
+auto AwkParser::function() -> NodePtr
+{
+  using namespace nodes;
+  using namespace nodes::functions;
+
+  TRACE(LogLevel::DEBUG, "ERE");
+  NodePtr node{nullptr};
+
+  if(next_if(TokenType::FUNCTION)) {
+    if(const auto token{get_token()};
+       tokentype::is_valid_function_identifier(token.type())) {
+      next();
+
+      // TODO: Create a Function class
+      expect(TokenType::PAREN_OPEN, "(");
+      NodeListPtr params{static_cast<List*>(param_list_opt().release())};
+      expect(TokenType::PAREN_CLOSE, ")");
+      newline_opt();
+      NodeListPtr action_ptr{static_cast<List*>(action().release())};
+
+      node = std::make_unique<Function>(
+        token.value<std::string>(), std::move(params), std::move(action_ptr));
+    } else {
+      // TODO: Error handling
+    }
+  }
+
+  return node;
+}
+
+// This function parses function calls, it parses builtin functions as well as
+// User defined
+auto AwkParser::function_call() -> NodePtr
+{
+  TRACE(LogLevel::DEBUG, "ERE");
+  NodePtr node{nullptr};
+
+  switch(next().type()) {
+    case TokenType::FUNCTION_IDENTIFIER:
+      expect(TokenType::PAREN_OPEN, "(");
+      expr_list_opt();
+      expect(TokenType::PAREN_CLOSE, ")");
+      break;
+
+      // TODO: Add function calls for builtin types
 
     default:
       prev();
@@ -777,7 +834,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
 
   bool is_nue{true};
 
-  // We still need to do ERE, NUMBER? FUNC_NAME and BUILTIN_FUNC_NAME
+  // We still need to do FUNC_NAME and BUILTIN_FUNC_NAME
   const auto token{next()};
   switch(token.type()) {
     case TokenType::PAREN_OPEN:
@@ -882,6 +939,8 @@ auto AwkParser::non_unary_expr() -> NodePtr
       } else {
         node = std::move(lhs);
       }
+    } else if(auto ptr{function()}; ptr) {
+      node = std::move(ptr);
     } else if(auto ptr{non_unary_input_function()}; ptr) {
       node = std::move(ptr);
     }
@@ -1545,7 +1604,7 @@ auto AwkParser::item() -> NodePtr
     node = std::move(ptr);
   } else if(auto pattern_ptr{pattern()}; pattern_ptr) {
     if(auto action_ptr{action()}; action_ptr) {
-	  // TODO: Figure out
+      // TODO: Figure out
     } else {
       // TODO: Properly throw later
       throw std::runtime_error{"Expected Expression"};

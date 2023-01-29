@@ -6,70 +6,15 @@
 #include <type_traits>
 
 #include "token_type.hpp"
-
+#include "token_type_wrapper.hpp"
 
 // Macros:
 // Do not use these macros outside of this file!
-// TODO: Find a way to use templates to convert const char* to a
-// std::string_view Macro used of defining/initializing a reserved keyword or
-// symbol
 #define DEFINE_RESERVED(name, id, token) \
   constexpr TokenTypeWrapper name        \
   {                                      \
     id, TokenType::token                 \
   }
-
-// Concepts:
-// The Identifier is either one character or a string_view
-template<typename T>
-concept TokenTypeWrapperIdentifierConcept =
-  std::same_as<T, std::string_view> || std::same_as<T, char>;
-
-// AWX reserved keywords and symbols
-namespace reserved {
-// Helper class for the Reserved global variable definitions
-// Is intended for attaching some more important data to a certain TokenType
-template<typename T = std::string_view>
-requires TokenTypeWrapperIdentifierConcept<T>
-class TokenTypeWrapper {
-  private:
-  const T m_identifier;
-  const TokenType m_tokentype;
-
-  public:
-  // TODO: Use std::is_convertible<T, std::string_view> to not need to cast to
-  // std::string_view explicitly
-  constexpr TokenTypeWrapper(T t_identifier, TokenType t_tokentype)
-    : m_identifier{t_identifier}, m_tokentype{t_tokentype}
-  {}
-
-  constexpr TokenTypeWrapper(const char* t_identifier, TokenType t_tokentype)
-    : m_identifier{t_identifier}, m_tokentype{t_tokentype}
-  {}
-
-  constexpr auto identifier() const -> T
-  {
-    return m_identifier;
-  }
-
-  constexpr auto tokentype() const -> TokenType
-  {
-    return m_tokentype;
-  }
-
-  constexpr auto get() const -> std::tuple<T, TokenType>
-  {
-    return {m_identifier, m_tokentype};
-  }
-
-  // Warning: The class can be explicitly converted
-  explicit constexpr operator TokenType() const
-  {
-    return m_tokentype;
-  }
-
-  ~TokenTypeWrapper() = default;
-};
 
 // clang-format off
 // Language reserved keywords

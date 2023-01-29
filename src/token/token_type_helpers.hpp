@@ -39,6 +39,9 @@ constexpr auto is_logical_junction(const TokenType t_tokentype) -> bool;
 constexpr auto is_unary_operator(const TokenType t_tokentype) -> bool;
 constexpr auto is_comparison_operator(const TokenType t_tokentype) -> bool;
 
+constexpr auto is_valid_function_identifier(const TokenType t_tokentype)
+  -> bool;
+
 // Function definitions:
 // clang-format off
 DEFINE_TOKEN_TYPE_HELPER(is_int,
@@ -91,6 +94,12 @@ DEFINE_TOKEN_TYPE_HELPER(is_comparison_operator,
 						 CASE_TOKEN_TYPE(NOT_EQUAL)
 						 CASE_TOKEN_TYPE(GREATER_THAN)
 						 CASE_TOKEN_TYPE(GREATER_THAN_EQUAL));
+
+// A regular identifier is a valid name for a function declaration
+// As in 'function func()' is just as valid as 'function func ()'
+DEFINE_TOKEN_TYPE_HELPER(is_valid_function_identifier,
+						 CASE_TOKEN_TYPE(IDENTIFIER)
+						 CASE_TOKEN_TYPE(FUNCTION_IDENTIFIER));
 
 // clang-format on
 }; // namespace tokentype
