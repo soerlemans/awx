@@ -30,8 +30,7 @@ class StringConcatenation;
 class Comparison;
 
 // ERE:
-class EreMatch;
-class EreNonMatch;
+class Ere;
 
 // Array ops:
 class ArrayMembership;

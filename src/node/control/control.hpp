@@ -3,7 +3,7 @@
 
 
 namespace nodes::control {
-class IfThenElse;
+class If;
 };
 
 #endif // CONTROL_H

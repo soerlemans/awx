@@ -6,10 +6,7 @@
 
 
 namespace nodes::operators {
-enum class EreOp {
-  MATCH,
-  NO_MATCH
-};
+enum class EreOp { MATCH, NO_MATCH };
 
 // EreMatch:
 class Ere : public BinaryOperator {

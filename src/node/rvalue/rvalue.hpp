@@ -8,6 +8,7 @@ template<typename T>
 class Literal;
 
 // Aliases:
+// TODO: Think about a way to convey Regex literals
 using Integer = Literal<int>;
 using Float = Literal<double>;
 using String = Literal<std::string>;
