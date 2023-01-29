@@ -165,16 +165,15 @@ auto AwkParser::ere(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
   // Little helper function to cut down on the bloat
   const auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
-    auto ptr{t_rhs()};
-    if(!ptr)
+    auto rhs{t_rhs()};
+    if(!rhs)
       throw std::runtime_error{"Expected Expression"};
 
     return NodePtr{
-      std::make_unique<Arithmetic>(t_op, std::move(t_lhs), std::move(ptr))};
+      std::make_unique<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs))};
   };
 
-  const auto op{next().type()};
-  switch(op) {
+  switch(next().type()) {
     case TokenType{g_ere_match}:
       TRACE_PRINT(LogLevel::INFO, "Found '~'");
       // TODO: Figure out if ere should have its own class or not?
@@ -213,8 +212,7 @@ auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
       std::make_unique<Arithmetic>(t_op, std::move(t_lhs), std::move(ptr))};
   };
 
-  const auto op{next().type()};
-  switch(op) {
+  switch(next().type()) {
     case TokenType{g_caret}:
       TRACE_PRINT(LogLevel::INFO, "Found '^'");
       node = lambda(ArithmeticOp::POWER);
@@ -264,16 +262,15 @@ auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   // TODO: Create an actual function for this that we can call instead of
   // Defining a separate lambda in each function
   const auto lambda = [&](AssignmentOp t_op) -> NodePtr {
-    auto ptr{t_rhs()};
-    if(!ptr)
+    auto rhs{t_rhs()};
+    if(!rhs)
       throw std::runtime_error{"Expected Expression"};
 
     return NodePtr{
-      std::make_unique<Assignment>(t_op, std::move(t_lhs), std::move(ptr))};
+      std::make_unique<Assignment>(t_op, std::move(t_lhs), std::move(rhs))};
   };
 
-  const auto op{next().type()};
-  switch(op) {
+  switch(next().type()) {
     case TokenType{g_power_assignment}:
       TRACE_PRINT(LogLevel::INFO, "Found '^='");
       node = lambda(AssignmentOp::POWER);
@@ -326,15 +323,14 @@ auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   NodePtr node{nullptr};
 
   const auto lambda = [&](ComparisonOp t_op) -> NodePtr {
-    auto ptr{t_rhs()};
-    if(!ptr)
+    auto rhs{t_rhs()};
+    if(!rhs)
       throw std::runtime_error{"Expected Expression"};
 
-    return std::make_unique<Comparison>(t_op, std::move(t_lhs), std::move(ptr));
+    return std::make_unique<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
   };
 
-  const auto op{next().type()};
-  switch(op) {
+  switch(next().type()) {
     case TokenType{g_less_than}:
       TRACE_PRINT(LogLevel::INFO, "Found '<'");
       node = lambda(ComparisonOp::LESS_THAN);
@@ -381,37 +377,30 @@ auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   TRACE(LogLevel::DEBUG, "LOGICAL");
   NodePtr node{nullptr};
 
-  const auto lambda = [&]<typename T>() -> NodePtr {
-    NodePtr rhs{nullptr};
-
-    // Optional newlines are allowed after && and ||
-    newline_opt();
-    if(auto ptr{t_rhs()}; ptr) {
-      rhs = std::move(ptr);
-    } else {
-      // TODO: Error handling empty rhs expression is not allowed
-    }
-
-    if(!rhs) {
-      throw std::runtime_error{"Expected Expression"};
-    }
-
-    return std::make_unique<T>(std::move(t_lhs), std::move(rhs));
-  };
-
-  const auto op{next().type()};
-  switch(op) {
-    case TokenType{g_and}:
+  switch(next().type()) {
+    case TokenType{g_and}: {
       TRACE_PRINT(LogLevel::INFO, "Found '&&'");
-      // Invalid syntax?
-      // node = lambda<And>();
+      // Optional newlines are allowed after &&
+      newline_opt();
+      if(auto rhs{t_rhs()}; rhs) {
+        node = std::make_unique<And>(std::move(t_lhs), std::move(rhs));
+      } else {
+        // TODO: Error handling empty rhs expression is not allowed
+      }
       break;
+    }
 
-    case TokenType{g_or}:
+    case TokenType{g_or}: {
       TRACE_PRINT(LogLevel::INFO, "Found '||'");
-      // Invalid syntax?
-      // node = lambda<Or>();
+      // Optional newlines are allowed after ||
+      newline_opt();
+      if(auto rhs{t_rhs()}; rhs) {
+        node = std::make_unique<Or>(std::move(t_lhs), std::move(rhs));
+      } else {
+        // TODO: Error handling empty rhs expression is not allowed
+      }
       break;
+    }
 
     default:
       prev();
@@ -513,9 +502,11 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
   switch(token.type()) {
     case TokenType::PAREN_OPEN:
       if(auto ptr{expr()}; ptr) {
+        TRACE_PRINT(LogLevel::INFO, "Found (expr)");
         // TODO: Do something
       } else if(auto ptr{multiple_expr_list()}; ptr) {
         expect(TokenType::IN, "in");
+        TRACE_PRINT(LogLevel::INFO, "Found MULTIDIMENSIONAL IN");
         // TODO: Do something
       } else {
         // TODO: Error handling
@@ -525,7 +516,7 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
       break;
 
     case TokenType::NOT:
-      LOG(LogLevel::INFO, "Found Not expression");
+      TRACE_PRINT(LogLevel::INFO, "Found Not expression");
       node = std::make_unique<Not>(expr());
       break;
 
@@ -686,6 +677,8 @@ auto AwkParser::print_expr() -> NodePtr
   return node;
 }
 
+// TODO: multiple_expr_list is very similar create a helper function that both
+// Can use
 auto AwkParser::print_expr_list() -> NodePtr
 {
   using namespace nodes;
@@ -693,15 +686,21 @@ auto AwkParser::print_expr_list() -> NodePtr
   TRACE(LogLevel::DEBUG, "PRINT EXPR LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
-  while(!eos()) {
-    if(auto ptr{print_expr()}; ptr) {
-      TRACE_PRINT(LogLevel::INFO, "Found PRINT EXPR");
-      nodes->push_back(std::move(ptr));
+  if(auto ptr{print_expr()}; ptr) {
+    TRACE_PRINT(LogLevel::INFO, "Found PRINT_EXPR");
 
-      if(next_if(TokenType::COMMA)) {
-        newline_opt();
+    nodes->push_back(std::move(ptr));
+  }
+
+  while(!eos()) {
+    if(next_if(TokenType::COMMA)) {
+      newline_opt();
+      if(auto ptr{print_expr()}; ptr) {
+        TRACE_PRINT(LogLevel::INFO, "Found ',' PRINT_EXPR");
+
+        nodes->push_back(std::move(ptr));
       } else {
-        break;
+        // TODO: Error handling
       }
     } else {
       break;
@@ -783,9 +782,11 @@ auto AwkParser::non_unary_expr() -> NodePtr
   switch(token.type()) {
     case TokenType::PAREN_OPEN:
       if(auto ptr{expr()}; ptr) {
+        TRACE_PRINT(LogLevel::INFO, "Found (expr)");
         // TODO: Do something
       } else if(auto ptr{multiple_expr_list()}; ptr) {
         expect(TokenType::IN, "in");
+        TRACE_PRINT(LogLevel::INFO, "Found MULTIDIMENSIONAL IN");
         // TODO: Do something
       } else {
         // TODO: Error handling
@@ -986,15 +987,21 @@ auto AwkParser::multiple_expr_list() -> NodePtr
   TRACE(LogLevel::DEBUG, "MULTIPLE EXPR LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
-  while(!eos()) {
-    if(auto ptr{expr()}; ptr) {
-      TRACE_PRINT(LogLevel::INFO, "Found EXPR");
-      nodes->push_back(std::move(ptr));
+  if(auto ptr{expr()}; ptr) {
+    TRACE_PRINT(LogLevel::INFO, "Found EXPR");
 
-      if(next_if(TokenType::COMMA)) {
-        newline_opt();
+    nodes->push_back(std::move(ptr));
+  }
+
+  while(!eos()) {
+    if(next_if(TokenType::COMMA)) {
+      newline_opt();
+      if(auto ptr{expr()}; ptr) {
+        TRACE_PRINT(LogLevel::INFO, "Found ',' EXPR");
+
+        nodes->push_back(std::move(ptr));
       } else {
-        break;
+        // TODO: Error handling
       }
     } else {
       break;
@@ -1454,17 +1461,17 @@ auto AwkParser::normal_pattern() -> NodePtr
     if(token.type() == TokenType::COMMA) {
       newline_opt();
       expr();
+
+      // TODO: We must create a NodelistPtr to combine both expr
     } else {
       prev();
+      node = std::move(ptr);
     }
   }
 
   return node;
 }
 
-// pattern          : normal_pattern
-//                  | special_pattern
-//                  ;
 auto AwkParser::pattern() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "PATTERN");
@@ -1479,32 +1486,42 @@ auto AwkParser::pattern() -> NodePtr
   return node;
 }
 
-// param_list       : NAME_ptr
-//                  | param_list ',' NAME_ptr
-//                  ;
 auto AwkParser::param_list() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "PARAM LIST");
-  NodePtr node{nullptr};
+  NodeListPtr nodes{std::make_unique<List>()};
 
-  // const auto token{next()};
+  if(const auto token{next()}; token.type() == TokenType::IDENTIFIER) {
+    TRACE_PRINT(LogLevel::INFO, "Found NAME");
 
-  return node;
+    nodes->push_back(std::make_unique<Variable>(token.value<std::string>()));
+  } else {
+    prev();
+  }
+
+  while(!eos()) {
+    if(next_if(TokenType::COMMA)) {
+      TRACE_PRINT(LogLevel::INFO, "Found ',' NAME");
+      const auto token{expect(TokenType::IDENTIFIER, "NAME")};
+
+      nodes->push_back(std::make_unique<Variable>(token.value<std::string>()));
+    } else {
+      break;
+    }
+  }
+
+  if(!nodes->size()) {
+    // throw std::runtime_error{"expected atleast on expr in expr_list"};
+  }
+
+  return nodes;
 }
 
-// param_list_opt   : /* empty */
-//                  | param_list
-//                  ;
 auto AwkParser::param_list_opt() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "PARAM LIST OPT");
-  NodePtr node{nullptr};
 
-  if(auto ptr{param_list()}; ptr) {
-    node = std::move(ptr);
-  }
-
-  return node;
+  return param_list();
 }
 
 // item also covers what is the valid toplevel syntax:
@@ -1524,9 +1541,9 @@ auto AwkParser::item() -> NodePtr
   if(auto ptr{action()}; ptr) {
     node = std::move(ptr);
   } else if(auto pattern_ptr{pattern()}; pattern_ptr) {
-    auto action_ptr{action()};
-
-    if(!action_ptr) {
+    if(auto action_ptr{action()}; action_ptr) {
+	  // TODO: Figure out
+    } else {
       // TODO: Properly throw later
       throw std::runtime_error{"Expected Expression"};
     }
