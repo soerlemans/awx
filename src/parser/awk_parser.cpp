@@ -1488,6 +1488,9 @@ auto AwkParser::pattern() -> NodePtr
 
 auto AwkParser::param_list() -> NodePtr
 {
+  using namespace nodes;
+  using namespace nodes::lvalue;
+
   TRACE(LogLevel::DEBUG, "PARAM LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 

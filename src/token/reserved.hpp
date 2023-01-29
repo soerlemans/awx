@@ -30,7 +30,7 @@ namespace reserved {
 // Helper class for the Reserved global variable definitions
 // Is intended for attaching some more important data to a certain TokenType
 template<typename T = std::string_view>
-  requires TokenTypeWrapperIdentifierConcept<T>
+requires TokenTypeWrapperIdentifierConcept<T>
 class TokenTypeWrapper {
   private:
   const T m_identifier;
@@ -115,6 +115,60 @@ namespace keywords {
 	g_begin, g_end
   };
 }; // namespace keywords
+
+namespace functions {
+  // Builtin functions
+  // TODO: Maybe simplify to one TokenType called BUILTIN_FUNCTION_NAME
+  DEFINE_RESERVED(g_atan2,    "atan2",    ATAN2);
+  DEFINE_RESERVED(g_close,    "close",    CLOSE);
+  DEFINE_RESERVED(g_cos,      "cos",      COS);
+  DEFINE_RESERVED(g_exp,      "exp",      EXP);
+  DEFINE_RESERVED(g_gsub,     "gsub",     GSUB);
+  DEFINE_RESERVED(g_int,      "int",      INT);
+  DEFINE_RESERVED(g_index,    "index",    INDEX);
+  DEFINE_RESERVED(g_length,   "length",   LENGTH);
+  DEFINE_RESERVED(g_log,      "log",      LOG);
+  DEFINE_RESERVED(g_match,    "match",    MATCH);
+  DEFINE_RESERVED(g_rand,     "rand",     RAND);
+  DEFINE_RESERVED(g_sin,      "sin",      SIN);
+  DEFINE_RESERVED(g_split,    "split",    SPLIT);
+  DEFINE_RESERVED(g_sprintf,  "sprintf",  SPRINTF);
+  DEFINE_RESERVED(g_sqrt,     "sqrt",     SQRT);
+  DEFINE_RESERVED(g_srand,    "srand",    SRAND);
+  DEFINE_RESERVED(g_sub,      "sub",      SUB);
+  DEFINE_RESERVED(g_substr,   "substr",   SUBSTR);
+  DEFINE_RESERVED(g_system,   "system",   SYSTEM);
+  DEFINE_RESERVED(g_tolower,  "tolower",  TOLOWER);
+  DEFINE_RESERVED(g_toupper,  "toupper",  TOUPPER);
+
+  // TODO: Use a std::map instead of an array as those have a faster lookup time
+  // Then we wont need to loop through them either
+  // TODO: Make these be generated automagically
+  // TODO: Make this a constexpr vector? those have constexpr initializer_list constructor
+  constexpr std::array<TokenTypeWrapper<std::string_view>, 21> g_functions{
+    g_atan2,
+    g_close,
+    g_cos,
+    g_exp,
+    g_gsub,
+    g_index,
+    g_int,
+    g_length,
+    g_log,
+    g_match,
+    g_rand,
+    g_sin,
+    g_split,
+    g_sprintf,
+    g_sqrt,
+    g_srand,
+    g_sub,
+    g_substr,
+    g_system,
+    g_tolower,
+    g_toupper
+  };
+}; // namespace functions
 
 // Language reserved symbols
 namespace symbols {
@@ -258,10 +312,9 @@ namespace none {
   // String literal symbols
   DEFINE_RESERVED(g_double_quote, '"', NONE);
   DEFINE_RESERVED(g_backslash, '\\',  NONE);
-}; // namespace unknown
+}; // namespace none
 }; // namespace symbols
-
-// clang-format on
 }; // namespace reserved
+// clang-format on
 
 #endif // RESERVED_H

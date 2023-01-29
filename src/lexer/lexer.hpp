@@ -31,6 +31,7 @@ class Lexer {
 
   // Lexer functions:
   auto is_keyword(std::string_view t_identifier) -> TokenType;
+  auto is_builtin_function(std::string_view t_identifier) -> TokenType;
   auto identifier() -> Token;
 
   auto is_hex_literal() -> bool;

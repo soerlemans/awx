@@ -7,7 +7,8 @@ BEGIN {
 	# Parser fails after returning of array subscript
 	# Nullptr being returned somehwere?
 	# var[name]
-	("hello", "world") in var;
+	(10 + 10)
 
+	hallo();
 	print "Hello" " " "World!"
 }

@@ -35,6 +35,8 @@ Lexer::Lexer(FileBuffer& t_filebuffer): m_filebuffer{t_filebuffer}
 {}
 
 // Public methods:
+// TODO: is_keyword and is_builtin_function are very similar create a
+// Standardised function?
 auto Lexer::is_keyword(std::string_view t_identifier) -> TokenType
 {
   using namespace reserved::keywords;
@@ -48,29 +50,62 @@ auto Lexer::is_keyword(std::string_view t_identifier) -> TokenType
   return TokenType::NONE;
 }
 
+auto Lexer::is_builtin_function(std::string_view t_identifier) -> TokenType
+{
+  using namespace reserved::functions;
+
+  // TODO: Clean this up we could use a loop with an std::pair for the tokentype
+  // Having a centralized location for
+  for(auto function : g_functions)
+    if(t_identifier == function.identifier())
+      return TokenType{function};
+
+  return TokenType::NONE;
+}
+
 auto Lexer::identifier() -> Token
 {
+  using namespace reserved::symbols;
+
   Token token;
   std::stringstream ss;
 
-  auto is_valid_character{[&](const char t_char) -> bool {
+  auto lambda = [&](const char t_char) -> bool {
     return std::isalnum(t_char) || t_char == '_';
-  }};
+  };
 
-  while(is_valid_character(m_filebuffer.character()) && !eol())
+  while(lambda(m_filebuffer.character()) && !eol())
     ss << next_char();
+
+  // Function names are instantly followed by a '('
+  // TODO: Throw an error if we find a space and then '('
+  const bool is_fn_id = m_filebuffer.character() == g_paren_open.identifier();
 
   // We go back one since we add till we find a character that does not
   // Match so we have to unget it
   m_filebuffer.backward();
 
   // Verify if it is a keyword or not
-  if(const auto tokentype{is_keyword(ss.str())}; tokentype != TokenType::NONE)
-    token = Token{tokentype};
-  else
-    token = Token{TokenType::IDENTIFIER, ss.str()};
+  if(const auto tokentype{is_keyword(ss.str())}; tokentype != TokenType::NONE) {
+    LOG(LogLevel::INFO, "KEYWORD: ", ss.str());
 
-  LOG(LogLevel::INFO, "IDENTIFIER: ", ss.str());
+    token = Token{tokentype};
+    // Verify if it is a keyword or not
+  } else if(const auto tokentype{is_builtin_function(ss.str())};
+            tokentype != TokenType::NONE) {
+    LOG(LogLevel::INFO, "BUILTIN FUNCTION: ", ss.str());
+
+    token = Token{tokentype};
+  } else if(is_fn_id) {
+    LOG(LogLevel::INFO, "FUNCTION IDENTIFIER: ", ss.str());
+
+    token = Token{TokenType::FUNCTION_IDENTIFIER, ss.str()};
+  } else {
+    LOG(LogLevel::INFO, "IDENTIFIER: ", ss.str());
+
+    token = Token{TokenType::IDENTIFIER, ss.str()};
+  }
+
   return token;
 }
 
@@ -357,29 +392,29 @@ auto Lexer::tokenize() -> TokenStream
   for(; !m_filebuffer.eof(); m_filebuffer.next())
     while(!eol()) {
       const char character{m_filebuffer.character()};
-
       const TokenType last_tokentype{m_tokenstream.back().type()};
 
-      // TODO: String concatenation is not lexed right now
       if(std::isspace(character)) {
         // Just ignore whitespace, but do not ignore newlines
         if(character == g_newline.identifier()) {
           LOG(LogLevel::INFO, "NEWLINE");
           add_token(Token{TokenType::NEWLINE});
         }
-      } else if(character == '#') { // # Denotes comments
-        // Stop lexing the current line and continue with the next!
+      } else if(character == '#') {
+        // '#' are used for comments stop lexing the current line and continue
+        // With the next!
         break;
       } else if(std::isalpha(character)) {
         add_token(identifier());
       } else if(std::isdigit(character)) {
         add_token(literal_numeric());
-      } else if(character == double_quote)
+      } else if(character == double_quote) {
         add_token(literal_string());
-      else if(character == slash && !tokentype::is_int(last_tokentype))
+      } else if(character == slash && !tokentype::is_int(last_tokentype)) {
         add_token(literal_regex());
-      else
+      } else {
         add_token(symbol());
+      }
 
       // Increment at the end, this allows us to prevent having to use
       // m_filebuffer.backward() in situations where we look a head to much
