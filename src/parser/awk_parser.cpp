@@ -1630,9 +1630,10 @@ auto AwkParser::item() -> NodePtr
 
   // TODO: This is just for debugging the parser
   if(node) {
-    std::cout << "Printing AST of an ITEM\n";
+    std::cout << "=== Printing AST of an ITEM\n";
     PrintVisitor visitor;
     node->accept(&visitor);
+    std::cout << "=== Done printing AST of an ITEM\n";
   }
 
   return node;
@@ -1648,6 +1649,11 @@ auto AwkParser::item_list() -> NodeListPtr
   NodeListPtr nodes{std::make_unique<List>()};
 
   while(!eos()) {
+
+	// Remove newlines before items
+	// TODO: Figure out if this works as intended, since its not in the grammar
+	newline_opt();
+
     if(auto ptr{item()}; ptr) {
       nodes->push_back(std::move(ptr));
       terminator();

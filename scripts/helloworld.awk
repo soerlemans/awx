@@ -1,10 +1,14 @@
 #!/usr/bin/awk -f
-#BEGIN {
-{
-	getline monkey
-	+10
-	var = 10;
 
+
+
+BEGIN {
 	"String" "Concatenation"
 	print "Hello World!"
+}
+
+
+function apples()
+{
+	print "I like monkeys"
 }

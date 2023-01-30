@@ -73,7 +73,7 @@ auto run(int argc, char* argv[]) -> void
 auto main(int argc, char* argv[]) -> int
 {
   // Set loglevel for now for debugging purposes
-  SET_LOGLEVEL(log::LogLevel::DEBUG);
+  SET_LOGLEVEL(log::LogLevel::INFO);
   LOG_PRINTLN("#== BEGIN ==#");
 
   parse_args(argc, argv);
