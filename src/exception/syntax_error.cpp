@@ -1,5 +1,6 @@
 #include "syntax_error.hpp"
 
+#include <iomanip>
 #include <sstream>
 #include <string>
 
@@ -24,15 +25,13 @@ SyntaxError::SyntaxError(std::string t_msg, std::string t_path,
   ss << "Error in file: " << '"' << t_path << '"' << '\n';
   ss << "Error description: " << '"' << t_msg << '"' << "\n";
   ss << lineno_ss.str();
-  ss << t_line << '\n';
 
-  // TODO: We assume spaces now as the default indentationt
-  const auto pos{lineno_ss.str().size() + m_columnno};
-  std::string column_str(pos, ' ');
+  // FIXME: If t_line does not end in a newline we have an issue!
+  ss << t_line;
 
-  // Use the lineno_ss to point where the error was found
-  // FIXME: The ^^^ does not properly align
-  ss << column_str << "~^~" << '\n';
+  // FIXME: ~^~ does not align
+  const auto indent{lineno_ss.str().size() + m_columnno};
+  ss << std::setw(indent) << "~^~" << '\n';
 
   m_error = ss.str();
 }
