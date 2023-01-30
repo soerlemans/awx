@@ -5,6 +5,7 @@
 
 #include "../node/control/control.hpp"
 #include "../node/functions/functions.hpp"
+#include "../node/recipes/recipes.hpp"
 
 #include "../node/io/io.hpp"
 
@@ -28,6 +29,8 @@ class NodeVisitor {
   virtual auto visit(nodes::functions::FunctionCall* t_fn_call) -> void = 0;
   virtual auto visit(nodes::functions::BuiltinFunction* t_fn) -> void = 0;
 
+  virtual auto visit(nodes::recipes::SpecialPattern* t_pattern) -> void = 0;
+  virtual auto visit(nodes::recipes::Recipe* t_recipe) -> void = 0;
 
   virtual auto visit(nodes::io::Print* t_print) -> void = 0;
   virtual auto visit(nodes::io::Printf* t_printf) -> void = 0;

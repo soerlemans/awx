@@ -21,6 +21,7 @@ enum class NodeType {
   FUNCTION,
   IO,
   CONTROL_STATEMENT,
+  RECIPE,
   EXPRESSION,
 };
 

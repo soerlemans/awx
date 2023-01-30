@@ -18,6 +18,9 @@
 #include "../node/functions/function.hpp"
 #include "../node/functions/function_call.hpp"
 
+#include "../node/recipes/recipe.hpp"
+#include "../node/recipes/special_pattern.hpp"
+
 #include "../node/operators/arithmetic.hpp"
 #include "../node/operators/assignment.hpp"
 #include "../node/operators/comparison.hpp"
@@ -69,6 +72,32 @@ auto PrintVisitor::visit(nodes::functions::BuiltinFunction* t_fn) -> void
   Printer printer{m_counter};
 
   printer.print("BUILTIN FUNCTION CALL");
+}
+
+auto PrintVisitor::visit(nodes::recipes::SpecialPattern* t_pattern) -> void
+{
+  Printer printer{m_counter};
+
+  printer.print("SPECIAL PATTERN");
+
+  // TODO: List select special pattern
+}
+
+auto PrintVisitor::visit(nodes::recipes::Recipe* t_recipe) -> void
+{
+  Printer printer{m_counter};
+
+  printer.print("RECIPE");
+  // TODO: Macro or lambda this??
+  if(NodePtr& pattern{t_recipe->pattern()}; pattern) {
+    printer.print("| PATTERN");
+    pattern->accept(this);
+  }
+
+  if(NodePtr& body{t_recipe->body()}; body) {
+    printer.print("| BODY");
+    body->accept(this);
+  }
 }
 
 auto PrintVisitor::visit(nodes::io::Print* t_print) -> void

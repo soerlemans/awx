@@ -31,6 +31,9 @@
 #include "../node/functions/function.hpp"
 #include "../node/functions/function_call.hpp"
 
+#include "../node/recipes/recipe.hpp"
+#include "../node/recipes/special_pattern.hpp"
+
 #include "../node/operators/arithmetic.hpp"
 #include "../node/operators/assignment.hpp"
 #include "../node/operators/comparison.hpp"
@@ -1490,19 +1493,22 @@ auto AwkParser::action() -> NodePtr
   return node;
 }
 
-// special_pattern  : Begin
-//                  | End
-//                  ;
 auto AwkParser::special_pattern() -> NodePtr
 {
+  using namespace nodes::recipes;
+
   TRACE(LogLevel::DEBUG, "SPECIAL PATTERN");
   NodePtr node{nullptr};
 
   if(next_if(TokenType::BEGIN)) {
     TRACE_PRINT(LogLevel::INFO, "Found 'BEGIN'");
 
+    node = std::make_unique<SpecialPattern>(SpecialPatternOp::BEGIN);
+
   } else if(next_if(TokenType::END)) {
     TRACE_PRINT(LogLevel::INFO, "Found 'END'");
+
+    node = std::make_unique<SpecialPattern>(SpecialPatternOp::END);
   }
 
   return node;
@@ -1598,6 +1604,8 @@ auto AwkParser::param_list_opt() -> NodeListPtr
 //                  ;
 auto AwkParser::item() -> NodePtr
 {
+  using namespace nodes::recipes;
+
   TRACE(LogLevel::DEBUG, "ITEM");
   NodePtr node{nullptr};
 
@@ -1605,7 +1613,8 @@ auto AwkParser::item() -> NodePtr
     node = std::move(ptr);
   } else if(auto pattern_ptr{pattern()}; pattern_ptr) {
     if(auto action_ptr{action()}; action_ptr) {
-      // TODO: Figure out
+      node =
+        std::make_unique<Recipe>(std::move(pattern_ptr), std::move(action_ptr));
     } else {
       // TODO: Properly throw later
       throw std::runtime_error{"Expected Expression"};
@@ -1617,13 +1626,11 @@ auto AwkParser::item() -> NodePtr
     node = std::move(ptr);
   } else if(auto ptr{function()}; ptr) {
     node = std::move(ptr);
-  } else if(true) {
-    // TODO: Implement function parsing for now ignore?
   }
 
   // TODO: This is just for debugging the parser
   if(node) {
-    std::cout << "Printing AST\n";
+    std::cout << "Printing AST of an ITEM\n";
     PrintVisitor visitor;
     node->accept(&visitor);
   }
@@ -1649,7 +1656,7 @@ auto AwkParser::item_list() -> NodeListPtr
     }
   }
 
-return nodes;
+  return nodes;
 }
 
 // program          : item_list

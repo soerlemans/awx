@@ -24,14 +24,14 @@ class PrintVisitor : public NodeVisitor {
     template<typename... Args>
     auto print(Args&&... t_args) -> void
     {
-	  // Construct the prefix
-	  std::cout << std::string(m_counter, ' ') << "-> ";
+      // Construct the prefix
+      std::cout << std::string(m_counter, ' ') << "-> ";
 
-	  // Print the arguments
+      // Print the arguments
       (std::cout << ... << t_args);
 
-	  // Create the indentation level denoter
-	  std::cout << " - (" << m_counter << ")\n";
+      // Create the indentation level denoter
+      std::cout << " - (" << m_counter << ")\n";
     }
 
     ~Printer()
@@ -53,6 +53,9 @@ class PrintVisitor : public NodeVisitor {
     -> void override;
   virtual auto visit(nodes::functions::BuiltinFunction* t_fn) -> void override;
 
+  virtual auto visit(nodes::recipes::SpecialPattern* t_pattern)
+    -> void override;
+  virtual auto visit(nodes::recipes::Recipe* t_recipe) -> void override;
 
   virtual auto visit(nodes::io::Print* t_print) -> void override;
   virtual auto visit(nodes::io::Printf* t_printf) -> void override;

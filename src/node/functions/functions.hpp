@@ -9,6 +9,6 @@ class Function;
 class BuiltinFunction;
 
 class FunctionCall;
-};
+} // namespace nodes::functions
 
 #endif // FUNCTIONS_H
