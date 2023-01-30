@@ -1,14 +1,17 @@
 #ifndef PRINT_VISITOR_H
 #define PRINT_VISITOR_H
 
+#include "../debug/trace.hpp"
 #include "node_visitor.hpp"
 
 
 // Visitor made for printing the AST Node per node
 // Has a unique overload for every print
 class PrintVisitor : public NodeVisitor {
+  log::LogLevel m_loglevel;
+
   public:
-  PrintVisitor();
+  PrintVisitor(log::LogLevel t_loglevel);
 
   virtual auto visit(nodes::control::If* t_if) -> void override;
 

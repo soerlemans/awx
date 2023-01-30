@@ -1,5 +1,4 @@
 #!/usr/bin/awk -f
-
 BEGIN {
 	# file = "/tmp/jfjfafj.txt"
 	# getline var < file

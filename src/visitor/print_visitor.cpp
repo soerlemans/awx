@@ -1,7 +1,8 @@
 #include "print_visitor.hpp"
 
 
-PrintVisitor::PrintVisitor()
+PrintVisitor::PrintVisitor(log::LogLevel t_loglevel)
+  : m_loglevel{t_loglevel}
 {}
 
 auto PrintVisitor::visit(nodes::control::If* t_if) -> void

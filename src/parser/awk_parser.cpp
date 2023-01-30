@@ -53,7 +53,7 @@ auto AwkParser::newline_opt() -> void
   TRACE(LogLevel::DEBUG, "NEWLINE OPT");
 
   while(!eos() && next_if(TokenType::NEWLINE)) {
-    TRACE_PRINT(LogLevel::DEBUG, "Found NEWLINE");
+    TRACE_PRINT(LogLevel::INFO, "Found NEWLINE");
   }
 }
 
@@ -1154,11 +1154,11 @@ auto AwkParser::simple_print_statement() -> NodePtr
   };
 
   if(next_if(TokenType::PRINT)) {
-    TRACE_PRINT(LogLevel::DEBUG, "Found 'print'");
+    TRACE_PRINT(LogLevel::INFO, "Found 'print'");
 
     node = std::make_unique<Print>(lambda());
   } else if(next_if(TokenType::PRINTF)) {
-    TRACE_PRINT(LogLevel::DEBUG, "Found 'printf");
+    TRACE_PRINT(LogLevel::INFO, "Found 'printf");
 
     node = std::make_unique<Printf>(lambda());
   }
@@ -1364,7 +1364,7 @@ auto AwkParser::terminated_statement() -> NodePtr
     }
 
     case TokenType::SEMICOLON: {
-      TRACE_PRINT(LogLevel::DEBUG, "Found ';");
+      TRACE_PRINT(LogLevel::INFO, "Found ';");
       newline_opt();
       break;
     }
