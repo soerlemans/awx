@@ -19,6 +19,6 @@ class Ternary : public BinaryOperator {
 
   virtual ~Ternary();
 };
-}; // namespace nodes::operators
+} // namespace nodes::operators
 
 #endif // TERNARY_H

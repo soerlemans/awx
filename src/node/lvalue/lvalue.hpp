@@ -8,6 +8,6 @@ namespace nodes::lvalue {
 class Array;
 class Variable;
 class FieldReference;
-}; // namespace nodes::lvalue
+} // namespace nodes::lvalue
 
 #endif // LVALUE_H

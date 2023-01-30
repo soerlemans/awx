@@ -34,6 +34,6 @@ class Literal : public Node {
   virtual ~Literal()
   {}
 };
-}; // namespace nodes::rvalue
+} // namespace nodes::rvalue
 
 #endif // LITERAL_H

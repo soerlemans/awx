@@ -20,6 +20,6 @@ class Ere : public BinaryOperator {
 
   virtual ~Ere();
 };
-}; // namespace nodes::operators
+} // namespace nodes::operators
 
 #endif // ERE_H

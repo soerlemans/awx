@@ -8,9 +8,9 @@
 #include "nodes.hpp"
 
 
-namespace nodes {
+using NodeListPtr = std::unique_ptr<nodes::List>;
 
-using NodeListPtr = std::unique_ptr<List>;
+namespace nodes {
 
 // TODO: Inherit from std::list itself or shadow std::list functions
 // This is a list in the sense of a list of expressions or similar
@@ -25,6 +25,6 @@ class List : public Node, public std::list<NodePtr> {
 
   virtual ~List();
 };
-}; // namespace nodes
+} // namespace nodes
 
 #endif // LIST_H

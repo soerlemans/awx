@@ -17,6 +17,6 @@ class Decrement : public UnaryOperator {
 
   virtual ~Decrement();
 };
-}; // namespace nodes::operators
+} // namespace nodes::operators
 
 #endif // DECREMENT_H

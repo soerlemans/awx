@@ -30,6 +30,6 @@ class Comparison : public BinaryOperator {
 
   virtual ~Comparison();
 };
-}; // namespace nodes::operators
+} // namespace nodes::operators
 
 #endif // COMPARISON_H

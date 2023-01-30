@@ -18,6 +18,6 @@ class Getline : public Node {
 
   virtual ~Getline();
 };
-}; // namespace nodes::io
+} // namespace nodes::io
 
 #endif // GETLINE_H

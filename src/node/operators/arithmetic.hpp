@@ -28,6 +28,6 @@ class Arithmetic : public BinaryOperator {
 
   virtual ~Arithmetic();
 };
-}; // namespace nodes::operators
+} // namespace nodes::operators
 
 #endif

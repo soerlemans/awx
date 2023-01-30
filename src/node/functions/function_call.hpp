@@ -22,6 +22,6 @@ class FunctionCall : public Node {
 
   virtual ~FunctionCall();
 };
-}; // namespace nodes::functions
+} // namespace nodes::functions
 
 #endif // FUNCTION_CALL_H

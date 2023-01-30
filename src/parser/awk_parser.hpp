@@ -55,8 +55,8 @@ class AwkParser : public Parser {
   virtual auto non_unary_print_expr() -> NodePtr;
   virtual auto unary_print_expr() -> NodePtr;
   virtual auto print_expr() -> NodePtr;
-  virtual auto print_expr_list() -> NodePtr;
-  virtual auto print_expr_list_opt() -> NodePtr;
+  virtual auto print_expr_list() -> NodeListPtr;
+  virtual auto print_expr_list_opt() -> NodeListPtr;
 
   // Expression rules:
   virtual auto non_unary_expr() -> NodePtr;
@@ -65,7 +65,7 @@ class AwkParser : public Parser {
   virtual auto expr() -> NodePtr;
   virtual auto expr_opt() -> NodePtr;
 
-  virtual auto multiple_expr_list() -> NodePtr;
+  virtual auto multiple_expr_list() -> NodeListPtr;
   virtual auto expr_list() -> NodePtr;
   virtual auto expr_list_opt() -> NodePtr;
 

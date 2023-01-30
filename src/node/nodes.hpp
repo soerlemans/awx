@@ -13,7 +13,7 @@ class List;
 // Most Node types inherit from Expression
 class Expression;
 
-}; // namespace nodes
+} // namespace nodes
 
 // Alisases:
 using NodePtr = std::unique_ptr<nodes::Node>;

@@ -12,7 +12,7 @@
 namespace {
 // Private variables:
 log::LogLevel g_loglevel{log::LogLevel::WARNING};
-}; // namespace
+} // namespace
 
 namespace log {
 // Public functions:
@@ -43,4 +43,4 @@ auto set_loglevel(const LogLevel t_loglevel) -> void
 {
   g_loglevel = t_loglevel;
 }
-}; // namespace log
+} // namespace log

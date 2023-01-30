@@ -22,6 +22,6 @@ class Redirection : public Node {
 
   virtual ~Redirection();
 };
-}; // namespace nodes::io
+} // namespace nodes::io
 
 #endif // REDIRECTION_H

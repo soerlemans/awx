@@ -11,6 +11,6 @@ class Grouping : public UnaryOperator {
   public:
   virtual ~Grouping();
 };
-}; // namespace nodess::operators
+} // namespace nodess::operators
 
 #endif // GROUPING_H

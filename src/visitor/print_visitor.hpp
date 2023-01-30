@@ -10,6 +10,7 @@
 class PrintVisitor : public NodeVisitor {
   private:
   // Classes:
+  // This class is made for pretty printing the AST
   class Printer {
     private:
     int& m_counter;
@@ -73,7 +74,7 @@ class PrintVisitor : public NodeVisitor {
   virtual auto visit(nodes::operators::Delete* t_delete) -> void override;
   virtual auto visit(nodes::operators::Ere* t_ere) -> void override;
 
-  virtual auto visit(nodes::operators::Not* t_ere) -> void override;
+  virtual auto visit(nodes::operators::Not* t_not) -> void override;
   virtual auto visit(nodes::operators::And* t_and) -> void override;
   virtual auto visit(nodes::operators::Or* t_or) -> void override;
 

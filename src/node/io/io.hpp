@@ -12,6 +12,6 @@ class Getline;
 
 // Redirection of IO:
 class Redirection;
-}; // namespace nodes::io
+} // namespace nodes::io
 
 #endif // IO_H

@@ -45,6 +45,6 @@ class Node {
 
   virtual ~Node();
 };
-}; // namespace nodes
+} // namespace nodes
 
 #endif // NODE_H

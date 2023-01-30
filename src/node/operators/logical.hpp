@@ -38,6 +38,6 @@ class Or : public BinaryOperator {
 
   virtual ~Or();
 };
-}; // namespace nodes::operators
+} // namespace nodes::operators
 
 #endif // LOGICAL_H

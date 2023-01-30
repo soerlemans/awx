@@ -29,7 +29,7 @@ class UnaryPrefix : public UnaryOperator {
 namespace unary_prefix {
 // Convert TokenType enum to matching UnaryPrefixOp token
 auto tokentype2enum(const TokenType t_tokentype) -> UnaryPrefixOp;
-}; // namespace unary_prefix
-}; // namespace nodes::operators
+} // namespace unary_prefix
+} // namespace nodes::operators
 
 #endif // UNARY_PREFIX_H

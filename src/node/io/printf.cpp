@@ -5,9 +5,14 @@
 
 using namespace nodes::io;
 
-Printf::Printf(NodePtr&& t_expr)
-  : Node{NodeType::IO}, m_expr{std::forward<NodePtr>(t_expr)}
+Printf::Printf(NodeListPtr&& t_params)
+  : Node{NodeType::IO}, m_params{std::forward<NodeListPtr>(t_params)}
 {}
+
+auto Printf::params() -> NodeListPtr&
+{
+  return m_params;
+}
 
 auto Printf::accept(NodeVisitor* t_visitor) -> void
 {

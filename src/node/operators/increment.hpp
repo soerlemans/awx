@@ -17,6 +17,6 @@ class Increment : public UnaryOperator {
 
   virtual ~Increment();
 };
-}; // namespace nodes::operators
+} // namespace nodes::operators
 
 #endif

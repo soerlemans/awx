@@ -19,6 +19,6 @@ class operators::UnaryOperator : public Expression {
 
   virtual ~UnaryOperator();
 };
-}; // namespace nodes
+} // namespace nodes
 
 #endif // UNARY_OPERATOR_H

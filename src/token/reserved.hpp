@@ -59,7 +59,7 @@ namespace keywords {
 	g_print, g_printf, g_getline,
 	g_begin, g_end
   };
-}; // namespace keywords
+} // namespace keywords
 
 namespace functions {
   // Builtin functions
@@ -113,7 +113,7 @@ namespace functions {
     g_tolower,
     g_toupper
   };
-}; // namespace functions
+} // namespace functions
 
 // Language reserved symbols
 namespace symbols {
@@ -257,9 +257,9 @@ namespace none {
   // String literal symbols
   DEFINE_RESERVED(g_double_quote, '"', NONE);
   DEFINE_RESERVED(g_backslash, '\\',  NONE);
-}; // namespace none
-}; // namespace symbols
-}; // namespace reserved
+} // namespace none
+} // namespace symbols
+} // namespace reserved
 // clang-format on
 
 #endif // RESERVED_H

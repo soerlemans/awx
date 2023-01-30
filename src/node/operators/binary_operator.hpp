@@ -28,6 +28,6 @@ class BinaryOperator : public UnaryOperator {
 
   virtual ~BinaryOperator();
 };
-}; // namespace nodes::operators
+} // namespace nodes::operators
 
 #endif // BINARY_OPERATOR_H

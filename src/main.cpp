@@ -73,8 +73,8 @@ auto run(int argc, char* argv[]) -> void
 auto main(int argc, char* argv[]) -> int
 {
   // Set loglevel for now for debugging purposes
-  SET_LOGLEVEL(log::LogLevel::DEBUG);
-  LOG_PRINT("=== BEGIN ===");
+  // SET_LOGLEVEL(log::LogLevel::DEBUG);
+  LOG_PRINTLN("=== BEGIN ===");
 
   parse_args(argc, argv);
 
@@ -86,6 +86,7 @@ auto main(int argc, char* argv[]) -> int
     return ExitCode::EXCEPTION;
   }
 
-  LOG_PRINT("=== END ===");
+  LOG_PRINTLN("=== END ===");
+
   return ExitCode::OK;
 }

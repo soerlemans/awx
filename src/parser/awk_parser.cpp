@@ -13,8 +13,8 @@
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
 
-#include "../node/node.hpp"
 #include "../node/list.hpp"
+#include "../node/node.hpp"
 
 #include "../node/io/getline.hpp"
 #include "../node/io/print.hpp"
@@ -740,7 +740,7 @@ auto AwkParser::print_expr() -> NodePtr
 
 // TODO: multiple_expr_list is very similar create a helper function that both
 // Can use
-auto AwkParser::print_expr_list() -> NodePtr
+auto AwkParser::print_expr_list() -> NodeListPtr
 {
   using namespace nodes;
 
@@ -777,7 +777,7 @@ auto AwkParser::print_expr_list() -> NodePtr
   return nodes;
 }
 
-auto AwkParser::print_expr_list_opt() -> NodePtr
+auto AwkParser::print_expr_list_opt() -> NodeListPtr
 {
   TRACE(LogLevel::DEBUG, "PRINT EXPR LIST OPT");
 
@@ -1043,7 +1043,7 @@ auto AwkParser::expr_opt() -> NodePtr
 // multiple_expr_list : expr ',' newline_opt expr
 //                  | multiple_expr_list ',' newline_opt expr
 //                  ;
-auto AwkParser::multiple_expr_list() -> NodePtr
+auto AwkParser::multiple_expr_list() -> NodeListPtr
 {
   using namespace nodes;
 
@@ -1144,8 +1144,8 @@ auto AwkParser::simple_print_statement() -> NodePtr
   NodePtr node{nullptr};
 
   // Convenience lambda
-  const auto lambda = [&]() -> NodePtr {
-    NodePtr node{nullptr};
+  const auto lambda = [&]() -> NodeListPtr {
+    NodeListPtr node{nullptr};
 
     if(next_if(TokenType::PAREN_OPEN)) {
       node = multiple_expr_list();
@@ -1478,16 +1478,22 @@ auto AwkParser::action() -> NodePtr
     newline_opt();
 
     if(auto ptr{terminated_statement_list()}; ptr) {
-      // DO SOMETHING!
-      // TODO: We dont reach here cause of some reason??????
+	  node = std::move(ptr);
     } else if(auto ptr{unterminated_statement_list()}; ptr) {
-      // DO SOMETHING!
+	  node = std::move(ptr);
     } else {
       // TODO:: Error handling
     }
 
     expect(TokenType::ACCOLADE_CLOSE, "}");
     TRACE_PRINT(LogLevel::INFO, "Found '}'");
+  }
+
+  // TODO: This is just for debugging the parser
+  if(node) {
+	std::cout << "Printing AST\n";
+    PrintVisitor visitor;
+    node->accept(&visitor);
   }
 
   return node;
@@ -1652,10 +1658,12 @@ auto AwkParser::program() -> NodePtr
   NodePtr node{nullptr};
 
   // TODO Piece these together some way into an AST structure
-  node = item_list();
-
-  if(auto item_ptr{item()}; item_ptr) {
+  if(auto list_ptr{item_list()}; list_ptr) {
+  } else if(auto item_ptr{item()}; item_ptr) {
     // item() is optional
+  } else {
+    // TODO: Error handling
+    std::cout << "No items in program" << std::endl;
   }
 
   return node;
@@ -1663,16 +1671,13 @@ auto AwkParser::program() -> NodePtr
 
 auto AwkParser::parse() -> Ast
 {
-  LOG_PRINT("=== PARSING ===");
+  LOG_PRINTLN("=== PARSING ===");
 
   Ast ast;
+  program();
 
-  PrintVisitor visitor;
-  NodePtr ptr{program()};
+  LOG_PRINTLN();
 
-  ptr->accept(&visitor);
-
-  LOG_PRINT();
   return ast;
 }
 

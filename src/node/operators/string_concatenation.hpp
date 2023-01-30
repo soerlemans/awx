@@ -15,6 +15,6 @@ class StringConcatenation : public BinaryOperator {
 
   virtual ~StringConcatenation();
 };
-}; // namespace nodes::operators
+} // namespace nodes::operators
 
 #endif // STRING_CONCATENATION_H

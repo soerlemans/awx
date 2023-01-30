@@ -18,6 +18,6 @@ class Variable : public Node {
 
   virtual ~Variable();
 };
-}; // namespace nodes::lvalue
+} // namespace nodes::lvalue
 
 #endif // VARIABLE_H

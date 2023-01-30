@@ -6,6 +6,33 @@
 
 #include "../types.hpp"
 
+// Only log if we are on the development build
+#if DEVELOPMENT
+
+// Macros:
+#define LOG_PRINTLN(...) log::println(__VA_ARGS__)
+
+#define LOG(loglevel, ...) \
+  log::log(__FILE__, __FUNCTION__, __LINE__, log::loglevel, __VA_ARGS__)
+
+#define SET_LOGLEVEL(loglevel) set_loglevel(loglevel)
+
+#else
+
+// Stub the macros if we are not on the debugging build
+#define LOG_PRINTLN(...) \
+  do {                   \
+  } while(0)
+
+#define LOG(...) \
+  do {           \
+  } while(0)
+
+#define SET_LEVEL(level) \
+  do {                   \
+  } while(0)
+
+#endif // DEBUG
 
 namespace log {
 // Enums:
@@ -18,17 +45,7 @@ enum class LogLevel : u16 {
   DEBUG,
 };
 
-// Only log if we are on the development build
 #if DEVELOPMENT
-
-// Macros:
-#define LOG_PRINT(...) log::print(__VA_ARGS__)
-
-#define LOG(loglevel, ...) \
-  log::log(__FILE__, __FUNCTION__, __LINE__, log::loglevel, __VA_ARGS__)
-
-#define SET_LOGLEVEL(loglevel) set_loglevel(loglevel)
-
 // Functions:
 auto is_lower_loglevel(const LogLevel t_loglevel) -> bool;
 auto loglevel2str(const LogLevel t_loglevel) -> std::string_view;
@@ -39,7 +56,14 @@ template<typename... Args>
 auto print(Args&&... t_args) -> void
 {
   // Fold expression
-  (std::clog << ... << t_args) << '\n';
+  (std::clog << ... << t_args);
+}
+
+template<typename... Args>
+auto println(Args&&... t_args) -> void
+{
+  // Fold expression
+  print(std::forward<Args>(t_args)..., '\n');
 }
 
 // Do not use this function with non primitive types it will not know how to
@@ -57,27 +81,11 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
     // Module information
     print('[', t_file, ':', t_lineno, " -> ", t_function, "()] => ");
 
-	// Log what we want to log
-    print(std::forward<Args>(t_args)...);
+    // Log what we want to log
+    println(std::forward<Args>(t_args)...);
   }
 }
 
-#else
-
-// Stub the macros if we are not on the debugging build
-#define LOG_PRINT(...) \
-  do {                 \
-  } while(0)
-
-#define LOG(...) \
-  do {           \
-  } while(0)
-
-#define SET_LEVEL(level) \
-  do {                   \
-  } while(0)
-
 #endif // DEBUG
 } // namespace log
-
 #endif // LOG_H

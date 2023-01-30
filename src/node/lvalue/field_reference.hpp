@@ -16,6 +16,6 @@ class FieldReference : public Node {
 
   virtual ~FieldReference();
 };
-}; // namespace nodes::lvalue
+} // namespace nodes::lvalue
 
 #endif // FIELD_REFERENCE_H

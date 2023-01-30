@@ -30,6 +30,6 @@ class Assignment : public BinaryOperator {
 
   virtual ~Assignment();
 };
-}; // namespace nodes::operators
+} // namespace nodes::operators
 
 #endif // ASSIGNMENT_H

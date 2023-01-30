@@ -51,6 +51,6 @@ class Ternary;
 // DynamicOperators:
 class FunctionDefinition;
 class FunctionCall;
-}; // namespace nodes::operators
+} // namespace nodes::operators
 
 #endif // OPERATORS_H

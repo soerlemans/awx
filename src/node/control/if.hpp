@@ -20,6 +20,6 @@ class If : public Node {
 
   virtual ~If();
 };
-}; // namespace nodes::control
+} // namespace nodes::control
 
 #endif // IF_H

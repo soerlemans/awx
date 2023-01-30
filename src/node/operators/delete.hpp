@@ -17,6 +17,6 @@ class operators::Delete : public Node {
 
   virtual ~Delete();
 };
-}; // namespace nodes::operators
+} // namespace nodes::operators
 
 #endif // DELETE_H

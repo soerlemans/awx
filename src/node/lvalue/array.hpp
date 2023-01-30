@@ -19,6 +19,6 @@ class Array : public Variable {
 
   virtual ~Array();
 };
-}; // namespace nodes::lvalue
+} // namespace nodes::lvalue
 
 #endif // ARRAY_H

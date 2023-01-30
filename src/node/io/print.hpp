@@ -2,6 +2,7 @@
 #define PRINT_H
 
 #include "../node.hpp"
+#include "../list.hpp"
 
 #include "io.hpp"
 
@@ -10,15 +11,17 @@
 namespace nodes::io {
 class Print : public Node {
   private:
-  NodePtr m_expr;
+  NodeListPtr m_params;
 
   public:
-  Print(NodePtr&& t_expr);
+  Print(NodeListPtr&& t_params);
+
+  virtual auto params() -> NodeListPtr&;
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~Print();
 };
-}; // namespace nodes::io
+} // namespace nodes::io
 
 #endif // PRINT_H

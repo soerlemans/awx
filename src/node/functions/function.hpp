@@ -20,6 +20,6 @@ class Function : public Node {
 
   virtual ~Function();
 };
-}; // namespace nodes::functions
+} // namespace nodes::functions
 
 #endif // FUNCTION_H
