@@ -12,32 +12,29 @@ Awx is written in C++ for the following reasons:
 The reasons why Rust is not considered suitable:
  + Slightly slower than C++
  + Most systems do not come with a Rust compiler
- + Rust pulls a lot of dependencies
  + No large benefit out of the memory safety that Rust supplies
-   + Most of awx input will come from files or pipes, meaning that it being abused by a malicious user is significantly less likely to happen
-     (it would still be possible that somebody uses the program irresponsibly)
-   + `cppfront` and `valgrind` will be used to weed out memory errors
 
 Goals Awx aims to achieve:
  + Be as fast as possible
- + Be extremely lightweight
+ + Be lightweight
  + Add scoping to variables
  + Implement some high level language constructs
- + Maintain some level of AWK compatibility
+ + Maintain POSIX AWK compatibility
+ + Add some new features that are backwards compatible
 
 Features
 --------
 Our aim is to implement the following features in AWX:
+ + Default arguments
  + Assignable rules
  + Nested rules
- + Scoping
- + Modules
- + Compilable `.awx` files
  + Extended regular expressions support
  + Perl regular expressions support
+ + Byte compiled `.awx` files
+ + Modules
 
 Features so far implemented:
- + Absolutely none
+ + TODO: Implement features
 
 Getting AWX
 -----------
@@ -60,8 +57,6 @@ The following dependencies are required:
  + A C++ compiler (clang, g++ or msvc++)
    + Must support C++23
  + `clang-format`
- + `valgrind`
- + `cppfront` (if this works out)
  + `doxygen`
 
 ### Style guide
@@ -77,3 +72,4 @@ TODO
 + Better diagnostics for the parsing errors
 + Tokens should know their position in a file (store it in some kind of struct)
 + Exceptions should have a better class structure for accurately displaying error information
++ Node classes may not be initialized with nullptrs

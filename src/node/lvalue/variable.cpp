@@ -7,6 +7,11 @@ Variable::Variable(std::string t_name)
   : Node{NodeType::VARIABLE}, m_name{std::move(t_name)}
 {}
 
+auto Variable::name() const -> std::string_view
+{
+  return {m_name};
+}
+
 auto Variable::accept(NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);

@@ -1,8 +1,9 @@
 #!/usr/bin/awk -f
 BEGIN {
-	print "Hello World!"
-	print "Hello World!"
-	print "Hello World!"
-	print "Hello World!"
+	getline monkey
+	+10
+	var = 10;
+	$(0 + 10)
+	"String" "Concatenation"
 	print "Hello World!"
 }

@@ -24,8 +24,14 @@ class PrintVisitor : public NodeVisitor {
     template<typename... Args>
     auto print(Args&&... t_args) -> void
     {
+	  // Construct the prefix
 	  std::cout << std::string(m_counter, ' ') << "-> ";
-      (std::cout << ... << t_args) << '\n';
+
+	  // Print the arguments
+      (std::cout << ... << t_args);
+
+	  // Create the indentation level denoter
+	  std::cout << " - (" << m_counter << ")\n";
     }
 
     ~Printer()

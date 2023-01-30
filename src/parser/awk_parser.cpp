@@ -167,7 +167,7 @@ auto AwkParser::function() -> NodePtr
   using namespace nodes;
   using namespace nodes::functions;
 
-  TRACE(LogLevel::DEBUG, "ERE");
+  TRACE(LogLevel::DEBUG, "FUNCTION");
   NodePtr node{nullptr};
 
   if(next_if(TokenType::FUNCTION)) {
@@ -177,7 +177,7 @@ auto AwkParser::function() -> NodePtr
 
       // TODO: Create a Function class
       expect(TokenType::PAREN_OPEN, "(");
-      NodeListPtr params{static_cast<List*>(param_list_opt().release())};
+      NodeListPtr params{param_list_opt()};
       expect(TokenType::PAREN_CLOSE, ")");
       newline_opt();
       NodeListPtr action_ptr{static_cast<List*>(action().release())};
@@ -196,7 +196,7 @@ auto AwkParser::function() -> NodePtr
 // User defined
 auto AwkParser::function_call() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "ERE");
+  TRACE(LogLevel::DEBUG, "FUNCTION CALL");
   NodePtr node{nullptr};
 
   switch(next().type()) {
@@ -1478,22 +1478,13 @@ auto AwkParser::action() -> NodePtr
     newline_opt();
 
     if(auto ptr{terminated_statement_list()}; ptr) {
-	  node = std::move(ptr);
+      node = std::move(ptr);
     } else if(auto ptr{unterminated_statement_list()}; ptr) {
-	  node = std::move(ptr);
-    } else {
-      // TODO:: Error handling
+      node = std::move(ptr);
     }
 
     expect(TokenType::ACCOLADE_CLOSE, "}");
     TRACE_PRINT(LogLevel::INFO, "Found '}'");
-  }
-
-  // TODO: This is just for debugging the parser
-  if(node) {
-	std::cout << "Printing AST\n";
-    PrintVisitor visitor;
-    node->accept(&visitor);
   }
 
   return node;
@@ -1555,7 +1546,7 @@ auto AwkParser::pattern() -> NodePtr
   return node;
 }
 
-auto AwkParser::param_list() -> NodePtr
+auto AwkParser::param_list() -> NodeListPtr
 {
   using namespace nodes;
   using namespace nodes::lvalue;
@@ -1589,7 +1580,7 @@ auto AwkParser::param_list() -> NodePtr
   return nodes;
 }
 
-auto AwkParser::param_list_opt() -> NodePtr
+auto AwkParser::param_list_opt() -> NodeListPtr
 {
   TRACE(LogLevel::DEBUG, "PARAM LIST OPT");
 
@@ -1624,8 +1615,17 @@ auto AwkParser::item() -> NodePtr
     // How should we represent this in AST?
   } else if(auto ptr{normal_pattern()}; ptr) {
     node = std::move(ptr);
+  } else if(auto ptr{function()}; ptr) {
+    node = std::move(ptr);
   } else if(true) {
     // TODO: Implement function parsing for now ignore?
+  }
+
+  // TODO: This is just for debugging the parser
+  if(node) {
+    std::cout << "Printing AST\n";
+    PrintVisitor visitor;
+    node->accept(&visitor);
   }
 
   return node;
@@ -1633,20 +1633,23 @@ auto AwkParser::item() -> NodePtr
 
 // item list exists out of an item followed by a terminator
 // Till there are are no more items
-auto AwkParser::item_list() -> NodePtr
+auto AwkParser::item_list() -> NodeListPtr
 {
+  using namespace nodes;
+
   TRACE(LogLevel::DEBUG, "ITEM LIST");
-  NodePtr node{nullptr};
+  NodeListPtr nodes{std::make_unique<List>()};
 
-  do {
-    node = item();
-
-    if(node) {
+  while(!eos()) {
+    if(auto ptr{item()}; ptr) {
+      nodes->push_back(std::move(ptr));
       terminator();
+    } else {
+      break;
     }
-  } while(node);
+  }
 
-  return node;
+return nodes;
 }
 
 // program          : item_list

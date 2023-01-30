@@ -12,6 +12,8 @@ class FieldReference : public Node {
   public:
   FieldReference(NodePtr&& t_expr);
 
+  auto expr() -> NodePtr&;
+
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~FieldReference();

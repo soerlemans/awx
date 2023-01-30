@@ -19,6 +19,8 @@ namespace nodes {
 class List : public Node, public std::list<NodePtr> {
   public:
   List();
+
+  // Must be defaulted, in order to create this function
   List(List&& t_list) = default;
 
   auto accept(NodeVisitor* t_visitor) -> void override;

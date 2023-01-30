@@ -1,6 +1,8 @@
 #ifndef VARIABLE_H
 #define VARIABLE_H
 
+#include <string_view>
+
 #include "../node.hpp"
 
 #include "lvalue.hpp"
@@ -14,6 +16,7 @@ class Variable : public Node {
   public:
   Variable(std::string t_name);
 
+  auto name() const -> std::string_view;
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~Variable();

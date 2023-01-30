@@ -43,6 +43,18 @@ auto PrintVisitor::visit(nodes::functions::Function* t_fn) -> void
   Printer printer{m_counter};
 
   printer.print("FUNCTION");
+  printer.print("| NAME: ", t_fn->name());
+
+  // TODO: Macro or lambda this??
+  if(NodeListPtr & params{t_fn->params()}; params) {
+    printer.print("| PARAMS");
+    params->accept(this);
+  }
+
+  if(NodeListPtr & body{t_fn->body()}; body) {
+    printer.print("| BODY");
+    body->accept(this);
+  }
 }
 
 auto PrintVisitor::visit(nodes::functions::FunctionCall* t_fn_call) -> void
@@ -84,6 +96,10 @@ auto PrintVisitor::visit(nodes::io::Getline* t_getline) -> void
   Printer printer{m_counter};
 
   printer.print("GETLINE");
+  if(NodePtr & var{t_getline->var()}; var) {
+    printer.print("| VAR");
+    var->accept(this);
+  }
 }
 
 auto PrintVisitor::visit(nodes::io::Redirection* t_redirection) -> void
@@ -97,7 +113,7 @@ auto PrintVisitor::visit(nodes::lvalue::Array* t_array) -> void
 {
   Printer printer{m_counter};
 
-  printer.print("Array");
+  printer.print("ARRAY");
 }
 
 auto PrintVisitor::visit(nodes::lvalue::FieldReference* t_fr) -> void
@@ -105,6 +121,9 @@ auto PrintVisitor::visit(nodes::lvalue::FieldReference* t_fr) -> void
   Printer printer{m_counter};
 
   printer.print("FIELD REFERENCE");
+  printer.print("| EXPR");
+
+  t_fr->expr()->accept(this);
 }
 
 auto PrintVisitor::visit(nodes::lvalue::Variable* t_var) -> void
@@ -112,30 +131,28 @@ auto PrintVisitor::visit(nodes::lvalue::Variable* t_var) -> void
   Printer printer{m_counter};
 
   printer.print("VARIABLE");
+  printer.print("| NAME: ", t_var->name());
 }
 
 auto PrintVisitor::visit(nodes::rvalue::Float* t_float) -> void
 {
   Printer printer{m_counter};
 
-  printer.print("FLOAT");
-  printer.print("| ", t_float->get());
+  printer.print("FLOAT: ", t_float->get());
 }
 
 auto PrintVisitor::visit(nodes::rvalue::Integer* t_int) -> void
 {
   Printer printer{m_counter};
 
-  printer.print("INTEGER");
-  printer.print("| ", t_int->get());
+  printer.print("INTEGER: ", t_int->get());
 }
 
 auto PrintVisitor::visit(nodes::rvalue::String* t_str) -> void
 {
   Printer printer{m_counter};
 
-  printer.print("STRING");
-  printer.print("| ", t_str->get());
+  printer.print("STRING: ", t_str->get());
 }
 
 auto PrintVisitor::visit(nodes::operators::Arithmetic* t_arithmetic) -> void
@@ -192,6 +209,8 @@ auto PrintVisitor::visit(nodes::operators::Not* t_not) -> void
   Printer printer{m_counter};
 
   printer.print("NOT");
+  printer.print("| FIRST");
+  t_not->first()->accept(this);
 }
 
 auto PrintVisitor::visit(nodes::operators::And* t_and) -> void
@@ -199,6 +218,11 @@ auto PrintVisitor::visit(nodes::operators::And* t_and) -> void
   Printer printer{m_counter};
 
   printer.print("AND");
+  printer.print("| FIRST");
+  t_and->first()->accept(this);
+
+  printer.print("| SECOND");
+  t_and->second()->accept(this);
 }
 
 auto PrintVisitor::visit(nodes::operators::Or* t_or) -> void
@@ -206,6 +230,12 @@ auto PrintVisitor::visit(nodes::operators::Or* t_or) -> void
   Printer printer{m_counter};
 
   printer.print("OR");
+
+  printer.print("| FIRST");
+  t_or->first()->accept(this);
+
+  printer.print("| SECOND");
+  t_or->second()->accept(this);
 }
 
 auto PrintVisitor::visit(nodes::operators::StringConcatenation* t_conc) -> void
@@ -213,6 +243,12 @@ auto PrintVisitor::visit(nodes::operators::StringConcatenation* t_conc) -> void
   Printer printer{m_counter};
 
   printer.print("STRING CONCATENATION");
+
+  printer.print("| FIRST");
+  t_conc->first()->accept(this);
+
+  printer.print("| SECOND");
+  t_conc->second()->accept(this);
 }
 
 auto PrintVisitor::visit(nodes::operators::Ternary* t_ternary) -> void
@@ -227,6 +263,10 @@ auto PrintVisitor::visit(nodes::operators::UnaryPrefix* t_unary_prefix) -> void
   Printer printer{m_counter};
 
   printer.print("UNARY PREFIX");
+  printer.print("| OP: ", "IMPLEMENT");
+
+  // Visit the unary expression
+  t_unary_prefix->first()->accept(this);
 }
 
 auto PrintVisitor::visit(nodes::List* t_list) -> void

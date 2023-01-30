@@ -11,9 +11,24 @@ Function::Function(std::string t_name, NodeListPtr&& t_params,
     m_body{std::forward<NodeListPtr>(t_body)}
 {}
 
+auto Function::name() const -> std::string_view
+{
+  return {m_name};
+}
+
+auto Function::params() -> NodeListPtr&
+{
+  return m_params;
+}
+
+auto Function::body() -> NodeListPtr&
+{
+  return m_body;
+}
+
 auto Function::accept(NodeVisitor* t_visitor) -> void
 {
-    t_visitor->visit(this);
+  t_visitor->visit(this);
 }
 
 Function::~Function()

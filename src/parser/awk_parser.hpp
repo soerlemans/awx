@@ -93,11 +93,11 @@ class AwkParser : public Parser {
   virtual auto normal_pattern() -> NodePtr;
   virtual auto pattern() -> NodePtr;
 
-  virtual auto param_list() -> NodePtr;
-  virtual auto param_list_opt() -> NodePtr;
+  virtual auto param_list() -> NodeListPtr;
+  virtual auto param_list_opt() -> NodeListPtr;
 
   virtual auto item() -> NodePtr;
-  virtual auto item_list() -> NodePtr;
+  virtual auto item_list() -> NodeListPtr;
 
   virtual auto program() -> NodePtr;
 

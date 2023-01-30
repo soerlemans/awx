@@ -37,6 +37,8 @@ auto unary_prefix::tokentype2enum(const TokenType t_tokentype) -> UnaryPrefixOp
 
     default:
       // TODO: Error handling
+	  // This just prevents an warning
+      op = UnaryPrefixOp::PLUS;
       break;
   }
 
