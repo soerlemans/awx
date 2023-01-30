@@ -8,10 +8,36 @@
 // Visitor made for printing the AST Node per node
 // Has a unique overload for every print
 class PrintVisitor : public NodeVisitor {
-  log::LogLevel m_loglevel;
+  private:
+  // Classes:
+  class Printer {
+    private:
+    int& m_counter;
+
+    public:
+    Printer(int& t_counter): m_counter{t_counter}
+    {
+      m_counter++;
+    }
+
+    template<typename... Args>
+    auto print(Args&&... t_args) -> void
+    {
+	  std::cout << std::string(m_counter, ' ') << "-> ";
+      (std::cout << ... << t_args) << '\n';
+    }
+
+    ~Printer()
+    {
+      m_counter--;
+    }
+  };
+
+  // Variables:
+  int m_counter;
 
   public:
-  PrintVisitor(log::LogLevel t_loglevel);
+  PrintVisitor();
 
   virtual auto visit(nodes::control::If* t_if) -> void override;
 

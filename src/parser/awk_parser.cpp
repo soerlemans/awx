@@ -5,11 +5,15 @@
 
 #include "../debug/log.hpp"
 #include "../debug/trace.hpp"
+
+#include "../visitor/print_visitor.hpp"
+
 #include "../enum.hpp"
 
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
 
+#include "../node/node.hpp"
 #include "../node/list.hpp"
 
 #include "../node/io/getline.hpp"
@@ -1662,7 +1666,11 @@ auto AwkParser::parse() -> Ast
   LOG_PRINT("=== PARSING ===");
 
   Ast ast;
-  program();
+
+  PrintVisitor visitor;
+  NodePtr ptr{program()};
+
+  ptr->accept(&visitor);
 
   LOG_PRINT();
   return ast;

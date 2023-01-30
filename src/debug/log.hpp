@@ -34,13 +34,13 @@ auto is_lower_loglevel(const LogLevel t_loglevel) -> bool;
 auto loglevel2str(const LogLevel t_loglevel) -> std::string_view;
 auto set_loglevel(const LogLevel t_loglevel) -> void;
 
+// We use std::clog for logging
 template<typename... Args>
 auto print(Args&&... t_args) -> void
 {
   // Fold expression
   (std::clog << ... << t_args) << '\n';
 }
-
 
 // Do not use this function with non primitive types it will not know how to
 // Handle them and give an obscure tuple error
@@ -51,14 +51,13 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
 {
   // Ignore higher log levels
   if(is_lower_loglevel(t_loglevel)) {
-
     // Denote loglevel
-    std::clog << '[' << loglevel2str(t_loglevel) << ']';
+    print('[', loglevel2str(t_loglevel), ']');
 
     // Module information
-    std::clog << '[' << t_file << ':' << t_lineno << " -> " << t_function
-              << "()] => ";
+    print('[', t_file, ':', t_lineno, " -> ", t_function, "()] => ");
 
+	// Log what we want to log
     print(std::forward<Args>(t_args)...);
   }
 }
