@@ -8,7 +8,7 @@ BEGIN {
 }
 
 
-function apples()
-{
-	print "I like monkeys"
-}
+# function apples()
+# {
+# 	print "I like monkeys"
+# }

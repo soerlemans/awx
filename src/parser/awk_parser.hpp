@@ -99,7 +99,7 @@ class AwkParser : public Parser {
   virtual auto item() -> NodePtr;
   virtual auto item_list() -> NodeListPtr;
 
-  virtual auto program() -> NodePtr;
+  virtual auto program() -> NodeListPtr;
 
   virtual auto parse() -> Ast override;
 

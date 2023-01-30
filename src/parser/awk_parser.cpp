@@ -1628,14 +1628,6 @@ auto AwkParser::item() -> NodePtr
     node = std::move(ptr);
   }
 
-  // TODO: This is just for debugging the parser
-  if(node) {
-    std::cout << "=== Printing AST of an ITEM\n";
-    PrintVisitor visitor;
-    node->accept(&visitor);
-    std::cout << "=== Done printing AST of an ITEM\n";
-  }
-
   return node;
 }
 
@@ -1649,10 +1641,9 @@ auto AwkParser::item_list() -> NodeListPtr
   NodeListPtr nodes{std::make_unique<List>()};
 
   while(!eos()) {
-
-	// Remove newlines before items
-	// TODO: Figure out if this works as intended, since its not in the grammar
-	newline_opt();
+    // Remove newlines before items
+    // TODO: Figure out if this works as intended, since its not in the grammar
+    newline_opt();
 
     if(auto ptr{item()}; ptr) {
       nodes->push_back(std::move(ptr));
@@ -1668,21 +1659,18 @@ auto AwkParser::item_list() -> NodeListPtr
 // program          : item_list
 //                  | item_list item
 //                  ;
-auto AwkParser::program() -> NodePtr
+auto AwkParser::program() -> NodeListPtr
 {
   TRACE(LogLevel::DEBUG, "PROGRAM");
-  NodePtr node{nullptr};
 
-  // TODO Piece these together some way into an AST structure
-  if(auto list_ptr{item_list()}; list_ptr) {
-  } else if(auto item_ptr{item()}; item_ptr) {
-    // item() is optional
-  } else {
+  NodeListPtr nodes{item_list()};
+
+  // program must have atleast one item
+  if(nodes->empty()) {
     // TODO: Error handling
-    std::cout << "No items in program" << std::endl;
   }
 
-  return node;
+  return nodes;
 }
 
 auto AwkParser::parse() -> Ast
@@ -1690,7 +1678,17 @@ auto AwkParser::parse() -> Ast
   LOG_PRINTLN("=== PARSING ===");
 
   Ast ast;
-  program();
+  NodePtr node{program()};
+
+  // TODO: This is just for debugging the parser
+  if(node) {
+    std::cout << "\n--- Print AST ---\n";
+
+    PrintVisitor visitor;
+    node->accept(&visitor);
+
+    std::cout << "\n";
+  }
 
   LOG_PRINTLN();
 
