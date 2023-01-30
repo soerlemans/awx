@@ -31,7 +31,7 @@ SyntaxError::SyntaxError(std::string t_msg, std::string t_path,
 
   // FIXME: ~^~ does not align
   const auto indent{lineno_ss.str().size() + m_columnno};
-  ss << std::setw(indent) << "~^~" << '\n';
+  ss << std::string(indent, ' ') << "~^~" << '\n';
 
   m_error = ss.str();
 }

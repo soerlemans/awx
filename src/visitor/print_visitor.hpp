@@ -7,7 +7,6 @@
 // Visitor made for printing the AST Node per node
 // Has a unique overload for every print
 class PrintVisitor : public NodeVisitor {
-
   public:
   PrintVisitor();
 

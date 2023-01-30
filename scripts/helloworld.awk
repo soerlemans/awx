@@ -9,8 +9,6 @@ BEGIN {
 	# var[name]
 	(10 + 10)
 
-	float = 0.00.100
-
 	hallo();
 	print "Hello" " " "World!"
 }

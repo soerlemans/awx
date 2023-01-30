@@ -1,6 +1,7 @@
 #include "trace.hpp"
 
 #include <cstddef>
+#include <iomanip>
 #include <sstream>
 
 
@@ -11,11 +12,11 @@ int Trace::m_counter{0};
 auto Trace::indent_text() const -> std::string
 {
   std::stringstream ss;
-  ss << ((m_counter > 0) ? " ├" : "#.");
-
-  // Adjust for the proper level of indentation
-  for(int i{0}; i < m_counter - 1; i++)
-    ss << "─";
+  if(m_counter > 0) {
+    ss << " " << std::string(m_counter, ' ');
+  } else {
+    ss << "#.";
+  }
 
   ss << "─> ";
 
