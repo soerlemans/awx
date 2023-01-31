@@ -15,6 +15,7 @@
 // TokenStream handling:
 auto Lexer::add_token(Token&& t_token) -> void
 {
+  // TODO: Add file positions to Token for better error messags!
   m_tokenstream.push_back(std::forward<Token>(t_token));
 }
 
