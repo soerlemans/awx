@@ -183,10 +183,10 @@ auto AwkParser::function() -> NodePtr
       NodeListPtr params{param_list_opt()};
       expect(TokenType::PAREN_CLOSE, ")");
       newline_opt();
-      NodeListPtr action_ptr{static_cast<List*>(action().release())};
+      NodeListPtr body{static_cast<List*>(action().release())};
 
-      node = std::make_unique<Function>(
-        token.value<std::string>(), std::move(params), std::move(action_ptr));
+      node = std::make_unique<Function>(token.value<std::string>(),
+                                        std::move(params), std::move(body));
     } else {
       // TODO: Error handling
     }
@@ -1611,6 +1611,10 @@ auto AwkParser::item() -> NodePtr
 
   if(auto ptr{action()}; ptr) {
     node = std::move(ptr);
+    // We must check for function first or else the function will be interpreted
+    // As a pattern
+  } else if(auto ptr{function()}; ptr) {
+    node = std::move(ptr);
   } else if(auto pattern_ptr{pattern()}; pattern_ptr) {
     if(auto action_ptr{action()}; action_ptr) {
       node =
@@ -1623,8 +1627,6 @@ auto AwkParser::item() -> NodePtr
     // Resolve this?
     // How should we represent this in AST?
   } else if(auto ptr{normal_pattern()}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{function()}; ptr) {
     node = std::move(ptr);
   }
 
@@ -1682,12 +1684,11 @@ auto AwkParser::parse() -> Ast
 
   // TODO: This is just for debugging the parser
   if(node) {
-    std::cout << "\n--- Print AST ---\n";
+    LOG_PRINTLN();
+    LOG_PRINTLN("--- Print AST ---");
 
     PrintVisitor visitor;
     node->accept(&visitor);
-
-    std::cout << "\n";
   }
 
   LOG_PRINTLN();
