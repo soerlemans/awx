@@ -199,15 +199,20 @@ auto AwkParser::function() -> NodePtr
 // User defined
 auto AwkParser::function_call() -> NodePtr
 {
+  using namespace nodes::functions;
+
   TRACE(LogLevel::DEBUG, "FUNCTION CALL");
   NodePtr node{nullptr};
 
-  switch(next().type()) {
-    case TokenType::FUNCTION_IDENTIFIER:
+  switch(const auto token{next()}; token.type()) {
+    case TokenType::FUNCTION_IDENTIFIER: {
       expect(TokenType::PAREN_OPEN, "(");
-      expr_list_opt();
+      NodeListPtr args{expr_list_opt()};
       expect(TokenType::PAREN_CLOSE, ")");
+      node = std::make_unique<FunctionCall>(token.value<std::string>(),
+                                            std::move(args));
       break;
+    }
 
       // TODO: Add function calls for builtin types
 
@@ -946,7 +951,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
       } else {
         node = std::move(lhs);
       }
-    } else if(auto ptr{function()}; ptr) {
+    } else if(auto ptr{function_call()}; ptr) {
       node = std::move(ptr);
     } else if(auto ptr{non_unary_input_function()}; ptr) {
       node = std::move(ptr);
@@ -1083,22 +1088,22 @@ auto AwkParser::multiple_expr_list() -> NodeListPtr
   return nodes;
 }
 
-auto AwkParser::expr_list() -> NodePtr
+auto AwkParser::expr_list() -> NodeListPtr
 {
   TRACE(LogLevel::DEBUG, "EXPR LIST");
-  NodePtr node{nullptr};
+  NodeListPtr nodes{nullptr};
 
   // multiple_expr_list allows one or multiple expr
   if(auto ptr{multiple_expr_list()}; ptr) {
-    node = std::move(ptr);
+    nodes = std::move(ptr);
   } else {
     // TODO: Error handling
   }
 
-  return node;
+  return nodes;
 }
 
-auto AwkParser::expr_list_opt() -> NodePtr
+auto AwkParser::expr_list_opt() -> NodeListPtr
 {
   TRACE(LogLevel::DEBUG, "EXPR LIST OPT");
 
@@ -1417,9 +1422,9 @@ auto AwkParser::unterminated_statement_list() -> NodePtr
     }
   }
 
-  if(!nodes->size()) {
-    throw std::runtime_error{"expected atleast on expr in expr_list"};
-  }
+  // if(!nodes->size()) {
+  //   throw std::runtime_error{"expected atleast on expr in expr_list"};
+  // }
 
   return nodes;
 }
@@ -1441,9 +1446,9 @@ auto AwkParser::terminated_statement_list() -> NodePtr
     }
   }
 
-  if(!nodes->size()) {
-    throw std::runtime_error{"expected atleast on expr in expr_list"};
-  }
+  // if(!nodes->size()) {
+  //   throw std::runtime_error{"expected atleast on expr in expr_list"};
+  // }
 
   // Create a NodeListPtr from the NodePtrList
   return nodes;

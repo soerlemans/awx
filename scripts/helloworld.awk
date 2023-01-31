@@ -1,12 +1,11 @@
 #!/usr/bin/awk -f
 
 
-function apples()
+function helloworld()
 {
-	print "I like monkeys"
+	print "I like monkeys!"
 }
 
-# BEGIN {
-# 	"String" "Concatenation"
-# 	print "Hello World!"
-# }
+BEGIN {
+	helloworld()
+}
