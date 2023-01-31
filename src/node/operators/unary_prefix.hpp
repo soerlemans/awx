@@ -6,11 +6,12 @@
 #include "operators.hpp"
 #include "unary_operator.hpp"
 
+
+namespace nodes::operators {
 // Enums:
 enum class UnaryPrefixOp { PLUS, MINUS };
 
 // Classes:
-namespace nodes::operators {
 class UnaryPrefix : public UnaryOperator {
   private:
   UnaryPrefixOp m_op;

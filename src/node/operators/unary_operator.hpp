@@ -11,7 +11,7 @@ class operators::UnaryOperator : public Expression {
   NodePtr m_first;
 
   public:
-  explicit UnaryOperator(Precedence t_precedence, NodePtr&& t_stmnt);
+  explicit UnaryOperator(Precedence t_precedence, NodePtr&& t_first);
 
   auto first() -> NodePtr&;
 

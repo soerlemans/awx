@@ -5,10 +5,14 @@
 #include "unary_operator.hpp"
 
 
-namespace nodess::operators {
+namespace nodes::operators {
 class Grouping : public UnaryOperator {
   private:
   public:
+  Grouping(NodePtr&& t_expr);
+
+  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+
   virtual ~Grouping();
 };
 } // namespace nodess::operators

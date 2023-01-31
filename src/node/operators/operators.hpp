@@ -13,6 +13,7 @@ class BinaryOperator;
 
 // UnaryOperator derived classes:
 class UnaryPrefix;
+class Grouping;
 class Increment;
 class Decrement;
 

@@ -1,7 +1,7 @@
 #include "unary_prefix.hpp"
 
-using namespace nodes::operators;
 
+using namespace nodes::operators;
 
 UnaryPrefix::UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left)
   : UnaryOperator{Precedence::UNARY_PREFIX, std::forward<NodePtr>(t_left)},

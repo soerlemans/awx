@@ -3,8 +3,8 @@
 using namespace nodes::operators;
 
 
-UnaryOperator::UnaryOperator(Precedence t_precedence, NodePtr&& t_stmnt)
-  : Expression{t_precedence}, m_first{std::forward<NodePtr>(t_stmnt)}
+UnaryOperator::UnaryOperator(Precedence t_precedence, NodePtr&& t_first)
+  : Expression{t_precedence}, m_first{std::forward<NodePtr>(t_first)}
 {}
 
 auto UnaryOperator::first() -> NodePtr&
