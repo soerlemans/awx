@@ -1,11 +1,11 @@
 #!/usr/bin/awk -f
 
 
-function helloworld()
+function helloworld(t_name)
 {
-	print "I like monkeys!"
+	print "I like ", t_name, "!"
 }
 
 BEGIN {
-	helloworld()
+	helloworld("monkeys")
 }

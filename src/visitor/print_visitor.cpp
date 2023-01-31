@@ -65,6 +65,12 @@ auto PrintVisitor::visit(nodes::functions::FunctionCall* t_fn_call) -> void
   Printer printer{m_counter};
 
   printer.print("FUNCTION CALL");
+  printer.print("| NAME: ", t_fn_call->name());
+
+  if(NodeListPtr & args{t_fn_call->args()}; args) {
+    printer.print("| ARGS");
+    args->accept(this);
+  }
 }
 
 auto PrintVisitor::visit(nodes::functions::BuiltinFunction* t_fn) -> void
@@ -89,12 +95,12 @@ auto PrintVisitor::visit(nodes::recipes::Recipe* t_recipe) -> void
 
   printer.print("RECIPE");
   // TODO: Macro or lambda this??
-  if(NodePtr& pattern{t_recipe->pattern()}; pattern) {
+  if(NodePtr & pattern{t_recipe->pattern()}; pattern) {
     printer.print("| PATTERN");
     pattern->accept(this);
   }
 
-  if(NodePtr& body{t_recipe->body()}; body) {
+  if(NodePtr & body{t_recipe->body()}; body) {
     printer.print("| BODY");
     body->accept(this);
   }

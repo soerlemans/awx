@@ -2,6 +2,7 @@
 #define FUNCTION_CALL_H
 
 #include <string>
+#include <string_view>
 
 #include "../list.hpp"
 #include "../node.hpp"
@@ -17,6 +18,9 @@ class FunctionCall : public Node {
 
   public:
   FunctionCall(const std::string t_name, NodeListPtr&& t_args);
+
+  auto name() const -> std::string_view;
+  auto args() -> NodeListPtr&;
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
