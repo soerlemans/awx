@@ -6,19 +6,19 @@
 #include <string_view>
 #include <vector>
 
+#include "file_position.hpp"
 #include "types.hpp"
 
 namespace fs = std::filesystem;
 
 class FileBuffer {
   private:
-  // Alisases:
-  using File = std::vector<std::string>;
-
   // Private variables:
   fs::path m_path;
+  std::vector<std::string> m_filebuffer;
+
+  // Keep track of current position in the filebuffer
   mutable std::size_t m_lineno, m_columnno;
-  File m_filebuffer;
 
   public:
   // Constructors:
@@ -48,9 +48,7 @@ class FileBuffer {
   // Get indexes
   auto lineno() const -> std::size_t;
   auto columnno() const -> std::size_t;
-
-  auto begin() -> File::iterator;
-  auto end() -> File::iterator;
+  auto file_position() const -> FilePosition;
 
   auto size() const -> std::size_t;
   auto eol() const -> bool;

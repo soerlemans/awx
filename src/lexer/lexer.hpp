@@ -20,6 +20,18 @@ class Lexer {
   TokenStream m_tokenstream;
 
   // Token stream handling:
+  // Create a token with its file_position
+  template<typename... Args>
+  auto create_token(Args&&... t_args) -> Token
+  {
+    static_assert(sizeof...(Args) <= 2,
+                  "create_token(), does not accept more than two args.");
+
+    return Token{std::forward<Args>(t_args)..., m_filebuffer.file_position()};
+  }
+
+  // Add token to token stream
+  auto add_token(const Token& t_token) -> void;
   auto add_token(Token&& t_token) -> void;
 
   // Error handling:

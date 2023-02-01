@@ -182,8 +182,11 @@ auto AwkParser::function() -> NodePtr
       expect(TokenType::PAREN_OPEN, "(");
       NodeListPtr params{param_list_opt()};
       expect(TokenType::PAREN_CLOSE, ")");
+
       newline_opt();
       NodeListPtr body{static_cast<List*>(action().release())};
+
+      TRACE_PRINT(LogLevel::INFO, "Found a FUNCTION");
 
       node = std::make_unique<Function>(token.value<std::string>(),
                                         std::move(params), std::move(body));
@@ -209,6 +212,9 @@ auto AwkParser::function_call() -> NodePtr
       expect(TokenType::PAREN_OPEN, "(");
       NodeListPtr args{expr_list_opt()};
       expect(TokenType::PAREN_CLOSE, ")");
+
+      TRACE_PRINT(LogLevel::INFO, "Found a FUNCTION CALL");
+
       node = std::make_unique<FunctionCall>(token.value<std::string>(),
                                             std::move(args));
       break;

@@ -4,23 +4,18 @@
 #include <filesystem>
 #include <stdexcept>
 
+#include "../file_position.hpp"
+
 
 // Error classes intended for being thrown as exceptions
 // When a mistake is made
 class SyntaxError : public std::exception {
   protected:
   std::string m_error;
-  std::string m_path;
-
-  std::size_t m_lineno;
-  std::string m_line;
-
-  // TODO: Add support for showing which column number produces the error
-  std::size_t m_columnno;
+  FilePosition m_file_pos;
 
   public:
-  SyntaxError(std::string t_msg, std::string t_path, std::size_t t_lineno,
-              std::string t_line, std::size_t t_columnno);
+  SyntaxError(std::string t_msg, FilePosition t_file_pos);
 
   auto what() const noexcept -> const char*;
 };

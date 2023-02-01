@@ -5,24 +5,18 @@
 #include "../enum.hpp"
 
 
-Token::Token(TokenType t_tokentype): m_tokentype{t_tokentype}, m_value{}
-{}
-
-Token::Token(TokenType t_tokentype, int t_value)
-  : m_tokentype{t_tokentype}, m_value{t_value}
-{}
-
-Token::Token(TokenType t_tokentype, double t_value)
-  : m_tokentype{t_tokentype}, m_value{t_value}
-{}
-
-Token::Token(TokenType t_tokentype, std::string t_value)
-  : m_tokentype{t_tokentype}, m_value{t_value}
+Token::Token(TokenType t_type, FilePosition t_file_pos)
+  : m_type{t_type}, m_value{}, m_file_pos{t_file_pos}
 {}
 
 auto Token::type() const -> TokenType
 {
-  return m_tokentype;
+  return m_type;
+}
+
+auto Token::file_position() -> FilePosition
+{
+  return m_file_pos;
 }
 
 auto Token::print() -> void

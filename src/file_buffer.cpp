@@ -100,14 +100,10 @@ auto FileBuffer::columnno() const -> std::size_t
   return m_columnno;
 }
 
-auto FileBuffer::begin() -> File::iterator
+auto FileBuffer::file_position() const -> FilePosition
 {
-  return m_filebuffer.begin();
-}
-
-auto FileBuffer::end() -> File::iterator
-{
-  return m_filebuffer.end();
+  // Return the current position in the filebuffer as a FilePosition struct
+  return {m_path.string(), m_filebuffer[m_lineno], m_lineno, m_columnno};
 }
 
 auto FileBuffer::size() const -> std::size_t

@@ -13,9 +13,13 @@
 
 
 // TokenStream handling:
+auto Lexer::add_token(const Token& t_token) -> void
+{
+  m_tokenstream.push_back(t_token);
+}
+
 auto Lexer::add_token(Token&& t_token) -> void
 {
-  // TODO: Add file positions to Token for better error messags!
   m_tokenstream.push_back(std::forward<Token>(t_token));
 }
 
@@ -26,9 +30,7 @@ auto Lexer::syntax_error(std::string_view t_msg) const -> void
   // properly adjusted
 
   // Throws a SyntaxError with a message
-  throw SyntaxError{std::string{t_msg}, m_filebuffer.path().string(),
-                    m_filebuffer.lineno(), m_filebuffer.line(),
-                    m_filebuffer.columnno()};
+  throw SyntaxError{std::string{t_msg}, m_filebuffer.file_position()};
 }
 
 // Public constructors:
@@ -90,21 +92,21 @@ auto Lexer::identifier() -> Token
   if(const auto tokentype{is_keyword(ss.str())}; tokentype != TokenType::NONE) {
     LOG(LogLevel::INFO, "KEYWORD: ", ss.str());
 
-    token = Token{tokentype};
+    token = create_token(tokentype);
     // Verify if it is a keyword or not
   } else if(const auto tokentype{is_builtin_function(ss.str())};
             tokentype != TokenType::NONE) {
     LOG(LogLevel::INFO, "BUILTIN FUNCTION: ", ss.str());
 
-    token = Token{tokentype};
+    token = create_token(tokentype);
   } else if(is_fn_id) {
     LOG(LogLevel::INFO, "FUNCTION IDENTIFIER: ", ss.str());
 
-    token = Token{TokenType::FUNCTION_IDENTIFIER, ss.str()};
+    token = create_token(TokenType::FUNCTION_IDENTIFIER, ss.str());
   } else {
     LOG(LogLevel::INFO, "IDENTIFIER: ", ss.str());
 
-    token = Token{TokenType::IDENTIFIER, ss.str()};
+    token = create_token(TokenType::IDENTIFIER, ss.str());
   }
 
   return token;
@@ -145,7 +147,7 @@ auto Lexer::handle_hex() -> Token
   LOG(LogLevel::INFO, "HEX: ", ss.str());
   const int number{(int)std::stoul(ss.str(), nullptr, 16)};
 
-  return Token{TokenType::HEX, number};
+  return create_token(TokenType::HEX, number);
 }
 
 // t_str and t_dot have default arguments
@@ -180,7 +182,7 @@ auto Lexer::handle_float(std::string_view t_str, bool t_dot) -> Token
   }
 
   LOG(LogLevel::INFO, "FLOAT: ", ss.str());
-  return Token{TokenType::FLOAT, std::stod(ss.str())};
+  return create_token(TokenType::FLOAT, std::stod(ss.str()));
 }
 
 auto Lexer::handle_integer() -> Token
@@ -204,10 +206,9 @@ auto Lexer::handle_integer() -> Token
   }
 
   LOG(LogLevel::INFO, "INTEGER: ", ss.str());
-  return Token{TokenType::INTEGER, (int)std::stoi(ss.str())};
+  return create_token(TokenType::INTEGER, (int)std::stoi(ss.str()));
 }
 
-// TODO: Split int, hex and float part into separate functions
 auto Lexer::literal_numeric() -> Token
 {
   // Just forward to the apropiate numeric literal handle function
@@ -248,7 +249,7 @@ auto Lexer::literal_string() -> Token
   }
 
   LOG(LogLevel::INFO, "STRING: ", '"', ss.str(), '"');
-  return Token{TokenType::STRING, ss.str()};
+  return create_token(TokenType::STRING, ss.str());
 }
 
 auto Lexer::literal_regex() -> Token
@@ -291,7 +292,7 @@ auto Lexer::literal_regex() -> Token
   }
 
   LOG(LogLevel::INFO, "REGEX: ", ss.str());
-  return Token{TokenType::REGEX, ss.str()};
+  return create_token(TokenType::REGEX, ss.str());
 }
 
 auto Lexer::is_multi_symbol() -> TokenType
@@ -368,7 +369,7 @@ auto Lexer::symbol() -> Token
   }
 
   // Add the symbol if we recognize it
-  return Token{tokentype};
+  return create_token(tokentype);
 }
 
 auto Lexer::next_char() const -> char
@@ -390,37 +391,39 @@ auto Lexer::tokenize() -> TokenStream
   constexpr char double_quote{none::g_double_quote.identifier()};
   constexpr char slash{g_slash.identifier()};
 
-  for(; !m_filebuffer.eof(); m_filebuffer.next())
-    while(!eol()) {
-      const char character{m_filebuffer.character()};
-      const TokenType last_tokentype{m_tokenstream.back().type()};
+  const auto newline{create_token(TokenType::NEWLINE)};
 
-      if(std::isspace(character)) {
-        // Just ignore whitespace, but do not ignore newlines
-        if(character == g_newline.identifier()) {
-          LOG(LogLevel::INFO, "NEWLINE");
-          add_token(Token{TokenType::NEWLINE});
-        }
-      } else if(character == '#') {
-        // '#' are used for comments stop lexing the current line and continue
-        // With the next!
-        break;
-      } else if(std::isalpha(character)) {
-        add_token(identifier());
-      } else if(std::isdigit(character)) {
-        add_token(literal_numeric());
-      } else if(character == double_quote) {
-        add_token(literal_string());
-      } else if(character == slash && !tokentype::is_int(last_tokentype)) {
-        add_token(literal_regex());
-      } else {
-        add_token(symbol());
+    for(; !m_filebuffer.eof(); m_filebuffer.next()) while(!eol())
+  {
+    const char character{m_filebuffer.character()};
+    const TokenType last_tokentype{m_tokenstream.back().type()};
+
+    if(std::isspace(character)) {
+      // Just ignore whitespace, but do not ignore newlines
+      if(character == g_newline.identifier()) {
+        LOG(LogLevel::INFO, "NEWLINE");
+        add_token(newline);
       }
-
-      // Increment at the end, this allows us to prevent having to use
-      // m_filebuffer.backward() in situations where we look a head to much
-      m_filebuffer.forward();
+    } else if(character == '#') {
+      // '#' are used for comments stop lexing the current line and continue
+      // With the next!
+      break;
+    } else if(std::isalpha(character)) {
+      add_token(identifier());
+    } else if(std::isdigit(character)) {
+      add_token(literal_numeric());
+    } else if(character == double_quote) {
+      add_token(literal_string());
+    } else if(character == slash && !tokentype::is_int(last_tokentype)) {
+      add_token(literal_regex());
+    } else {
+      add_token(symbol());
     }
+
+    // Increment at the end, this allows us to prevent having to use
+    // m_filebuffer.backward() in situations where we look a head to much
+    m_filebuffer.forward();
+  }
 
   LOG_PRINTLN();
 
