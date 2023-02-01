@@ -50,6 +50,8 @@ class AwkParser : public Parser {
   virtual auto ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
   virtual auto binary_operator(NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> NodePtr;
+  virtual auto universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
+    -> NodePtr;
 
   // Print rules:
   virtual auto non_unary_print_expr() -> NodePtr;

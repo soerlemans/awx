@@ -16,5 +16,7 @@ BEGIN {
 	# This is causes a terminator expected error!
 	# a = b + c;
 
+	getline var
+
 	helloworld("monkeys")
 }
