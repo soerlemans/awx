@@ -791,108 +791,47 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
 
   TRACE(LogLevel::DEBUG, "NON UNARY PRINT EXPR");
   NodePtr node;
+  NodePtr nupe;
 
-  bool is_nupe{true};
-
-  // TODO: non_unary_expr and non_unary_print_expr have the exact same part for
-  // This
-  const auto token{next()};
-  switch(token.type()) {
-    case TokenType::PAREN_OPEN:
-      if(auto ptr{expr()}; ptr) {
-        TRACE_PRINT(LogLevel::INFO, "Found (expr)");
-        // TODO: Do something
-      } else if(auto ptr{multiple_expr_list()}; ptr) {
-        expect(TokenType::IN, "in");
-        TRACE_PRINT(LogLevel::INFO, "Found MULTIDIMENSIONAL IN");
-        // TODO: Do something
-      } else {
-        // TODO: Error handling
-      }
-
-      expect(TokenType::PAREN_CLOSE, ")");
-      break;
-
-    case TokenType::NOT:
-      TRACE_PRINT(LogLevel::INFO, "Found Not expression");
-      node = std::make_unique<Not>(expr());
-      break;
-
-    // TODO: Token in the grammar calls for NUMBER? These are not treated
-    // differently?
-    case TokenType::FLOAT:
-      TRACE_PRINT(LogLevel::INFO, "Found FLOAT literal");
-      node = std::make_unique<Float>(token.value<double>());
-      break;
-
-    case TokenType::HEX:
-      [[fallthrough]];
-    case TokenType::INTEGER:
-      TRACE_PRINT(LogLevel::INFO, "Found INTEGER literal");
-      node = std::make_unique<Integer>(token.value<int>());
-      break;
-
-    case TokenType::STRING:
-      TRACE_PRINT(LogLevel::INFO, "Found STRING literal");
-      node = std::make_unique<String>(token.value<std::string>());
-      break;
-
-    case TokenType::INCREMENT: {
-      TRACE_PRINT(LogLevel::INFO, "Found --INCREMENT");
-      if(auto ptr{lvalue()}; ptr) {
-        node = std::make_unique<Increment>(std::move(ptr), true);
-      } else {
-        // TODO: Error handling
-      }
-      break;
-    }
-
-    case TokenType::DECREMENT: {
-      TRACE_PRINT(LogLevel::INFO, "Found --DECREMENT");
-      if(auto ptr{lvalue()}; ptr) {
-        node = std::make_unique<Decrement>(std::move(ptr), true);
-      } else {
-        // TODO: Error handling
-      }
-      break;
-    }
-
-    default:
-      prev();
-      is_nupe = false;
-      break;
-  }
-
-  auto lambda_expr = [&]() {
+  const auto lambda = [&]() {
     return this->print_expr();
   };
 
-  // TOOD: Make this call separate functions
-  if(is_nupe) {
+  if(auto ptr{grouping()}; ptr) {
+    nupe = std::move(ptr);
+
+  } else if(auto ptr{negation(lambda)}; ptr) {
+    nupe = std::move(ptr);
+
+  } else if(auto ptr{literal()}; ptr) {
+    nupe = std::move(ptr);
+
+  } else if(auto ptr{prefix_operator()}; ptr) {
+    nupe = std::move(ptr);
+
+  } else if(auto ptr{function_call()}; ptr) {
+    nupe = std::move(ptr);
+
+  } else if(auto ptr{lvalue()}; ptr) {
+    if(auto ulval{universal_lvalue(ptr, lambda)}; ulval) {
+      nupe = std::move(ulval);
+    } else {
+      nupe = std::move(ptr);
+    }
+  }
+
+  // If it is indeed a non unary expression than check if is a string
+  // Concatenation or a binary operator
+  if(nupe) {
     if(auto rhs{non_unary_print_expr()}; rhs) {
       TRACE_PRINT(LogLevel::INFO, "Found STRING CONCAT");
       node =
-        std::make_unique<StringConcatenation>(std::move(node), std::move(rhs));
-    } else if(auto ptr{universal_print_expr(node, lambda_expr)}; ptr) {
+        std::make_unique<StringConcatenation>(std::move(nupe), std::move(rhs));
+    } else if(auto ptr{universal_print_expr(nupe, lambda)}; ptr) {
       node = std::move(ptr);
-    }
-  } else {
-    // TODO: Analyze the grammar rules to see if this is correct????
-    // If 'lvalue <assignmenet> expr' is a valid nue than this should be
-    // before The arithmetic, comparison, ere, logical, etc...
-    if(auto lhs{lvalue()}; lhs) {
-      if(auto ptr{assignment(lhs, lambda_expr)}; ptr) {
-        node = std::move(ptr);
-        // TODO: Increment, Decrement
-      } else if(next_if(TokenType::INCREMENT)) {
-        TRACE_PRINT(LogLevel::INFO, "Found INCREMENT++");
-        node = std::make_unique<Increment>(std::move(lhs), false);
-      } else if(next_if(TokenType::DECREMENT)) {
-        TRACE_PRINT(LogLevel::INFO, "Found DECREMENT++");
-        node = std::make_unique<Decrement>(std::move(lhs), false);
-      } else {
-        node = std::move(lhs);
-      }
+    } else {
+      // If we cant find a bigger nupe expression just return the nupe
+      node = std::move(nupe);
     }
   }
 
@@ -1099,10 +1038,10 @@ auto AwkParser::non_unary_expr() -> NodePtr
         std::make_unique<StringConcatenation>(std::move(nue), std::move(rhs));
     } else if(auto ptr{universal_expr(nue, lambda)}; ptr) {
       node = std::move(ptr);
-    }else{
-	  // If we cant find a bigger nue expression just return the nue
-	  node = std::move(nue);
-	}
+    } else {
+      // If we cant find a bigger nue expression just return the nue
+      node = std::move(nue);
+    }
   }
 
   return node;

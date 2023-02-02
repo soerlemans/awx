@@ -12,9 +12,7 @@ BEGIN {
 
 
 BEGIN {
-
-	# This is causes a terminator expected error!
-	# a = b + c;
+	a = b + c - 10 + 20;
 
 	getline var
 
