@@ -42,7 +42,9 @@
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
 #include "../node/operators/string_concatenation.hpp"
+#include "../node/operators/ternary.hpp"
 #include "../node/operators/unary_prefix.hpp"
+
 
 // TODO: split the parser and its rules into multiple files, the parser should
 // Be able to be done simpler or more properly structured, find a way for this
@@ -490,17 +492,33 @@ auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 auto AwkParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
   using namespace reserved::symbols;
+  using namespace nodes::operators;
 
   TRACE(LogLevel::DEBUG, "TERNARY");
   NodePtr node;
 
   if(next_if(TokenType{g_questionmark})) {
-    // TODO: Handle Ternary expression
+    TRACE(LogLevel::DEBUG, "Found TERNARY");
+    NodePtr then_ptr{t_rhs()};
+    if(!then_ptr) {
+      // TODO: Error handling
+    }
+
+    expect(TokenType::COLON, ":");
+    NodePtr else_ptr{t_rhs()};
+    if(!else_ptr) {
+      // TODO: Error handling
+    }
+
+    node = std::make_unique<Ternary>(std::move(t_lhs), std::move(then_ptr),
+                                     std::move(else_ptr));
   }
 
   return node;
 }
 
+// Expressions that are the same across non unary print expr and unary print
+// expr
 auto AwkParser::universal_print_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   -> NodePtr
 {
@@ -526,26 +544,7 @@ auto AwkParser::universal_print_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   return node;
 }
 
-//                  | unary_expr '^'      expr
-//                  | unary_expr '*'      expr
-//                  | unary_expr '/'      expr
-//                  | unary_expr '%'      expr
-//                  | unary_expr '+'      expr
-//                  | unary_expr '-'      expr
-//                  | unary_expr          non_unary_expr
-//                  | unary_expr '<'      expr
-//                  | unary_expr LE       expr
-//                  | unary_expr NE       expr
-//                  | unary_expr EQ       expr
-//                  | unary_expr '>'      expr
-//                  | unary_expr GE       expr
-//                  | unary_expr '˜'      expr
-//                  | unary_expr NO_MATCH expr
-//                  | unary_expr In NAME
-//                  | unary_expr AND newline_opt expr
-//                  | unary_expr OR  newline_opt expr
-//                  | unary_expr '?' expr ':' expr
-// Widely accepted expr
+// Expressions that are the same across non unary expr and unary expr
 auto AwkParser::universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   -> NodePtr
 {
@@ -587,7 +586,7 @@ auto AwkParser::negation(const ParserFunc& t_expr) -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::NOT)) {
-    TRACE_PRINT(LogLevel::INFO, "Found Not expression");
+    TRACE_PRINT(LogLevel::INFO, "Found NOT");
     if(NodePtr expr_ptr{t_expr()}; expr_ptr) {
       node = std::make_unique<Not>(std::move(expr_ptr));
     } else {
@@ -598,9 +597,8 @@ auto AwkParser::negation(const ParserFunc& t_expr) -> NodePtr
   return node;
 }
 
-// | NUMBER
-// | STRING
-// | ERE
+// TODO: Implement ERE
+// This method parses literals
 auto AwkParser::literal() -> NodePtr
 {
   using namespace nodes::rvalue;
@@ -642,7 +640,7 @@ auto AwkParser::literal() -> NodePtr
   return node;
 }
 
-// Prefix operator covers prefix increment and decrement
+// Prefix operator parses prefix increment and decrement
 auto AwkParser::prefix_operator() -> NodePtr
 {
   using namespace nodes::operators;
@@ -680,15 +678,7 @@ auto AwkParser::prefix_operator() -> NodePtr
   return node;
 }
 
-// | lvalue POW_ASSIGN expr
-// | lvalue MOD_ASSIGN expr
-// | lvalue MUL_ASSIGN expr
-// | lvalue DIV_ASSIGN expr
-// | lvalue ADD_ASSIGN expr
-// | lvalue SUB_ASSIGN expr
-// | lvalue '=' expr
-// | lvalue INCR
-// | lvalue DECR
+// Parses lvalue statements that are the same in non unary expr and unary expr
 auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
   -> NodePtr
 {
@@ -702,10 +692,12 @@ auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
   } else {
     switch(next().type()) {
       case TokenType::INCREMENT:
+        TRACE_PRINT(LogLevel::INFO, "Found INCREMENT++");
         node = std::make_unique<Increment>(std::move(t_lhs), false);
         break;
 
       case TokenType::DECREMENT:
+        TRACE_PRINT(LogLevel::INFO, "Found DECREMENT--");
         node = std::make_unique<Decrement>(std::move(t_lhs), false);
         break;
 
@@ -718,6 +710,7 @@ auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
   return node;
 }
 
+// Parses unary prefixes like having a + or - before an expression
 auto AwkParser::unary_prefix(const ParserFunc& t_rhs) -> NodePtr
 {
   using namespace nodes::operators;
@@ -746,44 +739,6 @@ auto AwkParser::unary_prefix(const ParserFunc& t_rhs) -> NodePtr
   return node;
 }
 
-// non_unary_print_expr : '(' expr ')'
-//                  | '!' print_expr
-//                  | non_unary_print_expr '^'      print_expr
-//                  | non_unary_print_expr '*'      print_expr
-//                  | non_unary_print_expr '/'      print_expr
-//                  | non_unary_print_expr '%'      print_expr
-//                  | non_unary_print_expr '+'      print_expr
-//                  | non_unary_print_expr '-'      print_expr
-//                  | non_unary_print_expr          non_unary_print_expr
-//                  | non_unary_print_expr '˜'      print_expr
-//                  | non_unary_print_expr NO_MATCH print_expr
-//                  | non_unary_print_expr In NAME
-//                  | '(' multiple_expr_list ')' In NAME
-//                  | non_unary_print_expr AND newline_opt print_expr
-//                  | non_unary_print_expr OR  newline_opt print_expr
-//                  | non_unary_print_expr '?' print_expr ':' print_expr
-//                  | NUMBER
-//                  | STRING
-//                  | lvalue
-//                  | ERE
-//                  | lvalue INCR
-//                  | lvalue DECR
-//                  | INCR lvalue
-//                  | DECR lvalue
-//                  | lvalue POW_ASSIGN print_expr
-//                  | lvalue MOD_ASSIGN print_expr
-//                  | lvalue MUL_ASSIGN print_expr
-//                  | lvalue DIV_ASSIGN print_expr
-//                  | lvalue ADD_ASSIGN print_expr
-//                  | lvalue SUB_ASSIGN print_expr
-//                  | lvalue '=' print_expr
-//                  | FUNC_NAME '(' expr_list_opt ')'
-//                      /* no white space allowed before '(' */
-//                  | BUILTIN_FUNC_NAME '(' expr_list_opt ')'
-//                  | BUILTIN_FUNC_NAME
-//                  ;
-// FIXME: This is all very similar to non_unary_expr, create a generic helper
-// Function that both can use
 auto AwkParser::non_unary_print_expr() -> NodePtr
 {
   using namespace nodes::operators;
@@ -799,19 +754,14 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
 
   if(auto ptr{grouping()}; ptr) {
     nupe = std::move(ptr);
-
   } else if(auto ptr{negation(lambda)}; ptr) {
     nupe = std::move(ptr);
-
   } else if(auto ptr{literal()}; ptr) {
     nupe = std::move(ptr);
-
   } else if(auto ptr{prefix_operator()}; ptr) {
     nupe = std::move(ptr);
-
   } else if(auto ptr{function_call()}; ptr) {
     nupe = std::move(ptr);
-
   } else if(auto ptr{lvalue()}; ptr) {
     if(auto ulval{universal_lvalue(ptr, lambda)}; ulval) {
       nupe = std::move(ulval);
@@ -838,23 +788,6 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
   return node;
 }
 
-// unary_print_expr : '+' print_expr
-//                  | '-' print_expr
-//                  | unary_print_expr '^'      print_expr
-//                  | unary_print_expr '*'      print_expr
-//                  | unary_print_expr '/'      print_expr
-//                  | unary_print_expr '%'      print_expr
-//                  | unary_print_expr '+'      print_expr
-//                  | unary_print_expr '-'      print_expr
-//                  | unary_print_expr          non_unary_print_expr
-//                  | unary_print_expr '˜'      print_expr
-//                  | unary_print_expr NO_MATCH print_expr
-//                  | unary_print_expr In NAME
-//                  | unary_print_expr AND newline_opt print_expr
-//                  | unary_print_expr OR  newline_opt print_expr
-//                  | unary_print_expr '?' print_expr ':' print_expr
-//                  ;
-// TODO: Unary expr is very similar create a function for both
 auto AwkParser::unary_print_expr() -> NodePtr
 {
   using namespace nodes::operators;
@@ -867,21 +800,15 @@ auto AwkParser::unary_print_expr() -> NodePtr
   };
 
   if(auto lhs{unary_prefix(lambda)}; lhs) {
-
     const auto print_lambda = [&]() -> NodePtr {
       return this->print_expr();
     };
 
-    // TODO: Loop through the universal_print_expr
     if(auto ptr{universal_print_expr(lhs, print_lambda)}; ptr) {
       node = std::move(ptr);
     } else {
       node = std::move(lhs);
     }
-  } else {
-    // unary_input_function is recursive to unary_expr
-    // NodePtr lhs{unary_input_function()};
-    // node = binary_operator(lhs);
   }
 
   return node;
@@ -934,7 +861,6 @@ auto AwkParser::print_expr_list() -> NodeListPtr
   if(!nodes->size()) {
     // throw std::runtime_error{"expected atleast on expr in expr_list"};
   }
-
   // TODO: If we only have one node in the list flatten it to a single NodePtr
 
   return nodes;
@@ -947,50 +873,6 @@ auto AwkParser::print_expr_list_opt() -> NodeListPtr
   return print_expr_list();
 }
 
-// non_unary_expr   : '(' expr ')'
-//                  | '!' expr
-//                  | non_unary_expr '^'      expr
-//                  | non_unary_expr '*'      expr
-//                  | non_unary_expr '/'      expr
-//                  | non_unary_expr '%'      expr
-//                  | non_unary_expr '+'      expr
-//                  | non_unary_expr '-'      expr
-//                  | non_unary_expr          non_unary_expr
-//                  | non_unary_expr '<'      expr
-//                  | non_unary_expr LE       expr
-//                  | non_unary_expr NE       expr
-//                  | non_unary_expr EQ       expr
-//                  | non_unary_expr '>'      expr
-//                  | non_unary_expr GE       expr
-//                  | non_unary_expr '˜'      expr
-//                  | non_unary_expr NO_MATCH expr
-//                  | non_unary_expr In NAME
-//                  | '(' multiple_expr_list ')' In NAME
-//                  | non_unary_expr AND newline_opt expr
-//                  | non_unary_expr OR  newline_opt expr
-//                  | non_unary_expr '?' expr ':' expr
-//                  | NUMBER
-//                  | STRING
-//                  | lvalue
-//                  | ERE
-//                  | lvalue INCR
-//                  | lvalue DECR
-//                  | INCR lvalue
-//                  | DECR lvalue
-//                  | lvalue POW_ASSIGN expr
-//                  | lvalue MOD_ASSIGN expr
-//                  | lvalue MUL_ASSIGN expr
-//                  | lvalue DIV_ASSIGN expr
-//                  | lvalue ADD_ASSIGN expr
-//                  | lvalue SUB_ASSIGN expr
-//                  | lvalue '=' expr
-//                  | FUNC_NAME '(' expr_list_opt ')'
-//                       /* no white space allowed before '(' */
-//                  | BUILTIN_FUNC_NAME '(' expr_list_opt ')'
-//                  | BUILTIN_FUNC_NAME
-//                  | non_unary_input_function
-//                  ;
-// TODO: Split these functions
 auto AwkParser::non_unary_expr() -> NodePtr
 {
   using namespace nodes::operators;
@@ -1006,19 +888,14 @@ auto AwkParser::non_unary_expr() -> NodePtr
 
   if(auto ptr{grouping()}; ptr) {
     nue = std::move(ptr);
-
   } else if(auto ptr{negation(lambda)}; ptr) {
     nue = std::move(ptr);
-
   } else if(auto ptr{literal()}; ptr) {
     nue = std::move(ptr);
-
   } else if(auto ptr{prefix_operator()}; ptr) {
     nue = std::move(ptr);
-
   } else if(auto ptr{function_call()}; ptr) {
     nue = std::move(ptr);
-
   } else if(auto ptr{lvalue()}; ptr) {
     if(auto ulval{universal_lvalue(ptr, lambda)}; ulval) {
       nue = std::move(ulval);
@@ -1047,29 +924,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
   return node;
 }
 
-// unary_expr       : '+' expr
-//                  | '-' expr
-//                  | unary_expr '^'      expr
-//                  | unary_expr '*'      expr
-//                  | unary_expr '/'      expr
-//                  | unary_expr '%'      expr
-//                  | unary_expr '+'      expr
-//                  | unary_expr '-'      expr
-//                  | unary_expr          non_unary_expr
-//                  | unary_expr '<'      expr
-//                  | unary_expr LE       expr
-//                  | unary_expr NE       expr
-//                  | unary_expr EQ       expr
-//                  | unary_expr '>'      expr
-//                  | unary_expr GE       expr
-//                  | unary_expr '˜'      expr
-//                  | unary_expr NO_MATCH expr
-//                  | unary_expr In NAME
-//                  | unary_expr AND newline_opt expr
-//                  | unary_expr OR  newline_opt expr
-//                  | unary_expr '?' expr ':' expr
-//                  | unary_input_function
-//                  ;
+// TODO: Still implement IN operator
 auto AwkParser::unary_expr() -> NodePtr
 {
 
@@ -1088,7 +943,6 @@ auto AwkParser::unary_expr() -> NodePtr
       return this->print_expr();
     };
 
-    // TODO: Loop through the universal_print_expr
     if(auto ptr{universal_expr(lhs, print_lambda)}; ptr) {
       node = std::move(ptr);
     } else {
@@ -1104,8 +958,6 @@ auto AwkParser::expr() -> NodePtr
   TRACE(LogLevel::DEBUG, "EXPR");
   NodePtr node;
 
-  // TODO: unary_expr() calls expr() which calls unary_expr(), etc etc FIX
-  // THIS!
   if(auto ptr{non_unary_expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{unary_expr()}; ptr) {
@@ -1124,9 +976,6 @@ auto AwkParser::expr_opt() -> NodePtr
   return expr();
 }
 
-// multiple_expr_list : expr ',' newline_opt expr
-//                  | multiple_expr_list ',' newline_opt expr
-//                  ;
 auto AwkParser::multiple_expr_list() -> NodeListPtr
 {
   using namespace nodes;

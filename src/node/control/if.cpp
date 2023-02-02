@@ -5,9 +5,9 @@
 
 using namespace nodes::control;
 
-If::If(NodePtr&& t_predicate, NodePtr&& t_then, NodePtr&& t_else)
+If::If(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else)
   : Node{NodeType::CONTROL_STATEMENT},
-    m_predicate{std::forward<NodePtr>(t_predicate)},
+    m_condition{std::forward<NodePtr>(t_condition)},
     m_then{std::forward<NodePtr>(t_then)},
     m_else{std::forward<NodePtr>(t_else)}
 {}

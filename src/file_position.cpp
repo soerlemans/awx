@@ -15,11 +15,11 @@ FilePosition::FilePosition(std::string t_path, std::string t_line,
 auto operator<<(std::ostream& t_os, const FilePosition& t_fp) -> std::ostream&
 {
   std::stringstream ss;
-  ss << "Line(" << t_fp.m_lineno << "): " << t_fp.m_line;
+  ss << "Line(" << t_fp.m_lineno << "): ";
   const auto offset{ss.str().size() + t_fp.m_columno};
 
   t_os << "File: \"" << t_fp.m_path << "\"\n";
-  t_os << ss.str();
+  t_os << ss.str() << t_fp.m_line;
   t_os << std::string(offset, ' ') << "~^~";
 
   return t_os;

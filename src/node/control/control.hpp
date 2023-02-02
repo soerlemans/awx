@@ -4,6 +4,8 @@
 
 namespace nodes::control {
 class If;
-};
+class While;
+class For;
+}; // namespace nodes::control
 
 #endif // CONTROL_H

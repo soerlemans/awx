@@ -1,5 +1,5 @@
-#ifndef IF_H
-#define IF_H
+#ifndef WHILE_H
+#define WHILE_H
 
 #include "../node.hpp"
 
@@ -7,19 +7,18 @@
 
 
 namespace nodes::control {
-class If : public Node {
+class While : public Node {
   private:
   NodePtr m_condition;
-  NodePtr m_then;
-  NodePtr m_else;
+  NodePtr m_body;
 
   public:
-  If(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else);
+  While(NodePtr&& t_condition, NodePtr&& t_body);
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~If();
+  virtual ~While();
 };
 } // namespace nodes::control
 
-#endif // IF_H
+#endif // WHILE_H
