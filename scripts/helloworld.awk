@@ -7,7 +7,7 @@ function helloworld(t_name)
 }
 
 BEGIN {
-	"test" "test2"
+	# "test" "test2"
 }
 
 

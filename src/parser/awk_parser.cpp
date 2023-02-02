@@ -1099,7 +1099,10 @@ auto AwkParser::non_unary_expr() -> NodePtr
         std::make_unique<StringConcatenation>(std::move(nue), std::move(rhs));
     } else if(auto ptr{universal_expr(nue, lambda)}; ptr) {
       node = std::move(ptr);
-    }
+    }else{
+	  // If we cant find a bigger nue expression just return the nue
+	  node = std::move(nue);
+	}
   }
 
   return node;
