@@ -16,7 +16,7 @@ export CXX := clang++
 # export CXX := g++
 
 # TODO: Find a way around the shell escape
-SOURCES := $(shell find $(SRC)/ -name '*.cpp')
+SOURCES := $(shell find $(SRC)/ -name '[^.]*.cpp')
 OBJECTS := $(SOURCES:$(SRC)/%.cpp=$(BUILD)/%.o)
 
 # Rules:

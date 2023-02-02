@@ -28,10 +28,12 @@
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
 #include "../node/operators/string_concatenation.hpp"
+#include "../node/operators/ternary.hpp"
 #include "../node/operators/unary_prefix.hpp"
 
 
-PrintVisitor::PrintVisitor(): m_counter{0}
+PrintVisitor::PrintVisitor()
+  : m_counter{0}
 {}
 
 auto PrintVisitor::visit(nodes::control::If* t_if) -> void
@@ -291,6 +293,21 @@ auto PrintVisitor::visit(nodes::operators::Ternary* t_ternary) -> void
   Printer printer{m_counter};
 
   printer.print("TERNARY");
+
+  if(NodePtr & condition{t_ternary->first()}; condition) {
+    printer.print("| CONDITION");
+    condition->accept(this);
+  }
+
+  if(NodePtr & then{t_ternary->second()}; then) {
+    printer.print("| THEN");
+    then->accept(this);
+  }
+
+  if(NodePtr & third{t_ternary->third()}; third) {
+    printer.print("| ELSE");
+    third->accept(this);
+  }
 }
 
 auto PrintVisitor::visit(nodes::operators::UnaryPrefix* t_unary_prefix) -> void

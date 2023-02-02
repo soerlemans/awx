@@ -12,11 +12,8 @@ BEGIN {
 
 
 BEGIN {
-	a = b + c - 10 + 20;
+	# print (count == 0) ? "Starting with count of 0" : "Huh?";
+	# count == 0
 
-	getline var
-
-	10 + 10
-	print +20
 	helloworld("monkeys")
 }

@@ -6,8 +6,6 @@
 #include "../debug/log.hpp"
 #include "../debug/trace.hpp"
 
-#include "../visitor/print_visitor.hpp"
-
 #include "../enum.hpp"
 
 #include "../token/token_type.hpp"
@@ -15,6 +13,9 @@
 
 #include "../node/list.hpp"
 #include "../node/node.hpp"
+
+#include "../node/control/if.hpp"
+#include "../node/control/while.hpp"
 
 #include "../node/io/getline.hpp"
 #include "../node/io/print.hpp"
@@ -497,6 +498,8 @@ auto AwkParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   TRACE(LogLevel::DEBUG, "TERNARY");
   NodePtr node;
 
+  // FIXME: simple_print_statement has a rule that conflicts and does not make
+  // It possible to detect if it is a print() or print () ? : ;
   if(next_if(TokenType{g_questionmark})) {
     TRACE(LogLevel::DEBUG, "Found TERNARY");
     NodePtr then_ptr{t_rhs()};
@@ -1080,6 +1083,7 @@ auto AwkParser::simple_print_statement() -> NodePtr
   const auto lambda = [&]() -> NodeListPtr {
     NodeListPtr node;
 
+    // FIXME: This breaks ternary expressions in print statements
     if(next_if(TokenType::PAREN_OPEN)) {
       node = multiple_expr_list();
       expect(TokenType::PAREN_CLOSE, ")");
@@ -1094,6 +1098,7 @@ auto AwkParser::simple_print_statement() -> NodePtr
     TRACE_PRINT(LogLevel::INFO, "Found 'print'");
 
     node = std::make_unique<Print>(lambda());
+    node->accept(&m_visitor);
   } else if(next_if(TokenType::PRINTF)) {
     TRACE_PRINT(LogLevel::INFO, "Found 'printf");
 
@@ -1133,6 +1138,7 @@ auto AwkParser::simple_statement() -> NodePtr
     expect(TokenType::BRACE_CLOSE, "]");
 
     // TODO: Return Delete statement
+
   } else if(auto ptr{expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{print_statement()}; ptr) {
@@ -1218,27 +1224,49 @@ auto AwkParser::terminatable_statement() -> NodePtr
 //                  ;
 auto AwkParser::unterminated_statement() -> NodePtr
 {
+  using namespace nodes::control;
+
   TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT");
   NodePtr node;
 
-  if(auto ptr{expr_opt()}; ptr) {
-    node = std::move(ptr);
-  } else {
-    const auto token{next()};
-    switch(token.type()) {
-      case TokenType::IF:
-        break;
+  const auto token{next()};
+  switch(next().type()) {
+    case TokenType::IF: {
+      // TODO: Adjust grouping() to something more general?
+      expect(TokenType::PAREN_OPEN, "(");
+      NodePtr condition{expr()};
+      expect(TokenType::PAREN_OPEN, ")");
 
-      case TokenType::WHILE:
-        break;
-
-      case TokenType::FOR:
-        break;
-
-      default:
-        prev();
-        break;
+      newline_opt();
+      if(auto ptr{unterminated_statement()}; ptr) {
+        node =
+          std::make_unique<If>(std::move(condition), std::move(ptr));
+      } else if(auto then{terminated_statement()}; then) {
+        expect(TokenType::ELSE, "else");
+        newline_opt();
+        node = std::make_unique<If>(std::move(condition), std::move(then),
+                                    unterminated_statement());
+      }
+      break;
     }
+
+    case TokenType::WHILE: {
+      expect(TokenType::PAREN_OPEN, ")");
+      NodePtr condition{expr()};
+      expect(TokenType::PAREN_OPEN, "(");
+
+      newline_opt();
+      node =
+        std::make_unique<If>(std::move(condition), unterminated_statement());
+      break;
+    }
+
+    case TokenType::FOR:
+      break;
+
+    default:
+      prev();
+      break;
   }
 
   return node;
@@ -1541,8 +1569,8 @@ auto AwkParser::item() -> NodePtr
 
   if(auto ptr{action()}; ptr) {
     node = std::move(ptr);
-    // We must check for function first or else the function will be interpreted
-    // As a pattern
+    // We must check for function first or else the function will be
+    // interpreted As a pattern
   } else if(auto ptr{function()}; ptr) {
     node = std::move(ptr);
   } else if(auto pattern_ptr{pattern()}; pattern_ptr) {
@@ -1574,7 +1602,8 @@ auto AwkParser::item_list() -> NodeListPtr
 
   while(!eos()) {
     // Remove newlines before items
-    // TODO: Figure out if this works as intended, since its not in the grammar
+    // TODO: Figure out if this works as intended, since its not in the
+    // grammar
     newline_opt();
 
     if(auto ptr{item()}; ptr) {
@@ -1617,8 +1646,7 @@ auto AwkParser::parse() -> Ast
     LOG_PRINTLN();
     LOG_PRINTLN("--- Print AST ---");
 
-    PrintVisitor visitor;
-    node->accept(&visitor);
+    node->accept(&m_visitor);
   }
 
   LOG_PRINTLN();
