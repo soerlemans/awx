@@ -39,7 +39,7 @@ class AwkParser : public Parser {
   virtual auto function() -> NodePtr;
   virtual auto function_call() -> NodePtr;
 
-  // Binary expression handlers:
+  // Common expressions:
   // TODO: Maybe replace the switch cases in these functions with macros?
   // TODO: Implement shunting yard algorithm for binary_operators
   virtual auto ere(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
@@ -48,10 +48,22 @@ class AwkParser : public Parser {
   virtual auto comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
   virtual auto logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
   virtual auto ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr;
-  virtual auto binary_operator(NodePtr& t_lhs, const ParserFunc& t_rhs)
+
+  // Universal expressions are common expressions shared by other rules
+  virtual auto universal_print_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> NodePtr;
   virtual auto universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> NodePtr;
+
+  // Non unary helper rules:
+  virtual auto grouping() -> NodePtr;
+  virtual auto negation() -> NodePtr; // negation == not, !
+  virtual auto literal() -> NodePtr;
+  virtual auto prefix_xxcrement() -> NodePtr;
+  virtual auto universal_lvalue() -> NodePtr;
+
+  // Unary helper rules:
+  virtual auto unary_prefix(const ParserFunc& t_rhs) -> NodePtr;
 
   // Print rules:
   virtual auto non_unary_print_expr() -> NodePtr;

@@ -18,5 +18,7 @@ BEGIN {
 
 	getline var
 
+	10 + 10
+	print +20
 	helloworld("monkeys")
 }

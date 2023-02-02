@@ -500,23 +500,25 @@ auto AwkParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   return node;
 }
 
-// TODO: Not a grammar rule function, but a function intended for parsing
-// binary Operator statements
-auto AwkParser::binary_operator(NodePtr& t_lhs, const ParserFunc& t_rhs)
+auto AwkParser::universal_print_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "BINARY OPERATOR");
+  TRACE(LogLevel::DEBUG, "UNIVERSAL PRINT EXPR");
   NodePtr node;
 
-  // TODO: Create lambda for these call chains?
-  // Or a macro?
-  if(auto ptr{arithmetic(t_lhs, t_rhs)}; ptr) {
+  // if(auto rhs{non_unary_expr()}; rhs) {
+  //   TRACE_PRINT(LogLevel::INFO, "Found STRING CONCAT");
+  //   node =
+  //     std::make_unique<StringConcatenation>(std::move(node), std::move(rhs));
+  // } else
+
+  if(auto ptr{arithmetic(node, t_rhs)}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{comparison(t_lhs, t_rhs)}; ptr) {
+  } else if(auto ptr{ere(node, t_rhs)}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{logical(t_lhs, t_rhs)}; ptr) {
+  } else if(auto ptr{logical(node, t_rhs)}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{ternary(t_lhs, t_rhs)}; ptr) {
+  } else if(auto ptr{ternary(node, t_rhs)}; ptr) {
     node = std::move(ptr);
   }
 
@@ -542,27 +544,96 @@ auto AwkParser::binary_operator(NodePtr& t_lhs, const ParserFunc& t_rhs)
 //                  | unary_expr AND newline_opt expr
 //                  | unary_expr OR  newline_opt expr
 //                  | unary_expr '?' expr ':' expr
+// Widely accepted expr
 auto AwkParser::universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   -> NodePtr
 {
-
   NodePtr node;
 
-  // if(auto rhs{non_unary_expr()}; rhs) {
-  //   TRACE_PRINT(LogLevel::INFO, "Found STRING CONCAT");
-  //   node =
-  //     std::make_unique<StringConcatenation>(std::move(node), std::move(rhs));
-  // } else if(auto ptr{arithmetic(node, lambda_expr)}; ptr) {
-  //   node = std::move(ptr);
-  // } else if(auto ptr{comparison(node, lambda_expr)}; ptr) {
-  //   node = std::move(ptr);
-  // } else if(auto ptr{ere(node, lambda_expr)}; ptr) {
-  //   node = std::move(ptr);
-  // } else if(auto ptr{logical(node, lambda_expr)}; ptr) {
-  //   node = std::move(ptr);
-  // } else if(auto ptr{ternary(node, lambda_expr)}; ptr) {
-  //   node = std::move(ptr);
-  // }
+  if(auto ptr{universal_print_expr(node, t_rhs)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{comparison(node, t_rhs)}; ptr) {
+    node = std::move(ptr);
+  }
+
+  return node;
+}
+
+auto AwkParser::grouping() -> NodePtr
+{
+  TRACE(LogLevel::DEBUG, "GROUPING");
+  NodePtr node;
+
+  return node;
+}
+
+// negation == not, !
+auto AwkParser::negation() -> NodePtr
+{
+  TRACE(LogLevel::DEBUG, "NEGATION");
+  NodePtr node;
+
+  return node;
+}
+
+// | NUMBER
+// | STRING
+// | lvalue
+// | ERE
+// | lvalue INCR
+// | lvalue DECR
+// | INCR lvalue
+// | DECR lvalue
+auto AwkParser::literal() -> NodePtr
+{
+  TRACE(LogLevel::DEBUG, "LITERAL");
+  NodePtr node;
+
+  return node;
+}
+
+auto AwkParser::prefix_xxcrement() -> NodePtr
+{
+  TRACE(LogLevel::DEBUG, "PREFIX XXCREMENT");
+  NodePtr node;
+
+  return node;
+}
+
+auto AwkParser::universal_lvalue() -> NodePtr
+{
+  TRACE(LogLevel::DEBUG, "UNIVERSAL LVALUE");
+  NodePtr node;
+
+  return node;
+}
+
+auto AwkParser::unary_prefix(const ParserFunc& t_rhs) -> NodePtr
+{
+  using namespace nodes::operators;
+
+  TRACE(LogLevel::DEBUG, "UNARY PREFIX");
+  NodePtr node;
+
+  switch(const auto tokentype{next().type()}; tokentype) {
+    case TokenType::PLUS:
+    case TokenType::MINUS: {
+      TRACE(LogLevel::DEBUG, "Found UNARY PREFIX");
+
+      NodePtr rhs{t_rhs()};
+      if(!rhs) {
+        std::runtime_error{"Expected an expression after + or -"};
+      }
+
+      node = std::make_unique<UnaryPrefix>(tokentype, std::move(rhs));
+      break;
+    }
+    default:
+      prev();
+      break;
+  }
+
+  return node;
 }
 
 // non_unary_print_expr : '(' expr ')'
@@ -692,13 +763,7 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
       TRACE_PRINT(LogLevel::INFO, "Found STRING CONCAT");
       node =
         std::make_unique<StringConcatenation>(std::move(node), std::move(rhs));
-    } else if(auto ptr{arithmetic(node, lambda_expr)}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{ere(node, lambda_expr)}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{logical(node, lambda_expr)}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{ternary(node, lambda_expr)}; ptr) {
+    } else if(auto ptr{universal_print_expr(node, lambda_expr)}; ptr) {
       node = std::move(ptr);
     }
   } else {
@@ -748,26 +813,19 @@ auto AwkParser::unary_print_expr() -> NodePtr
   TRACE(LogLevel::DEBUG, "UNARY PRINT EXPR");
   NodePtr node;
 
-  const auto tokentype{get_token().type()};
-  if(tokentype::is_unary_operator(tokentype)) {
-    next();
-    TRACE_PRINT(LogLevel::INFO, "Found unary operator");
+  const auto lambda = [&]() -> NodePtr {
+    return this->expr();
+  };
 
-    auto ptr{print_expr()};
-    if(!ptr) {
-      // TODO: Error handling
-      throw std::runtime_error{"Expected print expression"};
-    }
+  if(auto lhs{unary_prefix(lambda)}; lhs) {
 
-    const auto op{unary_prefix::tokentype2enum(tokentype)};
-    NodePtr lhs{std::make_unique<UnaryPrefix>(op, std::move(ptr))};
-
-    const auto lambda = [&]() -> NodePtr {
+    const auto print_lambda = [&]() -> NodePtr {
       return this->print_expr();
     };
 
-    if(auto binop_ptr{binary_operator(lhs, lambda)}; binop_ptr) {
-      node = std::move(binop_ptr);
+    // TODO: Loop through the universal_print_expr
+    if(auto ptr{universal_print_expr(lhs, print_lambda)}; ptr) {
+      node = std::move(ptr);
     } else {
       node = std::move(lhs);
     }
@@ -971,15 +1029,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
       TRACE_PRINT(LogLevel::INFO, "Found STRING CONCAT");
       node =
         std::make_unique<StringConcatenation>(std::move(node), std::move(rhs));
-    } else if(auto ptr{arithmetic(node, lambda_expr)}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{comparison(node, lambda_expr)}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{ere(node, lambda_expr)}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{logical(node, lambda_expr)}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{ternary(node, lambda_expr)}; ptr) {
+    } else if(auto ptr{universal_expr(node, lambda_expr)}; ptr) {
       node = std::move(ptr);
     }
   } else {
@@ -1034,38 +1084,28 @@ auto AwkParser::non_unary_expr() -> NodePtr
 //                  ;
 auto AwkParser::unary_expr() -> NodePtr
 {
+
   using namespace nodes::operators;
 
   TRACE(LogLevel::DEBUG, "UNARY EXPR");
   NodePtr node;
 
-  const auto tokentype{get_token().type()};
-  if(tokentype::is_unary_operator(tokentype)) {
-    next();
-    TRACE_PRINT(LogLevel::INFO, "Found unary operator");
+  const auto lambda = [&]() -> NodePtr {
+    return this->expr();
+  };
 
-    auto ptr{expr()};
-    if(!ptr) {
-      // TODO: Error handling
-      throw std::runtime_error{"Expected expression"};
-    }
+  if(auto lhs{unary_prefix(lambda)}; lhs) {
 
-    const auto op{unary_prefix::tokentype2enum(tokentype)};
-    NodePtr lhs{std::make_unique<UnaryPrefix>(op, std::move(ptr))};
-
-    const auto lambda = [&]() -> NodePtr {
-      return this->expr();
+    const auto print_lambda = [&]() -> NodePtr {
+      return this->print_expr();
     };
 
-    if(auto binop_ptr{binary_operator(lhs, lambda)}; binop_ptr) {
-      node = std::move(binop_ptr);
+    // TODO: Loop through the universal_print_expr
+    if(auto ptr{universal_expr(lhs, print_lambda)}; ptr) {
+      node = std::move(ptr);
     } else {
       node = std::move(lhs);
     }
-  } else {
-    // unary_input_function is recursive to unary_expr
-    // NodePtr lhs{unary_input_function()};
-    // node = binary_operator(lhs);
   }
 
   return node;

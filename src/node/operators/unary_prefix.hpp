@@ -18,6 +18,7 @@ class UnaryPrefix : public UnaryOperator {
 
   public:
   UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left);
+  UnaryPrefix(TokenType t_tokentype, NodePtr&& t_left);
 
   virtual auto op() const -> UnaryPrefixOp;
 
@@ -25,12 +26,6 @@ class UnaryPrefix : public UnaryOperator {
 
   virtual ~UnaryPrefix();
 };
-
-// Exported Functions:
-namespace unary_prefix {
-// Convert TokenType enum to matching UnaryPrefixOp token
-auto tokentype2enum(const TokenType t_tokentype) -> UnaryPrefixOp;
-} // namespace unary_prefix
 } // namespace nodes::operators
 
 #endif // UNARY_PREFIX_H
