@@ -57,10 +57,12 @@ class AwkParser : public Parser {
 
   // Non unary helper rules:
   virtual auto grouping() -> NodePtr;
-  virtual auto negation() -> NodePtr; // negation == not, !
+  virtual auto negation(const ParserFunc& t_expr)
+    -> NodePtr; // negation == not, !
   virtual auto literal() -> NodePtr;
-  virtual auto prefix_xxcrement() -> NodePtr;
-  virtual auto universal_lvalue() -> NodePtr;
+  virtual auto prefix_operator() -> NodePtr;
+  virtual auto universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
+    -> NodePtr;
 
   // Unary helper rules:
   virtual auto unary_prefix(const ParserFunc& t_rhs) -> NodePtr;

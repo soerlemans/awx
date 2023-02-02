@@ -38,6 +38,7 @@
 #include "../node/operators/assignment.hpp"
 #include "../node/operators/comparison.hpp"
 #include "../node/operators/decrement.hpp"
+#include "../node/operators/grouping.hpp"
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
 #include "../node/operators/string_concatenation.hpp"
@@ -559,51 +560,160 @@ auto AwkParser::universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   return node;
 }
 
+// TODO: Have this also handle multidimensional 'in' statements?
 auto AwkParser::grouping() -> NodePtr
 {
+  using namespace nodes::operators;
+
   TRACE(LogLevel::DEBUG, "GROUPING");
   NodePtr node;
+
+  if(next_if(TokenType::PAREN_OPEN)) {
+    TRACE_PRINT(LogLevel::DEBUG, "Found GROUPING");
+
+    node = std::make_unique<Grouping>(expr());
+    expect(TokenType::PAREN_CLOSE, ")");
+  }
 
   return node;
 }
 
 // negation == not, !
-auto AwkParser::negation() -> NodePtr
+auto AwkParser::negation(const ParserFunc& t_expr) -> NodePtr
 {
+  using namespace nodes::operators;
+
   TRACE(LogLevel::DEBUG, "NEGATION");
   NodePtr node;
+
+  if(next_if(TokenType::NOT)) {
+    TRACE_PRINT(LogLevel::INFO, "Found Not expression");
+    if(NodePtr expr_ptr{t_expr()}; expr_ptr) {
+      node = std::make_unique<Not>(std::move(expr_ptr));
+    } else {
+      // TODO: Error handling
+    }
+  }
 
   return node;
 }
 
 // | NUMBER
 // | STRING
-// | lvalue
 // | ERE
-// | lvalue INCR
-// | lvalue DECR
-// | INCR lvalue
-// | DECR lvalue
 auto AwkParser::literal() -> NodePtr
 {
+  using namespace nodes::rvalue;
+
   TRACE(LogLevel::DEBUG, "LITERAL");
   NodePtr node;
 
+  switch(const auto token{next()}; token.type()) {
+    // TODO: Token in the grammar calls for NUMBER? These are not treated
+    // differently?
+    case TokenType::FLOAT:
+      TRACE_PRINT(LogLevel::INFO, "Found FLOAT literal");
+      node = std::make_unique<Float>(token.value<double>());
+      break;
+
+    case TokenType::HEX:
+      [[fallthrough]];
+    case TokenType::INTEGER:
+      TRACE_PRINT(LogLevel::INFO, "Found INTEGER literal");
+      node = std::make_unique<Integer>(token.value<int>());
+      break;
+
+    case TokenType::STRING:
+      TRACE_PRINT(LogLevel::INFO, "Found STRING literal");
+      node = std::make_unique<String>(token.value<std::string>());
+      break;
+
+    // TODO: ERE
+    case TokenType::REGEX:
+      TRACE_PRINT(LogLevel::INFO, "Found REGEX literal");
+      // node = std::make_unique<String>(token.value<std::string>());
+      break;
+
+    default:
+      prev();
+      break;
+  }
+
   return node;
 }
 
-auto AwkParser::prefix_xxcrement() -> NodePtr
+// Prefix operator covers prefix increment and decrement
+auto AwkParser::prefix_operator() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "PREFIX XXCREMENT");
+  using namespace nodes::operators;
+
+  TRACE(LogLevel::DEBUG, "PREFIX OPERATOR");
   NodePtr node;
 
+  // TODO: Find a way to shorten or macro this?
+  switch(next().type()) {
+    case TokenType::INCREMENT: {
+      TRACE_PRINT(LogLevel::INFO, "Found --INCREMENT");
+      if(auto ptr{lvalue()}; ptr) {
+        node = std::make_unique<Increment>(std::move(ptr), true);
+      } else {
+        // TODO: Error handling
+      }
+      break;
+    }
+
+    case TokenType::DECREMENT: {
+      TRACE_PRINT(LogLevel::INFO, "Found --DECREMENT");
+      if(auto ptr{lvalue()}; ptr) {
+        node = std::make_unique<Decrement>(std::move(ptr), true);
+      } else {
+        // TODO: Error handling
+      }
+      break;
+    }
+
+    default:
+      prev();
+      break;
+  }
+
   return node;
 }
 
-auto AwkParser::universal_lvalue() -> NodePtr
+// | lvalue POW_ASSIGN expr
+// | lvalue MOD_ASSIGN expr
+// | lvalue MUL_ASSIGN expr
+// | lvalue DIV_ASSIGN expr
+// | lvalue ADD_ASSIGN expr
+// | lvalue SUB_ASSIGN expr
+// | lvalue '=' expr
+// | lvalue INCR
+// | lvalue DECR
+auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
+  -> NodePtr
 {
+  using namespace nodes::operators;
+
   TRACE(LogLevel::DEBUG, "UNIVERSAL LVALUE");
   NodePtr node;
+
+  if(auto ptr{assignment(t_lhs, t_rhs)}; ptr) {
+    node = std::move(ptr);
+  } else {
+    switch(next().type()) {
+      case TokenType::INCREMENT:
+        node = std::make_unique<Increment>(std::move(t_lhs), false);
+        break;
+
+      case TokenType::DECREMENT:
+        node = std::make_unique<Decrement>(std::move(t_lhs), false);
+        break;
+
+      default:
+        prev();
+        break;
+    }
+  }
 
   return node;
 }
@@ -949,109 +1059,45 @@ auto AwkParser::non_unary_expr() -> NodePtr
 
   TRACE(LogLevel::DEBUG, "NON UNARY EXPR");
   NodePtr node;
+  NodePtr nue;
 
-  bool is_nue{true};
-
-  // We still need to do FUNC_NAME and BUILTIN_FUNC_NAME
-  const auto token{next()};
-  switch(token.type()) {
-    case TokenType::PAREN_OPEN:
-      if(auto ptr{expr()}; ptr) {
-        TRACE_PRINT(LogLevel::INFO, "Found (expr)");
-        // TODO: Do something
-      } else if(auto ptr{multiple_expr_list()}; ptr) {
-        expect(TokenType::IN, "in");
-        TRACE_PRINT(LogLevel::INFO, "Found MULTIDIMENSIONAL IN");
-        // TODO: Do something
-      } else {
-        // TODO: Error handling
-      }
-
-      expect(TokenType::PAREN_CLOSE, ")");
-      break;
-
-    case TokenType::NOT:
-      LOG(LogLevel::INFO, "Found Not expression");
-      node = std::make_unique<Not>(expr());
-      break;
-
-    // TODO: Token in the grammar calls for NUMBER? These are not treated
-    // differently?
-    case TokenType::FLOAT:
-      TRACE_PRINT(LogLevel::INFO, "Found FLOAT literal");
-      node = std::make_unique<Float>(token.value<double>());
-      break;
-
-    case TokenType::HEX:
-      [[fallthrough]];
-    case TokenType::INTEGER:
-      TRACE_PRINT(LogLevel::INFO, "Found INTEGER literal");
-      node = std::make_unique<Integer>(token.value<int>());
-      break;
-
-    case TokenType::STRING:
-      TRACE_PRINT(LogLevel::INFO, "Found STRING literal");
-      node = std::make_unique<String>(token.value<std::string>());
-      break;
-
-    case TokenType::INCREMENT: {
-      TRACE_PRINT(LogLevel::INFO, "Found --INCREMENT");
-      if(auto ptr{lvalue()}; ptr) {
-        node = std::make_unique<Increment>(std::move(ptr), true);
-      } else {
-        // TODO: Error handling
-      }
-      break;
-    }
-
-    case TokenType::DECREMENT: {
-      TRACE_PRINT(LogLevel::INFO, "Found --DECREMENT");
-      if(auto ptr{lvalue()}; ptr) {
-        node = std::make_unique<Decrement>(std::move(ptr), true);
-      } else {
-        // TODO: Error handling
-      }
-      break;
-    }
-
-    default:
-      prev();
-      is_nue = false;
-      break;
-  }
-
-  auto lambda_expr = [&]() {
+  const auto lambda = [&]() {
     return this->expr();
   };
 
-  if(is_nue) {
+  if(auto ptr{grouping()}; ptr) {
+    nue = std::move(ptr);
+
+  } else if(auto ptr{negation(lambda)}; ptr) {
+    nue = std::move(ptr);
+
+  } else if(auto ptr{literal()}; ptr) {
+    nue = std::move(ptr);
+
+  } else if(auto ptr{prefix_operator()}; ptr) {
+    nue = std::move(ptr);
+
+  } else if(auto ptr{function_call()}; ptr) {
+    nue = std::move(ptr);
+
+  } else if(auto ptr{lvalue()}; ptr) {
+    if(auto ulval{universal_lvalue(ptr, lambda)}; ulval) {
+      nue = std::move(ulval);
+    } else {
+      nue = std::move(ptr);
+    }
+  } else if(auto ptr{non_unary_input_function()}; ptr) {
+    nue = std::move(ptr);
+  }
+
+  // If it is indeed a non unary expression than check if is a string
+  // Concatenation or a binary operator
+  if(nue) {
     if(auto rhs{non_unary_expr()}; rhs) {
       TRACE_PRINT(LogLevel::INFO, "Found STRING CONCAT");
       node =
-        std::make_unique<StringConcatenation>(std::move(node), std::move(rhs));
-    } else if(auto ptr{universal_expr(node, lambda_expr)}; ptr) {
-      node = std::move(ptr);
-    }
-  } else {
-    // TODO: Analyze the grammar rules to see if this is correct????
-    // If 'lvalue <assignmenet> expr' is a valid nue than this should be
-    // before The arithmetic, comparison, ere, logical, etc...
-    if(auto lhs{lvalue()}; lhs) {
-      if(auto ptr{assignment(lhs, lambda_expr)}; ptr) {
-        node = std::move(ptr);
-        // TODO: Increment, Decrement
-      } else if(next_if(TokenType::INCREMENT)) {
-        TRACE_PRINT(LogLevel::INFO, "Found INCREMENT++");
-        node = std::make_unique<Increment>(std::move(lhs), false);
-      } else if(next_if(TokenType::DECREMENT)) {
-        TRACE_PRINT(LogLevel::INFO, "Found DECREMENT++");
-        node = std::make_unique<Decrement>(std::move(lhs), false);
-      } else {
-        node = std::move(lhs);
-      }
-    } else if(auto ptr{function_call()}; ptr) {
-      node = std::move(ptr);
-    } else if(auto ptr{non_unary_input_function()}; ptr) {
+        std::make_unique<StringConcatenation>(std::move(nue), std::move(rhs));
+    } else if(auto ptr{universal_expr(nue, lambda)}; ptr) {
       node = std::move(ptr);
     }
   }
