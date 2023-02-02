@@ -3,6 +3,7 @@
 #include <sstream>
 
 
+// Its important to note that lines are zero indexed
 FilePosition::FilePosition(std::string t_path, std::string t_line,
                            std::size_t t_lineno, std::size_t t_columnno)
   : m_path{std::move(t_path)},
