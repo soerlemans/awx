@@ -1,5 +1,0 @@
-/home/hackerman/awx/build/CMakeFiles/edit_cache.dir
-/home/hackerman/awx/build/CMakeFiles/rebuild_cache.dir
-/home/hackerman/awx/build/src/CMakeFiles/Awx.dir
-/home/hackerman/awx/build/src/CMakeFiles/edit_cache.dir
-/home/hackerman/awx/build/src/CMakeFiles/rebuild_cache.dir

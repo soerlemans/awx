@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/Awx.dir/main.cpp.o -o Awx 
