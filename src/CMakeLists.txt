@@ -13,4 +13,4 @@ add_subdirectory(node)
 add_subdirectory(visitor)
 
 # Add source files
-target_sources(${PROJECT_NAME} PRIVATE main.cpp file_buffer.cpp file_position.hpp)
+target_sources(${PROJECT_NAME} PRIVATE main.cpp file_buffer.cpp file_position.cpp)

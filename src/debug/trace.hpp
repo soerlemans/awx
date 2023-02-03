@@ -6,7 +6,7 @@
 #include "log.hpp"
 
 
-// Only facilitate trace if we are on DEVELOPMENT build
+// Only facilitate Trace if we are on DEVELOPMENT build
 #if DEVELOPMENT
 
 // Helper macros for TRACE:

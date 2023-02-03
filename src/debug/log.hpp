@@ -28,7 +28,7 @@
   do {           \
   } while(0)
 
-#define SET_LEVEL(level) \
+#define SET_LOGLEVEL(level) \
   do {                   \
   } while(0)
 
