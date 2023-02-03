@@ -1,4 +1,4 @@
-project(lexer)
+
 
 # Add source files
-add_executable(${PROJECT_NAME} lexer.cpp)
+target_sources(${PROJECT_NAME} PRIVATE lexer.cpp)

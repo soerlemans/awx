@@ -1,4 +1,2 @@
-project(functions)
-
 # Add source files
-add_executable(${PROJECT_NAME} function.cpp function_call.cpp)
+target_sources(${PROJECT_NAME} PRIVATE function.cpp function_call.cpp)

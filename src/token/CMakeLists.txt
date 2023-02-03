@@ -1,4 +1,4 @@
-project(token)
+
 
 # Add source files
-add_executable(${PROJECT_NAME} token.cpp token_stream.cpp)
+target_sources(${PROJECT_NAME} PRIVATE token.cpp token_stream.cpp)

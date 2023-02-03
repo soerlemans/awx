@@ -1,7 +1,7 @@
-project(node)
+
 
 # Add source files
-add_executable(${PROJECT_NAME} node.cpp list.cpp expression.cpp)
+target_sources(${PROJECT_NAME} PRIVATE node.cpp list.cpp expression.cpp)
 
 # Add subdirectories
 add_subdirectory(control)

@@ -1,4 +1,4 @@
-project(parser)
+
 
 # Add source files
-add_executable(${PROJECT_NAME} ast.cpp parser.cpp awk_parser.cpp)
+target_sources(${PROJECT_NAME} PRIVATE ast.cpp parser.cpp awk_parser.cpp)

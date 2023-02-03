@@ -1,4 +1,4 @@
-project(recipes)
+
 
 # Add source files
-add_executable(${PROJECT_NAME} recipe.cpp special_pattern.cpp)
+target_sources(${PROJECT_NAME} PRIVATE recipe.cpp special_pattern.cpp)

@@ -1,13 +1,18 @@
-# TODO: Make this work
+# Set minimum CMake version
 cmake_minimum_required(VERSION 3.25.1)
 
-project(Awx CXX)
-
+# Set C++ standard
 set(CMAKE_CXX_STANDARD 20)
 
-# set(AWX_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-# set(AWX_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+# Set the compiler
+set(CMAKE_C_COMPILER "clang")
+set(CMAKE_CXX_COMPILER "clang++")
 
+# Define the project
+project(awx CXX)
+
+# Define the executable that will be made
+add_executable(${PROJECT_NAME})
+
+# Run CMake in subdirectories
 add_subdirectory(src)
-
-# add_executable(awx)

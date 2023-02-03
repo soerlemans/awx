@@ -1,4 +1,2 @@
-project(node)
-
 # Add source files
-add_executable(${PROJECT_NAME} if.cpp while.cpp)
+target_sources(${PROJECT_NAME} PRIVATE if.cpp while.cpp)

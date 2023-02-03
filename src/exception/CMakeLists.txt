@@ -1,4 +1,4 @@
-project(exception)
+
 
 # Add source files
-add_executable(${PROJECT_NAME} syntax_error.cpp)
+target_sources(${PROJECT_NAME} PRIVATE syntax_error.cpp)

@@ -1,7 +1,7 @@
-project(operators)
+
 
 # Add source files
-add_executable(${PROJECT_NAME} arithmetic.cpp
+target_sources(${PROJECT_NAME} PRIVATE arithmetic.cpp
 assignment.cpp
 binary_operator.cpp
 comparison.cpp

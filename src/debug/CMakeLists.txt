@@ -1,4 +1,2 @@
-project(debug)
-
 # Add source files
-add_executable(${PROJECT_NAME} log.cpp trace.cpp)
+target_sources(${PROJECT_NAME} PRIVATE trace.cpp log.cpp)

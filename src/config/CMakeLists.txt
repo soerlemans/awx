@@ -1,4 +1,2 @@
-project(config)
-
 # Add source files
-add_executable(${PROJECT_NAME} config.cpp)
+target_sources(${PROJECT_NAME} PRIVATE config.cpp)
