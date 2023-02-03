@@ -1,9 +1,13 @@
 # TODO: Make this work
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.25.1)
 
-project(awx CXX)
+project(Awx CXX)
 
-set(AWX_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(AWX_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+set(CMAKE_CXX_STANDARD 20)
 
-add_executable(awx)
+# set(AWX_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+# set(AWX_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+
+add_subdirectory(src)
+
+# add_executable(awx)
