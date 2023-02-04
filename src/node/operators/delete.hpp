@@ -6,7 +6,7 @@
 
 
 namespace nodes::operators {
-class operators::Delete : public Node {
+class Delete : public Node {
   private:
   NodePtr m_array;
 

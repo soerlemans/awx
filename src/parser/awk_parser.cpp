@@ -1098,7 +1098,6 @@ auto AwkParser::simple_print_statement() -> NodePtr
     TRACE_PRINT(LogLevel::INFO, "Found 'print'");
 
     node = std::make_unique<Print>(lambda());
-    node->accept(&m_visitor);
   } else if(next_if(TokenType::PRINTF)) {
     TRACE_PRINT(LogLevel::INFO, "Found 'printf");
 
@@ -1239,8 +1238,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
 
       newline_opt();
       if(auto ptr{unterminated_statement()}; ptr) {
-        node =
-          std::make_unique<If>(std::move(condition), std::move(ptr));
+        node = std::make_unique<If>(std::move(condition), std::move(ptr));
       } else if(auto then{terminated_statement()}; then) {
         expect(TokenType::ELSE, "else");
         newline_opt();
@@ -1257,11 +1255,14 @@ auto AwkParser::unterminated_statement() -> NodePtr
 
       newline_opt();
       node =
-        std::make_unique<If>(std::move(condition), unterminated_statement());
+        std::make_unique<While>(std::move(condition), unterminated_statement());
       break;
     }
 
     case TokenType::FOR:
+      expect(TokenType::PAREN_OPEN, ")");
+      // NodePtr condition{expr()};
+      // expect(TokenType::PAREN_OPEN, "(");
       break;
 
     default:
@@ -1288,6 +1289,8 @@ auto AwkParser::unterminated_statement() -> NodePtr
 //                  ;
 auto AwkParser::terminated_statement() -> NodePtr
 {
+  using namespace nodes::control;
+
   TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT");
   NodePtr node;
 
@@ -1295,19 +1298,18 @@ auto AwkParser::terminated_statement() -> NodePtr
   switch(next().type()) {
     case TokenType::IF: {
       expect(TokenType::PAREN_OPEN, "(");
-      expr();
+      NodePtr condition{expr()};
       expect(TokenType::PAREN_CLOSE, ")");
 
       newline_opt();
-      terminated_statement();
+      NodePtr then{terminated_statement()};
 
       if(next_if(TokenType::ELSE)) {
         newline_opt();
-        terminated_statement();
-
-        // TODO: Create Else node
+        node = std::make_unique<If>(std::move(condition), std::move(then),
+                                    terminated_statement());
       } else {
-        // TODO: Create If node
+        node = std::make_unique<If>(std::move(condition), std::move(then));
       }
       break;
     }
