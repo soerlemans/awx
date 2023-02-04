@@ -1221,6 +1221,7 @@ auto AwkParser::terminatable_statement() -> NodePtr
 //                  | For '(' NAME In NAME ')' newline_opt
 //                       unterminated_statement
 //                  ;
+// TODO: Refactor
 auto AwkParser::unterminated_statement() -> NodePtr
 {
   using namespace nodes::control;
@@ -1287,6 +1288,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
 //                  | terminatable_statement NEWLINE newline_opt
 //                  | terminatable_statement ';'     newline_opt
 //                  ;
+// TODO: Refactor
 auto AwkParser::terminated_statement() -> NodePtr
 {
   using namespace nodes::control;
