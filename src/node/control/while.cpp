@@ -6,10 +6,10 @@
 
 using namespace nodes::control;
 
-While::While(NodePtr&& t_condition, NodePtr&& t_body)
+While::While(NodePtr&& t_condition, NodeListPtr&& t_body)
   : Node{NodeType::CONTROL_STATEMENT},
     m_condition{std::forward<NodePtr>(t_condition)},
-    m_body{std::forward<NodePtr>(t_body)}
+    m_body{std::forward<NodeListPtr>(t_body)}
 {}
 
 auto While::accept(NodeVisitor* t_visitor) -> void

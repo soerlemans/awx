@@ -104,12 +104,13 @@ class AwkParser : public Parser {
   virtual auto terminatable_statement() -> NodePtr;
   virtual auto unterminated_statement() -> NodePtr;
   virtual auto terminated_statement() -> NodePtr;
-  virtual auto unterminated_statement_list() -> NodePtr;
-  virtual auto terminated_statement_list() -> NodePtr;
+
+  virtual auto unterminated_statement_list() -> NodeListPtr;
+  virtual auto terminated_statement_list() -> NodeListPtr;
 
   virtual auto terminator() -> void;
 
-  virtual auto action() -> NodePtr;
+  virtual auto action() -> NodeListPtr;
 
   // Patterns:
   virtual auto special_pattern() -> NodePtr;

@@ -60,7 +60,7 @@ BEGIN {
         print "Huh?";
 
     # Or you could use the ternary operator
-    print (count == 0) ? "Starting with count of 0" : "Huh?";
+    # print (count == 0) ? "Starting with count of 0" : "Huh?";
 
     # Blocks consisting of multiple lines use braces
     while (a < 10) {

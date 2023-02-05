@@ -11,6 +11,9 @@ set(CMAKE_CXX_COMPILER "clang++")
 # Define the project
 project(awx CXX)
 
+# Remove comment for debug information
+add_compile_definitions(DEVELOPMENT)
+
 # Define the executable that will be made
 add_executable(${PROJECT_NAME})
 

@@ -1224,6 +1224,7 @@ auto AwkParser::terminatable_statement() -> NodePtr
 // TODO: Refactor
 auto AwkParser::unterminated_statement() -> NodePtr
 {
+  using namespace nodes;
   using namespace nodes::control;
 
   TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT");
@@ -1232,6 +1233,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
   const auto token{next()};
   switch(next().type()) {
     case TokenType::IF: {
+	  TRACE_PRINT(LogLevel::INFO, "Found IF");
       // TODO: Adjust grouping() to something more general?
       expect(TokenType::PAREN_OPEN, "(");
       NodePtr condition{expr()};
@@ -1250,17 +1252,28 @@ auto AwkParser::unterminated_statement() -> NodePtr
     }
 
     case TokenType::WHILE: {
+	  TRACE_PRINT(LogLevel::INFO, "Found WHILE");
+      // FIXME: Both while loop definitions are the same -> create a Function
       expect(TokenType::PAREN_OPEN, ")");
       NodePtr condition{expr()};
       expect(TokenType::PAREN_OPEN, "(");
 
       newline_opt();
-      node =
-        std::make_unique<While>(std::move(condition), unterminated_statement());
+
+      NodeListPtr body;
+      if(auto ptr{unterminated_statement()}; ptr) {
+        body = std::make_unique<List>();
+        body->push_back(std::move(ptr));
+      } else if(auto ptr{action()}; ptr) {
+        body = std::move(ptr);
+      }
+
+      node = std::make_unique<While>(std::move(condition), std::move(body));
       break;
     }
 
     case TokenType::FOR:
+	  TRACE_PRINT(LogLevel::INFO, "Found FOR");
       expect(TokenType::PAREN_OPEN, ")");
       // NodePtr condition{expr()};
       // expect(TokenType::PAREN_OPEN, "(");
@@ -1291,6 +1304,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
 // TODO: Refactor
 auto AwkParser::terminated_statement() -> NodePtr
 {
+  using namespace nodes;
   using namespace nodes::control;
 
   TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT");
@@ -1299,6 +1313,7 @@ auto AwkParser::terminated_statement() -> NodePtr
   // TODO: Handle each one of these clauses in separate functions
   switch(next().type()) {
     case TokenType::IF: {
+	  TRACE_PRINT(LogLevel::INFO, "Found IF");
       expect(TokenType::PAREN_OPEN, "(");
       NodePtr condition{expr()};
       expect(TokenType::PAREN_CLOSE, ")");
@@ -1317,15 +1332,27 @@ auto AwkParser::terminated_statement() -> NodePtr
     }
 
     case TokenType::WHILE: {
+	  TRACE_PRINT(LogLevel::INFO, "Found WHILE");
       expect(TokenType::PAREN_OPEN, "(");
-      expr();
+      NodePtr condition{expr()};
       expect(TokenType::PAREN_CLOSE, ")");
+
       newline_opt();
-      terminated_statement();
+
+      NodeListPtr body;
+      if(auto ptr{terminated_statement()}; ptr) {
+        body = std::make_unique<List>();
+        body->push_back(std::move(ptr));
+      } else if(auto ptr{action()}; ptr) {
+        body = std::move(ptr);
+      }
+
+      node = std::make_unique<While>(std::move(condition), std::move(body));
       break;
     }
 
     case TokenType::FOR: {
+	  TRACE_PRINT(LogLevel::INFO, "Found FOR");
       expect(TokenType::PAREN_OPEN, "(");
 
       // TODO: Do rest
@@ -1364,7 +1391,7 @@ auto AwkParser::terminated_statement() -> NodePtr
 
 // This rule is made to match atleast one unterminated statement
 // Unterminated statements end on a -> '\n'
-auto AwkParser::unterminated_statement_list() -> NodePtr
+auto AwkParser::unterminated_statement_list() -> NodeListPtr
 {
   using namespace nodes;
 
@@ -1388,7 +1415,7 @@ auto AwkParser::unterminated_statement_list() -> NodePtr
 
 // This rule is made to match atleast one terminated statement
 // Terminated statements end on a -> ';'
-auto AwkParser::terminated_statement_list() -> NodePtr
+auto AwkParser::terminated_statement_list() -> NodeListPtr
 {
   using namespace nodes;
 
@@ -1432,10 +1459,10 @@ auto AwkParser::terminator() -> void
 //                  | '{' newline_opt terminated_statement_list   '}'
 //                  | '{' newline_opt unterminated_statement_list '}'
 //                  ;
-auto AwkParser::action() -> NodePtr
+auto AwkParser::action() -> NodeListPtr
 {
   TRACE(LogLevel::DEBUG, "ACTION");
-  NodePtr node;
+  NodeListPtr node;
 
   if(next_if(TokenType::ACCOLADE_OPEN)) {
     TRACE_PRINT(LogLevel::INFO, "Found '{'");
