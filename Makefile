@@ -10,7 +10,7 @@ export WARNINGS := -Wall -Wextra -pedantic
 export CXXSTD := -std=c++2b
 # TODO: Add if eq statement for development
 #export CXXFLAGS := $(CXXSTD) -O2 $(WARNINGS)
-export CXXFLAGS := $(CXXSTD) -g3 -DDEVELOPMENT $(WARNINGS)
+export CXXFLAGS := $(CXXSTD) -g3 -ggdb -DDEVELOPMENT $(WARNINGS)
 
 export CXX := clang++
 # export CXX := g++

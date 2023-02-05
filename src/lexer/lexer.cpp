@@ -391,8 +391,6 @@ auto Lexer::tokenize() -> TokenStream
   constexpr char double_quote{none::g_double_quote.identifier()};
   constexpr char slash{g_slash.identifier()};
 
-  const auto newline{create_token(TokenType::NEWLINE)};
-
     for(; !m_filebuffer.eof(); m_filebuffer.next()) while(!eol())
   {
     const char character{m_filebuffer.character()};
@@ -402,7 +400,7 @@ auto Lexer::tokenize() -> TokenStream
       // Just ignore whitespace, but do not ignore newlines
       if(character == g_newline.identifier()) {
         LOG(LogLevel::INFO, "NEWLINE");
-        add_token(newline);
+        add_token(create_token(TokenType::NEWLINE));
       }
     } else if(character == '#') {
       // '#' are used for comments stop lexing the current line and continue
