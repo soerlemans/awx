@@ -27,13 +27,7 @@ class Lexer {
     static_assert(sizeof...(Args) <= 2,
                   "create_token(), does not accept more than two args.");
 
-	auto file_pos{m_filebuffer.file_position()};
-
-	// lineno are zero indexed
-	// If we want it to print the correct line numbers we have to increment them
-	file_pos.m_lineno++;
-
-    return Token{std::forward<Args>(t_args)..., file_pos};
+    return Token{std::forward<Args>(t_args)..., m_filebuffer.file_position()};
   }
 
   // Add token to token stream

@@ -12,11 +12,13 @@ FilePosition::FilePosition(std::string t_path, std::string t_line,
     m_columno{t_columnno}
 {}
 
-//Friend function:
+// Friend function:
 auto operator<<(std::ostream& t_os, const FilePosition& t_fp) -> std::ostream&
 {
   std::stringstream ss;
-  ss << "Line(" << t_fp.m_lineno << "): ";
+  // To print the correct line number we have to increment by one since it is
+  // Zero indexed
+  ss << "Line(" << t_fp.m_lineno + 1 << "): ";
   const auto offset{ss.str().size() + t_fp.m_columno};
 
   t_os << "File: \"" << t_fp.m_path << "\"\n";
