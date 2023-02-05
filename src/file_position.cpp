@@ -21,7 +21,7 @@ auto operator<<(std::ostream& t_os, const FilePosition& t_fp) -> std::ostream&
 
   t_os << "File: \"" << t_fp.m_path << "\"\n";
   t_os << ss.str() << t_fp.m_line;
-  t_os << std::string(offset, ' ') << "~^~";
+  t_os << std::string(offset, ' ') << "^";
 
   return t_os;
 }
