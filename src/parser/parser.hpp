@@ -16,13 +16,13 @@ class Parser {
 
   // These are m_tokenstream helper methods:
   auto eos() -> bool;
-  auto error(const std::string_view t_msg) -> void;
+  auto error(std::string_view t_msg) -> void;
 
-  auto check(const TokenType t_tokentype) -> bool;
+  auto check(TokenType t_tokentype) -> bool;
   auto next() -> Token&;
-  auto next_if(const TokenType t_tokentype) -> bool;
+  auto next_if(TokenType t_tokentype) -> bool;
   auto prev() -> Token&;
-  auto expect(const TokenType t_tokentype, const std::string t_msg) -> Token&;
+  auto expect(TokenType t_tokentype, std::string t_msg) -> Token&;
   auto get_token() -> Token;
 
   // The parse() method should be virtual cause in the future we may want to

@@ -30,23 +30,23 @@ class TokenTypeWrapper {
     : m_identifier{t_identifier}, m_tokentype{t_tokentype}
   {}
 
-  constexpr auto identifier() const -> T
+  [[nodiscard]] constexpr auto identifier() const -> T
   {
     return m_identifier;
   }
 
-  constexpr auto tokentype() const -> TokenType
+  [[nodiscard]] constexpr auto tokentype() const -> TokenType
   {
     return m_tokentype;
   }
 
-  constexpr auto get() const -> std::tuple<T, TokenType>
+  [[nodiscard]] constexpr auto get() const -> std::tuple<T, TokenType>
   {
     return {m_identifier, m_tokentype};
   }
 
   // Warning: The class can be explicitly converted
-  explicit constexpr operator TokenType() const
+  [[nodiscard]] explicit constexpr operator TokenType() const
   {
     return m_tokentype;
   }
