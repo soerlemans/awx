@@ -15,7 +15,7 @@ class TokenStream : public std::vector<Token> {
 
   public:
   // Constructors:
-  TokenStream(const std::size_t t_reserve = 256);
+  explicit TokenStream(const std::size_t t_reserve = 256);
 
   auto next(const std::size_t inc = 1) -> Token&;
   auto prev(const std::size_t dec = 1) -> Token&;
@@ -25,7 +25,7 @@ class TokenStream : public std::vector<Token> {
   auto eos() const -> bool;
 
   // Destructors:
-  virtual ~TokenStream();
+  virtual ~TokenStream() = default;
 };
 
 #endif // TOKEN_STREAM_H
