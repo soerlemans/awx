@@ -14,6 +14,3 @@ auto Node::type() -> NodeType
 {
   return m_nodetype;
 }
-
-Node::~Node()
-{}

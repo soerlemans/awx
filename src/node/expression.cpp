@@ -11,6 +11,3 @@ auto Expression::precedence() -> Precedence
 {
   return m_precedence;
 }
-
-Expression::~Expression()
-{}

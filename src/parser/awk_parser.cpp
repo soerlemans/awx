@@ -861,7 +861,7 @@ auto AwkParser::print_expr_list() -> NodeListPtr
     }
   }
 
-  if(!nodes->size()) {
+  if(nodes->empty()) {
     // throw std::runtime_error{"expected atleast on expr in expr_list"};
   }
   // TODO: If we only have one node in the list flatten it to a single NodePtr
@@ -1007,7 +1007,7 @@ auto AwkParser::multiple_expr_list() -> NodeListPtr
     }
   }
 
-  if(!nodes->size()) {
+  if(nodes->empty()) {
     // throw std::runtime_error{"expected atleast on expr in expr_list"};
   }
 
@@ -1406,7 +1406,7 @@ auto AwkParser::unterminated_statement_list() -> NodeListPtr
     }
   }
 
-  // if(!nodes->size()) {
+  // if(nodes->empty()) {
   //   throw std::runtime_error{"expected atleast on expr in expr_list"};
   // }
 
@@ -1430,7 +1430,7 @@ auto AwkParser::terminated_statement_list() -> NodeListPtr
     }
   }
 
-  // if(!nodes->size()) {
+  // if(nodes->empty()) {
   //   throw std::runtime_error{"expected atleast on expr in expr_list"};
   // }
 
@@ -1568,7 +1568,7 @@ auto AwkParser::param_list() -> NodeListPtr
     }
   }
 
-  if(!nodes->size()) {
+  if(nodes->empty()) {
     // throw std::runtime_error{"expected atleast on expr in expr_list"};
   }
 

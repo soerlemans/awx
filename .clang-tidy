@@ -3,8 +3,10 @@ Checks: "-*,bugprone-*,clang-diagnostic-*,clang-analyzer-*,modernize-*,performan
 WarningsAsErrors: ""
 HeaderFilterRegex: ""
 CheckOptions:
-  - key: readability-identifier-naming.PrivateMemberSuffix
-    value: "m_"
+  - key: readability-braces-around-statements
+    value:           'false'
+  - key: readability-identifier-naming.PrivateMemberPreffix
+    value:           "m_"
   - key:             llvm-else-after-return.WarnOnConditionVariables
     value:           'false'
   - key:             modernize-loop-convert.MinConfidence

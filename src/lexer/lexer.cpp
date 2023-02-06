@@ -391,36 +391,37 @@ auto Lexer::tokenize() -> TokenStream
   constexpr char double_quote{none::g_double_quote.identifier()};
   constexpr char slash{g_slash.identifier()};
 
-    for(; !m_filebuffer.eof(); m_filebuffer.next()) while(!eol())
-  {
-    const char character{m_filebuffer.character()};
-    const TokenType last_tokentype{m_tokenstream.back().type()};
+  for(; !m_filebuffer.eof(); m_filebuffer.next()) {
+    while(!eol()) {
+      const char character{m_filebuffer.character()};
+      const TokenType last_tokentype{m_tokenstream.back().type()};
 
-    if(std::isspace(character)) {
-      // Just ignore whitespace, but do not ignore newlines
-      if(character == g_newline.identifier()) {
-        LOG(LogLevel::INFO, "NEWLINE");
-        add_token(create_token(TokenType::NEWLINE));
+      if(std::isspace(character)) {
+        // Just ignore whitespace, but do not ignore newlines
+        if(character == g_newline.identifier()) {
+          LOG(LogLevel::INFO, "NEWLINE");
+          add_token(create_token(TokenType::NEWLINE));
+        }
+      } else if(character == '#') {
+        // '#' are used for comments stop lexing the current line and continue
+        // With the next!
+        break;
+      } else if(std::isalpha(character)) {
+        add_token(identifier());
+      } else if(std::isdigit(character)) {
+        add_token(literal_numeric());
+      } else if(character == double_quote) {
+        add_token(literal_string());
+      } else if(character == slash && !tokentype::is_int(last_tokentype)) {
+        add_token(literal_regex());
+      } else {
+        add_token(symbol());
       }
-    } else if(character == '#') {
-      // '#' are used for comments stop lexing the current line and continue
-      // With the next!
-      break;
-    } else if(std::isalpha(character)) {
-      add_token(identifier());
-    } else if(std::isdigit(character)) {
-      add_token(literal_numeric());
-    } else if(character == double_quote) {
-      add_token(literal_string());
-    } else if(character == slash && !tokentype::is_int(last_tokentype)) {
-      add_token(literal_regex());
-    } else {
-      add_token(symbol());
-    }
 
-    // Increment at the end, this allows us to prevent having to use
-    // m_filebuffer.backward() in situations where we look a head to much
-    m_filebuffer.forward();
+      // Increment at the end, this allows us to prevent having to use
+      // m_filebuffer.backward() in situations where we look a head to much
+      m_filebuffer.forward();
+    }
   }
 
   LOG_PRINTLN();

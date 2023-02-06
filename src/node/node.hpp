@@ -39,12 +39,11 @@ class Node {
 
   auto type() -> NodeType;
 
-  // Needed for the visitor pattern
   // TODO: Figure out if there is a way to not have to implement this in every
   // Derived class
   virtual auto accept(NodeVisitor* t_visitor) -> void = 0;
 
-  virtual ~Node();
+  virtual ~Node() = default;
 };
 } // namespace nodes
 
