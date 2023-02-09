@@ -15,7 +15,7 @@ class Not : public UnaryOperator {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Not();
+  ~Not() override = default;
 };
 
 // TODO: Create one function out of AND and OR???
@@ -26,7 +26,7 @@ class And : public BinaryOperator {
 
   auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~And();
+  ~And() override = default;
 };
 
 // Or:
@@ -36,7 +36,7 @@ class Or : public BinaryOperator {
 
   auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Or();
+  ~Or() override = default;
 };
 } // namespace nodes::operators
 

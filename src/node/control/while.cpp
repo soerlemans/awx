@@ -1,6 +1,5 @@
 #include "while.hpp"
 
-
 #include <utility>
 
 
@@ -16,6 +15,3 @@ auto While::accept(NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
 }
-
-While::~While()
-{}

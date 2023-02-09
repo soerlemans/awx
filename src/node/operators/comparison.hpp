@@ -28,7 +28,7 @@ class Comparison : public BinaryOperator {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Comparison();
+  ~Comparison() override = default;
 };
 } // namespace nodes::operators
 

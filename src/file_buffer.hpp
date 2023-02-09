@@ -60,7 +60,7 @@ class FileBuffer {
   auto operator[](std::size_t t_index) -> std::string&;
 
   // Destructors:
-  virtual ~FileBuffer();
+  virtual ~FileBuffer() = default;
 };
 
 #endif // FILE_BUFFER_H

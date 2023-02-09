@@ -20,7 +20,7 @@ class SpecialPattern : public Node {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~SpecialPattern();
+  ~SpecialPattern() override = default;
 };
 } // namespace nodes::recipes
 

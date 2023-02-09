@@ -15,7 +15,7 @@ class Decrement : public UnaryOperator {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Decrement();
+  ~Decrement() override = default;
 };
 } // namespace nodes::operators
 

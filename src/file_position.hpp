@@ -21,7 +21,7 @@ struct FilePosition {
   friend auto operator <<(std::ostream& t_os, const FilePosition& t_fp) -> std::ostream&;
 
   // Destructor:
-  virtual ~FilePosition();
+  virtual ~FilePosition() = default;
 };
 
 #endif // FILE_POSITION_H

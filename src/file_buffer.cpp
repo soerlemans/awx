@@ -134,7 +134,3 @@ auto FileBuffer::operator[](std::size_t t_index) -> std::string&
 {
   return m_filebuffer[t_index];
 }
-
-// Destructor:
-FileBuffer::~FileBuffer()
-{}

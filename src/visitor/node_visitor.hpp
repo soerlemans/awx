@@ -67,7 +67,7 @@ class NodeVisitor {
   virtual auto visit(nodes::List* t_list) -> void = 0;
   virtual auto visit(nodes::Node* t_node) -> void;
 
-  virtual ~NodeVisitor();
+  virtual ~NodeVisitor() = default;
 };
 
 #endif // NODE_VISITOR_H

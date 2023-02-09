@@ -11,6 +11,3 @@ auto Delete::accept(NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
 }
-
-Delete::~Delete()
-{}

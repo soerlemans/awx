@@ -18,6 +18,3 @@ auto Printf::accept(NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
 }
-
-Printf::~Printf()
-{}

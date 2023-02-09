@@ -24,7 +24,7 @@ class UnaryPrefix : public UnaryOperator {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~UnaryPrefix();
+  ~UnaryPrefix() override = default;
 };
 } // namespace nodes::operators
 

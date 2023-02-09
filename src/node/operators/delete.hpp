@@ -15,7 +15,7 @@ class Delete : public Node {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Delete();
+  ~Delete() override = default;
 };
 } // namespace nodes::operators
 

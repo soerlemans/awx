@@ -14,6 +14,3 @@ auto Assignment::accept([[maybe_unused]] NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
 }
-
-Assignment::~Assignment()
-{}

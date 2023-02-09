@@ -19,7 +19,7 @@ class If : public Node {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~If();
+  ~If() override = default;
 };
 } // namespace nodes::control
 

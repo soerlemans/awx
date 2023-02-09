@@ -13,6 +13,3 @@ Arithmetic::Arithmetic(ArithmeticOp t_op, NodePtr&& t_left, NodePtr&& t_right)
 
 auto Arithmetic::accept(NodeVisitor* t_visitor) -> void
 {}
-
-Arithmetic::~Arithmetic()
-{}

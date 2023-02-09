@@ -18,7 +18,7 @@ class Ere : public BinaryOperator {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Ere();
+  ~Ere() override = default;
 };
 } // namespace nodes::operators
 

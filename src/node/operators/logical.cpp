@@ -13,9 +13,6 @@ auto Not::accept(NodeVisitor* t_visitor) -> void
   t_visitor->visit(this);
 }
 
-Not::~Not()
-{}
-
 // And:
 And::And(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::LOGICAL_AND, Associativity::LEFT,
@@ -28,9 +25,6 @@ auto And::accept(NodeVisitor* t_visitor) -> void
   t_visitor->visit(this);
 }
 
-And::~And()
-{}
-
 // Or:
 Or::Or(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::LOGICAL_OR, Associativity::LEFT,
@@ -42,6 +36,3 @@ auto Or::accept(NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
 }
-
-Or::~Or()
-{}

@@ -26,21 +26,21 @@
 // Usage as rvalue? Or could it produce a boolean result?
 namespace tokentype {
 // Functions declarations:
-[[nodiscard]] constexpr auto is_int(const TokenType t_tokentype) -> bool;
-[[nodiscard]] constexpr auto is_numeric(const TokenType t_tokentype) -> bool;
+[[nodiscard]] constexpr auto is_int(TokenType t_tokentype) -> bool;
+[[nodiscard]] constexpr auto is_numeric(TokenType t_tokentype) -> bool;
 
-[[nodiscard]] constexpr auto is_literal(const TokenType t_tokentype) -> bool;
-[[nodiscard]] constexpr auto is_rvalue(const TokenType t_tokentype) -> bool;
+[[nodiscard]] constexpr auto is_literal(TokenType t_tokentype) -> bool;
+[[nodiscard]] constexpr auto is_rvalue(TokenType t_tokentype) -> bool;
 
-[[nodiscard]] constexpr auto is_terminator(const TokenType t_tokentype) -> bool;
-[[nodiscard]] constexpr auto is_control_statement(const TokenType t_tokentype)
+[[nodiscard]] constexpr auto is_terminator(TokenType t_tokentype) -> bool;
+[[nodiscard]] constexpr auto is_control_statement(TokenType t_tokentype)
   -> bool;
 
-[[nodiscard]] constexpr auto is_logical_junction(const TokenType t_tokentype)
+[[nodiscard]] constexpr auto is_logical_junction(TokenType t_tokentype)
   -> bool;
-[[nodiscard]] constexpr auto is_unary_operator(const TokenType t_tokentype)
+[[nodiscard]] constexpr auto is_unary_operator(TokenType t_tokentype)
   -> bool;
-[[nodiscard]] constexpr auto is_comparison_operator(const TokenType t_tokentype)
+[[nodiscard]] constexpr auto is_comparison_operator(TokenType t_tokentype)
   -> bool;
 
 [[nodiscard]] constexpr auto

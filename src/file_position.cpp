@@ -27,7 +27,3 @@ auto operator<<(std::ostream& t_os, const FilePosition& t_fp) -> std::ostream&
 
   return t_os;
 }
-
-// Destructor:
-FilePosition::~FilePosition()
-{}

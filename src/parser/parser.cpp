@@ -79,7 +79,3 @@ auto Parser::expect(const TokenType t_tokentype, const std::string t_msg)
 
   return next();
 }
-
-// Destructor:
-Parser::~Parser()
-{}

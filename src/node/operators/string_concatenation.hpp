@@ -13,7 +13,7 @@ class StringConcatenation : public BinaryOperator {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~StringConcatenation();
+  ~StringConcatenation() override = default;
 };
 } // namespace nodes::operators
 

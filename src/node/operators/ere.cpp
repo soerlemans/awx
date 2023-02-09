@@ -13,6 +13,3 @@ auto Ere::accept(NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
 }
-
-Ere::~Ere()
-{}

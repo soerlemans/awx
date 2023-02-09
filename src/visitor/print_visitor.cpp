@@ -330,6 +330,3 @@ auto PrintVisitor::visit(nodes::List* t_list) -> void
   for(NodePtr& node : *t_list)
     node->accept(this);
 }
-
-PrintVisitor::~PrintVisitor()
-{}

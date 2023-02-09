@@ -22,7 +22,7 @@ class Function : public Node {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Function();
+  ~Function() override = default;
 };
 } // namespace nodes::functions
 

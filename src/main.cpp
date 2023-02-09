@@ -34,7 +34,10 @@ auto parse_args(const int t_argc, char* t_argv[]) -> void
 {
   auto& config{Config::get_instance()};
 
-  const auto f_getopt{std::bind(getopt, t_argc, t_argv, "f:h")};
+  const auto f_getopt{[&] {
+    return getopt(t_argc, t_argv, "f:h");
+  }};
+
   if(auto option{f_getopt()}; option != -1) {
     for(; option != -1; option = f_getopt())
       switch(option) {

@@ -77,7 +77,7 @@ class Token {
   auto operator=(Token&& t_token) -> Token& = default;
 
   // Destructors:
-  virtual ~Token();
+  virtual ~Token() = default;
 };
 
 #endif // TOKEN_H

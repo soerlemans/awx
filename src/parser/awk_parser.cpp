@@ -728,7 +728,7 @@ auto AwkParser::unary_prefix(const ParserFunc& t_rhs) -> NodePtr
 
       NodePtr rhs{t_rhs()};
       if(!rhs) {
-        std::runtime_error{"Expected an expression after + or -"};
+        throw std::runtime_error{"Expected an expression after + or -"};
       }
 
       node = std::make_unique<UnaryPrefix>(tokentype, std::move(rhs));
@@ -1233,7 +1233,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
   const auto token{next()};
   switch(next().type()) {
     case TokenType::IF: {
-	  TRACE_PRINT(LogLevel::INFO, "Found IF");
+      TRACE_PRINT(LogLevel::INFO, "Found IF");
       // TODO: Adjust grouping() to something more general?
       expect(TokenType::PAREN_OPEN, "(");
       NodePtr condition{expr()};
@@ -1252,7 +1252,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
     }
 
     case TokenType::WHILE: {
-	  TRACE_PRINT(LogLevel::INFO, "Found WHILE");
+      TRACE_PRINT(LogLevel::INFO, "Found WHILE");
       // FIXME: Both while loop definitions are the same -> create a Function
       expect(TokenType::PAREN_OPEN, ")");
       NodePtr condition{expr()};
@@ -1273,7 +1273,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
     }
 
     case TokenType::FOR:
-	  TRACE_PRINT(LogLevel::INFO, "Found FOR");
+      TRACE_PRINT(LogLevel::INFO, "Found FOR");
       expect(TokenType::PAREN_OPEN, ")");
       // NodePtr condition{expr()};
       // expect(TokenType::PAREN_OPEN, "(");
@@ -1313,7 +1313,7 @@ auto AwkParser::terminated_statement() -> NodePtr
   // TODO: Handle each one of these clauses in separate functions
   switch(next().type()) {
     case TokenType::IF: {
-	  TRACE_PRINT(LogLevel::INFO, "Found IF");
+      TRACE_PRINT(LogLevel::INFO, "Found IF");
       expect(TokenType::PAREN_OPEN, "(");
       NodePtr condition{expr()};
       expect(TokenType::PAREN_CLOSE, ")");
@@ -1332,7 +1332,7 @@ auto AwkParser::terminated_statement() -> NodePtr
     }
 
     case TokenType::WHILE: {
-	  TRACE_PRINT(LogLevel::INFO, "Found WHILE");
+      TRACE_PRINT(LogLevel::INFO, "Found WHILE");
       expect(TokenType::PAREN_OPEN, "(");
       NodePtr condition{expr()};
       expect(TokenType::PAREN_CLOSE, ")");
@@ -1352,7 +1352,7 @@ auto AwkParser::terminated_statement() -> NodePtr
     }
 
     case TokenType::FOR: {
-	  TRACE_PRINT(LogLevel::INFO, "Found FOR");
+      TRACE_PRINT(LogLevel::INFO, "Found FOR");
       expect(TokenType::PAREN_OPEN, "(");
 
       // TODO: Do rest
@@ -1444,13 +1444,13 @@ auto AwkParser::terminated_statement_list() -> NodeListPtr
 //                  ;
 auto AwkParser::terminator() -> void
 {
-  TRACE(LogLevel::DEBUG, "TERMINATOR IS NOT TESTED WARNING!!!!!");
   TRACE(LogLevel::DEBUG, "TERMINATOR");
 
   const auto token{next()};
   // TODO: Improve
-  if(!tokentype::is_terminator(token.type()))
-    std::runtime_error{"Expected a terminator!!!"};
+  if(!tokentype::is_terminator(token.type())) {
+    throw std::runtime_error{"Expected a terminator!!!"};
+  }
 
   newline_opt();
 }
@@ -1684,7 +1684,3 @@ auto AwkParser::parse() -> Ast
 
   return ast;
 }
-
-// Destructors:
-AwkParser::~AwkParser()
-{}

@@ -24,7 +24,7 @@ class FunctionCall : public Node {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~FunctionCall();
+  ~FunctionCall() override = default;
 };
 } // namespace nodes::functions
 

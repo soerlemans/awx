@@ -428,6 +428,3 @@ auto Lexer::tokenize() -> TokenStream
 
   return m_tokenstream;
 }
-
-Lexer::~Lexer()
-{}

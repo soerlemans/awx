@@ -16,6 +16,3 @@ auto FieldReference::accept(NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
 }
-
-FieldReference::~FieldReference()
-{}

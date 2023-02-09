@@ -30,7 +30,7 @@ class Parser {
   virtual auto parse() -> Ast = 0;
 
   // Destructor:
-  virtual ~Parser();
+  virtual ~Parser() = default;
 };
 
 #endif /* PARSER_H */

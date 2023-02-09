@@ -20,7 +20,7 @@ class Redirection : public Node {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Redirection();
+  ~Redirection() override = default;
 };
 } // namespace nodes::io
 

@@ -16,7 +16,7 @@ class FieldReference : public Node {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~FieldReference();
+  ~FieldReference() override = default;
 };
 } // namespace nodes::lvalue
 

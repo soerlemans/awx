@@ -23,6 +23,3 @@ auto Recipe::accept(NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
 }
-
-Recipe::~Recipe()
-{}

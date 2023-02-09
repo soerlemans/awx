@@ -17,7 +17,7 @@ class While : public Node {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~While();
+  ~While() override = default;
 };
 } // namespace nodes::control
 

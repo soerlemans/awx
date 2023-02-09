@@ -28,7 +28,7 @@ class Assignment : public BinaryOperator {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Assignment();
+  ~Assignment() override = default;
 };
 } // namespace nodes::operators
 

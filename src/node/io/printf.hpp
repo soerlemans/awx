@@ -19,7 +19,7 @@ class Printf : public Node {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Printf();
+  ~Printf() override = default;
 };
 } // namespace nodes::io
 

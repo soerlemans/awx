@@ -11,6 +11,3 @@ auto Grouping::accept(NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
 }
-
-Grouping::~Grouping()
-{}

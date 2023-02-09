@@ -26,7 +26,7 @@ class BinaryOperator : public UnaryOperator {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void = 0;
 
-  virtual ~BinaryOperator();
+  ~BinaryOperator() override = default;
 };
 } // namespace nodes::operators
 

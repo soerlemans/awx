@@ -17,7 +17,3 @@ auto Ast::current() const -> Node*
 {
   return m_current;
 }
-
-// Destructor:
-Ast::~Ast()
-{}

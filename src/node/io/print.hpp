@@ -20,7 +20,7 @@ class Print : public Node {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Print();
+  ~Print() override = default;
 };
 } // namespace nodes::io
 

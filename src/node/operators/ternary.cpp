@@ -22,6 +22,3 @@ auto Ternary::accept(NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
 }
-
-Ternary::~Ternary()
-{}

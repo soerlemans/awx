@@ -31,8 +31,7 @@ class Literal : public Node {
 	t_visitor->visit(this);
   }
 
-  virtual ~Literal()
-  {}
+  ~Literal() override = default;
 };
 } // namespace nodes::rvalue
 

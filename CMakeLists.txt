@@ -16,6 +16,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb")
 # set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-extra-arg=c++2b")
 
 # set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-header-filter=src/.*;-extra-arg=c++2b")
+set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-header-filter=.*")
 
 # Define the project
 project(awx CXX)

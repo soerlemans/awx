@@ -17,7 +17,7 @@ class Array : public Variable {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Array();
+  ~Array() override = default;
 };
 } // namespace nodes::lvalue
 

@@ -33,6 +33,3 @@ auto Token::print() -> void
   else
     ; // TODO: Error handling
 }
-
-Token::~Token()
-{}

@@ -125,10 +125,10 @@ class AwkParser : public Parser {
 
   virtual auto program() -> NodeListPtr;
 
-  virtual auto parse() -> Ast override;
+  auto parse() -> Ast override;
 
   // Desstructors:
-  virtual ~AwkParser();
+  ~AwkParser() override = default;
 };
 
 #endif // AWK_PARSER_H

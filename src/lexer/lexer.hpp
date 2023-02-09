@@ -64,7 +64,7 @@ class Lexer {
 
   auto tokenize() -> TokenStream;
 
-  virtual ~Lexer();
+  virtual ~Lexer() = default;
 };
 
 

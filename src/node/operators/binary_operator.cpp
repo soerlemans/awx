@@ -15,6 +15,3 @@ auto BinaryOperator::second() -> NodePtr&
 {
   return m_second;
 }
-
-BinaryOperator::~BinaryOperator()
-{}

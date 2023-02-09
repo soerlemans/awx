@@ -22,7 +22,7 @@ class Recipe : public Node {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Recipe();
+  ~Recipe() override = default;
 };
 } // namespace nodes::recipes
 

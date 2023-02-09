@@ -17,7 +17,7 @@ class Getline : public Node {
   auto var() -> NodePtr&;
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Getline();
+  ~Getline() override = default;
 };
 } // namespace nodes::io
 

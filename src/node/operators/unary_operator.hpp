@@ -17,7 +17,7 @@ class operators::UnaryOperator : public Expression {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void = 0;
 
-  virtual ~UnaryOperator();
+  ~UnaryOperator() override = default;
 };
 } // namespace nodes
 

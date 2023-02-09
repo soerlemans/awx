@@ -48,10 +48,6 @@ class Assignment;
 
 // Trinary operator:
 class Ternary;
-
-// DynamicOperators:
-class FunctionDefinition;
-class FunctionCall;
 } // namespace nodes::operators
 
 #endif // OPERATORS_H

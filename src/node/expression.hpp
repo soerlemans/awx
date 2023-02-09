@@ -37,7 +37,7 @@ class nodes::Expression : public nodes::Node {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void = 0;
 
-  virtual ~Expression() = default;
+  ~Expression() override = default;
 };
 
 #endif // EXPRESSION_H

@@ -15,7 +15,7 @@ class Increment : public UnaryOperator {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Increment();
+  ~Increment() override = default;
 };
 } // namespace nodes::operators
 

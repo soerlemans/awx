@@ -17,7 +17,7 @@ class For : public Node {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~For();
+  ~For() override = default;
 };
 } // namespace nodes::control
 

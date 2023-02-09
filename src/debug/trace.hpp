@@ -43,8 +43,8 @@ class Trace {
     : m_print{log::is_lower_loglevel(t_loglevel)}
   {
     if(m_print) {
-      LOG_PRINTLN(indent_text(), std::forward<Args>(t_args)..., " - (", m_counter,
-                ')');
+      LOG_PRINTLN(indent_text(), std::forward<Args>(t_args)..., " - (",
+                  m_counter, ')');
 
       m_counter++;
     }

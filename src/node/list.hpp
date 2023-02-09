@@ -24,7 +24,7 @@ class List : public Node, public std::list<NodePtr> {
 
   auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~List() = default;
+  ~List() override = default;
 };
 } // namespace nodes
 

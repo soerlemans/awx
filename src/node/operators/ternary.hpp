@@ -17,7 +17,7 @@ class Ternary : public BinaryOperator {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Ternary();
+  ~Ternary() override = default;
 };
 } // namespace nodes::operators
 

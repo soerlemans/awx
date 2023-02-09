@@ -27,7 +27,7 @@ class Ast {
 
   auto current() const -> nodes::Node*;
 
-  virtual ~Ast();
+  virtual ~Ast() = default;
 };
 
 #endif // AST_H

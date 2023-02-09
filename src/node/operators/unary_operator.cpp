@@ -11,6 +11,3 @@ auto UnaryOperator::first() -> NodePtr&
 {
   return m_first;
 }
-
-UnaryOperator::~UnaryOperator()
-{}

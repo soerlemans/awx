@@ -13,7 +13,7 @@ class Grouping : public UnaryOperator {
 
   virtual auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Grouping();
+  ~Grouping() override = default;
 };
 } // namespace nodess::operators
 

@@ -12,6 +12,3 @@ auto Decrement::accept([[maybe_unused]]NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
 }
-
-Decrement::~Decrement()
-{}
