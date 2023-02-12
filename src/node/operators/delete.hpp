@@ -13,7 +13,7 @@ class Delete : public Node {
   public:
   Delete(NodePtr&& t_array);
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~Delete() override = default;
 };

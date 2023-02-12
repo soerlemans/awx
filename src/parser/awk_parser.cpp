@@ -11,6 +11,7 @@
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
 
+// TODO: Create an include for including alls nodes
 #include "../node/list.hpp"
 #include "../node/node.hpp"
 
@@ -47,6 +48,17 @@
 #include "../node/operators/unary_prefix.hpp"
 
 
+// Using statements:
+using namespace nodes;
+using namespace nodes::control;
+using namespace nodes::functions;
+using namespace nodes::io;
+using namespace nodes::lvalue;
+using namespace nodes::operators;
+using namespace nodes::recipes;
+using namespace nodes::rvalue;
+using namespace reserved::symbols;
+
 // TODO: split the parser and its rules into multiple files, the parser should
 // Be able to be done simpler or more properly structured, find a way for this
 // To be done properly splitting the parsing rules into multiple classes would
@@ -70,8 +82,6 @@ auto AwkParser::newline_opt() -> void
 
 auto AwkParser::simple_get() -> NodePtr
 {
-  using namespace nodes::io;
-
   TRACE(LogLevel::DEBUG, "SIMPLE GET");
   NodePtr node;
 
@@ -86,7 +96,7 @@ auto AwkParser::simple_get() -> NodePtr
 
 auto AwkParser::unary_input_function() -> NodePtr
 {
-  using namespace nodes::io;
+
 
   TRACE(LogLevel::DEBUG, "UNARY INPUT FUNCTION");
   NodePtr node;
@@ -107,7 +117,7 @@ auto AwkParser::unary_input_function() -> NodePtr
 //                  ;
 auto AwkParser::non_unary_input_function() -> NodePtr
 {
-  using namespace nodes::io;
+
 
   TRACE(LogLevel::DEBUG, "NON UNARY INPUT FUNCTION");
   NodePtr node;
@@ -134,7 +144,7 @@ auto AwkParser::non_unary_input_function() -> NodePtr
 
 auto AwkParser::lvalue() -> NodePtr
 {
-  using namespace nodes::lvalue;
+
 
   TRACE(LogLevel::DEBUG, "LVALUE");
   NodePtr node;
@@ -171,8 +181,7 @@ auto AwkParser::lvalue() -> NodePtr
 
 auto AwkParser::function() -> NodePtr
 {
-  using namespace nodes;
-  using namespace nodes::functions;
+
 
   TRACE(LogLevel::DEBUG, "FUNCTION");
   NodePtr node;
@@ -206,7 +215,7 @@ auto AwkParser::function() -> NodePtr
 // User defined
 auto AwkParser::function_call() -> NodePtr
 {
-  using namespace nodes::functions;
+
 
   TRACE(LogLevel::DEBUG, "FUNCTION CALL");
   NodePtr node;
@@ -236,8 +245,7 @@ auto AwkParser::function_call() -> NodePtr
 
 auto AwkParser::ere(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  using namespace reserved::symbols;
-  using namespace nodes::operators;
+
 
   TRACE(LogLevel::DEBUG, "ERE");
   NodePtr node;
@@ -275,8 +283,7 @@ auto AwkParser::ere(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
 auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  using namespace reserved::symbols;
-  using namespace nodes::operators;
+
 
   TRACE(LogLevel::DEBUG, "ARITHMETIC");
   NodePtr node;
@@ -332,8 +339,7 @@ auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
 auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  using namespace reserved::symbols;
-  using namespace nodes::operators;
+
 
   TRACE(LogLevel::DEBUG, "ASSIGNMENT");
   NodePtr node;
@@ -395,8 +401,7 @@ auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
 auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  using namespace reserved::symbols;
-  using namespace nodes::operators;
+
 
   TRACE(LogLevel::DEBUG, "COMPARISON");
   NodePtr node;
@@ -450,8 +455,7 @@ auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
 auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  using namespace reserved::symbols;
-  using namespace nodes::operators;
+
 
   TRACE(LogLevel::DEBUG, "LOGICAL");
   NodePtr node;
@@ -492,8 +496,7 @@ auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 // TODO: Add extra parameter for ternary expression
 auto AwkParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  using namespace reserved::symbols;
-  using namespace nodes::operators;
+
 
   TRACE(LogLevel::DEBUG, "TERNARY");
   NodePtr node;
@@ -565,7 +568,7 @@ auto AwkParser::universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
 // TODO: Have this also handle multidimensional 'in' statements?
 auto AwkParser::grouping() -> NodePtr
 {
-  using namespace nodes::operators;
+
 
   TRACE(LogLevel::DEBUG, "GROUPING");
   NodePtr node;
@@ -583,7 +586,7 @@ auto AwkParser::grouping() -> NodePtr
 // negation == not, !
 auto AwkParser::negation(const ParserFunc& t_expr) -> NodePtr
 {
-  using namespace nodes::operators;
+
 
   TRACE(LogLevel::DEBUG, "NEGATION");
   NodePtr node;
@@ -604,7 +607,7 @@ auto AwkParser::negation(const ParserFunc& t_expr) -> NodePtr
 // This method parses literals
 auto AwkParser::literal() -> NodePtr
 {
-  using namespace nodes::rvalue;
+
 
   TRACE(LogLevel::DEBUG, "LITERAL");
   NodePtr node;
@@ -646,7 +649,7 @@ auto AwkParser::literal() -> NodePtr
 // Prefix operator parses prefix increment and decrement
 auto AwkParser::prefix_operator() -> NodePtr
 {
-  using namespace nodes::operators;
+
 
   TRACE(LogLevel::DEBUG, "PREFIX OPERATOR");
   NodePtr node;
@@ -685,7 +688,7 @@ auto AwkParser::prefix_operator() -> NodePtr
 auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
   -> NodePtr
 {
-  using namespace nodes::operators;
+
 
   TRACE(LogLevel::DEBUG, "UNIVERSAL LVALUE");
   NodePtr node;
@@ -716,7 +719,7 @@ auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
 // Parses unary prefixes like having a + or - before an expression
 auto AwkParser::unary_prefix(const ParserFunc& t_rhs) -> NodePtr
 {
-  using namespace nodes::operators;
+
 
   TRACE(LogLevel::DEBUG, "UNARY PREFIX");
   NodePtr node;
@@ -744,8 +747,7 @@ auto AwkParser::unary_prefix(const ParserFunc& t_rhs) -> NodePtr
 
 auto AwkParser::non_unary_print_expr() -> NodePtr
 {
-  using namespace nodes::operators;
-  using namespace nodes::rvalue;
+
 
   TRACE(LogLevel::DEBUG, "NON UNARY PRINT EXPR");
   NodePtr node;
@@ -793,7 +795,7 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
 
 auto AwkParser::unary_print_expr() -> NodePtr
 {
-  using namespace nodes::operators;
+
 
   TRACE(LogLevel::DEBUG, "UNARY PRINT EXPR");
   NodePtr node;
@@ -835,7 +837,7 @@ auto AwkParser::print_expr() -> NodePtr
 // Can use
 auto AwkParser::print_expr_list() -> NodeListPtr
 {
-  using namespace nodes;
+
 
   TRACE(LogLevel::DEBUG, "PRINT EXPR LIST");
   NodeListPtr nodes{std::make_unique<List>()};
@@ -878,8 +880,7 @@ auto AwkParser::print_expr_list_opt() -> NodeListPtr
 
 auto AwkParser::non_unary_expr() -> NodePtr
 {
-  using namespace nodes::operators;
-  using namespace nodes::rvalue;
+
 
   TRACE(LogLevel::DEBUG, "NON UNARY EXPR");
   NodePtr node;
@@ -931,7 +932,6 @@ auto AwkParser::non_unary_expr() -> NodePtr
 auto AwkParser::unary_expr() -> NodePtr
 {
 
-  using namespace nodes::operators;
 
   TRACE(LogLevel::DEBUG, "UNARY EXPR");
   NodePtr node;
@@ -981,7 +981,7 @@ auto AwkParser::expr_opt() -> NodePtr
 
 auto AwkParser::multiple_expr_list() -> NodeListPtr
 {
-  using namespace nodes;
+
 
   TRACE(LogLevel::DEBUG, "MULTIPLE EXPR LIST");
   NodeListPtr nodes{std::make_unique<List>()};
@@ -1074,7 +1074,7 @@ auto AwkParser::output_redirection() -> NodePtr
 // TODO: Refactor!
 auto AwkParser::simple_print_statement() -> NodePtr
 {
-  using namespace nodes::io;
+
 
   TRACE(LogLevel::DEBUG, "SIMPLE PRINT STATEMENT");
   NodePtr node;
@@ -1224,8 +1224,7 @@ auto AwkParser::terminatable_statement() -> NodePtr
 // TODO: Refactor
 auto AwkParser::unterminated_statement() -> NodePtr
 {
-  using namespace nodes;
-  using namespace nodes::control;
+
 
   TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT");
   NodePtr node;
@@ -1304,8 +1303,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
 // TODO: Refactor
 auto AwkParser::terminated_statement() -> NodePtr
 {
-  using namespace nodes;
-  using namespace nodes::control;
+
 
   TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT");
   NodePtr node;
@@ -1393,7 +1391,7 @@ auto AwkParser::terminated_statement() -> NodePtr
 // Unterminated statements end on a -> '\n'
 auto AwkParser::unterminated_statement_list() -> NodeListPtr
 {
-  using namespace nodes;
+
 
   TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT LIST");
   NodeListPtr nodes{std::make_unique<List>()};
@@ -1417,7 +1415,7 @@ auto AwkParser::unterminated_statement_list() -> NodeListPtr
 // Terminated statements end on a -> ';'
 auto AwkParser::terminated_statement_list() -> NodeListPtr
 {
-  using namespace nodes;
+
 
   TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT LIST");
   NodeListPtr nodes{std::make_unique<List>()};
@@ -1484,7 +1482,7 @@ auto AwkParser::action() -> NodeListPtr
 
 auto AwkParser::special_pattern() -> NodePtr
 {
-  using namespace nodes::recipes;
+
 
   TRACE(LogLevel::DEBUG, "SPECIAL PATTERN");
   NodePtr node;
@@ -1543,8 +1541,7 @@ auto AwkParser::pattern() -> NodePtr
 
 auto AwkParser::param_list() -> NodeListPtr
 {
-  using namespace nodes;
-  using namespace nodes::lvalue;
+
 
   TRACE(LogLevel::DEBUG, "PARAM LIST");
   NodeListPtr nodes{std::make_unique<List>()};
@@ -1593,8 +1590,6 @@ auto AwkParser::param_list_opt() -> NodeListPtr
 //                  ;
 auto AwkParser::item() -> NodePtr
 {
-  using namespace nodes::recipes;
-
   TRACE(LogLevel::DEBUG, "ITEM");
   NodePtr node;
 
@@ -1626,7 +1621,7 @@ auto AwkParser::item() -> NodePtr
 // Till there are are no more items
 auto AwkParser::item_list() -> NodeListPtr
 {
-  using namespace nodes;
+
 
   TRACE(LogLevel::DEBUG, "ITEM LIST");
   NodeListPtr nodes{std::make_unique<List>()};

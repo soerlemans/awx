@@ -17,7 +17,8 @@ class Variable : public Node {
   Variable(std::string t_name);
 
   auto name() const -> std::string_view;
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~Variable() override = default;
 };

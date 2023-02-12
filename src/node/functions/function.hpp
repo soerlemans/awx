@@ -20,7 +20,7 @@ class Function : public Node {
   auto params() -> NodeListPtr&;
   auto body() -> NodeListPtr&;
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~Function() override = default;
 };

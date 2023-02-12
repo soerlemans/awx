@@ -26,7 +26,7 @@ class Literal : public Node {
     return m_value;
   }
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override
+  auto accept(NodeVisitor* t_visitor) -> void override
   {
 	t_visitor->visit(this);
   }

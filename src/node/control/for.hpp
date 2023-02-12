@@ -15,7 +15,7 @@ class For : public Node {
   public:
   For(NodePtr&& t_condition, NodePtr&& t_body);
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~For() override = default;
 };

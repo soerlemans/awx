@@ -17,7 +17,7 @@ class If : public Node {
   If(NodePtr&& t_condition, NodePtr&& t_then);
   If(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else);
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~If() override = default;
 };

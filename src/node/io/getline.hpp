@@ -15,7 +15,8 @@ class Getline : public Node {
   Getline(NodePtr&& t_var);
 
   auto var() -> NodePtr&;
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~Getline() override = default;
 };

@@ -11,7 +11,7 @@ class StringConcatenation : public BinaryOperator {
   public:
   StringConcatenation(NodePtr&& t_left, NodePtr&& t_right);
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~StringConcatenation() override = default;
 };

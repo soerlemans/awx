@@ -13,7 +13,7 @@ class Decrement : public UnaryOperator {
   public:
   Decrement(NodePtr&& t_left, bool t_prefix);
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~Decrement() override = default;
 };

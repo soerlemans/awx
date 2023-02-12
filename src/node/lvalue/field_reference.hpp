@@ -14,7 +14,7 @@ class FieldReference : public Node {
 
   auto expr() -> NodePtr&;
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~FieldReference() override = default;
 };

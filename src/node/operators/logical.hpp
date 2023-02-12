@@ -13,12 +13,12 @@ class Not : public UnaryOperator {
   public:
   Not(NodePtr&& t_left);
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~Not() override = default;
 };
 
-// TODO: Create one function out of AND and OR???
+// TODO: Create one class for And and Or
 // And:
 class And : public BinaryOperator {
   public:

@@ -39,6 +39,12 @@ CheckOptions:
     value:           'false'
   - key:             modernize-loop-convert.NamingStyle
     value:           CamelCase
+  - key:             modernize-use-nodiscard
+    value:           'false'
+  - key:             readability-identifier-length
+    value:           2
+  - key:             readability-braces-around-statements
+    value:           false
   - key:             llvm-else-after-return.WarnOnUnfixable
     value:           'false'
   - key:             google-readability-function-size.StatementThreshold

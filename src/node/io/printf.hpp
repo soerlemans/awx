@@ -17,7 +17,7 @@ class Printf : public Node {
 
   virtual auto params() -> NodeListPtr&;
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~Printf() override = default;
 };

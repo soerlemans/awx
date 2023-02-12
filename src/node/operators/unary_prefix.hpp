@@ -22,7 +22,7 @@ class UnaryPrefix : public UnaryOperator {
 
   virtual auto op() const -> UnaryPrefixOp;
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~UnaryPrefix() override = default;
 };

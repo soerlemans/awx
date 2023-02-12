@@ -22,7 +22,7 @@ class FunctionCall : public Node {
   auto name() const -> std::string_view;
   auto args() -> NodeListPtr&;
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~FunctionCall() override = default;
 };

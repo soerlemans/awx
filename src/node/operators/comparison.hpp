@@ -26,7 +26,7 @@ class Comparison : public BinaryOperator {
 
   auto op() const -> ComparisonOp;
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~Comparison() override = default;
 };

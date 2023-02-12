@@ -16,7 +16,7 @@ class Ere : public BinaryOperator {
   public:
   Ere(EreOp t_op, NodePtr&& t_string, NodePtr&& t_pattern);
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~Ere() override = default;
 };

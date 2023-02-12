@@ -35,7 +35,7 @@ class nodes::Expression : public nodes::Node {
 
   auto precedence() -> Precedence;
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void = 0;
+  auto accept(NodeVisitor* t_visitor) -> void override = 0;
 
   ~Expression() override = default;
 };

@@ -15,7 +15,7 @@ class Ternary : public BinaryOperator {
 
   auto third() -> NodePtr&;
 
-  virtual auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~Ternary() override = default;
 };
