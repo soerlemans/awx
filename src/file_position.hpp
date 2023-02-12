@@ -4,14 +4,13 @@
 #include <string>
 
 struct FilePosition {
-  public:
+  // Members:
   std::string m_path;
   std::string m_line;
 
   std::size_t m_lineno;
   std::size_t m_columno;
 
-  public:
   // Constructors:
   FilePosition() = default;
   FilePosition(std::string t_path, std::string t_line, std::size_t t_lineno,

@@ -15,7 +15,7 @@ class Expression;
 
 } // namespace nodes
 
-// Alisases:
+// Aliases:
 using NodePtr = std::unique_ptr<nodes::Node>;
 
 #endif // NODES_H
