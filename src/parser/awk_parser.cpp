@@ -746,37 +746,70 @@ auto AwkParser::if_statement(const ParserFunc& t_func) -> NodePtr
   return node;
 }
 
-auto AwkParser::while_loop(const ParserFunc& t_func) -> NodePtr
+auto AwkParser::loop(const ParserFunc& t_func) -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "WHILE");
+  TRACE(LogLevel::DEBUG, "LOOP");
   NodePtr node;
 
-  return node;
-}
+  // TODO: Split even further?
+  switch(next().type()) {
+    case TokenType::WHILE: {
+      TRACE_PRINT(LogLevel::INFO, "Found WHILE");
+      // FIXME: Both while loop definitions are the same -> create a Function
+      expect(TokenType::PAREN_OPEN, "(");
+      NodePtr condition{expr()};
+      expect(TokenType::PAREN_CLOSE, ")");
 
-auto AwkParser::for_loop(const ParserFunc& t_func) -> NodePtr
-{
-  TRACE(LogLevel::DEBUG, "FOR");
-  NodePtr node;
+      newline_opt();
 
-  return node;
-}
+      // TODO: Figure out a way to distinguish between a NodeListPtr and a
+      // NodePtr Possibly have a flatten or convert method, that uses dynamic
+      // cast?
+      NodeListPtr body;
+      if(auto ptr{t_func}; ptr) {
+        body = std::make_unique<List>();
+        body->push_back(std::move(ptr));
+      }
 
-auto AwkParser::control(const ParserFunc& t_func) -> NodePtr
-{
-  TRACE(LogLevel::DEBUG, "CONTROL");
-  NodePtr node;
+      node = std::make_unique<While>(std::move(condition), std::move(body));
+      break;
+    }
 
-  if(auto ptr{if_statement(t_func)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{while_loop(t_func)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{for_loop(t_func)}; ptr) {
-    node = std::move(ptr);
+    case TokenType::FOR: {
+      TRACE_PRINT(LogLevel::INFO, "Found FOR");
+
+      expect(TokenType::PAREN_OPEN, "(");
+      if(const auto var{next()}; var.type() == TokenType::IDENTIFIER) {
+        expect(TokenType::IN, "in");
+        const auto array{expect(TokenType::IDENTIFIER, "identifier")};
+        expect(TokenType::PAREN_CLOSE, ")");
+      } else {
+        simple_statement_opt();
+        expect(TokenType::SEMICOLON, ";");
+        expr_opt();
+        expect(TokenType::SEMICOLON, ";");
+        simple_statement_opt();
+        expect(TokenType::PAREN_CLOSE, ")");
+      }
+
+      NodeListPtr body;
+      if(auto ptr{t_func}; ptr) {
+        body = std::make_unique<List>();
+        body->push_back(std::move(ptr));
+      }
+
+      newline_opt();
+      break;
+    }
+
+    default:
+      prev();
+      break;
   }
 
   return node;
 }
+
 
 auto AwkParser::non_unary_print_expr() -> NodePtr
 {
