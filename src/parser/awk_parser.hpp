@@ -74,7 +74,7 @@ class AwkParser : public Parser {
 
   // TODO: Add Control statement helper function
   virtual auto if_statement(const ParserFunc& t_func) -> NodePtr;
-  virtual auto loop(const ParserFunc& t_func) -> NodePtr;
+  virtual auto loop(const ParserFunc& t_body) -> NodePtr;
 
   // Print rules:
   virtual auto non_unary_print_expr() -> NodePtr;

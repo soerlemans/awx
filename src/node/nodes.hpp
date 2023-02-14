@@ -3,11 +3,12 @@
 
 #include <memory>
 
-// Contains all classes properly namespaced
+
 namespace nodes {
 // Abstract base Node class
 class Node;
 
+// Specifies List of NodePtr's
 class List;
 
 // Most Node types inherit from Expression
@@ -17,5 +18,6 @@ class Expression;
 
 // Aliases:
 using NodePtr = std::unique_ptr<nodes::Node>;
+using NodeListPtr = std::unique_ptr<nodes::List>;
 
 #endif // NODES_H

@@ -8,8 +8,6 @@
 #include "nodes.hpp"
 
 
-using NodeListPtr = std::unique_ptr<nodes::List>;
-
 namespace nodes {
 // TODO: Inherit from std::list itself or shadow std::list functions
 // This is a list in the sense of a list of expressions or similar

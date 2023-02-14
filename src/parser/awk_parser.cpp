@@ -746,7 +746,7 @@ auto AwkParser::if_statement(const ParserFunc& t_func) -> NodePtr
   return node;
 }
 
-auto AwkParser::loop(const ParserFunc& t_func) -> NodePtr
+auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "LOOP");
   NodePtr node;
@@ -755,7 +755,7 @@ auto AwkParser::loop(const ParserFunc& t_func) -> NodePtr
   switch(next().type()) {
     case TokenType::WHILE: {
       TRACE_PRINT(LogLevel::INFO, "Found WHILE");
-      // FIXME: Both while loop definitions are the same -> create a Function
+
       expect(TokenType::PAREN_OPEN, "(");
       NodePtr condition{expr()};
       expect(TokenType::PAREN_CLOSE, ")");
@@ -766,7 +766,7 @@ auto AwkParser::loop(const ParserFunc& t_func) -> NodePtr
       // NodePtr Possibly have a flatten or convert method, that uses dynamic
       // cast?
       NodeListPtr body;
-      if(auto ptr{t_func}; ptr) {
+      if(auto ptr{t_body()}; ptr) {
         body = std::make_unique<List>();
         body->push_back(std::move(ptr));
       }
@@ -793,7 +793,7 @@ auto AwkParser::loop(const ParserFunc& t_func) -> NodePtr
       }
 
       NodeListPtr body;
-      if(auto ptr{t_func}; ptr) {
+      if(auto ptr{t_body()}; ptr) {
         body = std::make_unique<List>();
         body->push_back(std::move(ptr));
       }

@@ -1,5 +1,13 @@
 ---
-Checks: "-*,bugprone-*,clang-diagnostic-*,clang-analyzer-*,modernize-*,performance-*,readability-*"
+Checks: |
+ -*,
+ bugprone-*,
+ clang-diagnostic-*,
+ clang-analyzer-*,
+ modernize-*,
+ performance-*,
+ readability-*,
+ -modernize-use-nodiscard
 WarningsAsErrors: ""
 HeaderFilterRegex: ""
 CheckOptions:
