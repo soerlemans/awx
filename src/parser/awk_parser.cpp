@@ -44,6 +44,7 @@
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
 #include "../node/operators/match.hpp"
+#include "../node/operators/membership.hpp"
 #include "../node/operators/string_concatenation.hpp"
 #include "../node/operators/ternary.hpp"
 #include "../node/operators/unary_prefix.hpp"
@@ -441,7 +442,10 @@ auto AwkParser::membership(NodePtr& t_lhs) -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::IN)) {
-	const auto identifier{expect(TokenType::IDENTIFIER, "NAME")};
+    TRACE_PRINT(LogLevel::DEBUG, "Found MEMBERSHIP");
+    const auto name{expect(TokenType::IDENTIFIER, "NAME")};
+    node =
+      std::make_unique<Membership>(std::move(t_lhs), name.value<std::string>());
   }
 
   return node;
