@@ -61,7 +61,7 @@ auto run(int argc, char* argv[]) -> void
   auto& config{Config::get_instance()};
 
   // TODO: Remove this is temporary testing code
-  if(!config.get_files().empty())
+  if(config.get_files().empty())
     return;
 
   FileBuffer fb{config.get_files().front()};
@@ -76,7 +76,7 @@ auto run(int argc, char* argv[]) -> void
 auto main(int argc, char* argv[]) -> int
 {
   // Set loglevel for now for debugging purposes
-  SET_LOGLEVEL(log::LogLevel::DEBUG);
+  SET_LOGLEVEL(log::LogLevel::INFO);
   LOG_PRINTLN("#== BEGIN ==#");
 
   parse_args(argc, argv);
