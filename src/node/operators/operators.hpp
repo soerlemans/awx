@@ -30,11 +30,11 @@ class StringConcatenation;
 // Comparison:
 class Comparison;
 
-// ERE:
-class Ere;
+// ERE Match:
+class Match;
 
 // Array ops:
-class ArrayMembership;
+class Membership;
 
 // Delete:
 class Delete;

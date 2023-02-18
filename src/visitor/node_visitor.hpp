@@ -53,7 +53,7 @@ class NodeVisitor {
   virtual auto visit(nodes::operators::Decrement* t_decrement) -> void = 0;
 
   virtual auto visit(nodes::operators::Delete* t_delete) -> void = 0;
-  virtual auto visit(nodes::operators::Ere* t_ere) -> void = 0;
+  virtual auto visit(nodes::operators::Match* t_match) -> void = 0;
 
   virtual auto visit(nodes::operators::Not* t_not) -> void = 0;
   virtual auto visit(nodes::operators::And* t_and) -> void = 0;

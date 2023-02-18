@@ -11,6 +11,8 @@ ere.cpp
 grouping.cpp
 increment.cpp
 logical.cpp
+match.cpp
+membership.cpp
 string_concatenation.cpp
 ternary.cpp
 unary_operator.cpp

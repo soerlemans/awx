@@ -98,7 +98,8 @@ BEGIN {
 
     # You can also initialize an array with the built-in function split()
 
-    n = split("foo:bar:baz", arr, ":");
+	# TODO: Cant parse this yet as we treat builtin functions differently
+    # n = split("foo:bar:baz", arr, ":");
 
     # You also have associative arrays (indeed, they're all associative arrays)
     assoc["foo"] = "bar";

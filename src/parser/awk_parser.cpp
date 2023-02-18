@@ -43,6 +43,7 @@
 #include "../node/operators/grouping.hpp"
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
+#include "../node/operators/match.hpp"
 #include "../node/operators/string_concatenation.hpp"
 #include "../node/operators/ternary.hpp"
 #include "../node/operators/unary_prefix.hpp"
@@ -234,32 +235,30 @@ auto AwkParser::function_call() -> NodePtr
   return node;
 }
 
-auto AwkParser::ere(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
+auto AwkParser::match(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "ERE");
+  TRACE(LogLevel::DEBUG, "MATCH");
   NodePtr node;
 
   // Little helper function to cut down on the bloat
-  // const auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
-  //   auto rhs{t_rhs()};
-  //   if(!rhs)
-  //     throw std::runtime_error{"Expected Expression"};
+  const auto lambda{[&](MatchOp t_op) -> NodePtr {
+    auto rhs{t_rhs()};
+    if(!rhs)
+      throw std::runtime_error{"Expected Expression after (NO)MATCH"};
 
-  //   return NodePtr{
-  //     std::make_unique<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs))};
-  // };
+    return NodePtr{
+      std::make_unique<Match>(t_op, std::move(t_lhs), std::move(rhs))};
+  }};
 
   switch(next().type()) {
     case TokenType{g_ere_match}:
       TRACE_PRINT(LogLevel::INFO, "Found '~'");
-      // TODO: Figure out if ere should have its own class or not?
-      // Probably should have its own class
-      // node = lambda(ComparisonOp::SUBTRACT);
+      node = lambda(MatchOp::MATCH);
       break;
 
     case TokenType{g_ere_no_match}:
       TRACE_PRINT(LogLevel::INFO, "Found '!~'");
-      // node = lambda(ComparisonOp::SUBTRACT);
+      node = lambda(MatchOp::NO_MATCH);
       break;
 
     default:
@@ -279,7 +278,7 @@ auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   const auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
     auto ptr{t_rhs()};
     if(!ptr)
-      throw std::runtime_error{"Expected Expression"};
+      throw std::runtime_error{"Expected Expression after ARITHMETIC"};
 
     return NodePtr{
       std::make_unique<Arithmetic>(t_op, std::move(t_lhs), std::move(ptr))};
@@ -334,7 +333,7 @@ auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   const auto lambda = [&](AssignmentOp t_op) -> NodePtr {
     auto rhs{t_rhs()};
     if(!rhs)
-      throw std::runtime_error{"Expected Expression"};
+      throw std::runtime_error{"Expected Expression after ASSIGNMENT"};
 
     return NodePtr{
       std::make_unique<Assignment>(t_op, std::move(t_lhs), std::move(rhs))};
@@ -392,7 +391,7 @@ auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   const auto lambda = [&](ComparisonOp t_op) -> NodePtr {
     auto rhs{t_rhs()};
     if(!rhs)
-      throw std::runtime_error{"Expected Expression"};
+      throw std::runtime_error{"Expected Expression after COMPARISON"};
 
     return std::make_unique<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
   };
@@ -431,6 +430,18 @@ auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
     default:
       prev();
       break;
+  }
+
+  return node;
+}
+
+auto AwkParser::membership(NodePtr& t_lhs) -> NodePtr
+{
+  TRACE(LogLevel::DEBUG, "MEMBERSHIP");
+  NodePtr node;
+
+  if(next_if(TokenType::IN)) {
+	const auto identifier{expect(TokenType::IDENTIFIER, "NAME")};
   }
 
   return node;
@@ -516,13 +527,15 @@ auto AwkParser::universal_print_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   //     std::make_unique<StringConcatenation>(std::move(node), std::move(rhs));
   // } else
 
-  if(auto ptr{arithmetic(node, t_rhs)}; ptr) {
+  if(auto ptr{arithmetic(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{ere(node, t_rhs)}; ptr) {
+  } else if(auto ptr{match(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{logical(node, t_rhs)}; ptr) {
+  } else if(auto ptr{membership(t_lhs)}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{ternary(node, t_rhs)}; ptr) {
+  } else if(auto ptr{logical(t_lhs, t_rhs)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{ternary(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
   }
 
@@ -578,7 +591,7 @@ auto AwkParser::negation(const ParserFunc& t_expr) -> NodePtr
   return node;
 }
 
-// TODO: Implement ERE
+// TODO: Implement match
 // This method parses literals
 auto AwkParser::literal() -> NodePtr
 {
@@ -605,7 +618,7 @@ auto AwkParser::literal() -> NodePtr
       node = std::make_unique<String>(token.value<std::string>());
       break;
 
-    // TODO: ERE
+    // TODO: match
     case TokenType::REGEX:
       TRACE_PRINT(LogLevel::INFO, "Found REGEX literal");
       // node = std::make_unique<String>(token.value<std::string>());
@@ -1547,7 +1560,7 @@ auto AwkParser::item() -> NodePtr
         std::make_unique<Recipe>(std::move(pattern_ptr), std::move(action_ptr));
     } else {
       // TODO: Properly throw later
-      throw std::runtime_error{"Expected Expression"};
+      throw std::runtime_error{"Expected an ITEM"};
     }
 
     // Resolve this?

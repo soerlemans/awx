@@ -31,6 +31,7 @@
 #include "../node/operators/grouping.hpp"
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
+#include "../node/operators/match.hpp"
 #include "../node/operators/string_concatenation.hpp"
 #include "../node/operators/ternary.hpp"
 #include "../node/operators/unary_prefix.hpp"
@@ -44,7 +45,7 @@ auto PrintVisitor::visit(nodes::control::If* t_if) -> void
 
   if(auto& then{t_if->then()}; then) {
     printer.print("| THEN");
-	then->accept(this);
+    then->accept(this);
   }
 }
 
@@ -239,11 +240,11 @@ auto PrintVisitor::visit(nodes::operators::Delete* t_delete) -> void
   printer.print("DELETE");
 }
 
-auto PrintVisitor::visit(nodes::operators::Ere* t_ere) -> void
+auto PrintVisitor::visit(nodes::operators::Match* t_match) -> void
 {
   Printer printer{m_counter};
 
-  printer.print("ERE");
+  printer.print("MATCH");
 }
 
 auto PrintVisitor::visit(nodes::operators::Not* t_not) -> void

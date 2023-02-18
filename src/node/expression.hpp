@@ -17,8 +17,8 @@ enum class Precedence : u16 {
   ARITHMETIC_ADD_SUB,  // a + b, a - b (Addition, Subtraction)
   STRING_CONCAT,       // a b
   COMPARISON,          // a < b, a <= b, a != b, a == b, a > b, a >= b
-  ERE,                 // a ~ b, a ~! b (Extended Regular Expression)
-  ARRAY_MEMBERSHIP,    // a in b, (a) in b
+  MATCH,               // a ~ b, a ~! b (Extended Regular Expression)
+  MEMBERSHIP,          // a in b, (a) in b
   LOGICAL_AND,         // a && b
   LOGICAL_OR,          // a || b
   TERNARY,             // a ? b : c
