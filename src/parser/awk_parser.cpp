@@ -746,16 +746,15 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
       TRACE_PRINT(LogLevel::INFO, "Found FOR");
 
       expect(TokenType::PAREN_OPEN, "(");
-      if(const auto var{next()}; var.type() == TokenType::IDENTIFIER) {
-        expect(TokenType::IN, "in");
-        const auto array{expect(TokenType::IDENTIFIER, "identifier")};
-        expect(TokenType::PAREN_CLOSE, ")");
-      } else {
-        simple_statement_opt();
+      if(auto ptr{simple_statement_opt()}; ptr) {
         expect(TokenType::SEMICOLON, ";");
         expr_opt();
         expect(TokenType::SEMICOLON, ";");
         simple_statement_opt();
+        expect(TokenType::PAREN_CLOSE, ")");
+      } else if(const auto var{next()}; var.type() == TokenType::IDENTIFIER) {
+        expect(TokenType::IN, "in");
+        const auto array{expect(TokenType::IDENTIFIER, "identifier")};
         expect(TokenType::PAREN_CLOSE, ")");
       }
 
