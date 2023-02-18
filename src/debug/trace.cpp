@@ -1,4 +1,5 @@
 #include "trace.hpp"
+#include "log.hpp"
 
 #include <cstddef>
 #include <iomanip>
@@ -34,5 +35,4 @@ Trace::~Trace()
   }
 }
 
-// Only facilitate trace if we are on DEVELOPMENT build
 #endif // DEVELOPMENT

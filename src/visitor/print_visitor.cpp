@@ -3,6 +3,9 @@
 #include "../node/list.hpp"
 #include "../node/node.hpp"
 
+#include "../node/control/if.hpp"
+#include "../node/control/while.hpp"
+
 #include "../node/io/getline.hpp"
 #include "../node/io/print.hpp"
 #include "../node/io/printf.hpp"
@@ -25,6 +28,7 @@
 #include "../node/operators/assignment.hpp"
 #include "../node/operators/comparison.hpp"
 #include "../node/operators/decrement.hpp"
+#include "../node/operators/grouping.hpp"
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
 #include "../node/operators/string_concatenation.hpp"
@@ -37,6 +41,11 @@ auto PrintVisitor::visit(nodes::control::If* t_if) -> void
   Printer printer{m_counter};
 
   printer.print("IF");
+
+  if(auto& then{t_if->then()}; then) {
+    printer.print("| THEN");
+	then->accept(this);
+  }
 }
 
 auto PrintVisitor::visit(nodes::functions::Function* t_fn) -> void
@@ -47,12 +56,12 @@ auto PrintVisitor::visit(nodes::functions::Function* t_fn) -> void
   printer.print("| NAME: ", t_fn->name());
 
   // TODO: Macro or lambda this??
-  if(NodeListPtr & params{t_fn->params()}; params) {
+  if(auto& params{t_fn->params()}; params) {
     printer.print("| PARAMS");
     params->accept(this);
   }
 
-  if(NodeListPtr & body{t_fn->body()}; body) {
+  if(auto& body{t_fn->body()}; body) {
     printer.print("| BODY");
     body->accept(this);
   }

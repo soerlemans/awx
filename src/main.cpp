@@ -25,6 +25,7 @@ auto print_help() -> void
             << "Options:\n"
             << "    -f program-file\n"
             << "    -h Displays this help manual\n"
+            << "    -c Traditional mode\n"
             << '\n';
 }
 

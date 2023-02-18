@@ -276,9 +276,9 @@ auto Lexer::literal_regex() -> Token
     switch(character) {
       case g_newline.identifier():
         // FIXME: Error on regex literals not being closed on the same line
-		//syntax_error("Unterminated regex literal reached EOL");
-		//break;
-		[[fallthrough]];
+        // syntax_error("Unterminated regex literal reached EOL");
+        // break;
+        [[fallthrough]];
 
       case g_slash.identifier():
         quit = true;
@@ -399,7 +399,10 @@ auto Lexer::tokenize() -> TokenStream
   for(; !m_filebuffer.eof(); m_filebuffer.next()) {
     while(!eol()) {
       const char character{m_filebuffer.character()};
-      const TokenType last_tokentype{m_tokenstream.back().type()};
+      const auto lambda{[&]() -> bool {
+        return character == slash && !m_tokenstream.empty()
+                    && !tokentype::is_int(m_tokenstream.back().type());
+      }};
 
       if(std::isspace(character)) {
         // Just ignore whitespace, but do not ignore newlines
@@ -408,8 +411,13 @@ auto Lexer::tokenize() -> TokenStream
           add_token(create_token(TokenType::NEWLINE));
         }
       } else if(character == '#') {
-        // '#' are used for comments stop lexing the current line and continue
-        // With the next!
+        // '#' are used for comments.
+        // If we just skip to the next line we ignore the \n at the end, so we
+        // Must add a NEWLINE explicitly!
+        LOG(LogLevel::INFO, "INSERTING NEWLINE");
+        add_token(create_token(TokenType::NEWLINE));
+
+        // Skip to next line
         break;
       } else if(std::isalpha(character)) {
         add_token(identifier());
@@ -417,7 +425,7 @@ auto Lexer::tokenize() -> TokenStream
         add_token(literal_numeric());
       } else if(character == double_quote) {
         add_token(literal_string());
-      } else if(character == slash && !tokentype::is_int(last_tokentype)) {
+      } else if(lambda()) {
         add_token(literal_regex());
       } else {
         add_token(symbol());
