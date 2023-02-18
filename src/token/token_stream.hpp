@@ -11,10 +11,11 @@
 // Make this a general class that accepts a template argument
 class TokenStream : public std::vector<Token> {
   private:
-  std::size_t m_index;
+  std::size_t m_index{0};
 
   public:
   // Constructors:
+  // TODO: Change 256 to not be a magic constant
   explicit TokenStream(std::size_t t_reserve = 256);
 
   auto next(std::size_t inc = 1) -> Token&;

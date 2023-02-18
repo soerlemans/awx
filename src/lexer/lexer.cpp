@@ -211,13 +211,17 @@ auto Lexer::handle_integer() -> Token
 
 auto Lexer::literal_numeric() -> Token
 {
+  Token token;
+
   // Just forward to the apropiate numeric literal handle function
   if(is_hex_literal()) {
-    return handle_hex();
+    token = handle_hex();
   } else {
     // handle_integer() may also forward to handle_float()
-    return handle_integer();
+    token = handle_integer();
   }
+
+  return token;
 }
 
 auto Lexer::literal_string() -> Token
@@ -270,15 +274,14 @@ auto Lexer::literal_regex() -> Token
     const char character{m_filebuffer.character()};
 
     switch(character) {
+      case g_newline.identifier():
+        // FIXME: Error on regex literals not being closed on the same line
+		syntax_error("Unterminated regex literal reached EOL");
+		break;
       case g_slash.identifier():
         quit = true;
         break;
 
-      case g_newline.identifier():
-        // FIXME: Error on regex literals not being closed on the same line
-        // For now just end REGEX on new line
-        quit = true;
-        break;
 
         // TODO: Take care of handling octal escape codes and other
       case none::g_backslash.identifier():

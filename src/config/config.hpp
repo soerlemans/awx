@@ -57,7 +57,7 @@ class Config {
     if(!m_singleton)
       m_singleton = std::unique_ptr<Config>(new Config);
 
-    return *(m_singleton.get());
+    return *m_singleton;
   }
 
   // Getters:

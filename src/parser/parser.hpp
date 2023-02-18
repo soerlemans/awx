@@ -22,7 +22,7 @@ class Parser {
   auto next() -> Token&;
   auto next_if(TokenType t_tokentype) -> bool;
   auto prev() -> Token&;
-  auto expect(TokenType t_tokentype, std::string t_msg) -> Token&;
+  auto expect(TokenType t_tokentype, std::string_view t_msg) -> Token&;
   auto get_token() -> Token;
 
   // The parse() method should be virtual cause in the future we may want to

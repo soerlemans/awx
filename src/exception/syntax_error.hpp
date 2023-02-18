@@ -15,9 +15,9 @@ class SyntaxError : public std::exception {
   FilePosition m_file_pos;
 
   public:
-  SyntaxError(std::string t_msg, FilePosition t_file_pos);
+  SyntaxError(std::string_view t_msg, const FilePosition& t_file_pos);
 
-  auto what() const noexcept -> const char*;
+  auto what() const noexcept -> const char* override;
 };
 
 #endif // SYNTAX_ERROR_H

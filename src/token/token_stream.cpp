@@ -5,7 +5,7 @@
 // Reserve some space for the token steam for performance reasons in the future
 // we might want to estimate the amount of tokens by looking at the amount of
 // lines
-TokenStream::TokenStream(const std::size_t t_reserve): m_index{0}
+TokenStream::TokenStream(const std::size_t t_reserve)
 {
   this->reserve(t_reserve);
 }

@@ -65,7 +65,7 @@ auto Parser::get_token() -> Token
   return m_tokenstream.token();
 }
 
-auto Parser::expect(const TokenType t_tokentype, const std::string t_msg)
+auto Parser::expect(const TokenType t_tokentype, const std::string_view t_msg)
   -> Token&
 {
   if(!check(t_tokentype)) {

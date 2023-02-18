@@ -236,20 +236,18 @@ auto AwkParser::function_call() -> NodePtr
 
 auto AwkParser::ere(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-
-
   TRACE(LogLevel::DEBUG, "ERE");
   NodePtr node;
 
   // Little helper function to cut down on the bloat
-  const auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
-    auto rhs{t_rhs()};
-    if(!rhs)
-      throw std::runtime_error{"Expected Expression"};
+  // const auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
+  //   auto rhs{t_rhs()};
+  //   if(!rhs)
+  //     throw std::runtime_error{"Expected Expression"};
 
-    return NodePtr{
-      std::make_unique<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs))};
-  };
+  //   return NodePtr{
+  //     std::make_unique<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs))};
+  // };
 
   switch(next().type()) {
     case TokenType{g_ere_match}:
@@ -714,38 +712,7 @@ auto AwkParser::unary_prefix(const ParserFunc& t_rhs) -> NodePtr
   return node;
 }
 
-auto AwkParser::if_statement(const ParserFunc& t_func) -> NodePtr
-{
-  TRACE(LogLevel::DEBUG, "IF");
-  NodePtr node;
-
-  if(next_if(TokenType::IF)) {
-    TRACE_PRINT(LogLevel::INFO, "Found IF");
-
-    // TODO: Adjust grouping() to something more general?
-    expect(TokenType::PAREN_OPEN, "(");
-    NodePtr condition{expr()};
-    expect(TokenType::PAREN_CLOSE, ")");
-
-    newline_opt();
-    if(auto ptr{t_func()}; ptr) {
-
-    } else if(auto ptr{terminated_statement()}; ptr) {
-    }
-
-    if(auto ptr{unterminated_statement()}; ptr) {
-      node = std::make_unique<If>(std::move(condition), std::move(ptr));
-    } else if(auto then{terminated_statement()}; then) {
-      expect(TokenType::ELSE, "else");
-      newline_opt();
-      node = std::make_unique<If>(std::move(condition), std::move(then),
-                                  unterminated_statement());
-    }
-  }
-
-  return node;
-}
-
+// TODO: Split FOR and WHILE into their own functions
 auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "LOOP");
@@ -1279,57 +1246,30 @@ auto AwkParser::unterminated_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT");
   NodePtr node;
 
-  const auto token{next()};
-  switch(next().type()) {
-    case TokenType::IF: {
-      TRACE_PRINT(LogLevel::INFO, "Found IF");
-      // TODO: Adjust grouping() to something more general?
-      expect(TokenType::PAREN_OPEN, "(");
-      NodePtr condition{expr()};
-      expect(TokenType::PAREN_CLOSE, ")");
+  const auto lambda{[&](){
+	return this->unterminated_statement();
+  }};
 
+  if(next_if(TokenType::IF)) {
+    TRACE_PRINT(LogLevel::INFO, "Found IF");
+    // TODO: Adjust grouping() to something more general?
+    expect(TokenType::PAREN_OPEN, "(");
+    NodePtr condition{expr()};
+    expect(TokenType::PAREN_CLOSE, ")");
+
+    newline_opt();
+    if(auto ptr{unterminated_statement()}; ptr) {
+      node = std::make_unique<If>(std::move(condition), std::move(ptr));
+    } else if(auto then{terminated_statement()}; then) {
+      expect(TokenType::ELSE, "else");
       newline_opt();
-      if(auto ptr{unterminated_statement()}; ptr) {
-        node = std::make_unique<If>(std::move(condition), std::move(ptr));
-      } else if(auto then{terminated_statement()}; then) {
-        expect(TokenType::ELSE, "else");
-        newline_opt();
-        node = std::make_unique<If>(std::move(condition), std::move(then),
-                                    unterminated_statement());
-      }
-      break;
+      node = std::make_unique<If>(std::move(condition), std::move(then),
+                                  unterminated_statement());
     }
-
-    case TokenType::WHILE: {
-      TRACE_PRINT(LogLevel::INFO, "Found WHILE");
-      // FIXME: Both while loop definitions are the same -> create a Function
-      expect(TokenType::PAREN_OPEN, "(");
-      NodePtr condition{expr()};
-      expect(TokenType::PAREN_CLOSE, ")");
-
-      newline_opt();
-
-      NodeListPtr body;
-      if(auto ptr{unterminated_statement()}; ptr) {
-        body = std::make_unique<List>();
-        body->push_back(std::move(ptr));
-      }
-
-      node = std::make_unique<While>(std::move(condition), std::move(body));
-      break;
-    }
-
-    case TokenType::FOR: {
-      TRACE_PRINT(LogLevel::INFO, "Found FOR");
-      expect(TokenType::PAREN_OPEN, "(");
-      // NodePtr condition{expr()};
-      // expect(TokenType::PAREN_OPEN, "(");
-      break;
-    }
-
-    default:
-      prev();
-      break;
+  } else if(auto ptr{loop(lambda)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{terminatable_statement()}; ptr) {
+    node = std::move(ptr);
   }
 
   return node;
@@ -1355,100 +1295,40 @@ auto AwkParser::terminated_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT");
   NodePtr node;
 
-  // TODO: Handle each one of these clauses in separate functions
-  switch(next().type()) {
-    case TokenType::IF: {
-      TRACE_PRINT(LogLevel::INFO, "Found IF");
+  const auto lambda{[&](){
+	return this->terminated_statement();
+  }};
 
-      expect(TokenType::PAREN_OPEN, "(");
-      NodePtr condition{expr()};
-      expect(TokenType::PAREN_CLOSE, ")");
+  if(next_if(TokenType::IF)) {
+    TRACE_PRINT(LogLevel::INFO, "Found IF");
 
+    expect(TokenType::PAREN_OPEN, "(");
+    NodePtr condition{expr()};
+    expect(TokenType::PAREN_CLOSE, ")");
+
+    newline_opt();
+    NodePtr then{terminated_statement()};
+
+    if(next_if(TokenType::ELSE)) {
       newline_opt();
-      NodePtr then{terminated_statement()};
-
-      if(next_if(TokenType::ELSE)) {
-        newline_opt();
-        node = std::make_unique<If>(std::move(condition), std::move(then),
-                                    terminated_statement());
-      } else {
-        node = std::make_unique<If>(std::move(condition), std::move(then));
-      }
-      break;
+      node = std::make_unique<If>(std::move(condition), std::move(then),
+                                  terminated_statement());
+    } else {
+      node = std::make_unique<If>(std::move(condition), std::move(then));
+    }
+  } else if(auto ptr{loop(lambda)}; ptr) {
+    node = std::move(ptr);
+  } else if(next_if(TokenType::SEMICOLON)) {
+    newline_opt();
+    // TODO: What do we return in this case?
+    // Empty statement?
+  } else if(auto ptr{terminatable_statement()}; ptr) {
+    newline_opt();
+    if(tokentype::is_terminator(get_token().type())) {
+	  next();
     }
 
-    case TokenType::WHILE: {
-      TRACE_PRINT(LogLevel::INFO, "Found WHILE");
-
-      expect(TokenType::PAREN_OPEN, "(");
-      NodePtr condition{expr()};
-      expect(TokenType::PAREN_CLOSE, ")");
-
-      newline_opt();
-
-      NodeListPtr body;
-      if(auto ptr{terminated_statement()}; ptr) {
-        body = std::make_unique<List>();
-        body->push_back(std::move(ptr));
-      }
-
-      node = std::make_unique<While>(std::move(condition), std::move(body));
-      break;
-    }
-
-    case TokenType::FOR: {
-      TRACE_PRINT(LogLevel::INFO, "Found FOR");
-
-      expect(TokenType::PAREN_OPEN, "(");
-      if(const auto var{next()}; var.type() == TokenType::IDENTIFIER) {
-        expect(TokenType::IN, "in");
-        const auto array{expect(TokenType::IDENTIFIER, "identifier")};
-        expect(TokenType::PAREN_CLOSE, ")");
-      } else {
-        simple_statement_opt();
-        expect(TokenType::SEMICOLON, ";");
-        expr_opt();
-        expect(TokenType::SEMICOLON, ";");
-        simple_statement_opt();
-        expect(TokenType::PAREN_CLOSE, ")");
-      }
-
-      NodeListPtr body;
-      if(auto ptr{terminated_statement()}; ptr) {
-        body = std::make_unique<List>();
-        body->push_back(std::move(ptr));
-      }
-
-      newline_opt();
-
-      break;
-    }
-
-    case TokenType::SEMICOLON: {
-      TRACE_PRINT(LogLevel::INFO, "Found ';");
-      newline_opt();
-      break;
-    }
-
-    default: {
-      prev();
-
-      if(auto ptr{terminatable_statement()}; ptr) {
-        node = std::move(ptr);
-
-        if(const auto tokentype{get_token().type()};
-           tokentype::is_terminator(tokentype)) {
-          next();
-          TRACE_PRINT(LogLevel::INFO, "Found ",
-                      (tokentype == TokenType::SEMICOLON) ? "';'" : "NEWLINE");
-        } else {
-          throw std::runtime_error{"Expected a TERMINATOR"};
-        }
-
-        newline_opt();
-        break;
-      }
-    }
+    node = std::move(ptr);
   }
 
   return node;

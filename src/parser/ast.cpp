@@ -3,10 +3,6 @@
 
 using namespace nodes;
 
-// Constructor:
-Ast::Ast(): m_root{nullptr}, m_current{nullptr}, m_list{}
-{}
-
 // Methods:
 auto Ast::add(NodePtr&& t_node) -> void
 {

@@ -1,12 +1,12 @@
 #include "token.hpp"
 
-#include <iostream>
+#include <string_view>
 
 #include "../enum.hpp"
 
 
-Token::Token(TokenType t_type, FilePosition t_file_pos)
-  : m_type{t_type}, m_value{}, m_file_pos{t_file_pos}
+Token::Token(TokenType t_type, const FilePosition& t_file_pos)
+  : m_type{t_type}, m_file_pos{t_file_pos}
 {}
 
 auto Token::type() const -> TokenType
@@ -14,22 +14,16 @@ auto Token::type() const -> TokenType
   return m_type;
 }
 
-auto Token::file_position() -> FilePosition
+auto Token::file_position() const -> const FilePosition&
 {
   return m_file_pos;
 }
 
-auto Token::print() -> void
+auto Token::print() const -> void
 {
   std::cout << "Token - Type: " << enum2underlying_type(this->type());
 
-  // TODO: Macro this away?
-  if(const auto verify{this->check<int>()}; verify)
-    std::cout << " Int: " << *verify << '\n';
-  else if(const auto verify{this->check<double>()}; verify)
-    std::cout << " Double: " << *verify << '\n';
-  else if(const auto verify{this->check<std::string>()}; verify)
-    std::cout << " String: " << *verify << '\n';
-  else
-    ; // TODO: Error handling
+  print_if<int>("Int");
+  print_if<double>("Double");
+  print_if<std::string>("String");
 }

@@ -1,6 +1,7 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+#include <iostream>
 #include <string>
 #include <tuple>
 #include <type_traits>
@@ -33,11 +34,11 @@ class Token {
   Token() = default;
   Token(const Token& t_token) = default;
 
-  explicit Token(TokenType t_type, FilePosition t_file_pos);
+  explicit Token(TokenType t_type, const FilePosition& t_file_pos);
 
   template<typename T>
   requires TokenValueConcept<T>
-  explicit Token(TokenType t_type, T t_value, FilePosition t_file_pos)
+  explicit Token(TokenType t_type, T t_value, const FilePosition& t_file_pos)
     : m_type{t_type}, m_value{t_value}, m_file_pos{t_file_pos}
   {}
 
@@ -68,9 +69,23 @@ class Token {
     return std::get_if<T>(&m_value);
   }
 
-  auto file_position() -> FilePosition;
+  auto file_position() const -> const FilePosition&;
 
-  auto print() -> void;
+  template<typename T>
+  auto print_if(std::string_view t_str_vw) const -> bool
+  {
+    bool is_type{false};
+
+    if(const auto verify{check<T>()}; verify) {
+      std::cout << t_str_vw << ": " << *verify << '\n';
+
+      is_type = true;
+    }
+
+    return is_type;
+  }
+
+  auto print() const -> void;
 
   // Operators
   auto operator=(const Token& t_token) -> Token& = default;

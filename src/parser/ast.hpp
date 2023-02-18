@@ -19,7 +19,7 @@ class Ast {
   nodes::List m_list;
 
   public:
-  Ast();
+  Ast() = default;
   Ast(Ast&& t_ast) = default;
   // Ast(const Ast& t_ast) = default;
 

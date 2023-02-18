@@ -61,7 +61,7 @@ auto run(int argc, char* argv[]) -> void
   auto& config{Config::get_instance()};
 
   // TODO: Remove this is temporary testing code
-  if(!config.get_files().size())
+  if(!config.get_files().empty())
     return;
 
   FileBuffer fb{config.get_files().front()};

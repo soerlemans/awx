@@ -13,7 +13,7 @@
 #define LOG_PRINTLN(...) log::println(__VA_ARGS__)
 
 #define LOG(loglevel, ...) \
-  log::log(__FILE__, __FUNCTION__, __LINE__, log::loglevel, __VA_ARGS__)
+  log::log(__FILE__, __func__, __LINE__, log::loglevel, __VA_ARGS__)
 
 #define SET_LOGLEVEL(loglevel) set_loglevel(loglevel)
 

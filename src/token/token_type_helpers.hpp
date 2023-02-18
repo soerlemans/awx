@@ -44,7 +44,7 @@ namespace tokentype {
   -> bool;
 
 [[nodiscard]] constexpr auto
-is_valid_function_identifier(const TokenType t_tokentype) -> bool;
+is_valid_function_identifier(TokenType t_tokentype) -> bool;
 
 // Function definitions:
 // clang-format off

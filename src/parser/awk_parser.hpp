@@ -73,7 +73,6 @@ class AwkParser : public Parser {
   virtual auto unary_prefix(const ParserFunc& t_rhs) -> NodePtr;
 
   // TODO: Add Control statement helper function
-  virtual auto if_statement(const ParserFunc& t_func) -> NodePtr;
   virtual auto loop(const ParserFunc& t_body) -> NodePtr;
 
   // Print rules:
