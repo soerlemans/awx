@@ -4,10 +4,6 @@
 // Static members:
 std::unique_ptr<Config> Config::m_singleton;
 
-// Protected constructors:
-Config::Config(): m_awx_mode{AwxMode::AWK}, m_file_buffers{}
-{}
-
 // Protected methods:
 auto Config::add_file(FileBuffer&& t_fb) -> void
 {

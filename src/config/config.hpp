@@ -35,14 +35,14 @@ enum AwxMode {
 class Config {
   private:
   // Regular private variables:
-  AwxMode m_awx_mode;
+  AwxMode m_awx_mode{AwxMode::AWK};
   std::vector<FileBuffer> m_file_buffers;
 
   protected:
   // Singleton data:
   static std::unique_ptr<Config> m_singleton;
 
-  Config();
+  Config() = default;
 
   // Setters:
   auto add_file(FileBuffer&& t_fb) -> void;
@@ -64,7 +64,7 @@ class Config {
   auto get_files() const -> std::vector<FileBuffer>;
 
   // Friend declarations:
-  friend auto parse_args(const int t_argc, char* t_argv[]) -> void;
+  friend auto parse_args(const int t_argc, char* t_argv[]) -> void; // NOLINT
 
   // Operators:
   auto operator=(const Config&) -> Config& = delete;

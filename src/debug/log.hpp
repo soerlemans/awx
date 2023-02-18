@@ -29,7 +29,7 @@
   } while(0)
 
 #define SET_LOGLEVEL(level) \
-  do {                   \
+  do {                      \
   } while(0)
 
 #endif // DEBUG

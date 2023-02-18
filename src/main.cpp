@@ -28,6 +28,7 @@ auto print_help() -> void
             << '\n';
 }
 
+// NOLINTBEGIN
 // Parse command line arguments and store them in a configuration class
 // Warning: This is friend of the ConfigStore class
 auto parse_args(const int t_argc, char* t_argv[]) -> void
@@ -72,11 +73,12 @@ auto run(int argc, char* argv[]) -> void
   AwkParser parser{tokenstream};
   auto ast{parser.parse()};
 }
+// NOLINTEND
 
 auto main(int argc, char* argv[]) -> int
 {
   // Set loglevel for now for debugging purposes
-  SET_LOGLEVEL(log::LogLevel::INFO);
+  SET_LOGLEVEL(log::LogLevel::DEBUG);
   LOG_PRINTLN("#== BEGIN ==#");
 
   parse_args(argc, argv);
