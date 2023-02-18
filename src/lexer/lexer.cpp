@@ -276,8 +276,10 @@ auto Lexer::literal_regex() -> Token
     switch(character) {
       case g_newline.identifier():
         // FIXME: Error on regex literals not being closed on the same line
-		syntax_error("Unterminated regex literal reached EOL");
-		break;
+		//syntax_error("Unterminated regex literal reached EOL");
+		//break;
+		[[fallthrough]];
+
       case g_slash.identifier():
         quit = true;
         break;
