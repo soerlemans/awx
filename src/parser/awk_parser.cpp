@@ -1300,7 +1300,7 @@ auto AwkParser::terminated_statement() -> NodePtr
   }};
 
   if(auto ptr{action()}; ptr) {
-	node = std::move(ptr);
+    node = std::move(ptr);
   } else if(next_if(TokenType::IF)) {
     TRACE_PRINT(LogLevel::INFO, "Found IF");
 

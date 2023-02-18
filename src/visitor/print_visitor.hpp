@@ -41,10 +41,10 @@ class PrintVisitor : public NodeVisitor {
   };
 
   // Variables:
-  int m_counter;
+  int m_counter{0};
 
   public:
-  PrintVisitor();
+  PrintVisitor() = default;
 
   auto visit(nodes::control::If* t_if) -> void override;
 

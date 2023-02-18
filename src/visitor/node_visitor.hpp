@@ -21,7 +21,7 @@
 class NodeVisitor {
   private:
   public:
-  NodeVisitor();
+  NodeVisitor() = default;
 
   virtual auto visit(nodes::control::If* t_if) -> void = 0;
 

@@ -32,10 +32,6 @@
 #include "../node/operators/unary_prefix.hpp"
 
 
-PrintVisitor::PrintVisitor()
-  : m_counter{0}
-{}
-
 auto PrintVisitor::visit(nodes::control::If* t_if) -> void
 {
   Printer printer{m_counter};

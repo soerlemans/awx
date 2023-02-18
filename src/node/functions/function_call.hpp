@@ -17,7 +17,7 @@ class FunctionCall : public Node {
   NodeListPtr m_args;
 
   public:
-  FunctionCall(const std::string t_name, NodeListPtr&& t_args);
+  FunctionCall(const std::string& t_name, NodeListPtr&& t_args);
 
   auto name() const -> std::string_view;
   auto args() -> NodeListPtr&;

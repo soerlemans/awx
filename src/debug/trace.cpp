@@ -12,7 +12,7 @@
 int Trace::m_counter{0};
 
 // Methods:
-auto Trace::indent_text() const -> std::string
+auto Trace::indent_text() -> std::string
 {
   std::stringstream ss;
   if(m_counter > 0) {

@@ -9,9 +9,6 @@
 
 using namespace nodes;
 
-NodeVisitor::NodeVisitor()
-{}
-
 auto NodeVisitor::visit(Node* t_node) -> void
 {
   t_node->accept(this);
