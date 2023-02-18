@@ -1,13 +1,13 @@
 #ifndef FOR_H
 #define FOR_H
 
-#include "../node.hpp"
+#include "../list.hpp"
 
 #include "control.hpp"
 
 
 namespace nodes::control {
-class ForIn : public Node {
+class For : public Node {
   private:
   NodePtr m_init;
   NodePtr m_condition;

@@ -4,7 +4,7 @@
 using namespace nodes;
 
 // Constructor:
-List::List(): Node{NodeType::NODE_LIST}, std::list<NodePtr>{}
+List::List(): Node{NodeType::NODE_LIST}
 {}
 
 // Methods:
