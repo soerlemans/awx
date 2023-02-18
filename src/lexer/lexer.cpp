@@ -387,6 +387,7 @@ auto Lexer::eol() const -> bool
   return m_filebuffer.eol();
 }
 
+// TODO: refactor this
 auto Lexer::tokenize() -> TokenStream
 {
   using namespace reserved::symbols;
@@ -397,8 +398,10 @@ auto Lexer::tokenize() -> TokenStream
   constexpr char slash{g_slash.identifier()};
 
   for(; !m_filebuffer.eof(); m_filebuffer.next()) {
-    while(!eol()) {
+    for(; !eol(); m_filebuffer.forward()) {
       const char character{m_filebuffer.character()};
+
+	  //TODO: This should have its own function
       const auto lambda{[&]() -> bool {
         return character == slash && !m_tokenstream.empty()
                     && !tokentype::is_int(m_tokenstream.back().type());
@@ -430,10 +433,6 @@ auto Lexer::tokenize() -> TokenStream
       } else {
         add_token(symbol());
       }
-
-      // Increment at the end, this allows us to prevent having to use
-      // m_filebuffer.backward() in situations where we look a head to much
-      m_filebuffer.forward();
     }
   }
 

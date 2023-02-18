@@ -1327,10 +1327,10 @@ auto AwkParser::terminated_statement() -> NodePtr
     // TODO: What do we return in this case?
     // Empty statement?
   } else if(auto ptr{terminatable_statement()}; ptr) {
-    newline_opt();
     if(tokentype::is_terminator(get_token().type())) {
       next();
     }
+    newline_opt();
 
     node = std::move(ptr);
   }
