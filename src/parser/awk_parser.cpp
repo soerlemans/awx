@@ -1246,8 +1246,8 @@ auto AwkParser::unterminated_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT");
   NodePtr node;
 
-  const auto lambda{[&](){
-	return this->unterminated_statement();
+  const auto lambda{[&]() {
+    return this->unterminated_statement();
   }};
 
   if(next_if(TokenType::IF)) {
@@ -1295,11 +1295,13 @@ auto AwkParser::terminated_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT");
   NodePtr node;
 
-  const auto lambda{[&](){
-	return this->terminated_statement();
+  const auto lambda{[&]() {
+    return this->terminated_statement();
   }};
 
-  if(next_if(TokenType::IF)) {
+  if(auto ptr{action()}; ptr) {
+	node = std::move(ptr);
+  } else if(next_if(TokenType::IF)) {
     TRACE_PRINT(LogLevel::INFO, "Found IF");
 
     expect(TokenType::PAREN_OPEN, "(");
@@ -1325,7 +1327,7 @@ auto AwkParser::terminated_statement() -> NodePtr
   } else if(auto ptr{terminatable_statement()}; ptr) {
     newline_opt();
     if(tokentype::is_terminator(get_token().type())) {
-	  next();
+      next();
     }
 
     node = std::move(ptr);

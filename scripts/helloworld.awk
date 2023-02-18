@@ -16,4 +16,10 @@ BEGIN {
 	# count == 0
 
 	helloworld("monkeys")
+
+	if(1){
+		print "monkey yes"
+	}else{
+		print "monkey no"
+	}
 }
