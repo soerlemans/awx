@@ -15,7 +15,10 @@
 #include "../node/list.hpp"
 #include "../node/node.hpp"
 
+#include "../node/control/for.hpp"
+#include "../node/control/for_in.hpp"
 #include "../node/control/if.hpp"
+#include "../node/control/return.hpp"
 #include "../node/control/while.hpp"
 
 #include "../node/io/getline.hpp"
@@ -1102,30 +1105,40 @@ auto AwkParser::expr_list_opt() -> NodeListPtr
 //                  | '|'    expr
 //                  ;
 // TODO: Figure this one out
-auto AwkParser::output_redirection() -> NodePtr
+auto AwkParser::output_redirection(NodePtr& t_lhs) -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "OUTPUT REDIRECTION");
   NodePtr node;
 
-  const auto token{next()};
+  // TODO: Have Redirection automatically convert TokenType to the correct
+  // RedirectionOp
+  const auto lambda{[&](RedirectionOp t_op) {
+    auto rhs{expr()};
+    if(!rhs)
+      throw std::runtime_error{"Expected Expression after REDIRECTION"};
 
+    return std::make_unique<Redirection>(t_op, std::move(t_lhs),
+                                         std::move(rhs));
+  }};
+
+  const auto token{next()};
   switch(token.type()) {
     case TokenType::TRUNC:
+      node = lambda(RedirectionOp::TRUNC);
       break;
 
     case TokenType::APPEND:
+      node = lambda(RedirectionOp::APPEND);
       break;
 
     case TokenType::PIPE:
+      node = lambda(RedirectionOp::PIPE);
       break;
 
     default:
       prev();
       break;
   }
-
-  // TODO: Pass this expr expression to the upper expressions
-  expr();
 
   return node;
 }
@@ -1172,10 +1185,10 @@ auto AwkParser::print_statement() -> NodePtr
   NodePtr node;
 
   if(auto ptr{simple_print_statement()}; ptr) {
-    // TODO: Implement output redirection for print statements
     node = std::move(ptr);
-    if(auto redirection_ptr{output_redirection()}; redirection_ptr) {
-      // TODO: Think this one out, possibly return multiple return values?
+
+    if(auto redirection_ptr{output_redirection(ptr)}; redirection_ptr) {
+      node = std::move(redirection_ptr);
     }
   }
 
@@ -1243,7 +1256,7 @@ auto AwkParser::terminatable_statement() -> NodePtr
       break;
 
     case TokenType::RETURN:
-      expr_opt();
+      node = std::make_unique<Return>(expr_opt());
       break;
 
     case TokenType::DO:

@@ -95,7 +95,7 @@ class AwkParser : public Parser {
   virtual auto expr_list_opt() -> NodeListPtr;
 
   // IO rules:
-  virtual auto output_redirection() -> NodePtr;
+  virtual auto output_redirection(NodePtr& t_lhs) -> NodePtr;
   virtual auto simple_print_statement() -> NodePtr;
   virtual auto print_statement() -> NodePtr;
 

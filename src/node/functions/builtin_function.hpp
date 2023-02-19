@@ -1,7 +1,6 @@
 #ifndef BUILTIN_FUNCTION_H
 #define BUILTIN_FUNCTION_H
 
-#include "../node.hpp"
 #include "../list.hpp"
 
 #include "functions.hpp"

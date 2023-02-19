@@ -8,6 +8,9 @@ class While;
 
 class For;
 class ForIn;
+
+
+class Return;
 }; // namespace nodes::control
 
 #endif // CONTROL_H

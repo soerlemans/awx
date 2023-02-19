@@ -37,7 +37,7 @@ enum class TokenType : u16 {
   // Delete keyword:
   DELETE,
 
-  // Function keywords:
+  // IO keywords:
   PRINT,
   PRINTF,
   GETLINE,
