@@ -1,17 +1,20 @@
 #ifndef DELETE_H
 #define DELETE_H
 
-#include "../node.hpp"
+#include "../list.hpp"
 #include "operators.hpp"
+
+#include <string>
 
 
 namespace nodes::operators {
 class Delete : public Node {
   private:
-  NodePtr m_array;
+  std::string m_array;
+  NodeListPtr m_expr_list;
 
   public:
-  Delete(NodePtr&& t_array);
+  Delete(std::string&& t_array, NodeListPtr&& t_expr_list);
 
   auto accept(NodeVisitor* t_visitor) -> void override;
 

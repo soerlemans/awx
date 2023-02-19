@@ -40,6 +40,7 @@
 #include "../node/operators/assignment.hpp"
 #include "../node/operators/comparison.hpp"
 #include "../node/operators/decrement.hpp"
+#include "../node/operators/delete.hpp"
 #include "../node/operators/grouping.hpp"
 #include "../node/operators/increment.hpp"
 #include "../node/operators/logical.hpp"
@@ -1183,13 +1184,12 @@ auto AwkParser::simple_statement() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::DELETE)) {
-    expect(TokenType::IDENTIFIER, "Name");
+    auto name{expect(TokenType::IDENTIFIER, "Name")};
     expect(TokenType::BRACE_OPEN, "[");
-    expr_list();
+    auto list{expr_list()};
     expect(TokenType::BRACE_CLOSE, "]");
 
-    // TODO: Return Delete statement
-
+    node = std::make_unique<Delete>(name.value<std::string>(), std::move(list));
   } else if(auto ptr{expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{print_statement()}; ptr) {

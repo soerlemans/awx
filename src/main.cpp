@@ -87,7 +87,7 @@ auto main(int argc, char* argv[]) -> int
   try {
     run(argc, argv);
   } catch(std::exception& e) {
-    std::cerr << "EXCEPTION OCCURED - \n" << e.what() << '\n';
+    std::cerr << '\n' << "EXCEPTION OCCURED - \n" << e.what() << '\n';
 
     return ExitCode::EXCEPTION;
   }
