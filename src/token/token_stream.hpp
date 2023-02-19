@@ -7,8 +7,10 @@
 #include "token.hpp"
 
 
-// Default amount of space to reserve for tokens in a TokenStream
-enum { TOKENSTREAM_RESERVE = 256 };
+// TODO: We reserve twice a size of 256 possible inherit from vector and have
+// The default be 256 Default amount of space to reserve for tokens in a
+// TokenStream
+enum { DEFAULT_RESERVE = 256 };
 
 // Manages a TokenStream in a statefull way so it is aware
 // If the use for a stream that knows its position is need for more objects
@@ -19,7 +21,7 @@ class TokenStream : public std::vector<Token> {
   std::stack<std::size_t> m_stack;
 
   public:
-  explicit TokenStream(std::size_t t_reserve = TOKENSTREAM_RESERVE);
+  explicit TokenStream(std::size_t t_reserve = DEFAULT_RESERVE);
 
   // Go to next or previous token
   auto next() -> Token&;

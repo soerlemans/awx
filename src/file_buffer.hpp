@@ -23,7 +23,7 @@ class FileBuffer {
   public:
   // Constructors:
   FileBuffer() = delete;
-  FileBuffer(fs::path t_path);
+  FileBuffer(fs::path&& t_path);
 
   // Load and Save the FileBuffer from FS
   auto load() -> void;

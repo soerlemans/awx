@@ -3,9 +3,9 @@
 
 using namespace nodes::operators;
 
-Membership::Membership(NodePtr&& t_lhs, const std::string& t_name)
+Membership::Membership(NodePtr&& t_lhs, std::string&& t_name)
   : UnaryOperator{Precedence::MEMBERSHIP, std::forward<NodePtr>(t_lhs)},
-    m_name{t_name}
+    m_name{std::forward<std::string>(t_name)}
 {}
 
 auto Membership::name() const -> std::string_view

@@ -188,7 +188,8 @@ auto AwkParser::function() -> NodePtr
     if(const auto token{get_token()};
        tokentype::is_valid_function_identifier(token.type())) {
       next();
-      TRACE_PRINT(LogLevel::DEBUG, "Valid FUNCTION IDENTIFIER");
+      TRACE_PRINT(LogLevel::DEBUG,
+                  "Valid FUNCTION IDENTIFIER: ", token.value<std::string>());
 
       // TODO: Create a Function class
       expect(TokenType::PAREN_OPEN, "(");
@@ -218,19 +219,21 @@ auto AwkParser::function_call() -> NodePtr
   NodePtr node;
 
   switch(const auto token{next()}; token.type()) {
+      // TODO: Maybe set a variable in function_call to indicate if it is an
+      // Builtin function or not?
+    case TokenType::BUILTIN_FUNCTION:
+      [[fallthrough]];
     case TokenType::FUNCTION_IDENTIFIER: {
       expect(TokenType::PAREN_OPEN, "(");
       NodeListPtr args{expr_list_opt()};
       expect(TokenType::PAREN_CLOSE, ")");
 
-      TRACE_PRINT(LogLevel::INFO, "Found a FUNCTION CALL");
+      auto name{token.value<std::string>()};
+      TRACE_PRINT(LogLevel::INFO, "Found a FUNCTION CALL: ", name);
 
-      node = std::make_unique<FunctionCall>(token.value<std::string>(),
-                                            std::move(args));
+      node = std::make_unique<FunctionCall>(std::move(name), std::move(args));
       break;
     }
-
-      // TODO: Add function calls for builtin types
 
     default:
       prev();

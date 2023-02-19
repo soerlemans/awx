@@ -98,7 +98,7 @@ auto Lexer::identifier() -> Token
             tokentype != TokenType::NONE) {
     LOG(LogLevel::INFO, "BUILTIN FUNCTION: ", ss.str());
 
-    token = create_token(tokentype);
+    token = create_token(tokentype, ss.str());
   } else if(is_fn_id) {
     LOG(LogLevel::INFO, "FUNCTION IDENTIFIER: ", ss.str());
 
@@ -115,18 +115,20 @@ auto Lexer::identifier() -> Token
 // Helper functions for literal_numeric
 auto Lexer::is_hex_literal() -> bool
 {
+  bool is_hex{false};
+
   // Octal literals are not specified in the POSIX AWK standard
   // So just treat leading zeroes as as normal
   if(next_char() == '0' && m_filebuffer.character() == 'x') {
     next_char(); // Discard 'x'
 
-    return true;
+	is_hex = true;
   } else {
     // If we just have a zero we should go back to not discard the zero
     m_filebuffer.backward();
   }
 
-  return false;
+  return is_hex;
 }
 
 auto Lexer::handle_hex() -> Token

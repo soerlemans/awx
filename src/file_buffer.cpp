@@ -7,8 +7,8 @@
 
 
 // Constructors:
-FileBuffer::FileBuffer(fs::path t_path)
-  : m_path{t_path}, m_lineno{0}, m_columnno{0}
+FileBuffer::FileBuffer(fs::path&& t_path)
+  : m_path{std::move(t_path)}, m_lineno{0}, m_columnno{0}
 {
   m_filebuffer.reserve(256);
 

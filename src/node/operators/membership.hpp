@@ -11,7 +11,7 @@ class Membership : public UnaryOperator {
   std::string m_name;
 
   public:
-  Membership(NodePtr&& t_lhs, const std::string& t_name);
+  Membership(NodePtr&& t_lhs, std::string&& t_name);
 
   auto name() const -> std::string_view;
   auto accept(NodeVisitor* t_visitor) -> void override;

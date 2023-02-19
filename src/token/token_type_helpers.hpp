@@ -36,21 +36,18 @@ namespace tokentype {
 [[nodiscard]] constexpr auto is_control_statement(TokenType t_tokentype)
   -> bool;
 
-[[nodiscard]] constexpr auto is_logical_junction(TokenType t_tokentype)
-  -> bool;
-[[nodiscard]] constexpr auto is_unary_operator(TokenType t_tokentype)
-  -> bool;
+[[nodiscard]] constexpr auto is_logical_junction(TokenType t_tokentype) -> bool;
+[[nodiscard]] constexpr auto is_unary_operator(TokenType t_tokentype) -> bool;
 [[nodiscard]] constexpr auto is_comparison_operator(TokenType t_tokentype)
   -> bool;
 
-[[nodiscard]] constexpr auto
-is_valid_function_identifier(TokenType t_tokentype) -> bool;
+[[nodiscard]] constexpr auto is_valid_function_identifier(TokenType t_tokentype)
+  -> bool;
+
+[[nodiscard]] constexpr auto is_builtin_function(TokenType t_tokentype) -> bool;
 
 // Function definitions:
-// clang-format off
-DEFINE_TOKEN_TYPE_HELPER(is_int,
-						 CASE_TOKEN_TYPE(INTEGER)
-						 CASE_TOKEN_TYPE(HEX));
+DEFINE_TOKEN_TYPE_HELPER(is_int, CASE_TOKEN_TYPE(INTEGER) CASE_TOKEN_TYPE(HEX));
 
 constexpr auto is_numeric(const TokenType t_tokentype) -> bool
 {
@@ -58,14 +55,11 @@ constexpr auto is_numeric(const TokenType t_tokentype) -> bool
 }
 
 DEFINE_TOKEN_TYPE_HELPER(is_literal,
-                         CASE_TOKEN_TYPE(INTEGER)
-						 CASE_TOKEN_TYPE(HEX)
-                         CASE_TOKEN_TYPE(FLOAT)
-						 CASE_TOKEN_TYPE(STRING)
-                         CASE_TOKEN_TYPE(REGEX));
+                         CASE_TOKEN_TYPE(INTEGER) CASE_TOKEN_TYPE(HEX)
+                           CASE_TOKEN_TYPE(FLOAT) CASE_TOKEN_TYPE(STRING)
+                             CASE_TOKEN_TYPE(REGEX));
 
-DEFINE_TOKEN_TYPE_HELPER(is_value,
-						 CASE_TOKEN_TYPE(IDENTIFIER));
+DEFINE_TOKEN_TYPE_HELPER(is_value, CASE_TOKEN_TYPE(IDENTIFIER));
 
 constexpr auto is_rvalue(const TokenType t_tokentype) -> bool
 {
@@ -73,39 +67,32 @@ constexpr auto is_rvalue(const TokenType t_tokentype) -> bool
 }
 
 DEFINE_TOKEN_TYPE_HELPER(is_terminator,
-						 CASE_TOKEN_TYPE(SEMICOLON)
-						 CASE_TOKEN_TYPE(NEWLINE));
+                         CASE_TOKEN_TYPE(SEMICOLON) CASE_TOKEN_TYPE(NEWLINE));
 
 DEFINE_TOKEN_TYPE_HELPER(is_control_statement,
-						 CASE_TOKEN_TYPE(IF)
-						 CASE_TOKEN_TYPE(ELSE)
-						 CASE_TOKEN_TYPE(DO)
-						 CASE_TOKEN_TYPE(WHILE)
-						 CASE_TOKEN_TYPE(FOR));
+                         CASE_TOKEN_TYPE(IF) CASE_TOKEN_TYPE(ELSE)
+                           CASE_TOKEN_TYPE(DO) CASE_TOKEN_TYPE(WHILE)
+                             CASE_TOKEN_TYPE(FOR));
 
 DEFINE_TOKEN_TYPE_HELPER(is_logical_junction,
-						 CASE_TOKEN_TYPE(AND)
-						 CASE_TOKEN_TYPE(OR));
+                         CASE_TOKEN_TYPE(AND) CASE_TOKEN_TYPE(OR));
 
 DEFINE_TOKEN_TYPE_HELPER(is_unary_operator,
-                         CASE_TOKEN_TYPE(PLUS)
-						 CASE_TOKEN_TYPE(MINUS));
+                         CASE_TOKEN_TYPE(PLUS) CASE_TOKEN_TYPE(MINUS));
 
 DEFINE_TOKEN_TYPE_HELPER(is_comparison_operator,
-						 CASE_TOKEN_TYPE(LESS_THAN)
-						 CASE_TOKEN_TYPE(LESS_THAN_EQUAL)
-						 CASE_TOKEN_TYPE(EQUAL)
-						 CASE_TOKEN_TYPE(NOT_EQUAL)
-						 CASE_TOKEN_TYPE(GREATER_THAN)
-						 CASE_TOKEN_TYPE(GREATER_THAN_EQUAL));
+                         CASE_TOKEN_TYPE(LESS_THAN)
+                           CASE_TOKEN_TYPE(LESS_THAN_EQUAL)
+                             CASE_TOKEN_TYPE(EQUAL) CASE_TOKEN_TYPE(NOT_EQUAL)
+                               CASE_TOKEN_TYPE(GREATER_THAN)
+                                 CASE_TOKEN_TYPE(GREATER_THAN_EQUAL));
 
 // A regular identifier is a valid name for a function declaration
 // As in 'function func()' is just as valid as 'function func ()'
 DEFINE_TOKEN_TYPE_HELPER(is_valid_function_identifier,
-						 CASE_TOKEN_TYPE(IDENTIFIER)
-						 CASE_TOKEN_TYPE(FUNCTION_IDENTIFIER));
+                         CASE_TOKEN_TYPE(IDENTIFIER)
+                           CASE_TOKEN_TYPE(FUNCTION_IDENTIFIER));
 
-// clang-format on
 }; // namespace tokentype
 
 #endif // TOKEN_TYPE_HELPERS_H

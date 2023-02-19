@@ -63,28 +63,28 @@ namespace keywords {
 
 namespace functions {
   // Builtin functions
-  // TODO: Maybe simplify to one TokenType called BUILTIN_FUNCTION_NAME
-  DEFINE_RESERVED(g_atan2,    "atan2",    ATAN2);
-  DEFINE_RESERVED(g_close,    "close",    CLOSE);
-  DEFINE_RESERVED(g_cos,      "cos",      COS);
-  DEFINE_RESERVED(g_exp,      "exp",      EXP);
-  DEFINE_RESERVED(g_gsub,     "gsub",     GSUB);
-  DEFINE_RESERVED(g_int,      "int",      INT);
-  DEFINE_RESERVED(g_index,    "index",    INDEX);
-  DEFINE_RESERVED(g_length,   "length",   LENGTH);
-  DEFINE_RESERVED(g_log,      "log",      LOG);
-  DEFINE_RESERVED(g_match,    "match",    MATCH);
-  DEFINE_RESERVED(g_rand,     "rand",     RAND);
-  DEFINE_RESERVED(g_sin,      "sin",      SIN);
-  DEFINE_RESERVED(g_split,    "split",    SPLIT);
-  DEFINE_RESERVED(g_sprintf,  "sprintf",  SPRINTF);
-  DEFINE_RESERVED(g_sqrt,     "sqrt",     SQRT);
-  DEFINE_RESERVED(g_srand,    "srand",    SRAND);
-  DEFINE_RESERVED(g_sub,      "sub",      SUB);
-  DEFINE_RESERVED(g_substr,   "substr",   SUBSTR);
-  DEFINE_RESERVED(g_system,   "system",   SYSTEM);
-  DEFINE_RESERVED(g_tolower,  "tolower",  TOLOWER);
-  DEFINE_RESERVED(g_toupper,  "toupper",  TOUPPER);
+  // TODO: Maybe simplify to one TokenType called BUILTIN_FUNCTION
+  DEFINE_RESERVED(g_atan2,    "atan2",    BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_close,    "close",    BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_cos,      "cos",      BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_exp,      "exp",      BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_gsub,     "gsub",     BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_int,      "int",      BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_index,    "index",    BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_length,   "length",   BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_log,      "log",      BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_match,    "match",    BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_rand,     "rand",     BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_sin,      "sin",      BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_split,    "split",    BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_sprintf,  "sprintf",  BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_sqrt,     "sqrt",     BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_srand,    "srand",    BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_sub,      "sub",      BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_substr,   "substr",   BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_system,   "system",   BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_tolower,  "tolower",  BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_toupper,  "toupper",  BUILTIN_FUNCTION);
 
   // TODO: Use a std::map instead of an array as those have a faster lookup time
   // Then we wont need to loop through them either

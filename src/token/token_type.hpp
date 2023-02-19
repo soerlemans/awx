@@ -46,29 +46,8 @@ enum class TokenType : u16 {
   BEGIN,
   END,
 
-  // Builtin functions:
-  // TODO: Maybe simplify to one TokenType called BUILTIN_FUNCTION_NAME
-  ATAN2,
-  CLOSE,
-  COS,
-  EXP,
-  GSUB,
-  INDEX,
-  INT,
-  LENGTH,
-  LOG,
-  MATCH,
-  RAND,
-  SIN,
-  SPLIT,
-  SPRINTF,
-  SQRT,
-  SRAND,
-  SUB,
-  SUBSTR,
-  SYSTEM,
-  TOLOWER,
-  TOUPPER,
+  // Builtin function type:
+  BUILTIN_FUNCTION,
 
   // TYPES:
   INTEGER,
