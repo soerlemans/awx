@@ -10,6 +10,8 @@
 namespace nodes::operators {
 class Delete : public Node {
   private:
+  // TOOD: Figure out if std::string is enough or if we need the fileposition
+  // Data
   std::string m_array;
   NodeListPtr m_expr_list;
 

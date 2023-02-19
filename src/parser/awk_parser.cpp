@@ -183,9 +183,12 @@ auto AwkParser::function() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::FUNCTION)) {
+    TRACE_PRINT(LogLevel::DEBUG, "Found FUNCTION");
+
     if(const auto token{get_token()};
        tokentype::is_valid_function_identifier(token.type())) {
       next();
+      TRACE_PRINT(LogLevel::DEBUG, "Valid FUNCTION IDENTIFIER");
 
       // TODO: Create a Function class
       expect(TokenType::PAREN_OPEN, "(");

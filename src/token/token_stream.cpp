@@ -32,6 +32,21 @@ auto TokenStream::prev() -> Token&
   return result;
 }
 
+auto TokenStream::save() -> void
+{
+  // Save the current position in the token_stream
+  m_stack.push(m_index);
+}
+
+auto TokenStream::restore() -> void
+{
+  if(!m_stack.empty()) {
+    // Restore the current m_index position in the token_stream
+    m_index = m_stack.top();
+    m_stack.pop();
+  }
+}
+
 auto TokenStream::token() -> Token&
 {
   return (*this)[m_index];

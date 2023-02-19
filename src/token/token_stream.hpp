@@ -16,7 +16,7 @@ enum { TOKENSTREAM_RESERVE = 256 };
 class TokenStream : public std::vector<Token> {
   private:
   std::size_t m_index{0};
-  std::stack<std::size_t> m_state;
+  std::stack<std::size_t> m_stack;
 
   public:
   explicit TokenStream(std::size_t t_reserve = TOKENSTREAM_RESERVE);
