@@ -11,24 +11,22 @@ TokenStream::TokenStream(const std::size_t t_reserve)
 }
 
 // Methods:
-auto TokenStream::next(const std::size_t t_inc) -> Token&
+auto TokenStream::next() -> Token&
 {
   Token& result{(*this)[m_index]};
 
-  m_index += t_inc;
+  m_index++;
 
   return result;
 }
 
-auto TokenStream::prev(const std::size_t t_dec) -> Token&
+auto TokenStream::prev() -> Token&
 {
   Token& result{(*this)[m_index]};
 
   // Logically you can go past a stream but not in front of a stream
-  if(m_index >= t_dec) {
-    m_index -= t_dec;
-  } else {
-    m_index = 0;
+  if(m_index > 0) {
+    m_index--;
   }
 
   return result;

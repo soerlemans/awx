@@ -54,7 +54,7 @@ class FileBuffer {
   auto eol() const -> bool;
   auto eof() const -> bool;
 
-  auto print() -> void;
+  auto print() const -> void;
 
   // Operators:
   auto operator[](std::size_t t_index) -> std::string&;

@@ -7,7 +7,6 @@ binary_operator.cpp
 comparison.cpp
 decrement.cpp
 delete.cpp
-ere.cpp
 grouping.cpp
 increment.cpp
 logical.cpp

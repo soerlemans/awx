@@ -121,7 +121,7 @@ auto FileBuffer::eof() const -> bool
   return m_lineno >= size();
 }
 
-auto FileBuffer::print() -> void
+auto FileBuffer::print() const -> void
 {
   std::cout << "FileBuffer - ";
 

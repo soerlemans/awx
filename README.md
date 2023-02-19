@@ -28,9 +28,7 @@ Our aim is to implement the following features in AWX:
  + Default arguments
  + Assignable rules
  + Nested rules
- + Extended regular expressions support
- + Perl regular expressions support
- + Byte compiled `.awx` files
+ + Byte compilation
  + Modules
 
 Features so far implemented:
@@ -43,8 +41,14 @@ We aim to keep dependencies to a minimum.
 But the following packages are required:
  + A C++ compiler (clang, g++ or msvc++)
    + Must support C++23
+ + Cmake (You can build with just Make)
+ + Make
 
 ### Build
+```
+mkdir build
+cd build && cmake .. && make -j
+```
 
 ### Install
 
@@ -57,6 +61,7 @@ The following dependencies are required:
  + A C++ compiler (clang, g++ or msvc++)
    + Must support C++23
  + `clang-format`
+ + `clang-tidy`
  + `doxygen`
 
 ### Style guide
@@ -70,6 +75,5 @@ I got them from his personal website [Some Useful Gawk Scripts](https://sites.cs
 TODO
 ----
 + Better diagnostics for the parsing errors
-+ Tokens should know their position in a file (store it in some kind of struct)
 + Exceptions should have a better class structure for accurately displaying error information
 + Node classes may not be initialized with nullptrs

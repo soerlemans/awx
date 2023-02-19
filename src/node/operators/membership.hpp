@@ -16,7 +16,7 @@ class Membership : public UnaryOperator {
   auto name() const -> std::string_view;
   auto accept(NodeVisitor* t_visitor) -> void override;
 
-  virtual ~Membership() = default;
+  ~Membership() override = default;
 };
 } // namespace nodes::operators
 

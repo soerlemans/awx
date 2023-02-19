@@ -1,15 +1,14 @@
 #ifndef TOKEN_STREAM_H
 #define TOKEN_STREAM_H
 
+#include <stack>
 #include <vector>
 
 #include "token.hpp"
 
 
 // Default amount of space to reserve for tokens in a TokenStream
-enum {
-  TOKENSTREAM_RESERVE = 256
-};
+enum { TOKENSTREAM_RESERVE = 256 };
 
 // Manages a TokenStream in a statefull way so it is aware
 // If the use for a stream that knows its position is need for more objects
@@ -17,20 +16,23 @@ enum {
 class TokenStream : public std::vector<Token> {
   private:
   std::size_t m_index{0};
+  std::stack<std::size_t> m_state;
 
   public:
-  // Constructors:
-  // TODO: Change 256 to not be a magic constant
   explicit TokenStream(std::size_t t_reserve = TOKENSTREAM_RESERVE);
 
-  auto next(std::size_t inc = 1) -> Token&;
-  auto prev(std::size_t dec = 1) -> Token&;
+  // Go to next or previous token
+  auto next() -> Token&;
+  auto prev() -> Token&;
+
+  // Save and restore the current index (for lookahead purposes)
+  auto save() -> void;
+  auto restore() -> void;
 
   auto token() -> Token&;
 
   auto eos() const -> bool;
 
-  // Destructors:
   virtual ~TokenStream() = default;
 };
 

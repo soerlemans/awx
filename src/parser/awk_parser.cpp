@@ -763,17 +763,32 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
       TRACE_PRINT(LogLevel::INFO, "Found FOR");
 
       expect(TokenType::PAREN_OPEN, "(");
-      if(auto ptr{simple_statement_opt()}; ptr) {
-        expect(TokenType::SEMICOLON, ";");
-        expr_opt();
-        expect(TokenType::SEMICOLON, ";");
-        simple_statement_opt();
-        expect(TokenType::PAREN_CLOSE, ")");
-      } else if(const auto var{next()}; var.type() == TokenType::IDENTIFIER) {
-        expect(TokenType::IN, "in");
-        const auto array{expect(TokenType::IDENTIFIER, "identifier")};
-        expect(TokenType::PAREN_CLOSE, ")");
+
+      // TODO: Find a better way of doing this
+      bool membership{false};
+      if(next_if(TokenType::IDENTIFIER)) {
+        if(next_if(TokenType::IN)) {
+          TRACE_PRINT(LogLevel::INFO, "Found FOR IN");
+
+          membership = true;
+          const auto array{expect(TokenType::IDENTIFIER, "identifier")};
+        } else {
+          prev();
+        }
       }
+
+      if(!membership) {
+        if(auto ptr{simple_statement_opt()}; ptr) {
+          TRACE_PRINT(LogLevel::INFO, "Found FOR(;;)");
+
+          expect(TokenType::SEMICOLON, ";");
+          expr_opt();
+          expect(TokenType::SEMICOLON, ";");
+          simple_statement_opt();
+        }
+      }
+
+      expect(TokenType::PAREN_CLOSE, ")");
 
       NodeListPtr body;
       if(auto ptr{t_body()}; ptr) {
@@ -1119,6 +1134,8 @@ auto AwkParser::simple_print_statement() -> NodePtr
     NodeListPtr node;
 
     // FIXME: This breaks ternary expressions in print statements
+    // Multiple_expr_lists need more than atleast on arg, ternary expressions
+    // Can be distinguished by having only one conditional argument or similar
     if(next_if(TokenType::PAREN_OPEN)) {
       node = multiple_expr_list();
       expect(TokenType::PAREN_CLOSE, ")");

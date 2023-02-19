@@ -3,7 +3,7 @@
 
 using namespace nodes::functions;
 
-FunctionCall::FunctionCall(const std::string& t_name, NodeListPtr&& t_args)
+FunctionCall::FunctionCall(std::string&& t_name, NodeListPtr&& t_args)
   : Node{NodeType::FUNCTION},
     m_name{std::move(t_name)},
     m_args{std::forward<NodeListPtr>(t_args)}

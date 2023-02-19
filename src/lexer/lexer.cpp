@@ -401,10 +401,10 @@ auto Lexer::tokenize() -> TokenStream
     for(; !eol(); m_filebuffer.forward()) {
       const char character{m_filebuffer.character()};
 
-	  //TODO: This should have its own function
+      // TODO: This should have its own function
       const auto lambda{[&]() -> bool {
         return character == slash && !m_tokenstream.empty()
-                    && !tokentype::is_int(m_tokenstream.back().type());
+               && !tokentype::is_int(m_tokenstream.back().type());
       }};
 
       if(std::isspace(character)) {
