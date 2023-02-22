@@ -624,18 +624,20 @@ auto AwkParser::literal() -> NodePtr
     case TokenType::HEX:
       [[fallthrough]];
     case TokenType::INTEGER:
-      TRACE_PRINT(LogLevel::INFO, "Found INTEGER literal");
+      TRACE_PRINT(LogLevel::INFO, "Found INTEGER literal: ");
       node = std::make_unique<Integer>(token.value<int>());
       break;
 
     case TokenType::STRING:
-      TRACE_PRINT(LogLevel::INFO, "Found STRING literal");
+      TRACE_PRINT(LogLevel::INFO,
+                  "Found STRING literal: ", token.value<std::string>());
       node = std::make_unique<String>(token.value<std::string>());
       break;
 
     // TODO: match
     case TokenType::REGEX:
-      TRACE_PRINT(LogLevel::INFO, "Found REGEX literal");
+      TRACE_PRINT(LogLevel::INFO,
+                  "Found REGEX literal: ", token.value<std::string>());
       // node = std::make_unique<String>(token.value<std::string>());
       break;
 
@@ -1155,8 +1157,8 @@ auto AwkParser::simple_print_statement() -> NodePtr
     // FIXME: This breaks ternary expressions in print statements
     // Multiple_expr_lists need more than atleast on arg, ternary expressions
     // Can be distinguished by having only one conditional argument or similar
-	// Lookahead is necessary?
-	// We have a similar issue with output redirection.
+    // Lookahead is necessary?
+    // We have a similar issue with output redirection.
     if(next_if(TokenType::PAREN_OPEN)) {
       node = multiple_expr_list();
       expect(TokenType::PAREN_CLOSE, ")");
