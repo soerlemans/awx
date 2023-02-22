@@ -2,7 +2,7 @@
 DEBUG := -DCMAKE_BUILD_TYPE=DEBUG
 
 # Rules:
-.PHONY: all build debug format lint no-cmake
+.PHONY: all build debug no-cmake install clean format lint docs
 
 all: build
 build:
@@ -13,16 +13,22 @@ debug:
 	cmake -S . -B $@/ $(DEBUG)
 	cmake --build $@/
 
+# Build option if your system does not have CMake
+no-cmake:
+	$(MAKE) -f make/backup.mk
+
+install: build
+	@echo "TODO: Implement"
+
+clean:
+	rm -rf build/*
+	rm -rf debug/*
+
 format:
 	find src/ -iname "*.[ch]pp" -exec clang-format {} \;
 
 lint:
 	find src/ -iname "*.[ch]pp" -exec clang-tidy {} -- -DDEVELOPMENT \;
 
-# Build option if your system does not have CMake
-no-cmake:
-	$(MAKE) -f make/backup.mk
-
-clean:
-	rm -rf build/*
-	rm -rf debug/*
+docs:
+	doxygen docs/Doxyfile
