@@ -94,7 +94,7 @@ auto AwkParser::simple_get() -> NodePtr
 
   if(next_if(TokenType::GETLINE)) {
     TRACE_PRINT(LogLevel::INFO, "Found GETLINE");
-    // TODO: Think about how to implement < redirection
+
     node = std::make_unique<Getline>(lvalue());
   }
 
@@ -133,9 +133,9 @@ auto AwkParser::non_unary_input_function() -> NodePtr
     } else {
       node = std::move(lhs);
     }
+    // TODO: Fix recursion
   }
-  // TODO: Fix recursion
-  //  else if(auto lhs{non_unary_expr()}; lhs) {
+  // else if(auto lhs{non_unary_expr()}; lhs) {
   //   expect(TokenType::PIPE, "|");
 
   //   node = std::make_unique<Redirection>(RedirectionOp::PIPE, std::move(lhs),
@@ -562,9 +562,9 @@ auto AwkParser::universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
 {
   NodePtr node;
 
-  if(auto ptr{universal_print_expr(node, t_rhs)}; ptr) {
+  if(auto ptr{universal_print_expr(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{comparison(node, t_rhs)}; ptr) {
+  } else if(auto ptr{comparison(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
   }
 

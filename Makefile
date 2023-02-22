@@ -2,7 +2,7 @@
 DEBUG := -DCMAKE_BUILD_TYPE=DEBUG
 
 # Rules:
-.PHONY: all build debug no-cmake install clean format lint docs
+.PHONY: all build debug no-cmake install clean format lint docs docs-pdf
 
 all: build
 build:
@@ -32,3 +32,9 @@ lint:
 
 docs:
 	doxygen docs/Doxyfile
+
+# Compile documentation as LaTex
+docs-pdf: docs
+	cd doxygen/latex/ && $(MAKE)
+
+
