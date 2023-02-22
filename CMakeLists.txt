@@ -8,21 +8,36 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_COMPILER "clang")
 set(CMAKE_CXX_COMPILER "clang++")
 
-# C++ debug flags
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb")
-
-# Clang-tidy setup
-# set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-header-filter=src/.*;-extra-arg=c++2b")
-set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-header-filter=.*")
-
 # Define the project
 project(awx CXX)
-
-# Remove comment for debug information
-add_compile_definitions(DEVELOPMENT)
 
 # Define the executable that will be made
 add_executable(${PROJECT_NAME})
 
-# Run CMake in subdirectories
+# Define DEBUG macro if build type is Debug
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+  $<$<CONFIG:Debug>:DEVELOPMENT>
+)
+
+# Set compile flags
+# TODO: Compile flags not yet complete
+target_compile_options(${PROJECT_NAME} PRIVATE
+  -Wall
+  -Wextra
+  -pedantic
+  -ggdb
+  -g3
+  -lpthread
+  $<$<CONFIG:RELEASE>:-O2>
+)
+
+# Clang-tidy setup
+set(CMAKE_CXX_CLANG_TIDY
+  clang-tidy;
+  -checks=*;
+  -header-filter=src/.*;
+  -extra-arg=c++2b;
+)
+
+# Run CMake in src/ subdirectory
 add_subdirectory(src)
