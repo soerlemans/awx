@@ -3,7 +3,10 @@
 #include "../node/list.hpp"
 #include "../node/node.hpp"
 
+#include "../node/control/for.hpp"
+#include "../node/control/for_in.hpp"
 #include "../node/control/if.hpp"
+#include "../node/control/return.hpp"
 #include "../node/control/while.hpp"
 
 #include "../node/io/getline.hpp"
@@ -47,6 +50,34 @@ auto PrintVisitor::visit(nodes::control::If* t_if) -> void
     printer.print("| THEN");
     then->accept(this);
   }
+}
+
+auto PrintVisitor::visit(nodes::control::While* t_while) -> void
+{
+  Printer printer{m_counter};
+
+  printer.print("WHILE");
+}
+
+auto PrintVisitor::visit(nodes::control::For* t_for) -> void
+{
+  Printer printer{m_counter};
+
+  printer.print("FOR");
+}
+
+auto PrintVisitor::visit(nodes::control::ForIn* t_for) -> void
+{
+  Printer printer{m_counter};
+
+  printer.print("FOR IN");
+}
+
+auto PrintVisitor::visit(nodes::control::Return* t_return) -> void
+{
+  Printer printer{m_counter};
+
+  printer.print("RETURN");
 }
 
 auto PrintVisitor::visit(nodes::functions::Function* t_fn) -> void

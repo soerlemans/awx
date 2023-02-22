@@ -572,6 +572,7 @@ auto AwkParser::universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
 }
 
 // TODO: Have this also handle multidimensional 'in' statements?
+// TODO: Create a function that extracts expressions from in between '(', ')'
 auto AwkParser::grouping() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "GROUPING");
@@ -994,7 +995,6 @@ auto AwkParser::non_unary_expr() -> NodePtr
   return node;
 }
 
-// TODO: Still implement IN operator
 auto AwkParser::unary_expr() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "UNARY EXPR");
@@ -1143,7 +1143,6 @@ auto AwkParser::output_redirection(NodePtr& t_lhs) -> NodePtr
   return node;
 }
 
-// TODO: Refactor!
 auto AwkParser::simple_print_statement() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "SIMPLE PRINT STATEMENT");
@@ -1156,6 +1155,8 @@ auto AwkParser::simple_print_statement() -> NodePtr
     // FIXME: This breaks ternary expressions in print statements
     // Multiple_expr_lists need more than atleast on arg, ternary expressions
     // Can be distinguished by having only one conditional argument or similar
+	// Lookahead is necessary?
+	// We have a similar issue with output redirection.
     if(next_if(TokenType::PAREN_OPEN)) {
       node = multiple_expr_list();
       expect(TokenType::PAREN_CLOSE, ")");

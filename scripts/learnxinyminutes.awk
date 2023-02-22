@@ -222,7 +222,8 @@ function io_functions(    localvar) {
 
     outfile = "/tmp/foobar.txt";
 
-    print "foobar" > outfile;
+	# FIXME: Following line cannot be parsed yet, fix redirection
+    #print "foobar" > outfile;
 
     # Now the string outfile is a file handle. You can close it:
     close(outfile);
@@ -235,7 +236,9 @@ function io_functions(    localvar) {
 
     # Reads a line from a pipe (again, use a string so you close it properly)
     cmd = "echo foobar";
-    cmd | getline localvar; # localvar => "foobar"
+
+	# FIXME: Following line cannot be parsed yet, fix redirection
+    #cmd | getline localvar; # localvar => "foobar"
     close(cmd);
 
     # Reads a line from a file and stores in localvar
