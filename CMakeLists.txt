@@ -27,7 +27,6 @@ target_compile_options(${PROJECT_NAME} PRIVATE
   -pedantic
   -ggdb
   -g3
-  -lpthread
   $<$<CONFIG:RELEASE>:-O2>
 )
 

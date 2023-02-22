@@ -1,35 +1,28 @@
-# Exported variables:
-# Important build information
-export SRC := src
-export BUILD := build
-
-export EXECUTABLE := awx
-
-# Compiler settings:
-export WARNINGS := -Wall -Wextra -pedantic
-export CXXSTD := -std=c++2b
-# TODO: Add if eq statement for development
-#export CXXFLAGS := $(CXXSTD) -O2 $(WARNINGS)
-export CXXFLAGS := $(CXXSTD) -g3 -ggdb -DDEVELOPMENT $(WARNINGS)
-
-export CXX := clang++
-# export CXX := g++
-
-# TODO: Find a way around the shell escape
-SOURCES := $(shell find $(SRC)/ -name '[^.]*.cpp')
-OBJECTS := $(SOURCES:$(SRC)/%.cpp=$(BUILD)/%.o)
+# Variables:
+DEBUG := -DCMAKE_BUILD_TYPE=DEBUG
 
 # Rules:
-all: $(EXECUTABLE)
+.PHONY: all build debug format lint no-cmake
 
-$(EXECUTABLE): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+all: build
+build:
+	cmake -S . -B $@/
+	cmake --build $@/
 
-$(BUILD)/%.o: $(SRC)/%.cpp
-	mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+debug:
+	cmake -S . -B $@/ $(DEBUG)
+	cmake --build $@/
 
-.PHONY: all clean
+format:
+	find src/ -iname "*.[ch]pp" -exec clang-format {} \;
+
+lint:
+	find src/ -iname "*.[ch]pp" -exec clang-tidy {} -- -DDEVELOPMENT \;
+
+# Build option if your system does not have CMake
+no-cmake:
+	$(MAKE) -f make/backup.mk
+
 clean:
-	$(RM) -r $(BUILD)/*
-	$(RM) $(EXECUTABLE)
+	rm -rf build/*
+	rm -rf debug/*
