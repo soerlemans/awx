@@ -71,6 +71,7 @@ class PrintVisitor : public NodeVisitor {
   auto visit(nodes::rvalue::Float* t_float) -> void override;
   auto visit(nodes::rvalue::Integer* t_int) -> void override;
   auto visit(nodes::rvalue::String* t_str) -> void override;
+  auto visit(nodes::rvalue::Regex* t_regex) -> void override;
 
   auto visit(nodes::operators::Arithmetic* t_arithmetic) -> void override;
   auto visit(nodes::operators::Assignment* t_assignment) -> void override;
@@ -92,6 +93,7 @@ class PrintVisitor : public NodeVisitor {
   auto visit(nodes::operators::UnaryPrefix* t_unary_prefix) -> void override;
 
   auto visit(nodes::List* t_list) -> void override;
+  auto visit(nodes::Nil* t_nil) -> void override;
 
   ~PrintVisitor() override = default;
 };

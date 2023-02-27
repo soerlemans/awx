@@ -2,6 +2,7 @@
 
 #include "../node/list.hpp"
 #include "../node/node.hpp"
+#include "../node/nil.hpp"
 
 #include "../node/control/for.hpp"
 #include "../node/control/for_in.hpp"
@@ -15,6 +16,7 @@
 #include "../node/io/redirection.hpp"
 
 #include "../node/rvalue/literal.hpp"
+#include "../node/rvalue/regex.hpp"
 #include "../node/rvalue/rvalue.hpp"
 
 #include "../node/lvalue/array.hpp"
@@ -229,6 +231,13 @@ auto PrintVisitor::visit(nodes::rvalue::String* t_str) -> void
   printer.print("STRING: ", t_str->get());
 }
 
+auto PrintVisitor::visit(nodes::rvalue::Regex* t_regex) -> void
+{
+  Printer printer{m_counter};
+
+  printer.print("REGEX: ", t_regex->get());
+}
+
 auto PrintVisitor::visit(nodes::operators::Arithmetic* t_arithmetic) -> void
 {
   Printer printer{m_counter};
@@ -366,4 +375,11 @@ auto PrintVisitor::visit(nodes::List* t_list) -> void
 
   for(NodePtr& node : *t_list)
     node->accept(this);
+}
+
+auto PrintVisitor::visit(nodes::Nil* t_nil) -> void
+{
+  Printer printer{m_counter};
+
+  printer.print("NIL");
 }

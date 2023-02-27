@@ -14,6 +14,9 @@ class List;
 // Most Node types inherit from Expression
 class Expression;
 
+// Empty Node that does nothing (intended for empty statements)
+class Nil;
+
 } // namespace nodes
 
 // Aliases:

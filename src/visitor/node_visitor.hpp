@@ -48,6 +48,7 @@ class NodeVisitor {
   virtual auto visit(nodes::rvalue::Float* t_float) -> void = 0;
   virtual auto visit(nodes::rvalue::Integer* t_int) -> void = 0;
   virtual auto visit(nodes::rvalue::String* t_str) -> void = 0;
+  virtual auto visit(nodes::rvalue::Regex* t_regex) -> void = 0;
 
   virtual auto visit(nodes::operators::Arithmetic* t_arithmetic) -> void = 0;
   virtual auto visit(nodes::operators::Assignment* t_assignment) -> void = 0;
@@ -69,6 +70,8 @@ class NodeVisitor {
   virtual auto visit(nodes::operators::UnaryPrefix* t_unary_prefix) -> void = 0;
 
   virtual auto visit(nodes::List* t_list) -> void = 0;
+  virtual auto visit(nodes::Nil* t_nil) -> void = 0;
+
   virtual auto visit(nodes::Node* t_node) -> void;
 
   virtual ~NodeVisitor() = default;

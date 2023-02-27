@@ -13,6 +13,7 @@
 
 // TODO: Create an include for including alls nodes
 #include "../node/list.hpp"
+#include "../node/nil.hpp"
 #include "../node/node.hpp"
 
 #include "../node/control/for.hpp"
@@ -223,8 +224,6 @@ auto AwkParser::function_call() -> NodePtr
   NodePtr node;
 
   switch(const auto token{next()}; token.type()) {
-      // TODO: Maybe set a variable in function_call to indicate if it is an
-      // Builtin function or not?
     case TokenType::BUILTIN_FUNCTION:
       [[fallthrough]];
     case TokenType::FUNCTION_IDENTIFIER: {
@@ -803,6 +802,7 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
       }
 
       expect(TokenType::PAREN_CLOSE, ")");
+      newline_opt();
 
       NodeListPtr body;
       if(auto ptr{t_body()}; ptr) {
@@ -1331,20 +1331,6 @@ auto AwkParser::unterminated_statement() -> NodePtr
   return node;
 }
 
-// terminated_statement : action newline_opt
-//                  | If '(' expr ')' newline_opt terminated_statement
-//                  | If '(' expr ')' newline_opt terminated_statement
-//                        Else newline_opt terminated_statement
-//                  | While '(' expr ')' newline_opt terminated_statement
-//                  | For '(' simple_statement_opt ';'
-//                       expr_opt ';' simple_statement_opt ')' newline_opt
-//                       terminated_statement
-//                  | For '(' NAME In NAME ')' newline_opt
-//                       terminated_statement
-//                  | ';' newline_opt
-//                  | terminatable_statement NEWLINE newline_opt
-//                  | terminatable_statement ';'     newline_opt
-//                  ;
 // TODO: Refactor
 auto AwkParser::terminated_statement() -> NodePtr
 {
@@ -1380,11 +1366,13 @@ auto AwkParser::terminated_statement() -> NodePtr
     node = std::move(ptr);
   } else if(next_if(TokenType::SEMICOLON)) {
     newline_opt();
-    // TODO: What do we return in this case?
-    // Empty statement?
+
+    node = std::make_unique<Nil>();
   } else if(auto ptr{terminatable_statement()}; ptr) {
     if(tokentype::is_terminator(get_token().type())) {
       next();
+    } else {
+      throw std::runtime_error{"Expected a terminator!!!"};
     }
     newline_opt();
 
@@ -1474,6 +1462,8 @@ auto AwkParser::action() -> NodeListPtr
       node = std::move(ptr);
     } else if(auto ptr{unterminated_statement_list()}; ptr) {
       node = std::move(ptr);
+    } else {
+      node = std::make_unique<List>();
     }
 
     expect(TokenType::ACCOLADE_CLOSE, "}");
@@ -1640,9 +1630,6 @@ auto AwkParser::item_list() -> NodeListPtr
   return nodes;
 }
 
-// program          : item_list
-//                  | item_list item
-//                  ;
 auto AwkParser::program() -> NodeListPtr
 {
   TRACE(LogLevel::DEBUG, "PROGRAM");
@@ -1664,7 +1651,6 @@ auto AwkParser::parse() -> Ast
   Ast ast;
   NodePtr node{program()};
 
-  // TODO: This is just for debugging the parser
   if(node) {
     LOG_PRINTLN();
     LOG_PRINTLN("--- Print AST ---");
