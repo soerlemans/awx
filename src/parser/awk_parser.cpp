@@ -16,9 +16,13 @@
 #include "../node/nil.hpp"
 #include "../node/node.hpp"
 
+#include "../node/control/break.hpp"
+#include "../node/control/continue.hpp"
+#include "../node/control/exit.hpp"
 #include "../node/control/for.hpp"
 #include "../node/control/for_in.hpp"
 #include "../node/control/if.hpp"
+#include "../node/control/next.hpp"
 #include "../node/control/return.hpp"
 #include "../node/control/while.hpp"
 
@@ -1247,16 +1251,19 @@ auto AwkParser::terminatable_statement() -> NodePtr
   const auto keyword{next()};
   switch(keyword.type()) {
     case TokenType::BREAK:
+      node = std::make_unique<Break>();
       break;
 
     case TokenType::CONTINUE:
+      node = std::make_unique<Continue>();
       break;
 
     case TokenType::NEXT:
+      node = std::make_unique<Next>();
       break;
 
     case TokenType::EXIT:
-      expr_opt();
+      node = std::make_unique<Exit>(expr_opt());
       break;
 
     case TokenType::RETURN:
@@ -1427,27 +1434,18 @@ auto AwkParser::terminated_statement_list() -> NodeListPtr
   return nodes;
 }
 
-// terminator       : terminator NEWLINE
-//                  |            ';'
-//                  |            NEWLINE
-//                  ;
 auto AwkParser::terminator() -> void
 {
   TRACE(LogLevel::DEBUG, "TERMINATOR");
 
   const auto token{next()};
-  // TODO: Improve
   if(!tokentype::is_terminator(token.type())) {
-    throw std::runtime_error{"Expected a terminator!!!"};
+    throw std::runtime_error{"Expected either a NEWLINE or SEMICOLON"};
   }
 
   newline_opt();
 }
 
-// action           : '{' newline_opt                             '}'
-//                  | '{' newline_opt terminated_statement_list   '}'
-//                  | '{' newline_opt unterminated_statement_list '}'
-//                  ;
 auto AwkParser::action() -> NodeListPtr
 {
   TRACE(LogLevel::DEBUG, "ACTION");
@@ -1568,15 +1566,6 @@ auto AwkParser::param_list_opt() -> NodeListPtr
   return param_list();
 }
 
-// item also covers what is the valid toplevel syntax:
-// item             : action
-//                  | pattern action
-//                  | normal_pattern
-//                  | Function NAME      '(' param_list_opt ')'
-//                        newline_opt action
-//                  | Function FUNC_NAME '(' param_list_opt ')'
-//                        newline_opt action
-//                  ;
 auto AwkParser::item() -> NodePtr
 {
   TRACE(LogLevel::DEBUG, "ITEM");

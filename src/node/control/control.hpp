@@ -9,8 +9,12 @@ class While;
 class For;
 class ForIn;
 
-
+class Break;
+class Continue;
+class Next;
+class Exit;
 class Return;
+class DoWhile;
 }; // namespace nodes::control
 
 #endif // CONTROL_H
