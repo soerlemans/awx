@@ -1247,7 +1247,6 @@ auto AwkParser::terminatable_statement() -> NodePtr
   TRACE(LogLevel::DEBUG, "TERMINATABLE STATEMENT");
   NodePtr node;
 
-  bool is_keyword{true};
   const auto keyword{next()};
   switch(keyword.type()) {
     case TokenType::BREAK:
@@ -1277,15 +1276,18 @@ auto AwkParser::terminatable_statement() -> NodePtr
       expect(TokenType::PAREN_OPEN, "(");
       expr();
       expect(TokenType::PAREN_CLOSE, ")");
+
+	  // TODO: Implement Do while
+	  LOG_PRINTLN("WARNING: Do While loops are not yet implemented!");
+	  node = std::make_unique<Nil>();
       break;
 
     default:
-      is_keyword = false;
       prev();
       break;
   }
 
-  if(!is_keyword) {
+  if(!node) {
     node = simple_statement();
   }
 
