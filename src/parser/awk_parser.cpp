@@ -27,6 +27,7 @@
 #include "../node/io/redirection.hpp"
 
 #include "../node/rvalue/literal.hpp"
+#include "../node/rvalue/regex.hpp"
 #include "../node/rvalue/rvalue.hpp"
 
 #include "../node/lvalue/array.hpp"
@@ -638,7 +639,7 @@ auto AwkParser::literal() -> NodePtr
     case TokenType::REGEX:
       TRACE_PRINT(LogLevel::INFO,
                   "Found REGEX literal: ", token.value<std::string>());
-      // node = std::make_unique<String>(token.value<std::string>());
+      node = std::make_unique<Regex>(token.value<std::string>());
       break;
 
     default:

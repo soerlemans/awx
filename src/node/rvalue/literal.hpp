@@ -18,7 +18,7 @@ class Literal : public Node {
   T m_value;
 
   public:
-  Literal(const T t_value): Node{NodeType::LITERAL}, m_value{t_value}
+  Literal(const T t_value): m_value{t_value}
   {}
 
   auto get() -> T

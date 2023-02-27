@@ -15,7 +15,7 @@ namespace nodes {
 // Or function call separated nodes
 class List : public Node, public std::list<NodePtr> {
   public:
-  List();
+  List() = default;
 
   // Must be defaulted, in order to create this function
   List(List&& t_list) = default;

@@ -1,7 +1,7 @@
 
 
 # Add source files
-target_sources(${PROJECT_NAME} PRIVATE node.cpp list.cpp expression.cpp)
+target_sources(${PROJECT_NAME} PRIVATE list.cpp expression.cpp)
 
 # Add subdirectories
 add_subdirectory(control)
@@ -10,7 +10,7 @@ add_subdirectory(functions)
 add_subdirectory(io)
 
 add_subdirectory(lvalue)
-#add_subdirectory(rvalue)
+add_subdirectory(rvalue)
 
 add_subdirectory(operators)
 add_subdirectory(recipes)
