@@ -17,7 +17,8 @@ struct FilePosition {
                std::size_t t_columnno);
 
   // Operators:
-  friend auto operator <<(std::ostream& t_os, const FilePosition& t_fp) -> std::ostream&;
+  friend auto operator<<(std::ostream& t_os, const FilePosition& t_fp)
+    -> std::ostream&;
 
   // Destructor:
   virtual ~FilePosition() = default;

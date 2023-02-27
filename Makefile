@@ -32,7 +32,7 @@ clean:
 
 # Misc. rules:
 format:
-	find src/ -iname "*.[ch]pp" -exec clang-format {} \;
+	find src/ -iname "*.[ch]pp" -exec clang-format -i {} \;
 
 lint:
 	find src/ -iname "*.[ch]pp" -exec clang-tidy {} -- -DDEVELOPMENT \;

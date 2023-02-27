@@ -1,8 +1,8 @@
 #ifndef MEMBERSHIP_H
 #define MEMBERSHIP_H
 
-#include "unary_operator.hpp"
 #include "operators.hpp"
+#include "unary_operator.hpp"
 
 
 namespace nodes::operators {

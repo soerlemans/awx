@@ -6,7 +6,7 @@
 using namespace nodes::io;
 
 Printf::Printf(NodeListPtr&& t_params)
-  :  m_params{std::forward<NodeListPtr>(t_params)}
+  : m_params{std::forward<NodeListPtr>(t_params)}
 {}
 
 auto Printf::params() -> NodeListPtr&

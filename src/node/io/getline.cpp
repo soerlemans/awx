@@ -5,8 +5,7 @@
 
 using namespace nodes::io;
 
-Getline::Getline(NodePtr&& t_var)
-  :  m_var{std::forward<NodePtr>(t_var)}
+Getline::Getline(NodePtr&& t_var): m_var{std::forward<NodePtr>(t_var)}
 {}
 
 auto Getline::var() -> NodePtr&

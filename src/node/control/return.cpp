@@ -3,8 +3,7 @@
 
 using namespace nodes::control;
 
-Return::Return(NodePtr&& t_expr)
-  :  m_expr{std::forward<NodePtr>(t_expr)}
+Return::Return(NodePtr&& t_expr): m_expr{std::forward<NodePtr>(t_expr)}
 {}
 
 auto Return::expr() -> NodePtr&

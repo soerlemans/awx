@@ -4,9 +4,8 @@
 using namespace nodes::functions;
 
 BuiltinFunction::BuiltinFunction(std::string t_name, NodeListPtr&& t_params,
-                   NodeListPtr&& t_body)
-  : 
-    m_name{std::move(t_name)},
+                                 NodeListPtr&& t_body)
+  : m_name{std::move(t_name)},
     m_params{std::forward<NodeListPtr>(t_params)},
     m_body{std::forward<NodeListPtr>(t_body)}
 {}
@@ -30,4 +29,3 @@ auto BuiltinFunction::accept(NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
 }
-

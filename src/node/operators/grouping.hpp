@@ -15,6 +15,6 @@ class Grouping : public UnaryOperator {
 
   ~Grouping() override = default;
 };
-} // namespace nodess::operators
+} // namespace nodes::operators
 
 #endif // GROUPING_H

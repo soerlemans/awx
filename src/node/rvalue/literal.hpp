@@ -28,7 +28,7 @@ class Literal : public Node {
 
   auto accept(NodeVisitor* t_visitor) -> void override
   {
-	t_visitor->visit(this);
+    t_visitor->visit(this);
   }
 
   ~Literal() override = default;

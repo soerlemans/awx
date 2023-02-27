@@ -14,7 +14,8 @@ class BuiltinFunction : public Node {
   NodeListPtr m_body;
 
   public:
-  BuiltinFunction(std::string t_name, NodeListPtr&& t_params, NodeListPtr&& t_body);
+  BuiltinFunction(std::string t_name, NodeListPtr&& t_params,
+                  NodeListPtr&& t_body);
 
   auto name() const -> std::string_view;
   auto params() -> NodeListPtr&;

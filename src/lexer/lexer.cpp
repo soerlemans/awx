@@ -122,7 +122,7 @@ auto Lexer::is_hex_literal() -> bool
   if(next_char() == '0' && m_filebuffer.character() == 'x') {
     next_char(); // Discard 'x'
 
-	is_hex = true;
+    is_hex = true;
   } else {
     // If we just have a zero we should go back to not discard the zero
     m_filebuffer.backward();

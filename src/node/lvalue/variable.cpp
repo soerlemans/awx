@@ -3,8 +3,7 @@
 
 using namespace nodes::lvalue;
 
-Variable::Variable(std::string t_name)
-  :  m_name{std::move(t_name)}
+Variable::Variable(std::string t_name): m_name{std::move(t_name)}
 {}
 
 auto Variable::name() const -> std::string_view

@@ -1,8 +1,8 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
 
-#include "../node.hpp"
 #include "../list.hpp"
+#include "../node.hpp"
 
 #include "functions.hpp"
 

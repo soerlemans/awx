@@ -4,8 +4,7 @@
 using namespace nodes::control;
 
 ForIn::ForIn(NodePtr&& t_condition, NodeListPtr&& t_body)
-  : 
-    m_condition{std::forward<NodePtr>(t_condition)},
+  : m_condition{std::forward<NodePtr>(t_condition)},
     m_body{std::forward<NodeListPtr>(t_body)}
 {}
 

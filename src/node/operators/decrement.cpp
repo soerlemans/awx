@@ -8,7 +8,7 @@ Decrement::Decrement(NodePtr&& t_left, bool t_prefix)
     m_prefix{t_prefix}
 {}
 
-auto Decrement::accept([[maybe_unused]]NodeVisitor* t_visitor) -> void
+auto Decrement::accept([[maybe_unused]] NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
 }

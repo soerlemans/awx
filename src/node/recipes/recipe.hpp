@@ -1,8 +1,8 @@
 #ifndef RECIPE_H
 #define RECIPE_H
 
-#include "../node.hpp"
 #include "../list.hpp"
+#include "../node.hpp"
 
 #include "recipes.hpp"
 

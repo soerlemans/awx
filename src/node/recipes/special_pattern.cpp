@@ -3,8 +3,7 @@
 
 using namespace nodes::recipes;
 
-SpecialPattern::SpecialPattern(SpecialPatternOp t_op)
-  :  m_op{t_op}
+SpecialPattern::SpecialPattern(SpecialPatternOp t_op): m_op{t_op}
 {}
 
 auto SpecialPattern::op() const -> SpecialPatternOp

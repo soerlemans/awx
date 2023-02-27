@@ -1,8 +1,8 @@
 #ifndef PRINT_H
 #define PRINT_H
 
-#include "../node.hpp"
 #include "../list.hpp"
+#include "../node.hpp"
 
 #include "io.hpp"
 
