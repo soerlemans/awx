@@ -4,7 +4,7 @@
 using namespace nodes::lvalue;
 
 FieldReference::FieldReference(NodePtr&& t_expr)
-  : Node{NodeType::VARIABLE}, m_expr{std::forward<NodePtr>(t_expr)}
+  :  m_expr{std::forward<NodePtr>(t_expr)}
 {}
 
 auto FieldReference::expr() -> NodePtr&

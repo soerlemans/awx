@@ -4,7 +4,7 @@
 using namespace nodes::recipes;
 
 Recipe::Recipe(NodePtr&& t_pattern, NodePtr&& t_body)
-  : Node{NodeType::RECIPE},
+  : 
     m_pattern{std::forward<NodePtr>(t_pattern)},
     m_body{std::forward<NodePtr>(t_body)}
 {}

@@ -6,7 +6,7 @@
 using namespace nodes::control;
 
 If ::If(NodePtr&& t_condition, NodePtr&& t_then)
-  : Node{NodeType::CONTROL_STATEMENT},
+  : 
     m_condition{std::forward<NodePtr>(t_condition)},
     m_then{std::forward<NodePtr>(t_then)}
 {}

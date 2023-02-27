@@ -4,7 +4,7 @@
 using namespace nodes::recipes;
 
 SpecialPattern::SpecialPattern(SpecialPatternOp t_op)
-  : Node{NodeType::RECIPE}, m_op{t_op}
+  :  m_op{t_op}
 {}
 
 auto SpecialPattern::op() const -> SpecialPatternOp
