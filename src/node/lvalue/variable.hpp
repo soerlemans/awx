@@ -1,5 +1,5 @@
-#ifndef VARIABLE_H
-#define VARIABLE_H
+#ifndef VARIABLE_HPP
+#define VARIABLE_HPP
 
 #include <string_view>
 
@@ -24,4 +24,4 @@ class Variable : public Node {
 };
 } // namespace nodes::lvalue
 
-#endif // VARIABLE_H
+#endif // VARIABLE_HPP

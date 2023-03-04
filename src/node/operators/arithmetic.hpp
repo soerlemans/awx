@@ -1,5 +1,5 @@
-#ifndef ARITHMETIC_H
-#define ARITHMETIC_H
+#ifndef ARITHMETIC_HPP
+#define ARITHMETIC_HPP
 
 #include "binary_operator.hpp"
 #include "operators.hpp"

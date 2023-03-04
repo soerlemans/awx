@@ -1,5 +1,5 @@
-#ifndef SPECIAL_PATTERN_H
-#define SPECIAL_PATTERN_H
+#ifndef SPECIAL_PATTERN_HPP
+#define SPECIAL_PATTERN_HPP
 
 
 #include "../node.hpp"
@@ -24,4 +24,4 @@ class SpecialPattern : public Node {
 };
 } // namespace nodes::recipes
 
-#endif // SPECIAL_PATTERN_H
+#endif // SPECIAL_PATTERN_HPP

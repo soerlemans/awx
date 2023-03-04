@@ -1,5 +1,5 @@
-#ifndef LOGICAL_H
-#define LOGICAL_H
+#ifndef LOGICAL_HPP
+#define LOGICAL_HPP
 
 #include "binary_operator.hpp"
 #include "operators.hpp"
@@ -40,4 +40,4 @@ class Or : public BinaryOperator {
 };
 } // namespace nodes::operators
 
-#endif // LOGICAL_H
+#endif // LOGICAL_HPP

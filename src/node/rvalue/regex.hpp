@@ -1,5 +1,5 @@
-#ifndef REGEX_H
-#define REGEX_H
+#ifndef REGEX_HPP
+#define REGEX_HPP
 
 #include "literal.hpp"
 
@@ -15,4 +15,4 @@ class Regex : public Literal<std::string> {
 };
 } // namespace nodes::rvalue
 
-#endif // REGEX_H
+#endif // REGEX_HPP

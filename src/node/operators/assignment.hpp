@@ -1,5 +1,5 @@
-#ifndef ASSIGNMENT_H
-#define ASSIGNMENT_H
+#ifndef ASSIGNMENT_HPP
+#define ASSIGNMENT_HPP
 
 #include "binary_operator.hpp"
 #include "operators.hpp"
@@ -32,4 +32,4 @@ class Assignment : public BinaryOperator {
 };
 } // namespace nodes::operators
 
-#endif // ASSIGNMENT_H
+#endif // ASSIGNMENT_HPP

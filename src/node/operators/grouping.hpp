@@ -1,5 +1,5 @@
-#ifndef GROUPING_H
-#define GROUPING_H
+#ifndef GROUPING_HPP
+#define GROUPING_HPP
 
 #include "operators.hpp"
 #include "unary_operator.hpp"
@@ -17,4 +17,4 @@ class Grouping : public UnaryOperator {
 };
 } // namespace nodes::operators
 
-#endif // GROUPING_H
+#endif // GROUPING_HPP

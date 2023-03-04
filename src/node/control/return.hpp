@@ -1,5 +1,5 @@
-#ifndef RETURN_H
-#define RETURN_H
+#ifndef RETURN_HPP
+#define RETURN_HPP
 
 #include "../node.hpp"
 
@@ -22,4 +22,4 @@ class Return : public Node {
 };
 } // namespace nodes::control
 
-#endif // RETURN_H
+#endif // RETURN_HPP

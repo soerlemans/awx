@@ -1,5 +1,5 @@
-#ifndef WHILE_H
-#define WHILE_H
+#ifndef WHILE_HPP
+#define WHILE_HPP
 
 #include "../list.hpp"
 
@@ -21,4 +21,4 @@ class While : public Node {
 };
 } // namespace nodes::control
 
-#endif // WHILE_H
+#endif // WHILE_HPP

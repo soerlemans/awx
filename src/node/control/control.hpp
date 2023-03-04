@@ -1,5 +1,5 @@
-#ifndef CONTROL_H
-#define CONTROL_H
+#ifndef CONTROL_HPP
+#define CONTROL_HPP
 
 
 namespace nodes::control {
@@ -17,4 +17,4 @@ class Return;
 class DoWhile;
 }; // namespace nodes::control
 
-#endif // CONTROL_H
+#endif // CONTROL_HPP

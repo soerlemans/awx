@@ -1,5 +1,5 @@
-#ifndef ARRAY_H
-#define ARRAY_H
+#ifndef ARRAY_HPP
+#define ARRAY_HPP
 
 #include "lvalue.hpp"
 #include "variable.hpp"
@@ -21,4 +21,4 @@ class Array : public Variable {
 };
 } // namespace nodes::lvalue
 
-#endif // ARRAY_H
+#endif // ARRAY_HPP

@@ -1,5 +1,5 @@
-#ifndef FILE_POSITION_H
-#define FILE_POSITION_H
+#ifndef FILE_POSITION_HPP
+#define FILE_POSITION_HPP
 
 #include <string>
 
@@ -24,4 +24,4 @@ struct FilePosition {
   virtual ~FilePosition() = default;
 };
 
-#endif // FILE_POSITION_H
+#endif // FILE_POSITION_HPP

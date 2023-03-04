@@ -1,5 +1,5 @@
-#ifndef LIST_H
-#define LIST_H
+#ifndef LIST_HPP
+#define LIST_HPP
 
 #include <list>
 #include <memory>
@@ -26,4 +26,4 @@ class List : public Node, public std::list<NodePtr> {
 };
 } // namespace nodes
 
-#endif // LIST_H
+#endif // LIST_HPP

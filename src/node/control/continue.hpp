@@ -1,5 +1,5 @@
-#ifndef CONTINUE_H
-#define CONTINUE_H
+#ifndef CONTINUE_HPP
+#define CONTINUE_HPP
 
 #include "../node.hpp"
 
@@ -16,4 +16,4 @@ class Continue : public Node {
 
 } // namespace nodes::control
 
-#endif // CONTINUE_H
+#endif // CONTINUE_HPP

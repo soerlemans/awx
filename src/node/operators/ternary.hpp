@@ -1,5 +1,5 @@
-#ifndef TERNARY_H
-#define TERNARY_H
+#ifndef TERNARY_HPP
+#define TERNARY_HPP
 
 #include "binary_operator.hpp"
 #include "operators.hpp"
@@ -21,4 +21,4 @@ class Ternary : public BinaryOperator {
 };
 } // namespace nodes::operators
 
-#endif // TERNARY_H
+#endif // TERNARY_HPP

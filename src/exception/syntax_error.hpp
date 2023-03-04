@@ -1,5 +1,5 @@
-#ifndef SYNTAX_ERROR_H
-#define SYNTAX_ERROR_H
+#ifndef SYNTAX_ERROR_HPP
+#define SYNTAX_ERROR_HPP
 
 #include <filesystem>
 #include <stdexcept>
@@ -20,4 +20,4 @@ class SyntaxError : public std::exception {
   auto what() const noexcept -> const char* override;
 };
 
-#endif // SYNTAX_ERROR_H
+#endif // SYNTAX_ERROR_HPP

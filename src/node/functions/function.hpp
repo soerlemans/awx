@@ -1,5 +1,5 @@
-#ifndef FUNCTION_H
-#define FUNCTION_H
+#ifndef FUNCTION_HPP
+#define FUNCTION_HPP
 
 #include "../list.hpp"
 #include "../node.hpp"
@@ -26,4 +26,4 @@ class Function : public Node {
 };
 } // namespace nodes::functions
 
-#endif // FUNCTION_H
+#endif // FUNCTION_HPP

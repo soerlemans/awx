@@ -1,5 +1,5 @@
-#ifndef NODE_H
-#define NODE_H
+#ifndef NODE_HPP
+#define NODE_HPP
 
 #include <memory>
 #include <type_traits>
@@ -21,4 +21,4 @@ class Node {
 };
 } // namespace nodes
 
-#endif // NODE_H
+#endif // NODE_HPP

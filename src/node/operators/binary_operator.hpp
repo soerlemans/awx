@@ -1,5 +1,5 @@
-#ifndef BINARY_OPERATOR_H
-#define BINARY_OPERATOR_H
+#ifndef BINARY_OPERATOR_HPP
+#define BINARY_OPERATOR_HPP
 
 #include "operators.hpp"
 #include "unary_operator.hpp"
@@ -30,4 +30,4 @@ class BinaryOperator : public UnaryOperator {
 };
 } // namespace nodes::operators
 
-#endif // BINARY_OPERATOR_H
+#endif // BINARY_OPERATOR_HPP

@@ -1,5 +1,5 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef CONFIG_HPP
+#define CONFIG_HPP
 
 #include <filesystem>
 #include <memory>
@@ -70,4 +70,4 @@ class Config {
   auto operator=(const Config&) -> Config& = delete;
 };
 
-#endif // CONFIG_H
+#endif // CONFIG_HPP

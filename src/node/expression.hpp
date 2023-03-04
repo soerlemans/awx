@@ -1,5 +1,5 @@
-#ifndef EXPRESSION_H
-#define EXPRESSION_H
+#ifndef EXPRESSION_HPP
+#define EXPRESSION_HPP
 
 #include "node.hpp"
 
@@ -40,4 +40,4 @@ class nodes::Expression : public nodes::Node {
   ~Expression() override = default;
 };
 
-#endif // EXPRESSION_H
+#endif // EXPRESSION_HPP

@@ -1,5 +1,5 @@
-#ifndef NODES_H
-#define NODES_H
+#ifndef NODES_HPP
+#define NODES_HPP
 
 #include <memory>
 
@@ -23,4 +23,4 @@ class Nil;
 using NodePtr = std::unique_ptr<nodes::Node>;
 using NodeListPtr = std::unique_ptr<nodes::List>;
 
-#endif // NODES_H
+#endif // NODES_HPP

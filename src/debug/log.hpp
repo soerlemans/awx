@@ -1,5 +1,5 @@
-#ifndef LOG_H
-#define LOG_H
+#ifndef LOG_HPP
+#define LOG_HPP
 
 #include <iostream>
 #include <string_view>
@@ -88,4 +88,4 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
 
 #endif // DEBUG
 } // namespace log
-#endif // LOG_H
+#endif // LOG_HPP

@@ -1,5 +1,5 @@
-#ifndef TOKEN_TYPE_WRAPPER_H
-#define TOKEN_TYPE_WRAPPER_H
+#ifndef TOKEN_TYPE_WRAPPER_HPP
+#define TOKEN_TYPE_WRAPPER_HPP
 
 
 // Concepts:
@@ -54,4 +54,4 @@ class TokenTypeWrapper {
   ~TokenTypeWrapper() = default;
 };
 
-#endif // TOKEN_TYPE_WRAPPER_H
+#endif // TOKEN_TYPE_WRAPPER_HPP

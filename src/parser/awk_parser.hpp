@@ -1,5 +1,5 @@
-#ifndef AWK_PARSER_H
-#define AWK_PARSER_H
+#ifndef AWK_PARSER_HPP
+#define AWK_PARSER_HPP
 
 #include <functional>
 
@@ -135,4 +135,4 @@ class AwkParser : public Parser {
   ~AwkParser() override = default;
 };
 
-#endif // AWK_PARSER_H
+#endif // AWK_PARSER_HPP

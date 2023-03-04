@@ -1,5 +1,5 @@
-#ifndef NIL_H
-#define NIL_H
+#ifndef NIL_HPP
+#define NIL_HPP
 
 #include "node.hpp"
 
@@ -14,4 +14,4 @@ class Nil : public Node {
 };
 } // namespace nodes
 
-#endif // NIL_H
+#endif // NIL_HPP

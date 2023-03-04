@@ -1,5 +1,5 @@
-#ifndef PRINT_H
-#define PRINT_H
+#ifndef PRINT_HPP
+#define PRINT_HPP
 
 #include "../list.hpp"
 #include "../node.hpp"
@@ -24,4 +24,4 @@ class Print : public Node {
 };
 } // namespace nodes::io
 
-#endif // PRINT_H
+#endif // PRINT_HPP

@@ -1,5 +1,5 @@
-#ifndef RECIPE_H
-#define RECIPE_H
+#ifndef RECIPE_HPP
+#define RECIPE_HPP
 
 #include "../list.hpp"
 #include "../node.hpp"
@@ -26,4 +26,4 @@ class Recipe : public Node {
 };
 } // namespace nodes::recipes
 
-#endif // RECIPE_H
+#endif // RECIPE_HPP

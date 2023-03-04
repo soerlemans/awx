@@ -1,5 +1,5 @@
-#ifndef TOKEN_H
-#define TOKEN_H
+#ifndef TOKEN_HPP
+#define TOKEN_HPP
 
 #include <iostream>
 #include <string>
@@ -95,4 +95,4 @@ class Token {
   virtual ~Token() = default;
 };
 
-#endif // TOKEN_H
+#endif // TOKEN_HPP

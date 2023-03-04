@@ -1,5 +1,5 @@
-#ifndef TOKEN_TYPE_H
-#define TOKEN_TYPE_H
+#ifndef TOKEN_TYPE_HPP
+#define TOKEN_TYPE_HPP
 
 #include "../types.hpp"
 
@@ -127,4 +127,4 @@ enum class TokenType : u16 {
   NEWLINE, // 58
 };
 
-#endif // TOKEN_TYPE_H
+#endif // TOKEN_TYPE_HPP

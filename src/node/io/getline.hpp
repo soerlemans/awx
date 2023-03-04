@@ -1,5 +1,5 @@
-#ifndef GETLINE_H
-#define GETLINE_H
+#ifndef GETLINE_HPP
+#define GETLINE_HPP
 
 #include "../node.hpp"
 
@@ -22,4 +22,4 @@ class Getline : public Node {
 };
 } // namespace nodes::io
 
-#endif // GETLINE_H
+#endif // GETLINE_HPP

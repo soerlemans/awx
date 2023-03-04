@@ -1,5 +1,5 @@
-#ifndef REDIRECTION_H
-#define REDIRECTION_H
+#ifndef REDIRECTION_HPP
+#define REDIRECTION_HPP
 
 #include "../node.hpp"
 
@@ -24,4 +24,4 @@ class Redirection : public Node {
 };
 } // namespace nodes::io
 
-#endif // REDIRECTION_H
+#endif // REDIRECTION_HPP

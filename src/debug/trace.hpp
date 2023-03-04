@@ -1,5 +1,5 @@
-#ifndef TRACE_H
-#define TRACE_H
+#ifndef TRACE_HPP
+#define TRACE_HPP
 
 #include <string>
 
@@ -67,4 +67,4 @@ class Trace {
   } while(false)
 
 #endif // DEBUG
-#endif // TRACE_H
+#endif // TRACE_HPP

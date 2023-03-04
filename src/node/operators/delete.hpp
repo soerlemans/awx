@@ -1,5 +1,5 @@
-#ifndef DELETE_H
-#define DELETE_H
+#ifndef DELETE_HPP
+#define DELETE_HPP
 
 #include "../list.hpp"
 #include "operators.hpp"
@@ -24,4 +24,4 @@ class Delete : public Node {
 };
 } // namespace nodes::operators
 
-#endif // DELETE_H
+#endif // DELETE_HPP

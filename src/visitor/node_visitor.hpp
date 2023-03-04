@@ -1,5 +1,5 @@
-#ifndef NODE_VISITOR_H
-#define NODE_VISITOR_H
+#ifndef NODE_VISITOR_HPP
+#define NODE_VISITOR_HPP
 
 #include "../node/nodes.hpp"
 
@@ -77,4 +77,4 @@ class NodeVisitor {
   virtual ~NodeVisitor() = default;
 };
 
-#endif // NODE_VISITOR_H
+#endif // NODE_VISITOR_HPP

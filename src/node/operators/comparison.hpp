@@ -1,5 +1,5 @@
-#ifndef COMPARISON_H
-#define COMPARISON_H
+#ifndef COMPARISON_HPP
+#define COMPARISON_HPP
 
 #include "binary_operator.hpp"
 #include "operators.hpp"
@@ -32,4 +32,4 @@ class Comparison : public BinaryOperator {
 };
 } // namespace nodes::operators
 
-#endif // COMPARISON_H
+#endif // COMPARISON_HPP

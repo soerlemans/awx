@@ -1,5 +1,5 @@
-#ifndef LITERAL_H
-#define LITERAL_H
+#ifndef LITERAL_HPP
+#define LITERAL_HPP
 
 #include <string>
 #include <variant>
@@ -35,4 +35,4 @@ class Literal : public Node {
 };
 } // namespace nodes::rvalue
 
-#endif // LITERAL_H
+#endif // LITERAL_HPP

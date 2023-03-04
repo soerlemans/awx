@@ -1,5 +1,5 @@
-#ifndef TOKEN_TYPE_HELPERS_H
-#define TOKEN_TYPE_HELPERS_H
+#ifndef TOKEN_TYPE_HELPERS_HPP
+#define TOKEN_TYPE_HELPERS_HPP
 
 #include "token_type.hpp"
 
@@ -95,4 +95,4 @@ DEFINE_TOKEN_TYPE_HELPER(is_valid_function_identifier,
 
 }; // namespace tokentype
 
-#endif // TOKEN_TYPE_HELPERS_H
+#endif // TOKEN_TYPE_HELPERS_HPP

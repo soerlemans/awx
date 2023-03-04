@@ -1,5 +1,5 @@
-#ifndef FIELD_REFERENCE_H
-#define FIELD_REFERENCE_H
+#ifndef FIELD_REFERENCE_HPP
+#define FIELD_REFERENCE_HPP
 
 #include "../node.hpp"
 
@@ -20,4 +20,4 @@ class FieldReference : public Node {
 };
 } // namespace nodes::lvalue
 
-#endif // FIELD_REFERENCE_H
+#endif // FIELD_REFERENCE_HPP

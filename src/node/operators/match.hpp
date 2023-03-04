@@ -1,5 +1,5 @@
-#ifndef MATCH_H
-#define MATCH_H
+#ifndef MATCH_HPP
+#define MATCH_HPP
 
 #include "binary_operator.hpp"
 #include "operators.hpp"
@@ -22,4 +22,4 @@ class Match : public BinaryOperator {
 };
 } // namespace nodes::operators
 
-#endif // MATCH_H
+#endif // MATCH_HPP

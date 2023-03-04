@@ -1,5 +1,5 @@
-#ifndef RECIPES_H
-#define RECIPES_H
+#ifndef RECIPES_HPP
+#define RECIPES_HPP
 
 #include "../nodes.hpp"
 
@@ -9,4 +9,4 @@ class SpecialPattern;
 class Recipe;
 } // namespace nodes::recipes
 
-#endif // RECIPES_H
+#endif // RECIPES_HPP

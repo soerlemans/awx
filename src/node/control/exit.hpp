@@ -1,5 +1,5 @@
-#ifndef EXIT_H
-#define EXIT_H
+#ifndef EXIT_HPP
+#define EXIT_HPP
 
 #include "../node.hpp"
 
@@ -19,4 +19,4 @@ private:
 };
 } // namespace nodes::control
 
-#endif // EXIT_H
+#endif // EXIT_HPP

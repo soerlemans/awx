@@ -1,5 +1,5 @@
-#ifndef TOKEN_STREAM_H
-#define TOKEN_STREAM_H
+#ifndef TOKEN_STREAM_HPP
+#define TOKEN_STREAM_HPP
 
 #include <stack>
 #include <vector>
@@ -38,4 +38,4 @@ class TokenStream : public std::vector<Token> {
   virtual ~TokenStream() = default;
 };
 
-#endif // TOKEN_STREAM_H
+#endif // TOKEN_STREAM_HPP

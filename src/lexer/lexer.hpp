@@ -1,5 +1,5 @@
-#ifndef TOKENIZER_H
-#define TOKENIZER_H
+#ifndef TOKENIZER_HPP
+#define TOKENIZER_HPP
 
 #include <string>
 #include <string_view>
@@ -68,4 +68,4 @@ class Lexer {
 };
 
 
-#endif // TOKENIZER_H
+#endif // TOKENIZER_HPP

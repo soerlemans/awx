@@ -1,5 +1,5 @@
-#ifndef UNARY_PREFIX_H
-#define UNARY_PREFIX_H
+#ifndef UNARY_PREFIX_HPP
+#define UNARY_PREFIX_HPP
 
 #include "../../token/token_type.hpp"
 
@@ -28,4 +28,4 @@ class UnaryPrefix : public UnaryOperator {
 };
 } // namespace nodes::operators
 
-#endif // UNARY_PREFIX_H
+#endif // UNARY_PREFIX_HPP

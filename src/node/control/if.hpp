@@ -1,5 +1,5 @@
-#ifndef IF_H
-#define IF_H
+#ifndef IF_HPP
+#define IF_HPP
 
 #include "../node.hpp"
 
@@ -26,4 +26,4 @@ class If : public Node {
 };
 } // namespace nodes::control
 
-#endif // IF_H
+#endif // IF_HPP

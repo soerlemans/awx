@@ -1,5 +1,5 @@
-#ifndef AST_H
-#define AST_H
+#ifndef AST_HPP
+#define AST_HPP
 
 #include "../types.hpp"
 
@@ -30,4 +30,4 @@ class Ast {
   virtual ~Ast() = default;
 };
 
-#endif // AST_H
+#endif // AST_HPP

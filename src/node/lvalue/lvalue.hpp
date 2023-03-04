@@ -1,5 +1,5 @@
-#ifndef LVALUE_H
-#define LVALUE_H
+#ifndef LVALUE_HPP
+#define LVALUE_HPP
 
 #include "../nodes.hpp"
 
@@ -10,4 +10,4 @@ class Variable;
 class FieldReference;
 } // namespace nodes::lvalue
 
-#endif // LVALUE_H
+#endif // LVALUE_HPP

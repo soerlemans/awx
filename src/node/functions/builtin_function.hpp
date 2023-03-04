@@ -1,5 +1,5 @@
-#ifndef BUILTIN_FUNCTION_H
-#define BUILTIN_FUNCTION_H
+#ifndef BUILTIN_FUNCTION_HPP
+#define BUILTIN_FUNCTION_HPP
 
 #include "../list.hpp"
 
@@ -27,4 +27,4 @@ class BuiltinFunction : public Node {
 };
 } // namespace nodes::functions
 
-#endif // BUILTIN_FUNCTION_H
+#endif // BUILTIN_FUNCTION_HPP

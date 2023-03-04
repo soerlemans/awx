@@ -1,5 +1,5 @@
-#ifndef FUNCTION_CALL_H
-#define FUNCTION_CALL_H
+#ifndef FUNCTION_CALL_HPP
+#define FUNCTION_CALL_HPP
 
 #include <string>
 #include <string_view>
@@ -28,4 +28,4 @@ class FunctionCall : public Node {
 };
 } // namespace nodes::functions
 
-#endif // FUNCTION_CALL_H
+#endif // FUNCTION_CALL_HPP

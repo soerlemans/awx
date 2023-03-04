@@ -1,5 +1,5 @@
-#ifndef FUNCTIONS_H
-#define FUNCTIONS_H
+#ifndef FUNCTIONS_HPP
+#define FUNCTIONS_HPP
 
 #include "../nodes.hpp"
 
@@ -11,4 +11,4 @@ class BuiltinFunction;
 class FunctionCall;
 } // namespace nodes::functions
 
-#endif // FUNCTIONS_H
+#endif // FUNCTIONS_HPP

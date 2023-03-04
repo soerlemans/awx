@@ -1,5 +1,5 @@
-#ifndef FILE_BUFFER_H
-#define FILE_BUFFER_H
+#ifndef FILE_BUFFER_HPP
+#define FILE_BUFFER_HPP
 
 #include <filesystem>
 #include <string>
@@ -63,4 +63,4 @@ class FileBuffer {
   virtual ~FileBuffer() = default;
 };
 
-#endif // FILE_BUFFER_H
+#endif // FILE_BUFFER_HPP

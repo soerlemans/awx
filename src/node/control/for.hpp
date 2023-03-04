@@ -1,5 +1,5 @@
-#ifndef FOR_H
-#define FOR_H
+#ifndef FOR_HPP
+#define FOR_HPP
 
 #include "../list.hpp"
 
@@ -25,4 +25,4 @@ class For : public Node {
 };
 } // namespace nodes::control
 
-#endif // FOR_H
+#endif // FOR_HPP

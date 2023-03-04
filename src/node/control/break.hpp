@@ -1,5 +1,5 @@
-#ifndef BREAK_H
-#define BREAK_H
+#ifndef BREAK_HPP
+#define BREAK_HPP
 
 #include "../node.hpp"
 
@@ -14,4 +14,4 @@ class Break : public Node {
 };
 } // namespace nodes::control
 
-#endif // BREAK_H
+#endif // BREAK_HPP

@@ -1,5 +1,5 @@
-#ifndef PRINT_VISITOR_H
-#define PRINT_VISITOR_H
+#ifndef PRINT_VISITOR_HPP
+#define PRINT_VISITOR_HPP
 
 #include "../debug/trace.hpp"
 #include "node_visitor.hpp"
@@ -98,4 +98,4 @@ class PrintVisitor : public NodeVisitor {
   ~PrintVisitor() override = default;
 };
 
-#endif // PRINT_VISITOR_H
+#endif // PRINT_VISITOR_HPP

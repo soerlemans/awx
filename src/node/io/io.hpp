@@ -1,5 +1,5 @@
-#ifndef IO_H
-#define IO_H
+#ifndef IO_HPP
+#define IO_HPP
 
 
 namespace nodes::io {
@@ -14,4 +14,4 @@ class Getline;
 class Redirection;
 } // namespace nodes::io
 
-#endif // IO_H
+#endif // IO_HPP

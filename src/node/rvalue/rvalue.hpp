@@ -1,5 +1,5 @@
-#ifndef RVALUE_H
-#define RVALUE_H
+#ifndef RVALUE_HPP
+#define RVALUE_HPP
 
 #include "../nodes.hpp"
 
@@ -16,4 +16,4 @@ using Float = Literal<double>;
 using String = Literal<std::string>;
 } // namespace nodes::rvalue
 
-#endif // RVALUE_H
+#endif // RVALUE_HPP

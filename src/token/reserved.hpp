@@ -1,5 +1,5 @@
-#ifndef RESERVED_H
-#define RESERVED_H
+#ifndef RESERVED_HPP
+#define RESERVED_HPP
 
 #include <array>
 #include <string_view>
@@ -262,4 +262,4 @@ namespace none {
 } // namespace reserved
 // clang-format on
 
-#endif // RESERVED_H
+#endif // RESERVED_HPP

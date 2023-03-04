@@ -1,5 +1,5 @@
-#ifndef NEXT_H
-#define NEXT_H
+#ifndef NEXT_HPP
+#define NEXT_HPP
 
 #include "../node.hpp"
 
@@ -14,4 +14,4 @@ class Next : public Node {
 };
 } // namespace nodes::control
 
-#endif // NEXT_H
+#endif // NEXT_HPP
