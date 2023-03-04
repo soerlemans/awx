@@ -1277,9 +1277,9 @@ auto AwkParser::terminatable_statement() -> NodePtr
       expr();
       expect(TokenType::PAREN_CLOSE, ")");
 
-	  // TODO: Implement Do while
-	  LOG_PRINTLN("WARNING: Do While loops are not yet implemented!");
-	  node = std::make_unique<Nil>();
+      // TODO: Implement Do while
+      LOG_PRINTLN("WARNING: Do While loops are not yet implemented!");
+      node = std::make_unique<Nil>();
       break;
 
     default:

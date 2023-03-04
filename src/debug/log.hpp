@@ -32,7 +32,7 @@
   do {                      \
   } while(0)
 
-#endif // DEBUG
+#endif // DEVELOPMENT
 
 namespace log {
 // Enums:
@@ -46,9 +46,31 @@ enum class LogLevel : u16 {
 };
 
 #if DEVELOPMENT
+// Macros:
+// Stringify the given log leven in a case
+#define LOG_CASE_STRINGIFY_LOGLEVEL(loglevel) \
+  case LogLevel::loglevel:                    \
+    return {#loglevel};
+
 // Functions:
+constexpr auto loglevel2str(const LogLevel t_loglevel) -> std::string_view
+{
+  switch(t_loglevel) {
+    LOG_CASE_STRINGIFY_LOGLEVEL(CRITICAL);
+    LOG_CASE_STRINGIFY_LOGLEVEL(ERROR);
+    LOG_CASE_STRINGIFY_LOGLEVEL(WARNING);
+    LOG_CASE_STRINGIFY_LOGLEVEL(INFO);
+    LOG_CASE_STRINGIFY_LOGLEVEL(DEBUG);
+
+    default:
+      // TODO: Error or handle unknown loglevel
+      break;
+  }
+
+  return {"NONE"};
+}
+
 auto is_lower_loglevel(LogLevel t_loglevel) -> bool;
-constexpr auto loglevel2str(LogLevel t_loglevel) -> std::string_view;
 auto set_loglevel(LogLevel t_loglevel) -> void;
 
 // We use std::clog for logging
@@ -86,6 +108,7 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
   }
 }
 
-#endif // DEBUG
+#endif // DEVELOPMENT
 } // namespace log
+
 #endif // LOG_HPP

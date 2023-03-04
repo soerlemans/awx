@@ -3,12 +3,6 @@
 #include "../enum.hpp"
 
 
-// Macros:
-// Stringify the given log leven in a case
-#define CASE_STRINGIFY_LOGLEVEL(loglevel) \
-  case LogLevel::loglevel:                \
-    return {#loglevel};
-
 namespace {
 // Private variables:
 log::LogLevel g_loglevel{log::LogLevel::WARNING};
@@ -21,23 +15,6 @@ namespace log {
 [[nodiscard]] auto is_lower_loglevel(const LogLevel t_loglevel) -> bool
 {
   return enum2underlying_type(g_loglevel) >= enum2underlying_type(t_loglevel);
-}
-
-constexpr auto loglevel2str(const LogLevel t_loglevel) -> std::string_view
-{
-  switch(t_loglevel) {
-    CASE_STRINGIFY_LOGLEVEL(CRITICAL);
-    CASE_STRINGIFY_LOGLEVEL(ERROR);
-    CASE_STRINGIFY_LOGLEVEL(WARNING);
-    CASE_STRINGIFY_LOGLEVEL(INFO);
-    CASE_STRINGIFY_LOGLEVEL(DEBUG);
-
-    default:
-      // TODO: Error or handle unknown loglevel
-      break;
-  }
-
-  return {"NONE"};
 }
 
 auto set_loglevel(const LogLevel t_loglevel) -> void
