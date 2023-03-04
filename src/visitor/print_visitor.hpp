@@ -1,7 +1,14 @@
 #ifndef PRINT_VISITOR_HPP
 #define PRINT_VISITOR_HPP
 
-#include "../debug/trace.hpp"
+
+// STL Includes:
+#include <iostream>
+
+// Includes:
+#include "../node/include.hpp"
+
+// Local Includes:
 #include "node_visitor.hpp"
 
 
@@ -19,6 +26,15 @@ class PrintVisitor : public NodeVisitor {
     Printer(int& t_counter): m_counter{t_counter}
     {
       m_counter++;
+    }
+
+    template<typename... Args>
+    auto print_if(NodePtr& t_ptr, PrintVisitor* t_this, Args&&... t_args) -> void
+    {
+      if(t_ptr) {
+        print(std::forward<Args>(t_args)...);
+        t_ptr->accept(t_this);
+      }
     }
 
     template<typename... Args>

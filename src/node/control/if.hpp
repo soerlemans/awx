@@ -18,7 +18,7 @@ class If : public Node {
   If(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else);
 
   auto then() -> NodePtr&;
-  // auto else() const -> NodePtr&;
+  auto alt() -> NodePtr&; // Alternative is a synonym for else
 
   auto accept(NodeVisitor* t_visitor) -> void override;
 

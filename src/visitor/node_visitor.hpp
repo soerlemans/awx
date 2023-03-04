@@ -1,18 +1,8 @@
 #ifndef NODE_VISITOR_HPP
 #define NODE_VISITOR_HPP
 
-#include "../node/nodes.hpp"
-
-#include "../node/control/control.hpp"
-#include "../node/functions/functions.hpp"
-#include "../node/recipes/recipes.hpp"
-
-#include "../node/io/io.hpp"
-
-#include "../node/lvalue/lvalue.hpp"
-#include "../node/rvalue/rvalue.hpp"
-
-#include "../node/operators/operators.hpp"
+// Includes:
+#include "../node/declarations.hpp"
 
 
 // Implementation of the Visitor design pattern for Nodes

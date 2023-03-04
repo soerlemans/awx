@@ -1,5 +1,8 @@
 #include "parser.hpp"
 
+// STL Includes:
+// #include <stacktrace>
+
 
 // Constructor:
 Parser::Parser(TokenStream&& t_tokenstream)
@@ -73,6 +76,10 @@ auto Parser::expect(const TokenType t_tokentype, const std::string_view t_msg)
     ss << "Expected -> ";
     ss << t_msg << '\n';
     ss << m_tokenstream.token().file_position();
+
+    // Only print stack trace information on DEVELOPMENT build
+    // ss << "Stack trace:\n";
+    // ss << std::stacktrace::current() << '\n';
 
     throw std::runtime_error{ss.str()};
   }

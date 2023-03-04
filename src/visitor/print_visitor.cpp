@@ -1,71 +1,31 @@
 #include "print_visitor.hpp"
 
-#include "../node/list.hpp"
-#include "../node/node.hpp"
-#include "../node/nil.hpp"
-
-#include "../node/control/for.hpp"
-#include "../node/control/for_in.hpp"
-#include "../node/control/if.hpp"
-#include "../node/control/return.hpp"
-#include "../node/control/while.hpp"
-
-#include "../node/io/getline.hpp"
-#include "../node/io/print.hpp"
-#include "../node/io/printf.hpp"
-#include "../node/io/redirection.hpp"
-
-#include "../node/rvalue/literal.hpp"
-#include "../node/rvalue/regex.hpp"
-#include "../node/rvalue/rvalue.hpp"
-
-#include "../node/lvalue/array.hpp"
-#include "../node/lvalue/field_reference.hpp"
-#include "../node/lvalue/variable.hpp"
-
-#include "../node/functions/function.hpp"
-#include "../node/functions/function_call.hpp"
-
-#include "../node/recipes/recipe.hpp"
-#include "../node/recipes/special_pattern.hpp"
-
-#include "../node/operators/arithmetic.hpp"
-#include "../node/operators/assignment.hpp"
-#include "../node/operators/comparison.hpp"
-#include "../node/operators/decrement.hpp"
-#include "../node/operators/grouping.hpp"
-#include "../node/operators/increment.hpp"
-#include "../node/operators/logical.hpp"
-#include "../node/operators/match.hpp"
-#include "../node/operators/string_concatenation.hpp"
-#include "../node/operators/ternary.hpp"
-#include "../node/operators/unary_prefix.hpp"
-
 
 auto PrintVisitor::visit(nodes::control::If* t_if) -> void
 {
   Printer printer{m_counter};
 
-  printer.print("IF");
+  printer.print("If");
 
-  if(auto& then{t_if->then()}; then) {
-    printer.print("| THEN");
-    then->accept(this);
-  }
+  printer.print_if(t_if->then(), this, "| THEN");
 }
 
 auto PrintVisitor::visit(nodes::control::While* t_while) -> void
 {
   Printer printer{m_counter};
 
-  printer.print("WHILE");
+  printer.print("While");
+  printer.print_if(t_while->condition(), this, "| Condition");
+  // printer.print_if(t_while->body(), this, "| Body");
 }
 
 auto PrintVisitor::visit(nodes::control::For* t_for) -> void
 {
   Printer printer{m_counter};
 
-  printer.print("FOR");
+  printer.print("For");
+  // printer.print_if(t_while->condition(), this, "| Condition");
+  // printer.print_if(t_while->body(), this, "| Body");
 }
 
 auto PrintVisitor::visit(nodes::control::ForIn* t_for) -> void

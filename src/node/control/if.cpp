@@ -20,6 +20,11 @@ auto If::then() -> NodePtr&
   return m_then;
 }
 
+auto If::alt() -> NodePtr&
+{
+  return m_else;
+}
+
 auto If::accept(NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);

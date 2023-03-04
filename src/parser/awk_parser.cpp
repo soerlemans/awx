@@ -1,63 +1,16 @@
 #include "awk_parser.hpp"
 
+// STL Includes:
 #include <memory>
 #include <stdexcept>
 
+// Includes:
 #include "../debug/log.hpp"
 #include "../debug/trace.hpp"
-
 #include "../enum.hpp"
-
+#include "../node/include.hpp"
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
-
-// TODO: Create an include for including alls nodes
-#include "../node/list.hpp"
-#include "../node/nil.hpp"
-#include "../node/node.hpp"
-
-#include "../node/control/break.hpp"
-#include "../node/control/continue.hpp"
-#include "../node/control/exit.hpp"
-#include "../node/control/for.hpp"
-#include "../node/control/for_in.hpp"
-#include "../node/control/if.hpp"
-#include "../node/control/next.hpp"
-#include "../node/control/return.hpp"
-#include "../node/control/while.hpp"
-
-#include "../node/io/getline.hpp"
-#include "../node/io/print.hpp"
-#include "../node/io/printf.hpp"
-#include "../node/io/redirection.hpp"
-
-#include "../node/rvalue/literal.hpp"
-#include "../node/rvalue/regex.hpp"
-#include "../node/rvalue/rvalue.hpp"
-
-#include "../node/lvalue/array.hpp"
-#include "../node/lvalue/field_reference.hpp"
-#include "../node/lvalue/variable.hpp"
-
-#include "../node/functions/function.hpp"
-#include "../node/functions/function_call.hpp"
-
-#include "../node/recipes/recipe.hpp"
-#include "../node/recipes/special_pattern.hpp"
-
-#include "../node/operators/arithmetic.hpp"
-#include "../node/operators/assignment.hpp"
-#include "../node/operators/comparison.hpp"
-#include "../node/operators/decrement.hpp"
-#include "../node/operators/delete.hpp"
-#include "../node/operators/grouping.hpp"
-#include "../node/operators/increment.hpp"
-#include "../node/operators/logical.hpp"
-#include "../node/operators/match.hpp"
-#include "../node/operators/membership.hpp"
-#include "../node/operators/string_concatenation.hpp"
-#include "../node/operators/ternary.hpp"
-#include "../node/operators/unary_prefix.hpp"
 
 
 // Using statements:
@@ -159,15 +112,16 @@ auto AwkParser::lvalue() -> NodePtr
   const auto token{next()};
   switch(token.type()) {
     case TokenType::IDENTIFIER: {
+      const auto name{token.value<std::string>()};
       // We really dont expect these next_tokens to fail
       if(next_if(TokenType::BRACE_OPEN)) {
         TRACE_PRINT(LogLevel::INFO, "Found ARRAY SUBSCRIPT");
-        node = std::make_unique<Array>(token.value<std::string>(), expr_list());
+        node = std::make_unique<Array>(name, expr_list());
 
         expect(TokenType::BRACE_CLOSE, "]");
       } else {
-        TRACE_PRINT(LogLevel::INFO, "Found VARIABLE");
-        node = std::make_unique<Variable>(token.value<std::string>());
+        TRACE_PRINT(LogLevel::INFO, "Found VARIABLE", name);
+        node = std::make_unique<Variable>(name);
       }
       break;
     }
@@ -197,8 +151,8 @@ auto AwkParser::function() -> NodePtr
     if(const auto token{get_token()};
        tokentype::is_valid_function_identifier(token.type())) {
       next();
-      TRACE_PRINT(LogLevel::DEBUG,
-                  "Valid FUNCTION IDENTIFIER: ", token.value<std::string>());
+      const auto name{token.value<std::string>()};
+      TRACE_PRINT(LogLevel::DEBUG, "Valid FUNCTION IDENTIFIER: ", name);
 
       // TODO: Create a Function class
       expect(TokenType::PAREN_OPEN, "(");
@@ -210,8 +164,8 @@ auto AwkParser::function() -> NodePtr
 
       TRACE_PRINT(LogLevel::INFO, "Found a FUNCTION");
 
-      node = std::make_unique<Function>(token.value<std::string>(),
-                                        std::move(params), std::move(body));
+      node =
+        std::make_unique<Function>(name, std::move(params), std::move(body));
     } else {
       // TODO: Error handling
     }
@@ -1463,7 +1417,7 @@ auto AwkParser::action() -> NodeListPtr
     } else if(auto ptr{unterminated_statement_list()}; ptr) {
       node = std::move(ptr);
     } else {
-      node = std::make_unique<List>();
+      // node = std::make_unique<List>();
     }
 
     expect(TokenType::ACCOLADE_CLOSE, "}");

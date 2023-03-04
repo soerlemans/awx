@@ -18,6 +18,10 @@ class Redirection : public Node {
   public:
   Redirection(RedirectionOp t_op, NodePtr&& t_left, NodePtr&& t_right);
 
+  auto left() -> NodePtr&;
+  auto right() -> NodePtr&;
+  auto op() const -> RedirectionOp;
+
   auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~Redirection() override = default;

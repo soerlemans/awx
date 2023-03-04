@@ -15,6 +15,9 @@ class While : public Node {
   public:
   While(NodePtr&& t_condition, NodeListPtr&& t_body);
 
+  auto condition() -> NodePtr&;
+  auto body() -> NodeListPtr&;
+
   auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~While() override = default;

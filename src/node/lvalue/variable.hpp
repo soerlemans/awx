@@ -14,7 +14,7 @@ class Variable : public Node {
   std::string m_name;
 
   public:
-  Variable(std::string t_name);
+  Variable(const std::string& t_name);
 
   auto name() const -> std::string_view;
 
