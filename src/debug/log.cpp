@@ -23,13 +23,14 @@ namespace log {
   return enum2underlying_type(g_loglevel) >= enum2underlying_type(t_loglevel);
 }
 
-auto loglevel2str(const LogLevel t_loglevel) -> std::string_view
+constexpr auto loglevel2str(const LogLevel t_loglevel) -> std::string_view
 {
   switch(t_loglevel) {
-    CASE_STRINGIFY_LOGLEVEL(DEBUG);
-    CASE_STRINGIFY_LOGLEVEL(INFO);
-    CASE_STRINGIFY_LOGLEVEL(WARNING);
     CASE_STRINGIFY_LOGLEVEL(CRITICAL);
+    CASE_STRINGIFY_LOGLEVEL(ERROR);
+    CASE_STRINGIFY_LOGLEVEL(WARNING);
+    CASE_STRINGIFY_LOGLEVEL(INFO);
+    CASE_STRINGIFY_LOGLEVEL(DEBUG);
 
     default:
       // TODO: Error or handle unknown loglevel

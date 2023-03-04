@@ -48,7 +48,7 @@ enum class LogLevel : u16 {
 #if DEVELOPMENT
 // Functions:
 auto is_lower_loglevel(LogLevel t_loglevel) -> bool;
-auto loglevel2str(LogLevel t_loglevel) -> std::string_view;
+constexpr auto loglevel2str(LogLevel t_loglevel) -> std::string_view;
 auto set_loglevel(LogLevel t_loglevel) -> void;
 
 // We use std::clog for logging
