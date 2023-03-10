@@ -9,11 +9,12 @@
 namespace nodes::control {
 class ForIn : public Node {
   private:
-  NodePtr m_condition;
+  NodePtr m_identifier;
+  NodePtr m_array;
   NodeListPtr m_body;
 
   public:
-  ForIn(NodePtr&& t_condition, NodeListPtr&& t_body);
+  ForIn(NodePtr&& t_identifier, NodePtr&& t_array, NodeListPtr&& t_body);
 
   auto accept(NodeVisitor* t_visitor) -> void override;
 

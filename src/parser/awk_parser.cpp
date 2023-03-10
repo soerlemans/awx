@@ -12,7 +12,6 @@
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
 
-
 // Using statements:
 using namespace reserved::symbols;
 
@@ -737,12 +736,28 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 
       // TODO: Find a better way of doing this
       bool membership{false};
-      if(next_if(TokenType::IDENTIFIER)) {
+      if(auto identifier{get_token()};
+         identifier.type() == TokenType::IDENTIFIER) {
+        next();
         if(next_if(TokenType::IN)) {
           TRACE_PRINT(LogLevel::INFO, "Found FOR IN");
 
           membership = true;
-          const auto array{expect(TokenType::IDENTIFIER, "identifier")};
+          auto array{expect(TokenType::IDENTIFIER, "identifier")};
+          expect(TokenType::PAREN_CLOSE, ")");
+          newline_opt();
+
+          NodeListPtr body;
+          if(auto ptr{t_body()}; ptr) {
+            body = std::make_unique<List>();
+            body->push_back(std::move(ptr));
+          }
+
+          const auto name_identifier{identifier.value<std::string>()};
+          const auto name_array{array.value<std::string>()};
+          node = std::make_unique<ForIn>(
+            std::make_unique<Variable>(name_identifier),
+            std::make_unique<Array>(name_array), std::move(body));
         } else {
           prev();
         }
@@ -753,19 +768,21 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
           TRACE_PRINT(LogLevel::INFO, "Found FOR(;;)");
 
           expect(TokenType::SEMICOLON, ";");
-          expr_opt();
+          auto condition{expr_opt()};
           expect(TokenType::SEMICOLON, ";");
-          simple_statement_opt();
+          auto post_expr{simple_statement_opt()};
+          expect(TokenType::PAREN_CLOSE, ")");
+          newline_opt();
+
+          NodeListPtr body;
+          if(auto ptr{t_body()}; ptr) {
+            body = std::make_unique<List>();
+            body->push_back(std::move(ptr));
+          }
+
+          node = std::make_unique<For>(std::move(ptr), std::move(condition),
+                                       std::move(post_expr), std::move(body));
         }
-      }
-
-      expect(TokenType::PAREN_CLOSE, ")");
-      newline_opt();
-
-      NodeListPtr body;
-      if(auto ptr{t_body()}; ptr) {
-        body = std::make_unique<List>();
-        body->push_back(std::move(ptr));
       }
 
       newline_opt();
@@ -1335,7 +1352,7 @@ auto AwkParser::terminated_statement() -> NodePtr
     if(tokentype::is_terminator(get_token().type())) {
       next();
     } else {
-      throw std::runtime_error{"Expected a terminator!!!"};
+      throw std::runtime_error{"Expected a terminator!"};
     }
     newline_opt();
 
