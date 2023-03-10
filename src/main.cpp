@@ -1,14 +1,14 @@
+// STL Includes:
 #include <functional>
 #include <iostream>
 
-#include <unistd.h>
-
+// Includes:
 #include "config/config.hpp"
-#include "enum.hpp"
+#include "debug/log.hpp"
 #include "parser/awk_parser.hpp"
 
-#include "debug/log.hpp"
-
+// Local Includes:
+#include "enum.hpp"
 
 // Enums:
 enum ExitCode {
@@ -58,7 +58,7 @@ auto parse_args(const int t_argc, char* t_argv[]) -> void
   }
 }
 
-auto run(int argc, char* argv[]) -> void
+auto run() -> void
 {
   auto& config{Config::get_instance()};
 
@@ -76,16 +76,16 @@ auto run(int argc, char* argv[]) -> void
 }
 // NOLINTEND
 
-auto main(int argc, char* argv[]) -> int
+auto main(int t_argc, char* t_argv[]) -> int
 {
   // Set loglevel for now for debugging purposes
   SET_LOGLEVEL(log::LogLevel::DEBUG);
   LOG_PRINTLN("#== BEGIN ==#");
 
-  parse_args(argc, argv);
+  parse_args(t_argc, t_argv);
 
   try {
-    run(argc, argv);
+    run();
   } catch(std::exception& e) {
     std::cerr << '\n' << "EXCEPTION OCCURED - \n" << e.what() << '\n';
 

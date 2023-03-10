@@ -12,7 +12,7 @@ Redirection::Redirection(RedirectionOp t_op, NodePtr&& t_left,
 
 auto Redirection::left() -> NodePtr&
 {
-  retun m_left;
+  return m_left;
 }
 
 auto Redirection::right() -> NodePtr&
