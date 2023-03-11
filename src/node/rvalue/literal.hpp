@@ -7,7 +7,7 @@
 #include "../../types.hpp"
 
 #include "../node_interface.hpp"
-#include "../nodes.hpp"
+#include "../node.hpp"
 
 
 namespace nodes::rvalue {

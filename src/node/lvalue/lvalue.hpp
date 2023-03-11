@@ -1,7 +1,7 @@
 #ifndef LVALUE_HPP
 #define LVALUE_HPP
 
-#include "../nodes.hpp"
+#include "../node.hpp"
 
 
 namespace nodes::lvalue {

@@ -1,7 +1,7 @@
 #ifndef RVALUE_HPP
 #define RVALUE_HPP
 
-#include "../nodes.hpp"
+#include "../node.hpp"
 
 namespace nodes::rvalue {
 template<typename T>

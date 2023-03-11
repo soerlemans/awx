@@ -1,7 +1,7 @@
 #ifndef OPERATORS_HPP
 #define OPERATORS_HPP
 
-#include "../nodes.hpp"
+#include "../node.hpp"
 
 // All Operator classes are part of this namespace
 // These forward declarations are also used by NodeVisitor

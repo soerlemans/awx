@@ -1,7 +1,7 @@
 #ifndef FUNCTIONS_HPP
 #define FUNCTIONS_HPP
 
-#include "../nodes.hpp"
+#include "../node.hpp"
 
 
 namespace nodes::functions {

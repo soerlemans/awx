@@ -1,7 +1,7 @@
 #ifndef RECIPES_HPP
 #define RECIPES_HPP
 
-#include "../nodes.hpp"
+#include "../node.hpp"
 
 namespace nodes::recipes {
 class SpecialPattern;

@@ -10,7 +10,7 @@
 #include "../visitor/node_visitor.hpp"
 
 // Local Includes:
-#include "nodes.hpp"
+#include "node.hpp"
 
 
 // TODO: All classes can be generated with macros, we just need the structure

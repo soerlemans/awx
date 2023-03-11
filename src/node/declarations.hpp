@@ -7,7 +7,7 @@
 #include "../node/functions/functions.hpp"
 #include "../node/io/io.hpp"
 #include "../node/lvalue/lvalue.hpp"
-#include "../node/nodes.hpp"
+#include "../node/node.hpp"
 #include "../node/operators/operators.hpp"
 #include "../node/recipes/recipes.hpp"
 #include "../node/rvalue/rvalue.hpp"
