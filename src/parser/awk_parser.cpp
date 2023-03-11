@@ -119,7 +119,7 @@ auto AwkParser::lvalue() -> NodePtr
 
         expect(TokenType::BRACE_CLOSE, "]");
       } else {
-        DBG_TRACE_PRINT(INFO, "Found VARIABLE", name);
+        DBG_TRACE_PRINT(INFO, "Found VARIABLE: ", name);
         node = std::make_unique<Variable>(name);
       }
       break;
@@ -1352,6 +1352,7 @@ auto AwkParser::terminated_statement() -> NodePtr
     if(tokentype::is_terminator(get_token().type())) {
       next();
     } else {
+			DBG_TRACE(VERBOSE, "Expected a terminator!");
       throw std::runtime_error{"Expected a terminator!"};
     }
     newline_opt();

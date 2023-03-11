@@ -1,5 +1,6 @@
 #include "lexer.hpp"
 
+// STL Includes:
 #include <cctype>
 #include <ios>
 #include <iostream>
@@ -7,6 +8,7 @@
 #include <stdexcept>
 #include <utility>
 
+// Includes:
 #include "../debug/log.hpp"
 #include "../exception/syntax_error.hpp"
 #include "../token/token_type_helpers.hpp"
@@ -405,8 +407,10 @@ auto Lexer::tokenize() -> TokenStream
 
       // TODO: This should have its own function
       const auto lambda{[&]() -> bool {
+        const auto last_tokentype{m_tokenstream.back().type()};
         return character == slash && !m_tokenstream.empty()
-               && !tokentype::is_int(m_tokenstream.back().type());
+               && !tokentype::is_int(last_tokentype)
+               && last_tokentype != TokenType::IDENTIFIER;
       }};
 
       if(std::isspace(character)) {

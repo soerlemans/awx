@@ -43,6 +43,7 @@ But the following packages are required:
    + Must support C++23
  + Cmake (You can build with just Make)
  + Make
+ + CLI11
 
 ### Build
 ```

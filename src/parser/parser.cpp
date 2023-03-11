@@ -15,6 +15,8 @@ auto Parser::eos() -> bool
   return m_tokenstream.eos();
 }
 
+// TODO: Change this to also print automatically using TRACE_PRINT
+// TODO: Rename this to eos_error or similar
 auto Parser::error(const std::string_view t_msg) -> void
 {
   if(eos()) {
