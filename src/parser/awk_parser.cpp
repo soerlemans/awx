@@ -41,7 +41,7 @@ auto AwkParser::newline_opt() -> void
   TRACE(VERBOSE, "NEWLINE OPT");
 
   while(!eos() && next_if(TokenType::NEWLINE)) {
-    TRACE_PRINT(LogLevel::INFO, "Found NEWLINE");
+    TRACE_PRINT(INFO, "Found NEWLINE");
   }
 }
 
@@ -51,7 +51,7 @@ auto AwkParser::simple_get() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::GETLINE)) {
-    TRACE_PRINT(LogLevel::INFO, "Found GETLINE");
+    TRACE_PRINT(INFO, "Found GETLINE");
 
     node = std::make_unique<Getline>(lvalue());
   }
@@ -114,19 +114,19 @@ auto AwkParser::lvalue() -> NodePtr
       const auto name{token.value<std::string>()};
       // We really dont expect these next_tokens to fail
       if(next_if(TokenType::BRACE_OPEN)) {
-        TRACE_PRINT(LogLevel::INFO, "Found ARRAY SUBSCRIPT");
+        TRACE_PRINT(INFO, "Found ARRAY SUBSCRIPT");
         node = std::make_unique<Array>(name, expr_list());
 
         expect(TokenType::BRACE_CLOSE, "]");
       } else {
-        TRACE_PRINT(LogLevel::INFO, "Found VARIABLE", name);
+        TRACE_PRINT(INFO, "Found VARIABLE", name);
         node = std::make_unique<Variable>(name);
       }
       break;
     }
 
     case TokenType::DOLLAR_SIGN: {
-      TRACE_PRINT(LogLevel::INFO, "Found FIELD REFERENCE");
+      TRACE_PRINT(INFO, "Found FIELD REFERENCE");
       node = std::make_unique<FieldReference>(expr());
       break;
     }
@@ -161,7 +161,7 @@ auto AwkParser::function() -> NodePtr
       newline_opt();
       NodeListPtr body{static_cast<List*>(action().release())};
 
-      TRACE_PRINT(LogLevel::INFO, "Found a FUNCTION");
+      TRACE_PRINT(INFO, "Found a FUNCTION");
 
       node =
         std::make_unique<Function>(name, std::move(params), std::move(body));
@@ -189,7 +189,7 @@ auto AwkParser::function_call() -> NodePtr
       expect(TokenType::PAREN_CLOSE, ")");
 
       auto name{token.value<std::string>()};
-      TRACE_PRINT(LogLevel::INFO, "Found a FUNCTION CALL: ", name);
+      TRACE_PRINT(INFO, "Found a FUNCTION CALL: ", name);
 
       node = std::make_unique<FunctionCall>(std::move(name), std::move(args));
       break;
@@ -220,12 +220,12 @@ auto AwkParser::match(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
   switch(next().type()) {
     case TokenType{g_ere_match}:
-      TRACE_PRINT(LogLevel::INFO, "Found '~'");
+      TRACE_PRINT(INFO, "Found '~'");
       node = lambda(MatchOp::MATCH);
       break;
 
     case TokenType{g_ere_no_match}:
-      TRACE_PRINT(LogLevel::INFO, "Found '!~'");
+      TRACE_PRINT(INFO, "Found '!~'");
       node = lambda(MatchOp::NO_MATCH);
       break;
 
@@ -254,32 +254,32 @@ auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
   switch(next().type()) {
     case TokenType{g_caret}:
-      TRACE_PRINT(LogLevel::INFO, "Found '^'");
+      TRACE_PRINT(INFO, "Found '^'");
       node = lambda(ArithmeticOp::POWER);
       break;
 
     case TokenType{g_asterisk}:
-      TRACE_PRINT(LogLevel::INFO, "Found '*'");
+      TRACE_PRINT(INFO, "Found '*'");
       node = lambda(ArithmeticOp::MULTIPLY);
       break;
 
     case TokenType{g_slash}:
-      TRACE_PRINT(LogLevel::INFO, "Found '/'");
+      TRACE_PRINT(INFO, "Found '/'");
       node = lambda(ArithmeticOp::DIVIDE);
       break;
 
     case TokenType{g_percent_sign}:
-      TRACE_PRINT(LogLevel::INFO, "Found '%'");
+      TRACE_PRINT(INFO, "Found '%'");
       node = lambda(ArithmeticOp::MODULO);
       break;
 
     case TokenType{g_plus}:
-      TRACE_PRINT(LogLevel::INFO, "Found '+'");
+      TRACE_PRINT(INFO, "Found '+'");
       node = lambda(ArithmeticOp::ADD);
       break;
 
     case TokenType{g_minus}:
-      TRACE_PRINT(LogLevel::INFO, "Found '-'");
+      TRACE_PRINT(INFO, "Found '-'");
       node = lambda(ArithmeticOp::SUBTRACT);
       break;
 
@@ -309,37 +309,37 @@ auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
   switch(next().type()) {
     case TokenType{g_power_assignment}:
-      TRACE_PRINT(LogLevel::INFO, "Found '^='");
+      TRACE_PRINT(INFO, "Found '^='");
       node = lambda(AssignmentOp::POWER);
       break;
 
     case TokenType{g_multiply_assignment}:
-      TRACE_PRINT(LogLevel::INFO, "Found '*='");
+      TRACE_PRINT(INFO, "Found '*='");
       node = lambda(AssignmentOp::MULTIPLY);
       break;
 
     case TokenType{g_divide_assignment}:
-      TRACE_PRINT(LogLevel::INFO, "Found '/='");
+      TRACE_PRINT(INFO, "Found '/='");
       node = lambda(AssignmentOp::DIVIDE);
       break;
 
     case TokenType{g_modulo_assignment}:
-      TRACE_PRINT(LogLevel::INFO, "Found '%='");
+      TRACE_PRINT(INFO, "Found '%='");
       node = lambda(AssignmentOp::MODULO);
       break;
 
     case TokenType{g_add_assignment}:
-      TRACE_PRINT(LogLevel::INFO, "Found '+='");
+      TRACE_PRINT(INFO, "Found '+='");
       node = lambda(AssignmentOp::ADD);
       break;
 
     case TokenType{g_subtract_assignment}:
-      TRACE_PRINT(LogLevel::INFO, "Found '-='");
+      TRACE_PRINT(INFO, "Found '-='");
       node = lambda(AssignmentOp::SUBTRACT);
       break;
 
     case TokenType{g_assignment}:
-      TRACE_PRINT(LogLevel::INFO, "Found '='");
+      TRACE_PRINT(INFO, "Found '='");
       node = lambda(AssignmentOp::REGULAR);
       break;
 
@@ -366,32 +366,32 @@ auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
   switch(next().type()) {
     case TokenType{g_less_than}:
-      TRACE_PRINT(LogLevel::INFO, "Found '<'");
+      TRACE_PRINT(INFO, "Found '<'");
       node = lambda(ComparisonOp::LESS_THAN);
       break;
 
     case TokenType{g_less_than_equal}:
-      TRACE_PRINT(LogLevel::INFO, "Found '<='");
+      TRACE_PRINT(INFO, "Found '<='");
       node = lambda(ComparisonOp::LESS_THAN_EQUAL);
       break;
 
     case TokenType{g_equal}:
-      TRACE_PRINT(LogLevel::INFO, "Found '=='");
+      TRACE_PRINT(INFO, "Found '=='");
       node = lambda(ComparisonOp::EQUAL);
       break;
 
     case TokenType{g_not_equal}:
-      TRACE_PRINT(LogLevel::INFO, "Found '!='");
+      TRACE_PRINT(INFO, "Found '!='");
       node = lambda(ComparisonOp::NOT_EQUAL);
       break;
 
     case TokenType{g_greater_than}:
-      TRACE_PRINT(LogLevel::INFO, "Found '>'");
+      TRACE_PRINT(INFO, "Found '>'");
       node = lambda(ComparisonOp::GREATER_THAN);
       break;
 
     case TokenType{g_greater_than_equal}:
-      TRACE_PRINT(LogLevel::INFO, "Found '>='");
+      TRACE_PRINT(INFO, "Found '>='");
       node = lambda(ComparisonOp::GREATER_THAN_EQUAL);
       break;
 
@@ -425,7 +425,7 @@ auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
   switch(next().type()) {
     case TokenType{g_and}: {
-      TRACE_PRINT(LogLevel::INFO, "Found '&&'");
+      TRACE_PRINT(INFO, "Found '&&'");
       // Optional newlines are allowed after &&
       newline_opt();
       if(auto rhs{t_rhs()}; rhs) {
@@ -437,7 +437,7 @@ auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
     }
 
     case TokenType{g_or}: {
-      TRACE_PRINT(LogLevel::INFO, "Found '||'");
+      TRACE_PRINT(INFO, "Found '||'");
       // Optional newlines are allowed after ||
       newline_opt();
       if(auto rhs{t_rhs()}; rhs) {
@@ -493,7 +493,7 @@ auto AwkParser::universal_print_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   NodePtr node;
 
   // if(auto rhs{non_unary_expr()}; rhs) {
-  //   TRACE_PRINT(LogLevel::INFO, "Found STRING CONCAT");
+  //   TRACE_PRINT(INFO, "Found STRING CONCAT");
   //   node =
   //     std::make_unique<StringConcatenation>(std::move(node), std::move(rhs));
   // } else
@@ -552,7 +552,7 @@ auto AwkParser::negation(const ParserFunc& t_expr) -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::NOT)) {
-    TRACE_PRINT(LogLevel::INFO, "Found NOT");
+    TRACE_PRINT(INFO, "Found NOT");
     if(NodePtr expr_ptr{t_expr()}; expr_ptr) {
       node = std::make_unique<Not>(std::move(expr_ptr));
     } else {
@@ -574,26 +574,26 @@ auto AwkParser::literal() -> NodePtr
     // TODO: Token in the grammar calls for NUMBER? These are not treated
     // differently?
     case TokenType::FLOAT:
-      TRACE_PRINT(LogLevel::INFO, "Found FLOAT literal");
+      TRACE_PRINT(INFO, "Found FLOAT literal");
       node = std::make_unique<Float>(token.value<double>());
       break;
 
     case TokenType::HEX:
       [[fallthrough]];
     case TokenType::INTEGER:
-      TRACE_PRINT(LogLevel::INFO, "Found INTEGER literal: ");
+      TRACE_PRINT(INFO, "Found INTEGER literal: ");
       node = std::make_unique<Integer>(token.value<int>());
       break;
 
     case TokenType::STRING:
-      TRACE_PRINT(LogLevel::INFO,
+      TRACE_PRINT(INFO,
                   "Found STRING literal: ", token.value<std::string>());
       node = std::make_unique<String>(token.value<std::string>());
       break;
 
     // TODO: match
     case TokenType::REGEX:
-      TRACE_PRINT(LogLevel::INFO,
+      TRACE_PRINT(INFO,
                   "Found REGEX literal: ", token.value<std::string>());
       node = std::make_unique<Regex>(token.value<std::string>());
       break;
@@ -615,7 +615,7 @@ auto AwkParser::prefix_operator() -> NodePtr
   // TODO: Find a way to shorten or macro this?
   switch(next().type()) {
     case TokenType::INCREMENT: {
-      TRACE_PRINT(LogLevel::INFO, "Found --INCREMENT");
+      TRACE_PRINT(INFO, "Found --INCREMENT");
       if(auto ptr{lvalue()}; ptr) {
         node = std::make_unique<Increment>(std::move(ptr), true);
       } else {
@@ -625,7 +625,7 @@ auto AwkParser::prefix_operator() -> NodePtr
     }
 
     case TokenType::DECREMENT: {
-      TRACE_PRINT(LogLevel::INFO, "Found --DECREMENT");
+      TRACE_PRINT(INFO, "Found --DECREMENT");
       if(auto ptr{lvalue()}; ptr) {
         node = std::make_unique<Decrement>(std::move(ptr), true);
       } else {
@@ -654,12 +654,12 @@ auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
   } else {
     switch(next().type()) {
       case TokenType::INCREMENT:
-        TRACE_PRINT(LogLevel::INFO, "Found INCREMENT++");
+        TRACE_PRINT(INFO, "Found INCREMENT++");
         node = std::make_unique<Increment>(std::move(t_lhs), false);
         break;
 
       case TokenType::DECREMENT:
-        TRACE_PRINT(LogLevel::INFO, "Found DECREMENT--");
+        TRACE_PRINT(INFO, "Found DECREMENT--");
         node = std::make_unique<Decrement>(std::move(t_lhs), false);
         break;
 
@@ -708,7 +708,7 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
   // TODO: Split even further?
   switch(next().type()) {
     case TokenType::WHILE: {
-      TRACE_PRINT(LogLevel::INFO, "Found WHILE");
+      TRACE_PRINT(INFO, "Found WHILE");
 
       expect(TokenType::PAREN_OPEN, "(");
       NodePtr condition{expr()};
@@ -730,7 +730,7 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
     }
 
     case TokenType::FOR: {
-      TRACE_PRINT(LogLevel::INFO, "Found FOR");
+      TRACE_PRINT(INFO, "Found FOR");
 
       expect(TokenType::PAREN_OPEN, "(");
 
@@ -740,7 +740,7 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
          identifier.type() == TokenType::IDENTIFIER) {
         next();
         if(next_if(TokenType::IN)) {
-          TRACE_PRINT(LogLevel::INFO, "Found FOR IN");
+          TRACE_PRINT(INFO, "Found FOR IN");
 
           membership = true;
           auto array{expect(TokenType::IDENTIFIER, "identifier")};
@@ -765,7 +765,7 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 
       if(!membership) {
         if(auto ptr{simple_statement_opt()}; ptr) {
-          TRACE_PRINT(LogLevel::INFO, "Found FOR(;;)");
+          TRACE_PRINT(INFO, "Found FOR(;;)");
 
           expect(TokenType::SEMICOLON, ";");
           auto condition{expr_opt()};
@@ -830,7 +830,7 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
   // Concatenation or a binary operator
   if(nupe) {
     if(auto rhs{non_unary_print_expr()}; rhs) {
-      TRACE_PRINT(LogLevel::INFO, "Found STRING CONCAT");
+      TRACE_PRINT(INFO, "Found STRING CONCAT");
       node =
         std::make_unique<StringConcatenation>(std::move(nupe), std::move(rhs));
     } else if(auto ptr{universal_print_expr(nupe, lambda)}; ptr) {
@@ -890,7 +890,7 @@ auto AwkParser::print_expr_list() -> NodeListPtr
   NodeListPtr nodes{std::make_unique<List>()};
 
   if(auto ptr{print_expr()}; ptr) {
-    TRACE_PRINT(LogLevel::INFO, "Found PRINT_EXPR");
+    TRACE_PRINT(INFO, "Found PRINT_EXPR");
 
     nodes->push_back(std::move(ptr));
   }
@@ -899,7 +899,7 @@ auto AwkParser::print_expr_list() -> NodeListPtr
     if(next_if(TokenType::COMMA)) {
       newline_opt();
       if(auto ptr{print_expr()}; ptr) {
-        TRACE_PRINT(LogLevel::INFO, "Found ',' PRINT_EXPR");
+        TRACE_PRINT(INFO, "Found ',' PRINT_EXPR");
 
         nodes->push_back(std::move(ptr));
       } else {
@@ -959,7 +959,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
   // Concatenation or a binary operator
   if(nue) {
     if(auto rhs{non_unary_expr()}; rhs) {
-      TRACE_PRINT(LogLevel::INFO, "Found STRING CONCAT");
+      TRACE_PRINT(INFO, "Found STRING CONCAT");
       node =
         std::make_unique<StringConcatenation>(std::move(nue), std::move(rhs));
     } else if(auto ptr{universal_expr(nue, lambda)}; ptr) {
@@ -1027,7 +1027,7 @@ auto AwkParser::multiple_expr_list() -> NodeListPtr
   NodeListPtr nodes{std::make_unique<List>()};
 
   if(auto ptr{expr()}; ptr) {
-    TRACE_PRINT(LogLevel::INFO, "Found EXPR");
+    TRACE_PRINT(INFO, "Found EXPR");
 
     nodes->push_back(std::move(ptr));
   }
@@ -1036,7 +1036,7 @@ auto AwkParser::multiple_expr_list() -> NodeListPtr
     if(next_if(TokenType::COMMA)) {
       newline_opt();
       if(auto ptr{expr()}; ptr) {
-        TRACE_PRINT(LogLevel::INFO, "Found ',' EXPR");
+        TRACE_PRINT(INFO, "Found ',' EXPR");
 
         nodes->push_back(std::move(ptr));
       } else {
@@ -1146,11 +1146,11 @@ auto AwkParser::simple_print_statement() -> NodePtr
   };
 
   if(next_if(TokenType::PRINT)) {
-    TRACE_PRINT(LogLevel::INFO, "Found 'print'");
+    TRACE_PRINT(INFO, "Found 'print'");
 
     node = std::make_unique<Print>(lambda());
   } else if(next_if(TokenType::PRINTF)) {
-    TRACE_PRINT(LogLevel::INFO, "Found 'printf");
+    TRACE_PRINT(INFO, "Found 'printf");
 
     node = std::make_unique<Printf>(lambda());
   }
@@ -1287,7 +1287,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
   }};
 
   if(next_if(TokenType::IF)) {
-    TRACE_PRINT(LogLevel::INFO, "Found IF");
+    TRACE_PRINT(INFO, "Found IF");
     // TODO: Adjust grouping() to something more general?
     expect(TokenType::PAREN_OPEN, "(");
     NodePtr condition{expr()};
@@ -1326,7 +1326,7 @@ auto AwkParser::terminated_statement() -> NodePtr
 
     node = std::move(ptr);
   } else if(next_if(TokenType::IF)) {
-    TRACE_PRINT(LogLevel::INFO, "Found IF");
+    TRACE_PRINT(INFO, "Found IF");
 
     expect(TokenType::PAREN_OPEN, "(");
     NodePtr condition{expr()};
@@ -1425,7 +1425,7 @@ auto AwkParser::action() -> NodeListPtr
   NodeListPtr node;
 
   if(next_if(TokenType::ACCOLADE_OPEN)) {
-    TRACE_PRINT(LogLevel::INFO, "Found '{'");
+    TRACE_PRINT(INFO, "Found '{'");
 
     newline_opt();
 
@@ -1438,7 +1438,7 @@ auto AwkParser::action() -> NodeListPtr
     }
 
     expect(TokenType::ACCOLADE_CLOSE, "}");
-    TRACE_PRINT(LogLevel::INFO, "Found '}'");
+    TRACE_PRINT(INFO, "Found '}'");
   }
 
   return node;
@@ -1450,12 +1450,12 @@ auto AwkParser::special_pattern() -> NodePtr
   NodePtr node;
 
   if(next_if(TokenType::BEGIN)) {
-    TRACE_PRINT(LogLevel::INFO, "Found 'BEGIN'");
+    TRACE_PRINT(INFO, "Found 'BEGIN'");
 
     node = std::make_unique<SpecialPattern>(SpecialPatternOp::BEGIN);
 
   } else if(next_if(TokenType::END)) {
-    TRACE_PRINT(LogLevel::INFO, "Found 'END'");
+    TRACE_PRINT(INFO, "Found 'END'");
 
     node = std::make_unique<SpecialPattern>(SpecialPatternOp::END);
   }
@@ -1507,7 +1507,7 @@ auto AwkParser::param_list() -> NodeListPtr
   NodeListPtr nodes{std::make_unique<List>()};
 
   if(const auto token{next()}; token.type() == TokenType::IDENTIFIER) {
-    TRACE_PRINT(LogLevel::INFO, "Found NAME");
+    TRACE_PRINT(INFO, "Found NAME");
 
     nodes->push_back(std::make_unique<Variable>(token.value<std::string>()));
   } else {
@@ -1516,7 +1516,7 @@ auto AwkParser::param_list() -> NodeListPtr
 
   while(!eos()) {
     if(next_if(TokenType::COMMA)) {
-      TRACE_PRINT(LogLevel::INFO, "Found ',' NAME");
+      TRACE_PRINT(INFO, "Found ',' NAME");
       const auto token{expect(TokenType::IDENTIFIER, "NAME")};
 
       nodes->push_back(std::make_unique<Variable>(token.value<std::string>()));

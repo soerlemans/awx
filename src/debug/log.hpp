@@ -1,13 +1,16 @@
 #ifndef LOG_HPP
 #define LOG_HPP
 
+// STL Includes:
 #include <iostream>
 #include <string_view>
 
+// Includes:
 #include "../types.hpp"
 
+
 // Only log if we are on the development build
-#if DEVELOPMENT
+#if DEBUG
 
 // Macros:
 #define LOG_PRINTLN(...) log::println(__VA_ARGS__)
@@ -29,10 +32,10 @@
   } while(0)
 
 #define LOG_SET_LOGLEVEL(level) \
-  do {                      \
+  do {                          \
   } while(0)
 
-#endif // DEVELOPMENT
+#endif // DEBUG
 
 namespace log {
 // Enums:
@@ -45,7 +48,7 @@ enum class LogLevel : u16 {
   VERBOSE,
 };
 
-#if DEVELOPMENT
+#if DEBUG
 // Macros:
 // Stringify the given log leven in a case
 #define LOG_CASE_STRINGIFY_LOGLEVEL(loglevel) \
@@ -60,7 +63,7 @@ constexpr auto loglevel2str(const LogLevel t_loglevel) -> std::string_view
     LOG_CASE_STRINGIFY_LOGLEVEL(ERROR);
     LOG_CASE_STRINGIFY_LOGLEVEL(WARNING);
     LOG_CASE_STRINGIFY_LOGLEVEL(INFO);
-    LOG_CASE_STRINGIFY_LOGLEVEL(DEBUG);
+    LOG_CASE_STRINGIFY_LOGLEVEL(VERBOSE);
 
     default:
       // TODO: Error or handle unknown loglevel
@@ -108,7 +111,7 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
   }
 }
 
-#endif // DEVELOPMENT
+#endif // DEBUG
 } // namespace log
 
 #endif // LOG_HPP

@@ -6,8 +6,8 @@
 #include "log.hpp"
 
 
-// Only facilitate Trace if we are on DEVELOPMENT build
-#if DEVELOPMENT
+// Only facilitate Trace if we are on DEBUG build
+#if DEBUG
 
 // Helper macros for TRACE:
 #define CONCAT(a, b)       CONCAT_INNER(a, b)
@@ -25,7 +25,7 @@
 // on the same level within a function
 #define TRACE_PRINT(loglevel, ...)                                \
   do {                                                            \
-    Trace CONCAT(trace, __COUNTER__){log::loglevel, __VA_ARGS__}; \
+    Trace CONCAT(trace, __COUNTER__){log::LogLevel::loglevel, __VA_ARGS__};	\
   } while(false)
 
 // Trace class used for figuring out

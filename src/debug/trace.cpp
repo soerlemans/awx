@@ -6,8 +6,8 @@
 #include <sstream>
 
 
-// Only facilitate Trace if we are on DEVELOPMENT build
-#if DEVELOPMENT
+// Only facilitate Trace if we are on DEBUG build
+#if DEBUG
 
 // Static variables:
 int Trace::m_counter{0};
@@ -35,4 +35,4 @@ Trace::~Trace()
   }
 }
 
-#endif // DEVELOPMENT
+#endif // DEBUG

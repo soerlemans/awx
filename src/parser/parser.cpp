@@ -77,7 +77,7 @@ auto Parser::expect(const TokenType t_tokentype, const std::string_view t_msg)
     ss << t_msg << '\n';
     ss << m_tokenstream.token().file_position();
 
-    // Only print stack trace information on DEVELOPMENT build
+    // Only print stack trace information on DEBUG build
     // ss << "Stack trace:\n";
     // ss << std::stacktrace::current() << '\n';
 
