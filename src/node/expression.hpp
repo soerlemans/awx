@@ -1,7 +1,7 @@
 #ifndef EXPRESSION_HPP
 #define EXPRESSION_HPP
 
-#include "node.hpp"
+#include "node_interface.hpp"
 
 
 namespace nodes {

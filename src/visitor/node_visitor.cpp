@@ -1,7 +1,7 @@
 #include "node_visitor.hpp"
 
 // Includes:
-#include "../node/node.hpp"
+#include "../node/node_interface.hpp"
 
 
 using namespace nodes;

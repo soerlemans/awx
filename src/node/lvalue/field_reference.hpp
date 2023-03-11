@@ -1,7 +1,7 @@
 #ifndef FIELD_REFERENCE_HPP
 #define FIELD_REFERENCE_HPP
 
-#include "../node.hpp"
+#include "../node_interface.hpp"
 
 
 namespace nodes::lvalue {

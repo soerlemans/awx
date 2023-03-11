@@ -1,7 +1,7 @@
 #ifndef NEXT_HPP
 #define NEXT_HPP
 
-#include "../node.hpp"
+#include "../node_interface.hpp"
 
 #include "control.hpp"
 

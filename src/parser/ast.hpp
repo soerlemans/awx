@@ -4,7 +4,7 @@
 #include "../types.hpp"
 
 #include "../node/list.hpp"
-#include "../node/node.hpp"
+#include "../node/node_interface.hpp"
 #include "../visitor/node_visitor.hpp"
 
 

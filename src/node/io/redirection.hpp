@@ -1,7 +1,7 @@
 #ifndef REDIRECTION_HPP
 #define REDIRECTION_HPP
 
-#include "../node.hpp"
+#include "../node_interface.hpp"
 
 #include "io.hpp"
 

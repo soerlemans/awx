@@ -3,7 +3,7 @@
 
 #include <string_view>
 
-#include "../node.hpp"
+#include "../node_interface.hpp"
 
 #include "lvalue.hpp"
 

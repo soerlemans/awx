@@ -2,7 +2,7 @@
 #define FUNCTION_HPP
 
 #include "../list.hpp"
-#include "../node.hpp"
+#include "../node_interface.hpp"
 
 #include "functions.hpp"
 

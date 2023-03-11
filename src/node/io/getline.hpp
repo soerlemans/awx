@@ -1,7 +1,7 @@
 #ifndef GETLINE_HPP
 #define GETLINE_HPP
 
-#include "../node.hpp"
+#include "../node_interface.hpp"
 
 #include "io.hpp"
 

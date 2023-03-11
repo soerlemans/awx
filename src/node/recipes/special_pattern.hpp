@@ -2,7 +2,7 @@
 #define SPECIAL_PATTERN_HPP
 
 
-#include "../node.hpp"
+#include "../node_interface.hpp"
 
 #include "recipes.hpp"
 

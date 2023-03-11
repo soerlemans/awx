@@ -1,7 +1,7 @@
 #ifndef CONTINUE_HPP
 #define CONTINUE_HPP
 
-#include "../node.hpp"
+#include "../node_interface.hpp"
 
 #include "control.hpp"
 

@@ -8,7 +8,7 @@
 // Top level:
 #include "../node/list.hpp"
 #include "../node/nil.hpp"
-#include "../node/node.hpp"
+#include "../node/node_interface.hpp"
 #include "../node/nodes.hpp"
 
 // Control Statements:

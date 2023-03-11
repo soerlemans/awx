@@ -4,7 +4,7 @@
 #include <list>
 #include <memory>
 
-#include "node.hpp"
+#include "node_interface.hpp"
 #include "nodes.hpp"
 
 

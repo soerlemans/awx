@@ -6,7 +6,7 @@
 
 #include "../../types.hpp"
 
-#include "../node.hpp"
+#include "../node_interface.hpp"
 #include "../nodes.hpp"
 
 

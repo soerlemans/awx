@@ -1,7 +1,7 @@
 #ifndef EXIT_HPP
 #define EXIT_HPP
 
-#include "../node.hpp"
+#include "../node_interface.hpp"
 
 #include "control.hpp"
 

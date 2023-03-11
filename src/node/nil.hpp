@@ -1,7 +1,7 @@
 #ifndef NIL_HPP
 #define NIL_HPP
 
-#include "node.hpp"
+#include "node_interface.hpp"
 
 
 namespace nodes {

@@ -1,7 +1,7 @@
 #ifndef RETURN_HPP
 #define RETURN_HPP
 
-#include "../node.hpp"
+#include "../node_interface.hpp"
 
 #include "control.hpp"
 

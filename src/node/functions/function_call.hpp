@@ -5,7 +5,7 @@
 #include <string_view>
 
 #include "../list.hpp"
-#include "../node.hpp"
+#include "../node_interface.hpp"
 
 #include "functions.hpp"
 
