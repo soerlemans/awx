@@ -294,6 +294,13 @@ auto PrintVisitor::visit(node::operators::StringConcatenation* t_conc) -> void
   t_conc->second()->accept(this);
 }
 
+auto PrintVisitor::visit(node::operators::Grouping* t_grouping) -> void
+{
+  Printer printer{m_counter};
+
+  printer.print("GROUPING");
+}
+
 auto PrintVisitor::visit(node::operators::Ternary* t_ternary) -> void
 {
   Printer printer{m_counter};

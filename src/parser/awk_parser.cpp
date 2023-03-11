@@ -587,14 +587,14 @@ auto AwkParser::literal() -> NodePtr
 
     case TokenType::STRING:
       DBG_TRACE_PRINT(INFO,
-                  "Found STRING literal: ", token.value<std::string>());
+                      "Found STRING literal: ", token.value<std::string>());
       node = std::make_unique<String>(token.value<std::string>());
       break;
 
     // TODO: match
     case TokenType::REGEX:
       DBG_TRACE_PRINT(INFO,
-                  "Found REGEX literal: ", token.value<std::string>());
+                      "Found REGEX literal: ", token.value<std::string>());
       node = std::make_unique<Regex>(token.value<std::string>());
       break;
 
@@ -1352,7 +1352,7 @@ auto AwkParser::terminated_statement() -> NodePtr
     if(tokentype::is_terminator(get_token().type())) {
       next();
     } else {
-			DBG_TRACE(VERBOSE, "Expected a terminator!");
+      DBG_TRACE(VERBOSE, "Expected a terminator!");
       throw std::runtime_error{"Expected a terminator!"};
     }
     newline_opt();

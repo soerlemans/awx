@@ -104,6 +104,7 @@ class PrintVisitor : public NodeVisitor {
   auto visit(node::operators::Or* t_or) -> void override;
 
   auto visit(node::operators::StringConcatenation* t_conc) -> void override;
+  auto visit(node::operators::Grouping* t_grouping) -> void override;
   auto visit(node::operators::Ternary* t_ternary) -> void override;
 
   auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> void override;
