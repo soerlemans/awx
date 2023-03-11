@@ -81,11 +81,18 @@ auto run() -> void
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
+  CLI::App app{"AWX is a POSIX AWK implementation with extensions."};
+
+  std::string filename = "default";
+  app.add_option("-f,--file", filename, "A help string");
+
+  CLI11_PARSE(app, t_argc, t_argv);
+
   // Set loglevel for now for debugging purposes
   DBG_SET_LOGLEVEL(VERBOSE);
   DBG_PRINTLN("#== BEGIN ==#");
 
-  parse_args(t_argc, t_argv);
+  // parse_args(t_argc, t_argv);
 
   try {
     run();
