@@ -15,7 +15,7 @@
 #define LOG(loglevel, ...) \
   log::log(__FILE__, __func__, __LINE__, log::loglevel, __VA_ARGS__)
 
-#define SET_LOGLEVEL(loglevel) set_loglevel(loglevel)
+#define LOG_SET_LOGLEVEL(loglevel) set_loglevel(log::LogLevel::loglevel)
 
 #else
 
@@ -28,7 +28,7 @@
   do {           \
   } while(0)
 
-#define SET_LOGLEVEL(level) \
+#define LOG_SET_LOGLEVEL(level) \
   do {                      \
   } while(0)
 
@@ -42,7 +42,7 @@ enum class LogLevel : u16 {
   ERROR,
   WARNING,
   INFO,
-  DEBUG,
+  VERBOSE,
 };
 
 #if DEVELOPMENT

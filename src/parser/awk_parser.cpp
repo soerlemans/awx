@@ -38,7 +38,7 @@ AwkParser::AwkParser(TokenStream t_tokenstream)
 // Parsing rule/grammar rules:
 auto AwkParser::newline_opt() -> void
 {
-  TRACE(LogLevel::DEBUG, "NEWLINE OPT");
+  TRACE(VERBOSE, "NEWLINE OPT");
 
   while(!eos() && next_if(TokenType::NEWLINE)) {
     TRACE_PRINT(LogLevel::INFO, "Found NEWLINE");
@@ -47,7 +47,7 @@ auto AwkParser::newline_opt() -> void
 
 auto AwkParser::simple_get() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "SIMPLE GET");
+  TRACE(VERBOSE, "SIMPLE GET");
   NodePtr node;
 
   if(next_if(TokenType::GETLINE)) {
@@ -61,7 +61,7 @@ auto AwkParser::simple_get() -> NodePtr
 
 auto AwkParser::unary_input_function() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "UNARY INPUT FUNCTION");
+  TRACE(VERBOSE, "UNARY INPUT FUNCTION");
   NodePtr node;
 
   if(NodePtr lhs{unary_expr()}; lhs) {
@@ -80,7 +80,7 @@ auto AwkParser::unary_input_function() -> NodePtr
 //                  ;
 auto AwkParser::non_unary_input_function() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "NON UNARY INPUT FUNCTION");
+  TRACE(VERBOSE, "NON UNARY INPUT FUNCTION");
   NodePtr node;
 
   // Recursive causes endless loop
@@ -105,7 +105,7 @@ auto AwkParser::non_unary_input_function() -> NodePtr
 
 auto AwkParser::lvalue() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "LVALUE");
+  TRACE(VERBOSE, "LVALUE");
   NodePtr node;
 
   const auto token{next()};
@@ -141,17 +141,17 @@ auto AwkParser::lvalue() -> NodePtr
 
 auto AwkParser::function() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "FUNCTION");
+  TRACE(VERBOSE, "FUNCTION");
   NodePtr node;
 
   if(next_if(TokenType::FUNCTION)) {
-    TRACE_PRINT(LogLevel::DEBUG, "Found FUNCTION");
+    TRACE_PRINT(VERBOSE, "Found FUNCTION");
 
     if(const auto token{get_token()};
        tokentype::is_valid_function_identifier(token.type())) {
       next();
       const auto name{token.value<std::string>()};
-      TRACE_PRINT(LogLevel::DEBUG, "Valid FUNCTION IDENTIFIER: ", name);
+      TRACE_PRINT(VERBOSE, "Valid FUNCTION IDENTIFIER: ", name);
 
       // TODO: Create a Function class
       expect(TokenType::PAREN_OPEN, "(");
@@ -177,7 +177,7 @@ auto AwkParser::function() -> NodePtr
 // User defined
 auto AwkParser::function_call() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "FUNCTION CALL");
+  TRACE(VERBOSE, "FUNCTION CALL");
   NodePtr node;
 
   switch(const auto token{next()}; token.type()) {
@@ -205,7 +205,7 @@ auto AwkParser::function_call() -> NodePtr
 
 auto AwkParser::match(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "MATCH");
+  TRACE(VERBOSE, "MATCH");
   NodePtr node;
 
   // Little helper function to cut down on the bloat
@@ -239,7 +239,7 @@ auto AwkParser::match(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
 auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "ARITHMETIC");
+  TRACE(VERBOSE, "ARITHMETIC");
   NodePtr node;
 
   // Little helper function to cut down on the bloat
@@ -293,7 +293,7 @@ auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
 auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "ASSIGNMENT");
+  TRACE(VERBOSE, "ASSIGNMENT");
   NodePtr node;
 
   // TODO: Create an actual function for this that we can call instead of
@@ -353,7 +353,7 @@ auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
 auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "COMPARISON");
+  TRACE(VERBOSE, "COMPARISON");
   NodePtr node;
 
   const auto lambda = [&](ComparisonOp t_op) -> NodePtr {
@@ -405,11 +405,11 @@ auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
 auto AwkParser::membership(NodePtr& t_lhs) -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "MEMBERSHIP");
+  TRACE(VERBOSE, "MEMBERSHIP");
   NodePtr node;
 
   if(next_if(TokenType::IN)) {
-    TRACE_PRINT(LogLevel::DEBUG, "Found MEMBERSHIP");
+    TRACE_PRINT(VERBOSE, "Found MEMBERSHIP");
     const auto name{expect(TokenType::IDENTIFIER, "NAME")};
     node =
       std::make_unique<Membership>(std::move(t_lhs), name.value<std::string>());
@@ -420,7 +420,7 @@ auto AwkParser::membership(NodePtr& t_lhs) -> NodePtr
 
 auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "LOGICAL");
+  TRACE(VERBOSE, "LOGICAL");
   NodePtr node;
 
   switch(next().type()) {
@@ -459,13 +459,13 @@ auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 // TODO: Add extra parameter for ternary expression
 auto AwkParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "TERNARY");
+  TRACE(VERBOSE, "TERNARY");
   NodePtr node;
 
   // FIXME: simple_print_statement has a rule that conflicts and does not make
   // It possible to detect if it is a print() or print () ? : ;
   if(next_if(TokenType{g_questionmark})) {
-    TRACE(LogLevel::DEBUG, "Found TERNARY");
+    TRACE(VERBOSE, "Found TERNARY");
     NodePtr then_ptr{t_rhs()};
     if(!then_ptr) {
       // TODO: Error handling
@@ -489,7 +489,7 @@ auto AwkParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 auto AwkParser::universal_print_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "UNIVERSAL PRINT EXPR");
+  TRACE(VERBOSE, "UNIVERSAL PRINT EXPR");
   NodePtr node;
 
   // if(auto rhs{non_unary_expr()}; rhs) {
@@ -532,11 +532,11 @@ auto AwkParser::universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
 // TODO: Create a function that extracts expressions from in between '(', ')'
 auto AwkParser::grouping() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "GROUPING");
+  TRACE(VERBOSE, "GROUPING");
   NodePtr node;
 
   if(next_if(TokenType::PAREN_OPEN)) {
-    TRACE_PRINT(LogLevel::DEBUG, "Found GROUPING");
+    TRACE_PRINT(VERBOSE, "Found GROUPING");
 
     node = std::make_unique<Grouping>(expr());
     expect(TokenType::PAREN_CLOSE, ")");
@@ -548,7 +548,7 @@ auto AwkParser::grouping() -> NodePtr
 // negation == not, !
 auto AwkParser::negation(const ParserFunc& t_expr) -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "NEGATION");
+  TRACE(VERBOSE, "NEGATION");
   NodePtr node;
 
   if(next_if(TokenType::NOT)) {
@@ -567,7 +567,7 @@ auto AwkParser::negation(const ParserFunc& t_expr) -> NodePtr
 // This method parses literals
 auto AwkParser::literal() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "LITERAL");
+  TRACE(VERBOSE, "LITERAL");
   NodePtr node;
 
   switch(const auto token{next()}; token.type()) {
@@ -609,7 +609,7 @@ auto AwkParser::literal() -> NodePtr
 // Prefix operator parses prefix increment and decrement
 auto AwkParser::prefix_operator() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "PREFIX OPERATOR");
+  TRACE(VERBOSE, "PREFIX OPERATOR");
   NodePtr node;
 
   // TODO: Find a way to shorten or macro this?
@@ -646,7 +646,7 @@ auto AwkParser::prefix_operator() -> NodePtr
 auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
   -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "UNIVERSAL LVALUE");
+  TRACE(VERBOSE, "UNIVERSAL LVALUE");
   NodePtr node;
 
   if(auto ptr{assignment(t_lhs, t_rhs)}; ptr) {
@@ -675,13 +675,13 @@ auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
 // Parses unary prefixes like having a + or - before an expression
 auto AwkParser::unary_prefix(const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "UNARY PREFIX");
+  TRACE(VERBOSE, "UNARY PREFIX");
   NodePtr node;
 
   switch(const auto tokentype{next().type()}; tokentype) {
     case TokenType::PLUS:
     case TokenType::MINUS: {
-      TRACE(LogLevel::DEBUG, "Found UNARY PREFIX");
+      TRACE(VERBOSE, "Found UNARY PREFIX");
 
       NodePtr rhs{t_rhs()};
       if(!rhs) {
@@ -702,7 +702,7 @@ auto AwkParser::unary_prefix(const ParserFunc& t_rhs) -> NodePtr
 // TODO: Split FOR and WHILE into their own functions
 auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "LOOP");
+  TRACE(VERBOSE, "LOOP");
   NodePtr node;
 
   // TODO: Split even further?
@@ -800,7 +800,7 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 
 auto AwkParser::non_unary_print_expr() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "NON UNARY PRINT EXPR");
+  TRACE(VERBOSE, "NON UNARY PRINT EXPR");
   NodePtr node;
   NodePtr nupe;
 
@@ -846,7 +846,7 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
 
 auto AwkParser::unary_print_expr() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "UNARY PRINT EXPR");
+  TRACE(VERBOSE, "UNARY PRINT EXPR");
   NodePtr node;
 
   const auto lambda = [&]() -> NodePtr {
@@ -870,7 +870,7 @@ auto AwkParser::unary_print_expr() -> NodePtr
 
 auto AwkParser::print_expr() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "PRINT EXPR");
+  TRACE(VERBOSE, "PRINT EXPR");
   NodePtr node;
 
   if(auto ptr{unary_print_expr()}; ptr) {
@@ -886,7 +886,7 @@ auto AwkParser::print_expr() -> NodePtr
 // Can use
 auto AwkParser::print_expr_list() -> NodeListPtr
 {
-  TRACE(LogLevel::DEBUG, "PRINT EXPR LIST");
+  TRACE(VERBOSE, "PRINT EXPR LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
   if(auto ptr{print_expr()}; ptr) {
@@ -920,14 +920,14 @@ auto AwkParser::print_expr_list() -> NodeListPtr
 
 auto AwkParser::print_expr_list_opt() -> NodeListPtr
 {
-  TRACE(LogLevel::DEBUG, "PRINT EXPR LIST OPT");
+  TRACE(VERBOSE, "PRINT EXPR LIST OPT");
 
   return print_expr_list();
 }
 
 auto AwkParser::non_unary_expr() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "NON UNARY EXPR");
+  TRACE(VERBOSE, "NON UNARY EXPR");
   NodePtr node;
   NodePtr nue;
 
@@ -975,7 +975,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
 
 auto AwkParser::unary_expr() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "UNARY EXPR");
+  TRACE(VERBOSE, "UNARY EXPR");
   NodePtr node;
 
   const auto lambda = [&]() -> NodePtr {
@@ -1000,7 +1000,7 @@ auto AwkParser::unary_expr() -> NodePtr
 
 auto AwkParser::expr() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "EXPR");
+  TRACE(VERBOSE, "EXPR");
   NodePtr node;
 
   if(auto ptr{non_unary_expr()}; ptr) {
@@ -1016,14 +1016,14 @@ auto AwkParser::expr() -> NodePtr
 
 auto AwkParser::expr_opt() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "EXPR OPT");
+  TRACE(VERBOSE, "EXPR OPT");
 
   return expr();
 }
 
 auto AwkParser::multiple_expr_list() -> NodeListPtr
 {
-  TRACE(LogLevel::DEBUG, "MULTIPLE EXPR LIST");
+  TRACE(VERBOSE, "MULTIPLE EXPR LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
   if(auto ptr{expr()}; ptr) {
@@ -1058,7 +1058,7 @@ auto AwkParser::multiple_expr_list() -> NodeListPtr
 
 auto AwkParser::expr_list() -> NodeListPtr
 {
-  TRACE(LogLevel::DEBUG, "EXPR LIST");
+  TRACE(VERBOSE, "EXPR LIST");
   NodeListPtr nodes;
 
   // multiple_expr_list allows one or multiple expr
@@ -1073,7 +1073,7 @@ auto AwkParser::expr_list() -> NodeListPtr
 
 auto AwkParser::expr_list_opt() -> NodeListPtr
 {
-  TRACE(LogLevel::DEBUG, "EXPR LIST OPT");
+  TRACE(VERBOSE, "EXPR LIST OPT");
 
   return expr_list();
 }
@@ -1085,7 +1085,7 @@ auto AwkParser::expr_list_opt() -> NodeListPtr
 // TODO: Figure this one out
 auto AwkParser::output_redirection(NodePtr& t_lhs) -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "OUTPUT REDIRECTION");
+  TRACE(VERBOSE, "OUTPUT REDIRECTION");
   NodePtr node;
 
   // TODO: Have Redirection automatically convert TokenType to the correct
@@ -1123,7 +1123,7 @@ auto AwkParser::output_redirection(NodePtr& t_lhs) -> NodePtr
 
 auto AwkParser::simple_print_statement() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "SIMPLE PRINT STATEMENT");
+  TRACE(VERBOSE, "SIMPLE PRINT STATEMENT");
   NodePtr node;
 
   // Convenience lambda
@@ -1160,7 +1160,7 @@ auto AwkParser::simple_print_statement() -> NodePtr
 
 auto AwkParser::print_statement() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "PRINT STATEMENT");
+  TRACE(VERBOSE, "PRINT STATEMENT");
   NodePtr node;
 
   if(auto ptr{simple_print_statement()}; ptr) {
@@ -1178,7 +1178,7 @@ auto AwkParser::print_statement() -> NodePtr
 // simple_statement : Delete NAME '[' expr_list ']'
 auto AwkParser::simple_statement() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "SIMPLE STATEMENT");
+  TRACE(VERBOSE, "SIMPLE STATEMENT");
   NodePtr node;
 
   if(next_if(TokenType::DELETE)) {
@@ -1199,7 +1199,7 @@ auto AwkParser::simple_statement() -> NodePtr
 
 auto AwkParser::simple_statement_opt() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "SIMPLE STATEMENT OPT");
+  TRACE(VERBOSE, "SIMPLE STATEMENT OPT");
 
   return simple_statement();
 }
@@ -1215,7 +1215,7 @@ auto AwkParser::simple_statement_opt() -> NodePtr
 //                  ;
 auto AwkParser::terminatable_statement() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "TERMINATABLE STATEMENT");
+  TRACE(VERBOSE, "TERMINATABLE STATEMENT");
   NodePtr node;
 
   const auto keyword{next()};
@@ -1279,7 +1279,7 @@ auto AwkParser::terminatable_statement() -> NodePtr
 // TODO: Refactor
 auto AwkParser::unterminated_statement() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT");
+  TRACE(VERBOSE, "UNTERMINATED STATEMENT");
   NodePtr node;
 
   const auto lambda{[&]() {
@@ -1314,7 +1314,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
 // TODO: Refactor
 auto AwkParser::terminated_statement() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT");
+  TRACE(VERBOSE, "TERMINATED STATEMENT");
   NodePtr node;
 
   const auto lambda{[&]() {
@@ -1366,7 +1366,7 @@ auto AwkParser::terminated_statement() -> NodePtr
 // Unterminated statements end on a -> '\n'
 auto AwkParser::unterminated_statement_list() -> NodeListPtr
 {
-  TRACE(LogLevel::DEBUG, "UNTERMINATED STATEMENT LIST");
+  TRACE(VERBOSE, "UNTERMINATED STATEMENT LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
   while(!eos()) {
@@ -1388,7 +1388,7 @@ auto AwkParser::unterminated_statement_list() -> NodeListPtr
 // Terminated statements end on a -> ';'
 auto AwkParser::terminated_statement_list() -> NodeListPtr
 {
-  TRACE(LogLevel::DEBUG, "TERMINATED STATEMENT LIST");
+  TRACE(VERBOSE, "TERMINATED STATEMENT LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
   while(!eos()) {
@@ -1409,7 +1409,7 @@ auto AwkParser::terminated_statement_list() -> NodeListPtr
 
 auto AwkParser::terminator() -> void
 {
-  TRACE(LogLevel::DEBUG, "TERMINATOR");
+  TRACE(VERBOSE, "TERMINATOR");
 
   const auto token{next()};
   if(!tokentype::is_terminator(token.type())) {
@@ -1421,7 +1421,7 @@ auto AwkParser::terminator() -> void
 
 auto AwkParser::action() -> NodeListPtr
 {
-  TRACE(LogLevel::DEBUG, "ACTION");
+  TRACE(VERBOSE, "ACTION");
   NodeListPtr node;
 
   if(next_if(TokenType::ACCOLADE_OPEN)) {
@@ -1446,7 +1446,7 @@ auto AwkParser::action() -> NodeListPtr
 
 auto AwkParser::special_pattern() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "SPECIAL PATTERN");
+  TRACE(VERBOSE, "SPECIAL PATTERN");
   NodePtr node;
 
   if(next_if(TokenType::BEGIN)) {
@@ -1468,7 +1468,7 @@ auto AwkParser::special_pattern() -> NodePtr
 //                  ;
 auto AwkParser::normal_pattern() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "NORMAL PATTERN");
+  TRACE(VERBOSE, "NORMAL PATTERN");
   NodePtr node;
 
   if(auto ptr{expr()}; ptr) {
@@ -1489,7 +1489,7 @@ auto AwkParser::normal_pattern() -> NodePtr
 
 auto AwkParser::pattern() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "PATTERN");
+  TRACE(VERBOSE, "PATTERN");
   NodePtr node;
 
   if(auto ptr{normal_pattern()}; ptr) {
@@ -1503,7 +1503,7 @@ auto AwkParser::pattern() -> NodePtr
 
 auto AwkParser::param_list() -> NodeListPtr
 {
-  TRACE(LogLevel::DEBUG, "PARAM LIST");
+  TRACE(VERBOSE, "PARAM LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
   if(const auto token{next()}; token.type() == TokenType::IDENTIFIER) {
@@ -1534,14 +1534,14 @@ auto AwkParser::param_list() -> NodeListPtr
 
 auto AwkParser::param_list_opt() -> NodeListPtr
 {
-  TRACE(LogLevel::DEBUG, "PARAM LIST OPT");
+  TRACE(VERBOSE, "PARAM LIST OPT");
 
   return param_list();
 }
 
 auto AwkParser::item() -> NodePtr
 {
-  TRACE(LogLevel::DEBUG, "ITEM");
+  TRACE(VERBOSE, "ITEM");
   NodePtr node;
 
   if(auto ptr{action()}; ptr) {
@@ -1572,7 +1572,7 @@ auto AwkParser::item() -> NodePtr
 // Till there are are no more items
 auto AwkParser::item_list() -> NodeListPtr
 {
-  TRACE(LogLevel::DEBUG, "ITEM LIST");
+  TRACE(VERBOSE, "ITEM LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
   while(!eos()) {
@@ -1594,7 +1594,7 @@ auto AwkParser::item_list() -> NodeListPtr
 
 auto AwkParser::program() -> NodeListPtr
 {
-  TRACE(LogLevel::DEBUG, "PROGRAM");
+  TRACE(VERBOSE, "PROGRAM");
 
   NodeListPtr nodes{item_list()};
 

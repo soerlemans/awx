@@ -15,10 +15,10 @@
 
 // TRACE is intended for showing which functions call which in a tree like
 // manner
-#define TRACE(loglevel, ...)       \
-  Trace CONCAT(trace, __COUNTER__) \
-  {                                \
-    log::loglevel, __VA_ARGS__     \
+#define TRACE(loglevel, ...)             \
+  Trace CONCAT(trace, __COUNTER__)       \
+  {                                      \
+    log::LogLevel::loglevel, __VA_ARGS__ \
   }
 
 // Creates a trace object in an enclosed scope, usefull for printing TRACE info
