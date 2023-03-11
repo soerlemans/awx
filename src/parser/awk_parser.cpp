@@ -38,20 +38,20 @@ AwkParser::AwkParser(TokenStream t_tokenstream)
 // Parsing rule/grammar rules:
 auto AwkParser::newline_opt() -> void
 {
-  TRACE(VERBOSE, "NEWLINE OPT");
+  DBG_TRACE(VERBOSE, "NEWLINE OPT");
 
   while(!eos() && next_if(TokenType::NEWLINE)) {
-    TRACE_PRINT(INFO, "Found NEWLINE");
+    DBG_TRACE_PRINT(INFO, "Found NEWLINE");
   }
 }
 
 auto AwkParser::simple_get() -> NodePtr
 {
-  TRACE(VERBOSE, "SIMPLE GET");
+  DBG_TRACE(VERBOSE, "SIMPLE GET");
   NodePtr node;
 
   if(next_if(TokenType::GETLINE)) {
-    TRACE_PRINT(INFO, "Found GETLINE");
+    DBG_TRACE_PRINT(INFO, "Found GETLINE");
 
     node = std::make_unique<Getline>(lvalue());
   }
@@ -61,7 +61,7 @@ auto AwkParser::simple_get() -> NodePtr
 
 auto AwkParser::unary_input_function() -> NodePtr
 {
-  TRACE(VERBOSE, "UNARY INPUT FUNCTION");
+  DBG_TRACE(VERBOSE, "UNARY INPUT FUNCTION");
   NodePtr node;
 
   if(NodePtr lhs{unary_expr()}; lhs) {
@@ -80,7 +80,7 @@ auto AwkParser::unary_input_function() -> NodePtr
 //                  ;
 auto AwkParser::non_unary_input_function() -> NodePtr
 {
-  TRACE(VERBOSE, "NON UNARY INPUT FUNCTION");
+  DBG_TRACE(VERBOSE, "NON UNARY INPUT FUNCTION");
   NodePtr node;
 
   // Recursive causes endless loop
@@ -105,7 +105,7 @@ auto AwkParser::non_unary_input_function() -> NodePtr
 
 auto AwkParser::lvalue() -> NodePtr
 {
-  TRACE(VERBOSE, "LVALUE");
+  DBG_TRACE(VERBOSE, "LVALUE");
   NodePtr node;
 
   const auto token{next()};
@@ -114,19 +114,19 @@ auto AwkParser::lvalue() -> NodePtr
       const auto name{token.value<std::string>()};
       // We really dont expect these next_tokens to fail
       if(next_if(TokenType::BRACE_OPEN)) {
-        TRACE_PRINT(INFO, "Found ARRAY SUBSCRIPT");
+        DBG_TRACE_PRINT(INFO, "Found ARRAY SUBSCRIPT");
         node = std::make_unique<Array>(name, expr_list());
 
         expect(TokenType::BRACE_CLOSE, "]");
       } else {
-        TRACE_PRINT(INFO, "Found VARIABLE", name);
+        DBG_TRACE_PRINT(INFO, "Found VARIABLE", name);
         node = std::make_unique<Variable>(name);
       }
       break;
     }
 
     case TokenType::DOLLAR_SIGN: {
-      TRACE_PRINT(INFO, "Found FIELD REFERENCE");
+      DBG_TRACE_PRINT(INFO, "Found FIELD REFERENCE");
       node = std::make_unique<FieldReference>(expr());
       break;
     }
@@ -141,17 +141,17 @@ auto AwkParser::lvalue() -> NodePtr
 
 auto AwkParser::function() -> NodePtr
 {
-  TRACE(VERBOSE, "FUNCTION");
+  DBG_TRACE(VERBOSE, "FUNCTION");
   NodePtr node;
 
   if(next_if(TokenType::FUNCTION)) {
-    TRACE_PRINT(VERBOSE, "Found FUNCTION");
+    DBG_TRACE_PRINT(VERBOSE, "Found FUNCTION");
 
     if(const auto token{get_token()};
        tokentype::is_valid_function_identifier(token.type())) {
       next();
       const auto name{token.value<std::string>()};
-      TRACE_PRINT(VERBOSE, "Valid FUNCTION IDENTIFIER: ", name);
+      DBG_TRACE_PRINT(VERBOSE, "Valid FUNCTION IDENTIFIER: ", name);
 
       // TODO: Create a Function class
       expect(TokenType::PAREN_OPEN, "(");
@@ -161,7 +161,7 @@ auto AwkParser::function() -> NodePtr
       newline_opt();
       NodeListPtr body{static_cast<List*>(action().release())};
 
-      TRACE_PRINT(INFO, "Found a FUNCTION");
+      DBG_TRACE_PRINT(INFO, "Found a FUNCTION");
 
       node =
         std::make_unique<Function>(name, std::move(params), std::move(body));
@@ -177,7 +177,7 @@ auto AwkParser::function() -> NodePtr
 // User defined
 auto AwkParser::function_call() -> NodePtr
 {
-  TRACE(VERBOSE, "FUNCTION CALL");
+  DBG_TRACE(VERBOSE, "FUNCTION CALL");
   NodePtr node;
 
   switch(const auto token{next()}; token.type()) {
@@ -189,7 +189,7 @@ auto AwkParser::function_call() -> NodePtr
       expect(TokenType::PAREN_CLOSE, ")");
 
       auto name{token.value<std::string>()};
-      TRACE_PRINT(INFO, "Found a FUNCTION CALL: ", name);
+      DBG_TRACE_PRINT(INFO, "Found a FUNCTION CALL: ", name);
 
       node = std::make_unique<FunctionCall>(std::move(name), std::move(args));
       break;
@@ -205,7 +205,7 @@ auto AwkParser::function_call() -> NodePtr
 
 auto AwkParser::match(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(VERBOSE, "MATCH");
+  DBG_TRACE(VERBOSE, "MATCH");
   NodePtr node;
 
   // Little helper function to cut down on the bloat
@@ -220,12 +220,12 @@ auto AwkParser::match(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
   switch(next().type()) {
     case TokenType{g_ere_match}:
-      TRACE_PRINT(INFO, "Found '~'");
+      DBG_TRACE_PRINT(INFO, "Found '~'");
       node = lambda(MatchOp::MATCH);
       break;
 
     case TokenType{g_ere_no_match}:
-      TRACE_PRINT(INFO, "Found '!~'");
+      DBG_TRACE_PRINT(INFO, "Found '!~'");
       node = lambda(MatchOp::NO_MATCH);
       break;
 
@@ -239,7 +239,7 @@ auto AwkParser::match(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
 auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(VERBOSE, "ARITHMETIC");
+  DBG_TRACE(VERBOSE, "ARITHMETIC");
   NodePtr node;
 
   // Little helper function to cut down on the bloat
@@ -254,32 +254,32 @@ auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
   switch(next().type()) {
     case TokenType{g_caret}:
-      TRACE_PRINT(INFO, "Found '^'");
+      DBG_TRACE_PRINT(INFO, "Found '^'");
       node = lambda(ArithmeticOp::POWER);
       break;
 
     case TokenType{g_asterisk}:
-      TRACE_PRINT(INFO, "Found '*'");
+      DBG_TRACE_PRINT(INFO, "Found '*'");
       node = lambda(ArithmeticOp::MULTIPLY);
       break;
 
     case TokenType{g_slash}:
-      TRACE_PRINT(INFO, "Found '/'");
+      DBG_TRACE_PRINT(INFO, "Found '/'");
       node = lambda(ArithmeticOp::DIVIDE);
       break;
 
     case TokenType{g_percent_sign}:
-      TRACE_PRINT(INFO, "Found '%'");
+      DBG_TRACE_PRINT(INFO, "Found '%'");
       node = lambda(ArithmeticOp::MODULO);
       break;
 
     case TokenType{g_plus}:
-      TRACE_PRINT(INFO, "Found '+'");
+      DBG_TRACE_PRINT(INFO, "Found '+'");
       node = lambda(ArithmeticOp::ADD);
       break;
 
     case TokenType{g_minus}:
-      TRACE_PRINT(INFO, "Found '-'");
+      DBG_TRACE_PRINT(INFO, "Found '-'");
       node = lambda(ArithmeticOp::SUBTRACT);
       break;
 
@@ -293,7 +293,7 @@ auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
 auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(VERBOSE, "ASSIGNMENT");
+  DBG_TRACE(VERBOSE, "ASSIGNMENT");
   NodePtr node;
 
   // TODO: Create an actual function for this that we can call instead of
@@ -309,37 +309,37 @@ auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
   switch(next().type()) {
     case TokenType{g_power_assignment}:
-      TRACE_PRINT(INFO, "Found '^='");
+      DBG_TRACE_PRINT(INFO, "Found '^='");
       node = lambda(AssignmentOp::POWER);
       break;
 
     case TokenType{g_multiply_assignment}:
-      TRACE_PRINT(INFO, "Found '*='");
+      DBG_TRACE_PRINT(INFO, "Found '*='");
       node = lambda(AssignmentOp::MULTIPLY);
       break;
 
     case TokenType{g_divide_assignment}:
-      TRACE_PRINT(INFO, "Found '/='");
+      DBG_TRACE_PRINT(INFO, "Found '/='");
       node = lambda(AssignmentOp::DIVIDE);
       break;
 
     case TokenType{g_modulo_assignment}:
-      TRACE_PRINT(INFO, "Found '%='");
+      DBG_TRACE_PRINT(INFO, "Found '%='");
       node = lambda(AssignmentOp::MODULO);
       break;
 
     case TokenType{g_add_assignment}:
-      TRACE_PRINT(INFO, "Found '+='");
+      DBG_TRACE_PRINT(INFO, "Found '+='");
       node = lambda(AssignmentOp::ADD);
       break;
 
     case TokenType{g_subtract_assignment}:
-      TRACE_PRINT(INFO, "Found '-='");
+      DBG_TRACE_PRINT(INFO, "Found '-='");
       node = lambda(AssignmentOp::SUBTRACT);
       break;
 
     case TokenType{g_assignment}:
-      TRACE_PRINT(INFO, "Found '='");
+      DBG_TRACE_PRINT(INFO, "Found '='");
       node = lambda(AssignmentOp::REGULAR);
       break;
 
@@ -353,7 +353,7 @@ auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
 auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(VERBOSE, "COMPARISON");
+  DBG_TRACE(VERBOSE, "COMPARISON");
   NodePtr node;
 
   const auto lambda = [&](ComparisonOp t_op) -> NodePtr {
@@ -366,32 +366,32 @@ auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
   switch(next().type()) {
     case TokenType{g_less_than}:
-      TRACE_PRINT(INFO, "Found '<'");
+      DBG_TRACE_PRINT(INFO, "Found '<'");
       node = lambda(ComparisonOp::LESS_THAN);
       break;
 
     case TokenType{g_less_than_equal}:
-      TRACE_PRINT(INFO, "Found '<='");
+      DBG_TRACE_PRINT(INFO, "Found '<='");
       node = lambda(ComparisonOp::LESS_THAN_EQUAL);
       break;
 
     case TokenType{g_equal}:
-      TRACE_PRINT(INFO, "Found '=='");
+      DBG_TRACE_PRINT(INFO, "Found '=='");
       node = lambda(ComparisonOp::EQUAL);
       break;
 
     case TokenType{g_not_equal}:
-      TRACE_PRINT(INFO, "Found '!='");
+      DBG_TRACE_PRINT(INFO, "Found '!='");
       node = lambda(ComparisonOp::NOT_EQUAL);
       break;
 
     case TokenType{g_greater_than}:
-      TRACE_PRINT(INFO, "Found '>'");
+      DBG_TRACE_PRINT(INFO, "Found '>'");
       node = lambda(ComparisonOp::GREATER_THAN);
       break;
 
     case TokenType{g_greater_than_equal}:
-      TRACE_PRINT(INFO, "Found '>='");
+      DBG_TRACE_PRINT(INFO, "Found '>='");
       node = lambda(ComparisonOp::GREATER_THAN_EQUAL);
       break;
 
@@ -405,11 +405,11 @@ auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
 auto AwkParser::membership(NodePtr& t_lhs) -> NodePtr
 {
-  TRACE(VERBOSE, "MEMBERSHIP");
+  DBG_TRACE(VERBOSE, "MEMBERSHIP");
   NodePtr node;
 
   if(next_if(TokenType::IN)) {
-    TRACE_PRINT(VERBOSE, "Found MEMBERSHIP");
+    DBG_TRACE_PRINT(VERBOSE, "Found MEMBERSHIP");
     const auto name{expect(TokenType::IDENTIFIER, "NAME")};
     node =
       std::make_unique<Membership>(std::move(t_lhs), name.value<std::string>());
@@ -420,12 +420,12 @@ auto AwkParser::membership(NodePtr& t_lhs) -> NodePtr
 
 auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(VERBOSE, "LOGICAL");
+  DBG_TRACE(VERBOSE, "LOGICAL");
   NodePtr node;
 
   switch(next().type()) {
     case TokenType{g_and}: {
-      TRACE_PRINT(INFO, "Found '&&'");
+      DBG_TRACE_PRINT(INFO, "Found '&&'");
       // Optional newlines are allowed after &&
       newline_opt();
       if(auto rhs{t_rhs()}; rhs) {
@@ -437,7 +437,7 @@ auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
     }
 
     case TokenType{g_or}: {
-      TRACE_PRINT(INFO, "Found '||'");
+      DBG_TRACE_PRINT(INFO, "Found '||'");
       // Optional newlines are allowed after ||
       newline_opt();
       if(auto rhs{t_rhs()}; rhs) {
@@ -459,13 +459,13 @@ auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 // TODO: Add extra parameter for ternary expression
 auto AwkParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(VERBOSE, "TERNARY");
+  DBG_TRACE(VERBOSE, "TERNARY");
   NodePtr node;
 
   // FIXME: simple_print_statement has a rule that conflicts and does not make
   // It possible to detect if it is a print() or print () ? : ;
   if(next_if(TokenType{g_questionmark})) {
-    TRACE(VERBOSE, "Found TERNARY");
+    DBG_TRACE(VERBOSE, "Found TERNARY");
     NodePtr then_ptr{t_rhs()};
     if(!then_ptr) {
       // TODO: Error handling
@@ -489,11 +489,11 @@ auto AwkParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 auto AwkParser::universal_print_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   -> NodePtr
 {
-  TRACE(VERBOSE, "UNIVERSAL PRINT EXPR");
+  DBG_TRACE(VERBOSE, "UNIVERSAL PRINT EXPR");
   NodePtr node;
 
   // if(auto rhs{non_unary_expr()}; rhs) {
-  //   TRACE_PRINT(INFO, "Found STRING CONCAT");
+  //   DBG_TRACE_PRINT(INFO, "Found STRING CONCAT");
   //   node =
   //     std::make_unique<StringConcatenation>(std::move(node), std::move(rhs));
   // } else
@@ -532,11 +532,11 @@ auto AwkParser::universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
 // TODO: Create a function that extracts expressions from in between '(', ')'
 auto AwkParser::grouping() -> NodePtr
 {
-  TRACE(VERBOSE, "GROUPING");
+  DBG_TRACE(VERBOSE, "GROUPING");
   NodePtr node;
 
   if(next_if(TokenType::PAREN_OPEN)) {
-    TRACE_PRINT(VERBOSE, "Found GROUPING");
+    DBG_TRACE_PRINT(VERBOSE, "Found GROUPING");
 
     node = std::make_unique<Grouping>(expr());
     expect(TokenType::PAREN_CLOSE, ")");
@@ -548,11 +548,11 @@ auto AwkParser::grouping() -> NodePtr
 // negation == not, !
 auto AwkParser::negation(const ParserFunc& t_expr) -> NodePtr
 {
-  TRACE(VERBOSE, "NEGATION");
+  DBG_TRACE(VERBOSE, "NEGATION");
   NodePtr node;
 
   if(next_if(TokenType::NOT)) {
-    TRACE_PRINT(INFO, "Found NOT");
+    DBG_TRACE_PRINT(INFO, "Found NOT");
     if(NodePtr expr_ptr{t_expr()}; expr_ptr) {
       node = std::make_unique<Not>(std::move(expr_ptr));
     } else {
@@ -567,33 +567,33 @@ auto AwkParser::negation(const ParserFunc& t_expr) -> NodePtr
 // This method parses literals
 auto AwkParser::literal() -> NodePtr
 {
-  TRACE(VERBOSE, "LITERAL");
+  DBG_TRACE(VERBOSE, "LITERAL");
   NodePtr node;
 
   switch(const auto token{next()}; token.type()) {
     // TODO: Token in the grammar calls for NUMBER? These are not treated
     // differently?
     case TokenType::FLOAT:
-      TRACE_PRINT(INFO, "Found FLOAT literal");
+      DBG_TRACE_PRINT(INFO, "Found FLOAT literal");
       node = std::make_unique<Float>(token.value<double>());
       break;
 
     case TokenType::HEX:
       [[fallthrough]];
     case TokenType::INTEGER:
-      TRACE_PRINT(INFO, "Found INTEGER literal: ");
+      DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ");
       node = std::make_unique<Integer>(token.value<int>());
       break;
 
     case TokenType::STRING:
-      TRACE_PRINT(INFO,
+      DBG_TRACE_PRINT(INFO,
                   "Found STRING literal: ", token.value<std::string>());
       node = std::make_unique<String>(token.value<std::string>());
       break;
 
     // TODO: match
     case TokenType::REGEX:
-      TRACE_PRINT(INFO,
+      DBG_TRACE_PRINT(INFO,
                   "Found REGEX literal: ", token.value<std::string>());
       node = std::make_unique<Regex>(token.value<std::string>());
       break;
@@ -609,13 +609,13 @@ auto AwkParser::literal() -> NodePtr
 // Prefix operator parses prefix increment and decrement
 auto AwkParser::prefix_operator() -> NodePtr
 {
-  TRACE(VERBOSE, "PREFIX OPERATOR");
+  DBG_TRACE(VERBOSE, "PREFIX OPERATOR");
   NodePtr node;
 
   // TODO: Find a way to shorten or macro this?
   switch(next().type()) {
     case TokenType::INCREMENT: {
-      TRACE_PRINT(INFO, "Found --INCREMENT");
+      DBG_TRACE_PRINT(INFO, "Found --INCREMENT");
       if(auto ptr{lvalue()}; ptr) {
         node = std::make_unique<Increment>(std::move(ptr), true);
       } else {
@@ -625,7 +625,7 @@ auto AwkParser::prefix_operator() -> NodePtr
     }
 
     case TokenType::DECREMENT: {
-      TRACE_PRINT(INFO, "Found --DECREMENT");
+      DBG_TRACE_PRINT(INFO, "Found --DECREMENT");
       if(auto ptr{lvalue()}; ptr) {
         node = std::make_unique<Decrement>(std::move(ptr), true);
       } else {
@@ -646,7 +646,7 @@ auto AwkParser::prefix_operator() -> NodePtr
 auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
   -> NodePtr
 {
-  TRACE(VERBOSE, "UNIVERSAL LVALUE");
+  DBG_TRACE(VERBOSE, "UNIVERSAL LVALUE");
   NodePtr node;
 
   if(auto ptr{assignment(t_lhs, t_rhs)}; ptr) {
@@ -654,12 +654,12 @@ auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
   } else {
     switch(next().type()) {
       case TokenType::INCREMENT:
-        TRACE_PRINT(INFO, "Found INCREMENT++");
+        DBG_TRACE_PRINT(INFO, "Found INCREMENT++");
         node = std::make_unique<Increment>(std::move(t_lhs), false);
         break;
 
       case TokenType::DECREMENT:
-        TRACE_PRINT(INFO, "Found DECREMENT--");
+        DBG_TRACE_PRINT(INFO, "Found DECREMENT--");
         node = std::make_unique<Decrement>(std::move(t_lhs), false);
         break;
 
@@ -675,13 +675,13 @@ auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
 // Parses unary prefixes like having a + or - before an expression
 auto AwkParser::unary_prefix(const ParserFunc& t_rhs) -> NodePtr
 {
-  TRACE(VERBOSE, "UNARY PREFIX");
+  DBG_TRACE(VERBOSE, "UNARY PREFIX");
   NodePtr node;
 
   switch(const auto tokentype{next().type()}; tokentype) {
     case TokenType::PLUS:
     case TokenType::MINUS: {
-      TRACE(VERBOSE, "Found UNARY PREFIX");
+      DBG_TRACE(VERBOSE, "Found UNARY PREFIX");
 
       NodePtr rhs{t_rhs()};
       if(!rhs) {
@@ -702,13 +702,13 @@ auto AwkParser::unary_prefix(const ParserFunc& t_rhs) -> NodePtr
 // TODO: Split FOR and WHILE into their own functions
 auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 {
-  TRACE(VERBOSE, "LOOP");
+  DBG_TRACE(VERBOSE, "LOOP");
   NodePtr node;
 
   // TODO: Split even further?
   switch(next().type()) {
     case TokenType::WHILE: {
-      TRACE_PRINT(INFO, "Found WHILE");
+      DBG_TRACE_PRINT(INFO, "Found WHILE");
 
       expect(TokenType::PAREN_OPEN, "(");
       NodePtr condition{expr()};
@@ -730,7 +730,7 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
     }
 
     case TokenType::FOR: {
-      TRACE_PRINT(INFO, "Found FOR");
+      DBG_TRACE_PRINT(INFO, "Found FOR");
 
       expect(TokenType::PAREN_OPEN, "(");
 
@@ -740,7 +740,7 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
          identifier.type() == TokenType::IDENTIFIER) {
         next();
         if(next_if(TokenType::IN)) {
-          TRACE_PRINT(INFO, "Found FOR IN");
+          DBG_TRACE_PRINT(INFO, "Found FOR IN");
 
           membership = true;
           auto array{expect(TokenType::IDENTIFIER, "identifier")};
@@ -765,7 +765,7 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 
       if(!membership) {
         if(auto ptr{simple_statement_opt()}; ptr) {
-          TRACE_PRINT(INFO, "Found FOR(;;)");
+          DBG_TRACE_PRINT(INFO, "Found FOR(;;)");
 
           expect(TokenType::SEMICOLON, ";");
           auto condition{expr_opt()};
@@ -800,7 +800,7 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 
 auto AwkParser::non_unary_print_expr() -> NodePtr
 {
-  TRACE(VERBOSE, "NON UNARY PRINT EXPR");
+  DBG_TRACE(VERBOSE, "NON UNARY PRINT EXPR");
   NodePtr node;
   NodePtr nupe;
 
@@ -830,7 +830,7 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
   // Concatenation or a binary operator
   if(nupe) {
     if(auto rhs{non_unary_print_expr()}; rhs) {
-      TRACE_PRINT(INFO, "Found STRING CONCAT");
+      DBG_TRACE_PRINT(INFO, "Found STRING CONCAT");
       node =
         std::make_unique<StringConcatenation>(std::move(nupe), std::move(rhs));
     } else if(auto ptr{universal_print_expr(nupe, lambda)}; ptr) {
@@ -846,7 +846,7 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
 
 auto AwkParser::unary_print_expr() -> NodePtr
 {
-  TRACE(VERBOSE, "UNARY PRINT EXPR");
+  DBG_TRACE(VERBOSE, "UNARY PRINT EXPR");
   NodePtr node;
 
   const auto lambda = [&]() -> NodePtr {
@@ -870,7 +870,7 @@ auto AwkParser::unary_print_expr() -> NodePtr
 
 auto AwkParser::print_expr() -> NodePtr
 {
-  TRACE(VERBOSE, "PRINT EXPR");
+  DBG_TRACE(VERBOSE, "PRINT EXPR");
   NodePtr node;
 
   if(auto ptr{unary_print_expr()}; ptr) {
@@ -886,11 +886,11 @@ auto AwkParser::print_expr() -> NodePtr
 // Can use
 auto AwkParser::print_expr_list() -> NodeListPtr
 {
-  TRACE(VERBOSE, "PRINT EXPR LIST");
+  DBG_TRACE(VERBOSE, "PRINT EXPR LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
   if(auto ptr{print_expr()}; ptr) {
-    TRACE_PRINT(INFO, "Found PRINT_EXPR");
+    DBG_TRACE_PRINT(INFO, "Found PRINT_EXPR");
 
     nodes->push_back(std::move(ptr));
   }
@@ -899,7 +899,7 @@ auto AwkParser::print_expr_list() -> NodeListPtr
     if(next_if(TokenType::COMMA)) {
       newline_opt();
       if(auto ptr{print_expr()}; ptr) {
-        TRACE_PRINT(INFO, "Found ',' PRINT_EXPR");
+        DBG_TRACE_PRINT(INFO, "Found ',' PRINT_EXPR");
 
         nodes->push_back(std::move(ptr));
       } else {
@@ -920,14 +920,14 @@ auto AwkParser::print_expr_list() -> NodeListPtr
 
 auto AwkParser::print_expr_list_opt() -> NodeListPtr
 {
-  TRACE(VERBOSE, "PRINT EXPR LIST OPT");
+  DBG_TRACE(VERBOSE, "PRINT EXPR LIST OPT");
 
   return print_expr_list();
 }
 
 auto AwkParser::non_unary_expr() -> NodePtr
 {
-  TRACE(VERBOSE, "NON UNARY EXPR");
+  DBG_TRACE(VERBOSE, "NON UNARY EXPR");
   NodePtr node;
   NodePtr nue;
 
@@ -959,7 +959,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
   // Concatenation or a binary operator
   if(nue) {
     if(auto rhs{non_unary_expr()}; rhs) {
-      TRACE_PRINT(INFO, "Found STRING CONCAT");
+      DBG_TRACE_PRINT(INFO, "Found STRING CONCAT");
       node =
         std::make_unique<StringConcatenation>(std::move(nue), std::move(rhs));
     } else if(auto ptr{universal_expr(nue, lambda)}; ptr) {
@@ -975,7 +975,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
 
 auto AwkParser::unary_expr() -> NodePtr
 {
-  TRACE(VERBOSE, "UNARY EXPR");
+  DBG_TRACE(VERBOSE, "UNARY EXPR");
   NodePtr node;
 
   const auto lambda = [&]() -> NodePtr {
@@ -1000,7 +1000,7 @@ auto AwkParser::unary_expr() -> NodePtr
 
 auto AwkParser::expr() -> NodePtr
 {
-  TRACE(VERBOSE, "EXPR");
+  DBG_TRACE(VERBOSE, "EXPR");
   NodePtr node;
 
   if(auto ptr{non_unary_expr()}; ptr) {
@@ -1016,18 +1016,18 @@ auto AwkParser::expr() -> NodePtr
 
 auto AwkParser::expr_opt() -> NodePtr
 {
-  TRACE(VERBOSE, "EXPR OPT");
+  DBG_TRACE(VERBOSE, "EXPR OPT");
 
   return expr();
 }
 
 auto AwkParser::multiple_expr_list() -> NodeListPtr
 {
-  TRACE(VERBOSE, "MULTIPLE EXPR LIST");
+  DBG_TRACE(VERBOSE, "MULTIPLE EXPR LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
   if(auto ptr{expr()}; ptr) {
-    TRACE_PRINT(INFO, "Found EXPR");
+    DBG_TRACE_PRINT(INFO, "Found EXPR");
 
     nodes->push_back(std::move(ptr));
   }
@@ -1036,7 +1036,7 @@ auto AwkParser::multiple_expr_list() -> NodeListPtr
     if(next_if(TokenType::COMMA)) {
       newline_opt();
       if(auto ptr{expr()}; ptr) {
-        TRACE_PRINT(INFO, "Found ',' EXPR");
+        DBG_TRACE_PRINT(INFO, "Found ',' EXPR");
 
         nodes->push_back(std::move(ptr));
       } else {
@@ -1058,7 +1058,7 @@ auto AwkParser::multiple_expr_list() -> NodeListPtr
 
 auto AwkParser::expr_list() -> NodeListPtr
 {
-  TRACE(VERBOSE, "EXPR LIST");
+  DBG_TRACE(VERBOSE, "EXPR LIST");
   NodeListPtr nodes;
 
   // multiple_expr_list allows one or multiple expr
@@ -1073,7 +1073,7 @@ auto AwkParser::expr_list() -> NodeListPtr
 
 auto AwkParser::expr_list_opt() -> NodeListPtr
 {
-  TRACE(VERBOSE, "EXPR LIST OPT");
+  DBG_TRACE(VERBOSE, "EXPR LIST OPT");
 
   return expr_list();
 }
@@ -1085,7 +1085,7 @@ auto AwkParser::expr_list_opt() -> NodeListPtr
 // TODO: Figure this one out
 auto AwkParser::output_redirection(NodePtr& t_lhs) -> NodePtr
 {
-  TRACE(VERBOSE, "OUTPUT REDIRECTION");
+  DBG_TRACE(VERBOSE, "OUTPUT REDIRECTION");
   NodePtr node;
 
   // TODO: Have Redirection automatically convert TokenType to the correct
@@ -1123,7 +1123,7 @@ auto AwkParser::output_redirection(NodePtr& t_lhs) -> NodePtr
 
 auto AwkParser::simple_print_statement() -> NodePtr
 {
-  TRACE(VERBOSE, "SIMPLE PRINT STATEMENT");
+  DBG_TRACE(VERBOSE, "SIMPLE PRINT STATEMENT");
   NodePtr node;
 
   // Convenience lambda
@@ -1146,11 +1146,11 @@ auto AwkParser::simple_print_statement() -> NodePtr
   };
 
   if(next_if(TokenType::PRINT)) {
-    TRACE_PRINT(INFO, "Found 'print'");
+    DBG_TRACE_PRINT(INFO, "Found 'print'");
 
     node = std::make_unique<Print>(lambda());
   } else if(next_if(TokenType::PRINTF)) {
-    TRACE_PRINT(INFO, "Found 'printf");
+    DBG_TRACE_PRINT(INFO, "Found 'printf");
 
     node = std::make_unique<Printf>(lambda());
   }
@@ -1160,7 +1160,7 @@ auto AwkParser::simple_print_statement() -> NodePtr
 
 auto AwkParser::print_statement() -> NodePtr
 {
-  TRACE(VERBOSE, "PRINT STATEMENT");
+  DBG_TRACE(VERBOSE, "PRINT STATEMENT");
   NodePtr node;
 
   if(auto ptr{simple_print_statement()}; ptr) {
@@ -1178,7 +1178,7 @@ auto AwkParser::print_statement() -> NodePtr
 // simple_statement : Delete NAME '[' expr_list ']'
 auto AwkParser::simple_statement() -> NodePtr
 {
-  TRACE(VERBOSE, "SIMPLE STATEMENT");
+  DBG_TRACE(VERBOSE, "SIMPLE STATEMENT");
   NodePtr node;
 
   if(next_if(TokenType::DELETE)) {
@@ -1199,7 +1199,7 @@ auto AwkParser::simple_statement() -> NodePtr
 
 auto AwkParser::simple_statement_opt() -> NodePtr
 {
-  TRACE(VERBOSE, "SIMPLE STATEMENT OPT");
+  DBG_TRACE(VERBOSE, "SIMPLE STATEMENT OPT");
 
   return simple_statement();
 }
@@ -1215,7 +1215,7 @@ auto AwkParser::simple_statement_opt() -> NodePtr
 //                  ;
 auto AwkParser::terminatable_statement() -> NodePtr
 {
-  TRACE(VERBOSE, "TERMINATABLE STATEMENT");
+  DBG_TRACE(VERBOSE, "TERMINATABLE STATEMENT");
   NodePtr node;
 
   const auto keyword{next()};
@@ -1249,7 +1249,7 @@ auto AwkParser::terminatable_statement() -> NodePtr
       expect(TokenType::PAREN_CLOSE, ")");
 
       // TODO: Implement Do while
-      LOG_PRINTLN("WARNING: Do While loops are not yet implemented!");
+      DBG_PRINTLN("WARNING: Do While loops are not yet implemented!");
       node = std::make_unique<Nil>();
       break;
 
@@ -1279,7 +1279,7 @@ auto AwkParser::terminatable_statement() -> NodePtr
 // TODO: Refactor
 auto AwkParser::unterminated_statement() -> NodePtr
 {
-  TRACE(VERBOSE, "UNTERMINATED STATEMENT");
+  DBG_TRACE(VERBOSE, "UNTERMINATED STATEMENT");
   NodePtr node;
 
   const auto lambda{[&]() {
@@ -1287,7 +1287,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
   }};
 
   if(next_if(TokenType::IF)) {
-    TRACE_PRINT(INFO, "Found IF");
+    DBG_TRACE_PRINT(INFO, "Found IF");
     // TODO: Adjust grouping() to something more general?
     expect(TokenType::PAREN_OPEN, "(");
     NodePtr condition{expr()};
@@ -1314,7 +1314,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
 // TODO: Refactor
 auto AwkParser::terminated_statement() -> NodePtr
 {
-  TRACE(VERBOSE, "TERMINATED STATEMENT");
+  DBG_TRACE(VERBOSE, "TERMINATED STATEMENT");
   NodePtr node;
 
   const auto lambda{[&]() {
@@ -1326,7 +1326,7 @@ auto AwkParser::terminated_statement() -> NodePtr
 
     node = std::move(ptr);
   } else if(next_if(TokenType::IF)) {
-    TRACE_PRINT(INFO, "Found IF");
+    DBG_TRACE_PRINT(INFO, "Found IF");
 
     expect(TokenType::PAREN_OPEN, "(");
     NodePtr condition{expr()};
@@ -1366,7 +1366,7 @@ auto AwkParser::terminated_statement() -> NodePtr
 // Unterminated statements end on a -> '\n'
 auto AwkParser::unterminated_statement_list() -> NodeListPtr
 {
-  TRACE(VERBOSE, "UNTERMINATED STATEMENT LIST");
+  DBG_TRACE(VERBOSE, "UNTERMINATED STATEMENT LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
   while(!eos()) {
@@ -1388,7 +1388,7 @@ auto AwkParser::unterminated_statement_list() -> NodeListPtr
 // Terminated statements end on a -> ';'
 auto AwkParser::terminated_statement_list() -> NodeListPtr
 {
-  TRACE(VERBOSE, "TERMINATED STATEMENT LIST");
+  DBG_TRACE(VERBOSE, "TERMINATED STATEMENT LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
   while(!eos()) {
@@ -1409,7 +1409,7 @@ auto AwkParser::terminated_statement_list() -> NodeListPtr
 
 auto AwkParser::terminator() -> void
 {
-  TRACE(VERBOSE, "TERMINATOR");
+  DBG_TRACE(VERBOSE, "TERMINATOR");
 
   const auto token{next()};
   if(!tokentype::is_terminator(token.type())) {
@@ -1421,11 +1421,11 @@ auto AwkParser::terminator() -> void
 
 auto AwkParser::action() -> NodeListPtr
 {
-  TRACE(VERBOSE, "ACTION");
+  DBG_TRACE(VERBOSE, "ACTION");
   NodeListPtr node;
 
   if(next_if(TokenType::ACCOLADE_OPEN)) {
-    TRACE_PRINT(INFO, "Found '{'");
+    DBG_TRACE_PRINT(INFO, "Found '{'");
 
     newline_opt();
 
@@ -1438,7 +1438,7 @@ auto AwkParser::action() -> NodeListPtr
     }
 
     expect(TokenType::ACCOLADE_CLOSE, "}");
-    TRACE_PRINT(INFO, "Found '}'");
+    DBG_TRACE_PRINT(INFO, "Found '}'");
   }
 
   return node;
@@ -1446,16 +1446,16 @@ auto AwkParser::action() -> NodeListPtr
 
 auto AwkParser::special_pattern() -> NodePtr
 {
-  TRACE(VERBOSE, "SPECIAL PATTERN");
+  DBG_TRACE(VERBOSE, "SPECIAL PATTERN");
   NodePtr node;
 
   if(next_if(TokenType::BEGIN)) {
-    TRACE_PRINT(INFO, "Found 'BEGIN'");
+    DBG_TRACE_PRINT(INFO, "Found 'BEGIN'");
 
     node = std::make_unique<SpecialPattern>(SpecialPatternOp::BEGIN);
 
   } else if(next_if(TokenType::END)) {
-    TRACE_PRINT(INFO, "Found 'END'");
+    DBG_TRACE_PRINT(INFO, "Found 'END'");
 
     node = std::make_unique<SpecialPattern>(SpecialPatternOp::END);
   }
@@ -1468,7 +1468,7 @@ auto AwkParser::special_pattern() -> NodePtr
 //                  ;
 auto AwkParser::normal_pattern() -> NodePtr
 {
-  TRACE(VERBOSE, "NORMAL PATTERN");
+  DBG_TRACE(VERBOSE, "NORMAL PATTERN");
   NodePtr node;
 
   if(auto ptr{expr()}; ptr) {
@@ -1489,7 +1489,7 @@ auto AwkParser::normal_pattern() -> NodePtr
 
 auto AwkParser::pattern() -> NodePtr
 {
-  TRACE(VERBOSE, "PATTERN");
+  DBG_TRACE(VERBOSE, "PATTERN");
   NodePtr node;
 
   if(auto ptr{normal_pattern()}; ptr) {
@@ -1503,11 +1503,11 @@ auto AwkParser::pattern() -> NodePtr
 
 auto AwkParser::param_list() -> NodeListPtr
 {
-  TRACE(VERBOSE, "PARAM LIST");
+  DBG_TRACE(VERBOSE, "PARAM LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
   if(const auto token{next()}; token.type() == TokenType::IDENTIFIER) {
-    TRACE_PRINT(INFO, "Found NAME");
+    DBG_TRACE_PRINT(INFO, "Found NAME");
 
     nodes->push_back(std::make_unique<Variable>(token.value<std::string>()));
   } else {
@@ -1516,7 +1516,7 @@ auto AwkParser::param_list() -> NodeListPtr
 
   while(!eos()) {
     if(next_if(TokenType::COMMA)) {
-      TRACE_PRINT(INFO, "Found ',' NAME");
+      DBG_TRACE_PRINT(INFO, "Found ',' NAME");
       const auto token{expect(TokenType::IDENTIFIER, "NAME")};
 
       nodes->push_back(std::make_unique<Variable>(token.value<std::string>()));
@@ -1534,14 +1534,14 @@ auto AwkParser::param_list() -> NodeListPtr
 
 auto AwkParser::param_list_opt() -> NodeListPtr
 {
-  TRACE(VERBOSE, "PARAM LIST OPT");
+  DBG_TRACE(VERBOSE, "PARAM LIST OPT");
 
   return param_list();
 }
 
 auto AwkParser::item() -> NodePtr
 {
-  TRACE(VERBOSE, "ITEM");
+  DBG_TRACE(VERBOSE, "ITEM");
   NodePtr node;
 
   if(auto ptr{action()}; ptr) {
@@ -1572,7 +1572,7 @@ auto AwkParser::item() -> NodePtr
 // Till there are are no more items
 auto AwkParser::item_list() -> NodeListPtr
 {
-  TRACE(VERBOSE, "ITEM LIST");
+  DBG_TRACE(VERBOSE, "ITEM LIST");
   NodeListPtr nodes{std::make_unique<List>()};
 
   while(!eos()) {
@@ -1594,7 +1594,7 @@ auto AwkParser::item_list() -> NodeListPtr
 
 auto AwkParser::program() -> NodeListPtr
 {
-  TRACE(VERBOSE, "PROGRAM");
+  DBG_TRACE(VERBOSE, "PROGRAM");
 
   NodeListPtr nodes{item_list()};
 
@@ -1608,19 +1608,19 @@ auto AwkParser::program() -> NodeListPtr
 
 auto AwkParser::parse() -> Ast
 {
-  LOG_PRINTLN("=== PARSING ===");
+  DBG_PRINTLN("=== PARSING ===");
 
   Ast ast;
   NodePtr node{program()};
 
   if(node) {
-    LOG_PRINTLN();
-    LOG_PRINTLN("--- Print AST ---");
+    DBG_PRINTLN();
+    DBG_PRINTLN("--- Print AST ---");
 
     node->accept(&m_visitor);
   }
 
-  LOG_PRINTLN();
+  DBG_PRINTLN();
 
   return ast;
 }

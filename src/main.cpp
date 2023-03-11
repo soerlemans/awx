@@ -2,6 +2,9 @@
 #include <functional>
 #include <iostream>
 
+// Library Includes:
+#include <CLI/CLI.hpp>
+
 // Includes:
 #include "config/config.hpp"
 #include "debug/log.hpp"
@@ -79,8 +82,8 @@ auto run() -> void
 auto main(int t_argc, char* t_argv[]) -> int
 {
   // Set loglevel for now for debugging purposes
-  LOG_SET_LOGLEVEL(VERBOSE);
-  LOG_PRINTLN("#== BEGIN ==#");
+  DBG_SET_LOGLEVEL(VERBOSE);
+  DBG_PRINTLN("#== BEGIN ==#");
 
   parse_args(t_argc, t_argv);
 
@@ -92,7 +95,7 @@ auto main(int t_argc, char* t_argv[]) -> int
     return ExitCode::EXCEPTION;
   }
 
-  LOG_PRINTLN("#== END ==#");
+  DBG_PRINTLN("#== END ==#");
 
   return ExitCode::OK;
 }

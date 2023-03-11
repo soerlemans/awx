@@ -13,31 +13,33 @@
 #if DEBUG
 
 // Macros:
-#define LOG_PRINTLN(...) log::println(__VA_ARGS__)
+#define DBG_PRINTLN(...) debug::println(__VA_ARGS__)
 
-#define LOG(loglevel, ...) \
-  log::log(__FILE__, __func__, __LINE__, log::loglevel, __VA_ARGS__)
+#define DBG_LOG(loglevel, ...)                                        \
+  debug::log(__FILE__, __func__, __LINE__, debug::LogLevel::loglevel, \
+             __VA_ARGS__)
 
-#define LOG_SET_LOGLEVEL(loglevel) set_loglevel(log::LogLevel::loglevel)
+#define DBG_SET_LOGLEVEL(loglevel) \
+  debug::set_loglevel(debug::LogLevel::loglevel)
 
 #else
 
 // Stub the macros if we are not on the debugging build
-#define LOG_PRINTLN(...) \
+#define DBG_PRINTLN(...) \
   do {                   \
   } while(0)
 
-#define LOG(...) \
-  do {           \
+#define DBG_LOG(...) \
+  do {               \
   } while(0)
 
-#define LOG_SET_LOGLEVEL(level) \
+#define DBG_SET_LOGLEVEL(level) \
   do {                          \
   } while(0)
 
 #endif // DEBUG
 
-namespace log {
+namespace debug {
 // Enums:
 // Different logging levels
 enum class LogLevel : u16 {
@@ -112,6 +114,6 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
 }
 
 #endif // DEBUG
-} // namespace log
+} // namespace debug
 
 #endif // LOG_HPP

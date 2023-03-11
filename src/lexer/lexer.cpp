@@ -90,21 +90,21 @@ auto Lexer::identifier() -> Token
 
   // Verify if it is a keyword or not
   if(const auto tokentype{is_keyword(ss.str())}; tokentype != TokenType::NONE) {
-    LOG(LogLevel::INFO, "KEYWORD: ", ss.str());
+    DBG_LOG(INFO, "KEYWORD: ", ss.str());
 
     token = create_token(tokentype);
     // Verify if it is a keyword or not
   } else if(const auto tokentype{is_builtin_function(ss.str())};
             tokentype != TokenType::NONE) {
-    LOG(LogLevel::INFO, "BUILTIN FUNCTION: ", ss.str());
+    DBG_LOG(INFO, "BUILTIN FUNCTION: ", ss.str());
 
     token = create_token(tokentype, ss.str());
   } else if(is_fn_id) {
-    LOG(LogLevel::INFO, "FUNCTION IDENTIFIER: ", ss.str());
+    DBG_LOG(INFO, "FUNCTION IDENTIFIER: ", ss.str());
 
     token = create_token(TokenType::FUNCTION_IDENTIFIER, ss.str());
   } else {
-    LOG(LogLevel::INFO, "IDENTIFIER: ", ss.str());
+    DBG_LOG(INFO, "IDENTIFIER: ", ss.str());
 
     token = create_token(TokenType::IDENTIFIER, ss.str());
   }
@@ -146,7 +146,7 @@ auto Lexer::handle_hex() -> Token
     }
   }
 
-  LOG(LogLevel::INFO, "HEX: ", ss.str());
+  DBG_LOG(INFO, "HEX: ", ss.str());
   const int number{(int)std::stoul(ss.str(), nullptr, 16)};
 
   return create_token(TokenType::HEX, number);
@@ -183,7 +183,7 @@ auto Lexer::handle_float(std::string_view t_str, bool t_dot) -> Token
     }
   }
 
-  LOG(LogLevel::INFO, "FLOAT: ", ss.str());
+  DBG_LOG(INFO, "FLOAT: ", ss.str());
   return create_token(TokenType::FLOAT, std::stod(ss.str()));
 }
 
@@ -207,7 +207,7 @@ auto Lexer::handle_integer() -> Token
     }
   }
 
-  LOG(LogLevel::INFO, "INTEGER: ", ss.str());
+  DBG_LOG(INFO, "INTEGER: ", ss.str());
   return create_token(TokenType::INTEGER, (int)std::stoi(ss.str()));
 }
 
@@ -254,7 +254,7 @@ auto Lexer::literal_string() -> Token
     }
   }
 
-  LOG(LogLevel::INFO, "STRING: ", '"', ss.str(), '"');
+  DBG_LOG(INFO, "STRING: ", '"', ss.str(), '"');
   return create_token(TokenType::STRING, ss.str());
 }
 
@@ -298,7 +298,7 @@ auto Lexer::literal_regex() -> Token
     }
   }
 
-  LOG(LogLevel::INFO, "REGEX: ", ss.str());
+  DBG_LOG(INFO, "REGEX: ", ss.str());
   return create_token(TokenType::REGEX, ss.str());
 }
 
@@ -324,7 +324,7 @@ auto Lexer::is_multi_symbol() -> TokenType
           if(ss.str() == multi.identifier()) {
             tokentype = TokenType{multi};
 
-            LOG(LogLevel::INFO, "MULTI SYMBOL: ", ss.str());
+            DBG_LOG(INFO, "MULTI SYMBOL: ", ss.str());
             break; // We found a multi symbol token!
           }
 
@@ -351,7 +351,7 @@ auto Lexer::is_single_symbol() -> TokenType
   for(const auto single : g_single_symbols)
     if(character == single.identifier()) {
       tokentype = TokenType{single};
-      LOG(LogLevel::INFO, "SINGLE SYMBOL: ", character);
+      DBG_LOG(INFO, "SINGLE SYMBOL: ", character);
       break;
     }
 
@@ -394,7 +394,7 @@ auto Lexer::tokenize() -> TokenStream
 {
   using namespace reserved::symbols;
 
-  LOG_PRINTLN("=== LEXING ===");
+  DBG_PRINTLN("=== LEXING ===");
 
   constexpr char double_quote{none::g_double_quote.identifier()};
   constexpr char slash{g_slash.identifier()};
@@ -412,14 +412,14 @@ auto Lexer::tokenize() -> TokenStream
       if(std::isspace(character)) {
         // Just ignore whitespace, but do not ignore newlines
         if(character == g_newline.identifier()) {
-          LOG(LogLevel::INFO, "NEWLINE");
+          DBG_LOG(INFO, "NEWLINE");
           add_token(create_token(TokenType::NEWLINE));
         }
       } else if(character == '#') {
         // '#' are used for comments.
         // If we just skip to the next line we ignore the \n at the end, so we
         // Must add a NEWLINE explicitly!
-        LOG(LogLevel::INFO, "INSERTING NEWLINE");
+        DBG_LOG(INFO, "INSERTING NEWLINE");
         add_token(create_token(TokenType::NEWLINE));
 
         // Skip to next line
@@ -438,7 +438,7 @@ auto Lexer::tokenize() -> TokenStream
     }
   }
 
-  LOG_PRINTLN();
+  DBG_PRINTLN();
 
   return m_tokenstream;
 }
