@@ -64,7 +64,7 @@ class Config {
   auto get_files() const -> std::vector<FileBuffer>;
 
   // Friend declarations:
-  friend auto parse_args(const int t_argc, char* t_argv[]) -> void; // NOLINT
+  friend auto parse_args(const int t_argc, char* t_argv[]) -> int; // NOLINT
 
   // Operators:
   auto operator=(const Config&) -> Config& = delete;

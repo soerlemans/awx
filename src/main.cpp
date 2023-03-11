@@ -8,6 +8,7 @@
 // Includes:
 #include "config/config.hpp"
 #include "debug/log.hpp"
+#include "file_buffer.hpp"
 #include "parser/awk_parser.hpp"
 
 // Local Includes:
@@ -20,46 +21,27 @@ enum ExitCode {
 };
 
 // Functions:
-auto print_help() -> void
-{
-  // TODO: Implement [--]
-  // TODO: Implement [File]
-  std::cout << "Usage: awx [Options]\n"
-            << "Options:\n"
-            << "    -f program-file\n"
-            << "    -h Displays this help manual\n"
-            << "    -c Traditional mode\n"
-            << '\n';
-}
-
 // NOLINTBEGIN
 // Parse command line arguments and store them in a configuration class
 // Warning: This is friend of the ConfigStore class
-auto parse_args(const int t_argc, char* t_argv[]) -> void
+auto parse_args(const int t_argc, char* t_argv[]) -> int
 {
   auto& config{Config::get_instance()};
 
-  const auto f_getopt{[&] {
-    return getopt(t_argc, t_argv, "f:h");
-  }};
+  CLI::App app{"AWX stands for (POSIX) AWk With Extensions."};
 
-  if(auto option{f_getopt()}; option != -1) {
-    for(; option != -1; option = f_getopt())
-      switch(option) {
-        case 'f': {
-          config.add_file(fs::path{optarg});
-          break;
-        }
+  std::string filename;
+  app.add_option("-f,--file", filename, "A help string");
 
-        case 'h':
-        default:
-          print_help();
-          break;
-      }
-  } else {
-    print_help();
-  }
+  CLI11_PARSE(app, t_argc, t_argv);
+
+	std::cout << filename << std::endl;
+  config.add_file(fs::path{filename});
+
+	return ExitCode::OK;
 }
+
+// NOLINTEND
 
 auto run() -> void
 {
@@ -77,22 +59,14 @@ auto run() -> void
   AwkParser parser{tokenstream};
   auto ast{parser.parse()};
 }
-// NOLINTEND
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
-  CLI::App app{"AWX is a POSIX AWK implementation with extensions."};
-
-  std::string filename = "default";
-  app.add_option("-f,--file", filename, "A help string");
-
-  CLI11_PARSE(app, t_argc, t_argv);
+  parse_args(t_argc, t_argv);
 
   // Set loglevel for now for debugging purposes
   DBG_SET_LOGLEVEL(VERBOSE);
   DBG_PRINTLN("#== BEGIN ==#");
-
-  // parse_args(t_argc, t_argv);
 
   try {
     run();
