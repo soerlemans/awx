@@ -7,7 +7,7 @@
 #include "functions.hpp"
 
 namespace nodes::functions {
-class Function : public Node {
+class Function : public NodeInterface {
   private:
   std::string m_name;
   NodeListPtr m_params;

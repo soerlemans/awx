@@ -4,6 +4,7 @@
 #include "node.hpp"
 
 
+namespace nodes {
 // Enum definitions:
 // TODO: Name these more accurately later
 enum class Precedence : u16 {
@@ -26,7 +27,7 @@ enum class Precedence : u16 {
 };
 
 // Have UnaryOperator and BinaryOperator derive from this
-class nodes::Expression : public nodes::Node {
+class Expression : public NodeInterface {
   protected:
   Precedence m_precedence;
 
@@ -39,5 +40,6 @@ class nodes::Expression : public nodes::Node {
 
   ~Expression() override = default;
 };
+} // namespace nodes
 
 #endif // EXPRESSION_HPP

@@ -8,7 +8,7 @@
 
 
 namespace nodes::io {
-class Printf : public Node {
+class Printf : public NodeInterface {
   private:
   NodeListPtr m_params;
 

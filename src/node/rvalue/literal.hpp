@@ -13,7 +13,7 @@
 namespace nodes::rvalue {
 // Classes:
 template<typename T>
-class Literal : public Node {
+class Literal : public NodeInterface {
   private:
   T m_value;
 

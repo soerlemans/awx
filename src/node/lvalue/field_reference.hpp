@@ -5,7 +5,7 @@
 
 
 namespace nodes::lvalue {
-class FieldReference : public Node {
+class FieldReference : public NodeInterface {
   private:
   NodePtr m_expr;
 

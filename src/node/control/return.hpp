@@ -7,7 +7,7 @@
 
 
 namespace nodes::control {
-class Return : public Node {
+class Return : public NodeInterface {
   private:
   NodePtr m_expr;
 

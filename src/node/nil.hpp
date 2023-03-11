@@ -5,7 +5,7 @@
 
 
 namespace nodes {
-class Nil : public Node {
+class Nil : public NodeInterface {
   private:
   public:
   virtual auto accept(NodeVisitor* t_visitor) -> void;

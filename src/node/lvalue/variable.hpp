@@ -9,7 +9,7 @@
 
 
 namespace nodes::lvalue {
-class Variable : public Node {
+class Variable : public NodeInterface {
   private:
   std::string m_name;
 

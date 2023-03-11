@@ -6,7 +6,7 @@
 #include "control.hpp"
 
 namespace nodes::control {
-class Break : public Node {
+class Break : public NodeInterface {
   public:
   auto accept(NodeVisitor* t_visitor) -> void override;
 

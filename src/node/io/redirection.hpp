@@ -9,7 +9,7 @@
 namespace nodes::io {
 enum class RedirectionOp { READ, TRUNC, APPEND, PIPE };
 
-class Redirection : public Node {
+class Redirection : public NodeInterface {
   private:
   RedirectionOp m_op;
   NodePtr m_left;

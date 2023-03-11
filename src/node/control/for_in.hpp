@@ -7,7 +7,7 @@
 
 
 namespace nodes::control {
-class ForIn : public Node {
+class ForIn : public NodeInterface {
   private:
   NodePtr m_identifier;
   NodePtr m_array;

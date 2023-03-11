@@ -9,7 +9,7 @@
 namespace nodes::recipes {
 enum class SpecialPatternOp { BEGIN, END };
 
-class SpecialPattern : public Node {
+class SpecialPattern : public NodeInterface {
   private:
   SpecialPatternOp m_op;
 

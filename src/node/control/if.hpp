@@ -7,7 +7,7 @@
 
 
 namespace nodes::control {
-class If : public Node {
+class If : public NodeInterface {
   private:
   NodePtr m_condition;
   NodePtr m_then;

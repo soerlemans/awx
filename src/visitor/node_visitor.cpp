@@ -1,15 +1,12 @@
 #include "node_visitor.hpp"
 
-
+// Includes:
 #include "../node/node.hpp"
 
-#include "../node/operators/decrement.hpp"
-#include "../node/operators/increment.hpp"
-#include "../node/operators/logical.hpp"
 
 using namespace nodes;
 
-auto NodeVisitor::visit(Node* t_node) -> void
+auto NodeVisitor::visit(NodeInterface* t_node) -> void
 {
   t_node->accept(this);
 }

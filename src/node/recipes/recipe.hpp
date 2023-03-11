@@ -7,7 +7,7 @@
 #include "recipes.hpp"
 
 namespace nodes::recipes {
-class Recipe : public Node {
+class Recipe : public NodeInterface {
   private:
   NodePtr m_pattern;
 

@@ -7,7 +7,7 @@
 
 // TODO: Maybe just inherit from Function?
 namespace nodes::functions {
-class BuiltinFunction : public Node {
+class BuiltinFunction : public NodeInterface {
   private:
   std::string m_name;
   NodeListPtr m_params;

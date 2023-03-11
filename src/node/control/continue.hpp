@@ -7,7 +7,7 @@
 
 
 namespace nodes::control {
-class Continue : public Node {
+class Continue : public NodeInterface {
   public:
   auto accept(NodeVisitor* t_visitor) -> void override;
 

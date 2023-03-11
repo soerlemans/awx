@@ -8,7 +8,7 @@
 
 
 namespace nodes::operators {
-class Delete : public Node {
+class Delete : public NodeInterface {
   private:
   // TOOD: Figure out if std::string is enough or if we need the fileposition
   // Data

@@ -7,7 +7,7 @@
 
 
 namespace nodes::control {
-class For : public Node {
+class For : public NodeInterface {
   private:
   NodePtr m_init;
   NodePtr m_condition;

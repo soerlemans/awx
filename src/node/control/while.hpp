@@ -7,7 +7,7 @@
 
 
 namespace nodes::control {
-class While : public Node {
+class While : public NodeInterface {
   private:
   NodePtr m_condition;
   NodeListPtr m_body;

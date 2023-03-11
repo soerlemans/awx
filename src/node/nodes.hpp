@@ -1,12 +1,13 @@
 #ifndef NODES_HPP
 #define NODES_HPP
 
+// STL Includes:
 #include <memory>
 
 
 namespace nodes {
 // Abstract base Node class
-class Node;
+class NodeInterface;
 
 // Specifies List of NodePtr's
 class List;
@@ -20,7 +21,7 @@ class Nil;
 } // namespace nodes
 
 // Aliases:
-using NodePtr = std::unique_ptr<nodes::Node>;
+using NodePtr = std::unique_ptr<nodes::NodeInterface>;
 using NodeListPtr = std::unique_ptr<nodes::List>;
 
 #endif // NODES_HPP

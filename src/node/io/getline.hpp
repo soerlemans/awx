@@ -7,7 +7,7 @@
 
 
 namespace nodes::io {
-class Getline : public Node {
+class Getline : public NodeInterface {
   private:
   NodePtr m_var;
 

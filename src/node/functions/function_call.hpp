@@ -11,7 +11,7 @@
 
 
 namespace nodes::functions {
-class FunctionCall : public Node {
+class FunctionCall : public NodeInterface {
   private:
   std::string m_name;
   NodeListPtr m_args;

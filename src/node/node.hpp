@@ -1,5 +1,5 @@
-#ifndef NODE_HPP
-#define NODE_HPP
+#ifndef NODE_INTERFACE_HPP
+#define NODE_INTERFACE_HPP
 
 // STL Includes:
 #include <memory>
@@ -19,12 +19,12 @@ namespace nodes {
 /*! Abstract Base Node class:
  * A node could either be a literal or some form of expression
  */
-class Node {
+class NodeInterface {
   public:
   virtual auto accept(NodeVisitor* t_visitor) -> void = 0;
 
-  virtual ~Node() = default;
+  virtual ~NodeInterface() = default;
 };
 } // namespace nodes
 
-#endif // NODE_HPP
+#endif // NODE_INTERFACE_HPP

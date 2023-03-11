@@ -13,7 +13,7 @@ namespace nodes {
 // This is a list in the sense of a list of expressions or similar
 // Think a list of nodes separated by commas like function arguments
 // Or function call separated nodes
-class List : public Node, public std::list<NodePtr> {
+class List : public NodeInterface, public std::list<NodePtr> {
   public:
   List() = default;
 

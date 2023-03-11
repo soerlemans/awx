@@ -6,7 +6,7 @@
 #include "control.hpp"
 
 namespace nodes::control {
-class Exit : public Node {
+class Exit : public NodeInterface {
 private:
   NodePtr m_expr;
 

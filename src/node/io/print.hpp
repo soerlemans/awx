@@ -9,7 +9,7 @@
 
 // TODO: Merge Print and Printf into one?
 namespace nodes::io {
-class Print : public Node {
+class Print : public NodeInterface {
   private:
   NodeListPtr m_params;
 
