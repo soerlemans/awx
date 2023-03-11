@@ -17,7 +17,7 @@ namespace debug {
 // TOOD: This could be constexpr
 [[nodiscard]] auto is_lower_loglevel(const LogLevel t_loglevel) -> bool
 {
-  return enum2underlying_type(g_loglevel) >= enum2underlying_type(t_loglevel);
+  return enum2int(g_loglevel) >= enum2int(t_loglevel);
 }
 
 auto set_loglevel(const LogLevel t_loglevel) -> void

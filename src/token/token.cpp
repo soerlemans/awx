@@ -18,12 +18,3 @@ auto Token::file_position() const -> const FilePosition&
 {
   return m_file_pos;
 }
-
-auto Token::print() const -> void
-{
-  std::cout << "Token - Type: " << enum2underlying_type(this->type());
-
-  print_if<int>("Int");
-  print_if<double>("Double");
-  print_if<std::string>("String");
-}

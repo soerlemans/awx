@@ -18,7 +18,7 @@ add_executable(${PROJECT_NAME})
 
 # Define DEBUG macro if build type is Debug
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-  $<$<CONFIG:Debug>:DEVELOPMENT>
+  $<$<CONFIG:Debug>:DEBUG>
 )
 
 # Set compile flags
@@ -29,7 +29,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
   -pedantic
   -ggdb
   -g3
-  $<$<CONFIG:RELEASE>:-O2>
+  $<$<CONFIG:Release>:-O2>
 )
 
 # Clang-tidy setup
@@ -39,6 +39,12 @@ set(CMAKE_CXX_CLANG_TIDY
   -header-filter=src/.*;
   -extra-arg=c++2b;
 )
+
+# Find libraries
+find_package(CLI11 CONFIG REQUIRED)
+
+# Link libraries
+target_link_libraries(${PROJECT_NAME} CLI11::CLI11)
 
 # Run CMake in src/ subdirectory
 add_subdirectory(src)
