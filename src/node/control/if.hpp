@@ -6,7 +6,7 @@
 #include "control.hpp"
 
 
-namespace nodes::control {
+namespace node::control {
 class If : public NodeInterface {
   private:
   NodePtr m_condition;
@@ -24,6 +24,6 @@ class If : public NodeInterface {
 
   ~If() override = default;
 };
-} // namespace nodes::control
+} // namespace node::control
 
 #endif // IF_HPP

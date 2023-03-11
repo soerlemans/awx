@@ -7,7 +7,7 @@
 #include <vector>
 
 
-namespace nodes::lvalue {
+namespace node::lvalue {
 class Array : public Variable {
   private:
   NodePtr m_expr_list;
@@ -19,6 +19,6 @@ class Array : public Variable {
 
   ~Array() override = default;
 };
-} // namespace nodes::lvalue
+} // namespace node::lvalue
 
 #endif // ARRAY_HPP

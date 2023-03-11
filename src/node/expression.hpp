@@ -4,7 +4,7 @@
 #include "node_interface.hpp"
 
 
-namespace nodes {
+namespace node {
 // Enum definitions:
 // TODO: Name these more accurately later
 enum class Precedence : u16 {
@@ -40,6 +40,6 @@ class Expression : public NodeInterface {
 
   ~Expression() override = default;
 };
-} // namespace nodes
+} // namespace node
 
 #endif // EXPRESSION_HPP

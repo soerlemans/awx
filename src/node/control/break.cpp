@@ -1,7 +1,7 @@
 #include "break.hpp"
 
 
-using namespace nodes::control;
+using namespace node::control;
 
 auto Break::accept(NodeVisitor* t_visitor) -> void
 {

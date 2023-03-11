@@ -1,7 +1,7 @@
 #include "delete.hpp"
 
 
-using namespace nodes::operators;
+using namespace node::operators;
 
 Delete::Delete(std::string&& t_array, NodeListPtr&& t_expr_list)
   : m_array{std::forward<std::string>(t_array)},

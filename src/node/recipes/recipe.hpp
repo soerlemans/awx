@@ -6,7 +6,7 @@
 
 #include "recipes.hpp"
 
-namespace nodes::recipes {
+namespace node::recipes {
 class Recipe : public NodeInterface {
   private:
   NodePtr m_pattern;
@@ -24,6 +24,6 @@ class Recipe : public NodeInterface {
 
   ~Recipe() override = default;
 };
-} // namespace nodes::recipes
+} // namespace node::recipes
 
 #endif // RECIPE_HPP

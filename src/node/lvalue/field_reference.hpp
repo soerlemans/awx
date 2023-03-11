@@ -4,7 +4,7 @@
 #include "../node_interface.hpp"
 
 
-namespace nodes::lvalue {
+namespace node::lvalue {
 class FieldReference : public NodeInterface {
   private:
   NodePtr m_expr;
@@ -18,6 +18,6 @@ class FieldReference : public NodeInterface {
 
   ~FieldReference() override = default;
 };
-} // namespace nodes::lvalue
+} // namespace node::lvalue
 
 #endif // FIELD_REFERENCE_HPP

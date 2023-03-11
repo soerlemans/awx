@@ -1,7 +1,7 @@
 #include "string_concatenation.hpp"
 
 
-using namespace nodes::operators;
+using namespace node::operators;
 
 StringConcatenation::StringConcatenation(NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::STRING_CONCAT, Associativity::LEFT,

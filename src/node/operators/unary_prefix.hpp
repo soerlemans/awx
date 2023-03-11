@@ -7,7 +7,7 @@
 #include "unary_operator.hpp"
 
 
-namespace nodes::operators {
+namespace node::operators {
 // Enums:
 enum class UnaryPrefixOp { PLUS, MINUS };
 
@@ -26,6 +26,6 @@ class UnaryPrefix : public UnaryOperator {
 
   ~UnaryPrefix() override = default;
 };
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif // UNARY_PREFIX_HPP

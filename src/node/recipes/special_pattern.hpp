@@ -6,7 +6,7 @@
 
 #include "recipes.hpp"
 
-namespace nodes::recipes {
+namespace node::recipes {
 enum class SpecialPatternOp { BEGIN, END };
 
 class SpecialPattern : public NodeInterface {
@@ -22,6 +22,6 @@ class SpecialPattern : public NodeInterface {
 
   ~SpecialPattern() override = default;
 };
-} // namespace nodes::recipes
+} // namespace node::recipes
 
 #endif // SPECIAL_PATTERN_HPP

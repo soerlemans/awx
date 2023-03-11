@@ -3,10 +3,10 @@
 
 #include "../node.hpp"
 
-namespace nodes::recipes {
+namespace node::recipes {
 class SpecialPattern;
 
 class Recipe;
-} // namespace nodes::recipes
+} // namespace node::recipes
 
 #endif // RECIPES_HPP

@@ -1,7 +1,7 @@
 #include "builtin_function.hpp"
 
 
-using namespace nodes::functions;
+using namespace node::functions;
 
 BuiltinFunction::BuiltinFunction(std::string t_name, NodeListPtr&& t_params,
                                  NodeListPtr&& t_body)

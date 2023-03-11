@@ -3,7 +3,7 @@
 
 #include "../node.hpp"
 
-namespace nodes::rvalue {
+namespace node::rvalue {
 template<typename T>
 class Literal;
 
@@ -14,6 +14,6 @@ class Regex;
 using Integer = Literal<int>;
 using Float = Literal<double>;
 using String = Literal<std::string>;
-} // namespace nodes::rvalue
+} // namespace node::rvalue
 
 #endif // RVALUE_HPP

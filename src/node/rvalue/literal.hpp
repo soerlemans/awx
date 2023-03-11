@@ -10,7 +10,7 @@
 #include "../node.hpp"
 
 
-namespace nodes::rvalue {
+namespace node::rvalue {
 // Classes:
 template<typename T>
 class Literal : public NodeInterface {
@@ -33,6 +33,6 @@ class Literal : public NodeInterface {
 
   ~Literal() override = default;
 };
-} // namespace nodes::rvalue
+} // namespace node::rvalue
 
 #endif // LITERAL_HPP

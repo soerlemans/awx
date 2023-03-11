@@ -13,10 +13,10 @@ class Ast {
   private:
   // We use raw pointers for determining where we are in the AST
   // This is fine as it is for traversal purposes
-  nodes::NodeInterface* m_root;
-  nodes::NodeInterface* m_current;
+  node::NodeInterface* m_root;
+  node::NodeInterface* m_current;
 
-  nodes::List m_list;
+  node::List m_list;
 
   public:
   Ast() = default;
@@ -25,7 +25,7 @@ class Ast {
 
   auto add(NodePtr&& t_node) -> void;
 
-  auto current() const -> nodes::NodeInterface*;
+  auto current() const -> node::NodeInterface*;
 
   virtual ~Ast() = default;
 };

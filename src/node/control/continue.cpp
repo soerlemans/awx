@@ -1,7 +1,7 @@
 #include "continue.hpp"
 
 
-using namespace nodes::control;
+using namespace node::control;
 
 auto Continue::accept(NodeVisitor* t_visitor) -> void
 {

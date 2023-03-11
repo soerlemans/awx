@@ -1,6 +1,6 @@
 #include "expression.hpp"
 
-using namespace nodes;
+using namespace node;
 
 
 Expression::Expression(Precedence t_precedence): m_precedence{t_precedence}

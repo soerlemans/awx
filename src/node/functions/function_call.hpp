@@ -10,7 +10,7 @@
 #include "functions.hpp"
 
 
-namespace nodes::functions {
+namespace node::functions {
 class FunctionCall : public NodeInterface {
   private:
   std::string m_name;
@@ -26,6 +26,6 @@ class FunctionCall : public NodeInterface {
 
   ~FunctionCall() override = default;
 };
-} // namespace nodes::functions
+} // namespace node::functions
 
 #endif // FUNCTION_CALL_HPP

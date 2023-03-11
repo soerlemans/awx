@@ -5,7 +5,7 @@
 
 #include "control.hpp"
 
-namespace nodes::control {
+namespace node::control {
 class Exit : public NodeInterface {
 private:
   NodePtr m_expr;
@@ -17,6 +17,6 @@ private:
 
   virtual ~Exit() = default;
 };
-} // namespace nodes::control
+} // namespace node::control
 
 #endif // EXIT_HPP

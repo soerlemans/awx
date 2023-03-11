@@ -1,7 +1,7 @@
 #include "list.hpp"
 
 
-using namespace nodes;
+using namespace node;
 
 // Methods:
 auto List::accept(NodeVisitor* t_visitor) -> void

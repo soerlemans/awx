@@ -4,7 +4,7 @@
 #include "../node/node_interface.hpp"
 
 
-using namespace nodes;
+using namespace node;
 
 auto NodeVisitor::visit(NodeInterface* t_node) -> void
 {

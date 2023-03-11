@@ -3,7 +3,7 @@
 #include <utility>
 
 
-using namespace nodes::control;
+using namespace node::control;
 
 While::While(NodePtr&& t_condition, NodeListPtr&& t_body)
   : m_condition{std::forward<NodePtr>(t_condition)},

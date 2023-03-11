@@ -5,7 +5,7 @@
 #include "unary_operator.hpp"
 
 
-namespace nodes::operators {
+namespace node::operators {
 class Grouping : public UnaryOperator {
   private:
   public:
@@ -15,6 +15,6 @@ class Grouping : public UnaryOperator {
 
   ~Grouping() override = default;
 };
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif // GROUPING_HPP

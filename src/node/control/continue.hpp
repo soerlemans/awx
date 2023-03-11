@@ -6,7 +6,7 @@
 #include "control.hpp"
 
 
-namespace nodes::control {
+namespace node::control {
 class Continue : public NodeInterface {
   public:
   auto accept(NodeVisitor* t_visitor) -> void override;
@@ -14,6 +14,6 @@ class Continue : public NodeInterface {
   virtual ~Continue() = default;
 };
 
-} // namespace nodes::control
+} // namespace node::control
 
 #endif // CONTINUE_HPP

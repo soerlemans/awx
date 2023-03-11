@@ -6,7 +6,7 @@
 #include "control.hpp"
 
 
-namespace nodes::control {
+namespace node::control {
 class Return : public NodeInterface {
   private:
   NodePtr m_expr;
@@ -20,6 +20,6 @@ class Return : public NodeInterface {
 
   ~Return() override = default;
 };
-} // namespace nodes::control
+} // namespace node::control
 
 #endif // RETURN_HPP

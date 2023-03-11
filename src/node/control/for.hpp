@@ -6,7 +6,7 @@
 #include "control.hpp"
 
 
-namespace nodes::control {
+namespace node::control {
 class For : public NodeInterface {
   private:
   NodePtr m_init;
@@ -23,6 +23,6 @@ class For : public NodeInterface {
 
   ~For() override = default;
 };
-} // namespace nodes::control
+} // namespace node::control
 
 #endif // FOR_HPP

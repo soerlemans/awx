@@ -1,7 +1,7 @@
 #include "grouping.hpp"
 
 
-using namespace nodes::operators;
+using namespace node::operators;
 
 Grouping::Grouping(NodePtr&& t_expr)
   : UnaryOperator{Precedence::GROUPING, std::forward<NodePtr>(t_expr)}

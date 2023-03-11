@@ -6,7 +6,7 @@
 #include "control.hpp"
 
 
-namespace nodes::control {
+namespace node::control {
 class While : public NodeInterface {
   private:
   NodePtr m_condition;
@@ -22,6 +22,6 @@ class While : public NodeInterface {
 
   ~While() override = default;
 };
-} // namespace nodes::control
+} // namespace node::control
 
 #endif // WHILE_HPP

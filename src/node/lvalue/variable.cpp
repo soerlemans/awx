@@ -1,7 +1,7 @@
 #include "variable.hpp"
 
 
-using namespace nodes::lvalue;
+using namespace node::lvalue;
 
 Variable::Variable(const std::string& t_name): m_name{std::move(t_name)}
 {}

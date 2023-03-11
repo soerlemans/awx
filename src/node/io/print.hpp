@@ -8,7 +8,7 @@
 
 
 // TODO: Merge Print and Printf into one?
-namespace nodes::io {
+namespace node::io {
 class Print : public NodeInterface {
   private:
   NodeListPtr m_params;
@@ -22,6 +22,6 @@ class Print : public NodeInterface {
 
   ~Print() override = default;
 };
-} // namespace nodes::io
+} // namespace node::io
 
 #endif // PRINT_HPP

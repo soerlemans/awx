@@ -8,7 +8,7 @@
 #include "lvalue.hpp"
 
 
-namespace nodes::lvalue {
+namespace node::lvalue {
 class Variable : public NodeInterface {
   private:
   std::string m_name;
@@ -22,6 +22,6 @@ class Variable : public NodeInterface {
 
   ~Variable() override = default;
 };
-} // namespace nodes::lvalue
+} // namespace node::lvalue
 
 #endif // VARIABLE_HPP

@@ -5,13 +5,13 @@
 
 #include "control.hpp"
 
-namespace nodes::control {
+namespace node::control {
 class Break : public NodeInterface {
   public:
   auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~Break() = default;
 };
-} // namespace nodes::control
+} // namespace node::control
 
 #endif // BREAK_HPP

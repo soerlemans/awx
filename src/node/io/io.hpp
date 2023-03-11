@@ -2,7 +2,7 @@
 #define IO_HPP
 
 
-namespace nodes::io {
+namespace node::io {
 // Output:
 class Print;
 class Printf;
@@ -12,6 +12,6 @@ class Getline;
 
 // Redirection of IO:
 class Redirection;
-} // namespace nodes::io
+} // namespace node::io
 
 #endif // IO_HPP

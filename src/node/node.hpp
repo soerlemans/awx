@@ -5,7 +5,7 @@
 #include <memory>
 
 
-namespace nodes {
+namespace node {
 // Abstract base Node class
 class NodeInterface;
 
@@ -18,10 +18,10 @@ class Expression;
 // Empty Node that does nothing (intended for empty statements)
 class Nil;
 
-} // namespace nodes
+} // namespace node
 
 // Aliases:
-using NodePtr = std::unique_ptr<nodes::NodeInterface>;
-using NodeListPtr = std::unique_ptr<nodes::List>;
+using NodePtr = std::unique_ptr<node::NodeInterface>;
+using NodeListPtr = std::unique_ptr<node::List>;
 
 #endif // NODES_HPP

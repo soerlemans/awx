@@ -1,7 +1,7 @@
 #include "decrement.hpp"
 
 
-using namespace nodes::operators;
+using namespace node::operators;
 
 Decrement::Decrement(NodePtr&& t_left, bool t_prefix)
   : UnaryOperator{Precedence::POSTFIX_INC_DEC, std::forward<NodePtr>(t_left)},

@@ -8,7 +8,7 @@
 #include "node.hpp"
 
 
-namespace nodes {
+namespace node {
 // TODO: Inherit from std::list itself or shadow std::list functions
 // This is a list in the sense of a list of expressions or similar
 // Think a list of nodes separated by commas like function arguments
@@ -24,6 +24,6 @@ class List : public NodeInterface, public std::list<NodePtr> {
 
   ~List() override = default;
 };
-} // namespace nodes
+} // namespace node
 
 #endif // LIST_HPP

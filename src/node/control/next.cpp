@@ -1,7 +1,7 @@
 #include "next.hpp"
 
 
-using namespace nodes::control;
+using namespace node::control;
 
 auto Next::accept(NodeVisitor* t_visitor) -> void
 {

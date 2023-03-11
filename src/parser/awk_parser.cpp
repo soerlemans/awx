@@ -15,14 +15,14 @@
 // Using statements:
 using namespace reserved::symbols;
 
-using namespace nodes;
-using namespace nodes::control;
-using namespace nodes::functions;
-using namespace nodes::io;
-using namespace nodes::lvalue;
-using namespace nodes::operators;
-using namespace nodes::recipes;
-using namespace nodes::rvalue;
+using namespace node;
+using namespace node::control;
+using namespace node::functions;
+using namespace node::io;
+using namespace node::lvalue;
+using namespace node::operators;
+using namespace node::recipes;
+using namespace node::rvalue;
 
 // TODO: split the parser and its rules into multiple files, the parser should
 // Be able to be done simpler or more properly structured, find a way for this

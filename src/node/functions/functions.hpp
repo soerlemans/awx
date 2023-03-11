@@ -4,11 +4,11 @@
 #include "../node.hpp"
 
 
-namespace nodes::functions {
+namespace node::functions {
 class Function;
 class BuiltinFunction;
 
 class FunctionCall;
-} // namespace nodes::functions
+} // namespace node::functions
 
 #endif // FUNCTIONS_HPP

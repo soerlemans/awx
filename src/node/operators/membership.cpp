@@ -1,7 +1,7 @@
 #include "membership.hpp"
 
 
-using namespace nodes::operators;
+using namespace node::operators;
 
 Membership::Membership(NodePtr&& t_lhs, std::string&& t_name)
   : UnaryOperator{Precedence::MEMBERSHIP, std::forward<NodePtr>(t_lhs)},

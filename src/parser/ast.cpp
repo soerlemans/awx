@@ -1,7 +1,7 @@
 #include "ast.hpp"
 
 
-using namespace nodes;
+using namespace node;
 
 // Methods:
 auto Ast::add(NodePtr&& t_node) -> void

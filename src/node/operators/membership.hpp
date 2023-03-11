@@ -5,7 +5,7 @@
 #include "unary_operator.hpp"
 
 
-namespace nodes::operators {
+namespace node::operators {
 class Membership : public UnaryOperator {
   private:
   std::string m_name;
@@ -18,6 +18,6 @@ class Membership : public UnaryOperator {
 
   ~Membership() override = default;
 };
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif // MEMBERSHIP_HPP

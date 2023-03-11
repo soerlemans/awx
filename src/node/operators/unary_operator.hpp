@@ -5,7 +5,7 @@
 
 #include "operators.hpp"
 
-namespace nodes {
+namespace node {
 class operators::UnaryOperator : public Expression {
   protected:
   NodePtr m_first;
@@ -19,6 +19,6 @@ class operators::UnaryOperator : public Expression {
 
   ~UnaryOperator() override = default;
 };
-} // namespace nodes
+} // namespace node
 
 #endif // UNARY_OPERATOR_HPP

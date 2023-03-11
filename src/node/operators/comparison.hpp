@@ -16,7 +16,7 @@ enum class ComparisonOp {
   GREATER_THAN_EQUAL,
 };
 
-namespace nodes::operators {
+namespace node::operators {
 class Comparison : public BinaryOperator {
   private:
   ComparisonOp m_op;
@@ -30,6 +30,6 @@ class Comparison : public BinaryOperator {
 
   ~Comparison() override = default;
 };
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif // COMPARISON_HPP

@@ -4,7 +4,7 @@
 #include "node_interface.hpp"
 
 
-namespace nodes {
+namespace node {
 class Nil : public NodeInterface {
   private:
   public:
@@ -12,6 +12,6 @@ class Nil : public NodeInterface {
 
   virtual ~Nil() = default;
 };
-} // namespace nodes
+} // namespace node
 
 #endif // NIL_HPP

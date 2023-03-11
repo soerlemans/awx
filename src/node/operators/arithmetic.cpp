@@ -1,7 +1,7 @@
 #include "arithmetic.hpp"
 
 
-using namespace nodes::operators;
+using namespace node::operators;
 
 Arithmetic::Arithmetic(ArithmeticOp t_op, NodePtr&& t_left, NodePtr&& t_right)
   // TODO: Fix the selection of the precedence

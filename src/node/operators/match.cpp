@@ -1,7 +1,7 @@
 #include "match.hpp"
 
 
-using namespace nodes::operators;
+using namespace node::operators;
 
 Match::Match(MatchOp t_op, NodePtr&& t_string, NodePtr&& t_pattern)
   : BinaryOperator{Precedence::MATCH, Associativity::NONE,

@@ -5,13 +5,13 @@
 
 #include "control.hpp"
 
-namespace nodes::control {
+namespace node::control {
 class Next : public NodeInterface {
   public:
   auto accept(NodeVisitor* t_visitor) -> void override;
 
   virtual ~Next() = default;
 };
-} // namespace nodes::control
+} // namespace node::control
 
 #endif // NEXT_HPP

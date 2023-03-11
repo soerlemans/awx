@@ -1,7 +1,7 @@
 #include "return.hpp"
 
 
-using namespace nodes::control;
+using namespace node::control;
 
 Return::Return(NodePtr&& t_expr): m_expr{std::forward<NodePtr>(t_expr)}
 {}

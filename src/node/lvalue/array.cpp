@@ -3,7 +3,7 @@
 #include <utility>
 
 
-using namespace nodes::lvalue;
+using namespace node::lvalue;
 
 Array::Array(std::string t_name, NodePtr&& t_expr_list)
   : Variable{std::move(t_name)}, m_expr_list{std::forward<NodePtr>(t_expr_list)}

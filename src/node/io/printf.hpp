@@ -7,7 +7,7 @@
 #include "io.hpp"
 
 
-namespace nodes::io {
+namespace node::io {
 class Printf : public NodeInterface {
   private:
   NodeListPtr m_params;
@@ -21,6 +21,6 @@ class Printf : public NodeInterface {
 
   ~Printf() override = default;
 };
-} // namespace nodes::io
+} // namespace node::io
 
 #endif // PRINTF_HPP

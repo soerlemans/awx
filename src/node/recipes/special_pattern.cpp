@@ -1,7 +1,7 @@
 #include "special_pattern.hpp"
 
 
-using namespace nodes::recipes;
+using namespace node::recipes;
 
 SpecialPattern::SpecialPattern(SpecialPatternOp t_op): m_op{t_op}
 {}

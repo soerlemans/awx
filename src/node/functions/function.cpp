@@ -1,7 +1,7 @@
 #include "function.hpp"
 
 
-using namespace nodes::functions;
+using namespace node::functions;
 
 Function::Function(std::string t_name, NodeListPtr&& t_params,
                    NodeListPtr&& t_body)

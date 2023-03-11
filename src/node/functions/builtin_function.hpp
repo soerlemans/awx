@@ -6,7 +6,7 @@
 #include "functions.hpp"
 
 // TODO: Maybe just inherit from Function?
-namespace nodes::functions {
+namespace node::functions {
 class BuiltinFunction : public NodeInterface {
   private:
   std::string m_name;
@@ -25,6 +25,6 @@ class BuiltinFunction : public NodeInterface {
 
   ~BuiltinFunction() override = default;
 };
-} // namespace nodes::functions
+} // namespace node::functions
 
 #endif // BUILTIN_FUNCTION_HPP

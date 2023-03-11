@@ -3,7 +3,7 @@
 #include <utility>
 
 
-using namespace nodes::io;
+using namespace node::io;
 
 Getline::Getline(NodePtr&& t_var): m_var{std::forward<NodePtr>(t_var)}
 {}

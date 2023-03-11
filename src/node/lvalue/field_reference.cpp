@@ -1,7 +1,7 @@
 #include "field_reference.hpp"
 
 
-using namespace nodes::lvalue;
+using namespace node::lvalue;
 
 FieldReference::FieldReference(NodePtr&& t_expr)
   : m_expr{std::forward<NodePtr>(t_expr)}

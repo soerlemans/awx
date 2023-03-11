@@ -5,7 +5,7 @@
 #include "operators.hpp"
 
 
-namespace nodes::operators {
+namespace node::operators {
 enum class ArithmeticOp {
   POWER = 0,
 
@@ -28,6 +28,6 @@ class Arithmetic : public BinaryOperator {
 
   ~Arithmetic() override = default;
 };
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif

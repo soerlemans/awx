@@ -5,7 +5,7 @@
 #include "operators.hpp"
 
 
-namespace nodes::operators {
+namespace node::operators {
 class Ternary : public BinaryOperator {
   protected:
   NodePtr m_else;
@@ -19,6 +19,6 @@ class Ternary : public BinaryOperator {
 
   ~Ternary() override = default;
 };
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif // TERNARY_HPP

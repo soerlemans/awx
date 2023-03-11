@@ -1,7 +1,7 @@
 #include "print_visitor.hpp"
 
 
-auto PrintVisitor::visit(nodes::control::If* t_if) -> void
+auto PrintVisitor::visit(node::control::If* t_if) -> void
 {
   Printer printer{m_counter};
 
@@ -10,7 +10,7 @@ auto PrintVisitor::visit(nodes::control::If* t_if) -> void
   printer.print_if(t_if->then(), this, "| THEN");
 }
 
-auto PrintVisitor::visit(nodes::control::While* t_while) -> void
+auto PrintVisitor::visit(node::control::While* t_while) -> void
 {
   Printer printer{m_counter};
 
@@ -19,7 +19,7 @@ auto PrintVisitor::visit(nodes::control::While* t_while) -> void
   // printer.print_if(t_while->body(), this, "| Body");
 }
 
-auto PrintVisitor::visit(nodes::control::For* t_for) -> void
+auto PrintVisitor::visit(node::control::For* t_for) -> void
 {
   Printer printer{m_counter};
 
@@ -28,21 +28,21 @@ auto PrintVisitor::visit(nodes::control::For* t_for) -> void
   // printer.print_if(t_while->body(), this, "| Body");
 }
 
-auto PrintVisitor::visit(nodes::control::ForIn* t_for) -> void
+auto PrintVisitor::visit(node::control::ForIn* t_for) -> void
 {
   Printer printer{m_counter};
 
   printer.print("FOR IN");
 }
 
-auto PrintVisitor::visit(nodes::control::Return* t_return) -> void
+auto PrintVisitor::visit(node::control::Return* t_return) -> void
 {
   Printer printer{m_counter};
 
   printer.print("RETURN");
 }
 
-auto PrintVisitor::visit(nodes::functions::Function* t_fn) -> void
+auto PrintVisitor::visit(node::functions::Function* t_fn) -> void
 {
   Printer printer{m_counter};
 
@@ -61,7 +61,7 @@ auto PrintVisitor::visit(nodes::functions::Function* t_fn) -> void
   }
 }
 
-auto PrintVisitor::visit(nodes::functions::FunctionCall* t_fn_call) -> void
+auto PrintVisitor::visit(node::functions::FunctionCall* t_fn_call) -> void
 {
   Printer printer{m_counter};
 
@@ -74,14 +74,14 @@ auto PrintVisitor::visit(nodes::functions::FunctionCall* t_fn_call) -> void
   }
 }
 
-auto PrintVisitor::visit(nodes::functions::BuiltinFunction* t_fn) -> void
+auto PrintVisitor::visit(node::functions::BuiltinFunction* t_fn) -> void
 {
   Printer printer{m_counter};
 
   printer.print("BUILTIN FUNCTION CALL");
 }
 
-auto PrintVisitor::visit(nodes::recipes::SpecialPattern* t_pattern) -> void
+auto PrintVisitor::visit(node::recipes::SpecialPattern* t_pattern) -> void
 {
   Printer printer{m_counter};
 
@@ -90,7 +90,7 @@ auto PrintVisitor::visit(nodes::recipes::SpecialPattern* t_pattern) -> void
   // TODO: List select special pattern
 }
 
-auto PrintVisitor::visit(nodes::recipes::Recipe* t_recipe) -> void
+auto PrintVisitor::visit(node::recipes::Recipe* t_recipe) -> void
 {
   Printer printer{m_counter};
 
@@ -107,7 +107,7 @@ auto PrintVisitor::visit(nodes::recipes::Recipe* t_recipe) -> void
   }
 }
 
-auto PrintVisitor::visit(nodes::io::Print* t_print) -> void
+auto PrintVisitor::visit(node::io::Print* t_print) -> void
 {
   Printer printer{m_counter};
 
@@ -117,7 +117,7 @@ auto PrintVisitor::visit(nodes::io::Print* t_print) -> void
   visit(t_print->params().get());
 }
 
-auto PrintVisitor::visit(nodes::io::Printf* t_printf) -> void
+auto PrintVisitor::visit(node::io::Printf* t_printf) -> void
 {
   Printer printer{m_counter};
 
@@ -127,7 +127,7 @@ auto PrintVisitor::visit(nodes::io::Printf* t_printf) -> void
   visit(t_printf->params().get());
 }
 
-auto PrintVisitor::visit(nodes::io::Getline* t_getline) -> void
+auto PrintVisitor::visit(node::io::Getline* t_getline) -> void
 {
   Printer printer{m_counter};
 
@@ -138,21 +138,21 @@ auto PrintVisitor::visit(nodes::io::Getline* t_getline) -> void
   }
 }
 
-auto PrintVisitor::visit(nodes::io::Redirection* t_redirection) -> void
+auto PrintVisitor::visit(node::io::Redirection* t_redirection) -> void
 {
   Printer printer{m_counter};
 
   printer.print("REDIRECTION");
 }
 
-auto PrintVisitor::visit(nodes::lvalue::Array* t_array) -> void
+auto PrintVisitor::visit(node::lvalue::Array* t_array) -> void
 {
   Printer printer{m_counter};
 
   printer.print("ARRAY");
 }
 
-auto PrintVisitor::visit(nodes::lvalue::FieldReference* t_fr) -> void
+auto PrintVisitor::visit(node::lvalue::FieldReference* t_fr) -> void
 {
   Printer printer{m_counter};
 
@@ -162,7 +162,7 @@ auto PrintVisitor::visit(nodes::lvalue::FieldReference* t_fr) -> void
   t_fr->expr()->accept(this);
 }
 
-auto PrintVisitor::visit(nodes::lvalue::Variable* t_var) -> void
+auto PrintVisitor::visit(node::lvalue::Variable* t_var) -> void
 {
   Printer printer{m_counter};
 
@@ -170,84 +170,84 @@ auto PrintVisitor::visit(nodes::lvalue::Variable* t_var) -> void
   printer.print("| NAME: ", t_var->name());
 }
 
-auto PrintVisitor::visit(nodes::rvalue::Float* t_float) -> void
+auto PrintVisitor::visit(node::rvalue::Float* t_float) -> void
 {
   Printer printer{m_counter};
 
   printer.print("FLOAT: ", t_float->get());
 }
 
-auto PrintVisitor::visit(nodes::rvalue::Integer* t_int) -> void
+auto PrintVisitor::visit(node::rvalue::Integer* t_int) -> void
 {
   Printer printer{m_counter};
 
   printer.print("INTEGER: ", t_int->get());
 }
 
-auto PrintVisitor::visit(nodes::rvalue::String* t_str) -> void
+auto PrintVisitor::visit(node::rvalue::String* t_str) -> void
 {
   Printer printer{m_counter};
 
   printer.print("STRING: ", t_str->get());
 }
 
-auto PrintVisitor::visit(nodes::rvalue::Regex* t_regex) -> void
+auto PrintVisitor::visit(node::rvalue::Regex* t_regex) -> void
 {
   Printer printer{m_counter};
 
   printer.print("REGEX: ", t_regex->get());
 }
 
-auto PrintVisitor::visit(nodes::operators::Arithmetic* t_arithmetic) -> void
+auto PrintVisitor::visit(node::operators::Arithmetic* t_arithmetic) -> void
 {
   Printer printer{m_counter};
 
   printer.print("ARITHMETIC");
 }
 
-auto PrintVisitor::visit(nodes::operators::Assignment* t_assignment) -> void
+auto PrintVisitor::visit(node::operators::Assignment* t_assignment) -> void
 {
   Printer printer{m_counter};
 
   printer.print("ASSIGNMENT");
 }
 
-auto PrintVisitor::visit(nodes::operators::Comparison* t_comparison) -> void
+auto PrintVisitor::visit(node::operators::Comparison* t_comparison) -> void
 {
   Printer printer{m_counter};
 
   printer.print("COMPARISON");
 }
 
-auto PrintVisitor::visit(nodes::operators::Increment* t_increment) -> void
+auto PrintVisitor::visit(node::operators::Increment* t_increment) -> void
 {
   Printer printer{m_counter};
 
   printer.print("INCREMENT");
 }
 
-auto PrintVisitor::visit(nodes::operators::Decrement* t_decrement) -> void
+auto PrintVisitor::visit(node::operators::Decrement* t_decrement) -> void
 {
   Printer printer{m_counter};
 
   printer.print("DECREMENT");
 }
 
-auto PrintVisitor::visit(nodes::operators::Delete* t_delete) -> void
+auto PrintVisitor::visit(node::operators::Delete* t_delete) -> void
 {
   Printer printer{m_counter};
 
   printer.print("DELETE");
 }
 
-auto PrintVisitor::visit(nodes::operators::Match* t_match) -> void
+auto PrintVisitor::visit(node::operators::Match* t_match) -> void
 {
   Printer printer{m_counter};
 
   printer.print("MATCH");
 }
 
-auto PrintVisitor::visit(nodes::operators::Not* t_not) -> void
+auto PrintVisitor::visit(node::operators::Not* t_not) -> void
 {
   Printer printer{m_counter};
 
@@ -256,7 +256,7 @@ auto PrintVisitor::visit(nodes::operators::Not* t_not) -> void
   t_not->first()->accept(this);
 }
 
-auto PrintVisitor::visit(nodes::operators::And* t_and) -> void
+auto PrintVisitor::visit(node::operators::And* t_and) -> void
 {
   Printer printer{m_counter};
 
@@ -268,7 +268,7 @@ auto PrintVisitor::visit(nodes::operators::And* t_and) -> void
   t_and->second()->accept(this);
 }
 
-auto PrintVisitor::visit(nodes::operators::Or* t_or) -> void
+auto PrintVisitor::visit(node::operators::Or* t_or) -> void
 {
   Printer printer{m_counter};
 
@@ -281,7 +281,7 @@ auto PrintVisitor::visit(nodes::operators::Or* t_or) -> void
   t_or->second()->accept(this);
 }
 
-auto PrintVisitor::visit(nodes::operators::StringConcatenation* t_conc) -> void
+auto PrintVisitor::visit(node::operators::StringConcatenation* t_conc) -> void
 {
   Printer printer{m_counter};
 
@@ -294,7 +294,7 @@ auto PrintVisitor::visit(nodes::operators::StringConcatenation* t_conc) -> void
   t_conc->second()->accept(this);
 }
 
-auto PrintVisitor::visit(nodes::operators::Ternary* t_ternary) -> void
+auto PrintVisitor::visit(node::operators::Ternary* t_ternary) -> void
 {
   Printer printer{m_counter};
 
@@ -316,7 +316,7 @@ auto PrintVisitor::visit(nodes::operators::Ternary* t_ternary) -> void
   }
 }
 
-auto PrintVisitor::visit(nodes::operators::UnaryPrefix* t_unary_prefix) -> void
+auto PrintVisitor::visit(node::operators::UnaryPrefix* t_unary_prefix) -> void
 {
   Printer printer{m_counter};
 
@@ -327,7 +327,7 @@ auto PrintVisitor::visit(nodes::operators::UnaryPrefix* t_unary_prefix) -> void
   t_unary_prefix->first()->accept(this);
 }
 
-auto PrintVisitor::visit(nodes::List* t_list) -> void
+auto PrintVisitor::visit(node::List* t_list) -> void
 {
   Printer printer{m_counter};
 
@@ -337,7 +337,7 @@ auto PrintVisitor::visit(nodes::List* t_list) -> void
     node->accept(this);
 }
 
-auto PrintVisitor::visit(nodes::Nil* t_nil) -> void
+auto PrintVisitor::visit(node::Nil* t_nil) -> void
 {
   Printer printer{m_counter};
 

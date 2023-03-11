@@ -4,7 +4,7 @@
 #include "literal.hpp"
 
 
-namespace nodes::rvalue {
+namespace node::rvalue {
 class Regex : public Literal<std::string> {
   public:
   Regex(std::string&& t_value);
@@ -13,6 +13,6 @@ class Regex : public Literal<std::string> {
 
   ~Regex() override = default;
 };
-} // namespace nodes::rvalue
+} // namespace node::rvalue
 
 #endif // REGEX_HPP

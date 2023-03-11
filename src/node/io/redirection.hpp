@@ -6,7 +6,7 @@
 #include "io.hpp"
 
 
-namespace nodes::io {
+namespace node::io {
 enum class RedirectionOp { READ, TRUNC, APPEND, PIPE };
 
 class Redirection : public NodeInterface {
@@ -26,6 +26,6 @@ class Redirection : public NodeInterface {
 
   ~Redirection() override = default;
 };
-} // namespace nodes::io
+} // namespace node::io
 
 #endif // REDIRECTION_HPP

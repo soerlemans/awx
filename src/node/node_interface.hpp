@@ -15,7 +15,7 @@
 
 // TODO: All classes can be generated with macros, we just need the structure
 // the rest can be handled by the Visitor pattern
-namespace nodes {
+namespace node {
 /*! Abstract Base Node class:
  * A node could either be a literal or some form of expression
  */
@@ -25,6 +25,6 @@ class NodeInterface {
 
   virtual ~NodeInterface() = default;
 };
-} // namespace nodes
+} // namespace node
 
 #endif // NODE_INTERFACE_HPP

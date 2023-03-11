@@ -7,7 +7,7 @@
 #include <string>
 
 
-namespace nodes::operators {
+namespace node::operators {
 class Delete : public NodeInterface {
   private:
   // TOOD: Figure out if std::string is enough or if we need the fileposition
@@ -22,6 +22,6 @@ class Delete : public NodeInterface {
 
   ~Delete() override = default;
 };
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif // DELETE_HPP

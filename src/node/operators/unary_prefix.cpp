@@ -1,7 +1,7 @@
 #include "unary_prefix.hpp"
 
 
-using namespace nodes::operators;
+using namespace node::operators;
 
 namespace {
 constexpr auto tokentype2op(const TokenType t_tokentype) -> UnaryPrefixOp

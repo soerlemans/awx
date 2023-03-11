@@ -5,7 +5,7 @@
 #include "operators.hpp"
 
 
-namespace nodes::operators {
+namespace node::operators {
 // Not:
 // Pay attention Not is not a BinaryOperator unlike the other Logical operators
 // Like And and Or
@@ -38,6 +38,6 @@ class Or : public BinaryOperator {
 
   ~Or() override = default;
 };
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif // LOGICAL_HPP

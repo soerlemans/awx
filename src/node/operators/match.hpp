@@ -5,7 +5,7 @@
 #include "operators.hpp"
 
 
-namespace nodes::operators {
+namespace node::operators {
 enum class MatchOp { MATCH, NO_MATCH };
 
 // EreMatch:
@@ -20,6 +20,6 @@ class Match : public BinaryOperator {
 
   ~Match() override = default;
 };
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif // MATCH_HPP

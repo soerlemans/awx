@@ -3,7 +3,7 @@
 #include <utility>
 
 
-using namespace nodes::control;
+using namespace node::control;
 
 If ::If(NodePtr&& t_condition, NodePtr&& t_then)
   : m_condition{std::forward<NodePtr>(t_condition)},

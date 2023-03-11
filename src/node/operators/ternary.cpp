@@ -3,7 +3,7 @@
 #include <utility>
 
 
-using namespace nodes::operators;
+using namespace node::operators;
 
 // TODO: Error throw when a nullptr is given as agrg
 Ternary::Ternary(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else)

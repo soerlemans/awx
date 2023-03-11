@@ -1,7 +1,7 @@
 #include "assignment.hpp"
 
 
-using namespace nodes::operators;
+using namespace node::operators;
 
 Assignment::Assignment(AssignmentOp t_op, NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::ASSIGNMENT, Associativity::RIGHT,

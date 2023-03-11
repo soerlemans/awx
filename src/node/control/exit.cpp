@@ -1,7 +1,7 @@
 #include "exit.hpp"
 
 
-using namespace nodes::control;
+using namespace node::control;
 
 Exit::Exit(NodePtr&& t_expr): m_expr{std::forward<NodePtr>(t_expr)}
 {}

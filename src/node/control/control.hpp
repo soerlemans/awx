@@ -2,7 +2,7 @@
 #define CONTROL_HPP
 
 
-namespace nodes::control {
+namespace node::control {
 class If;
 class While;
 
@@ -15,6 +15,6 @@ class Next;
 class Exit;
 class Return;
 class DoWhile;
-}; // namespace nodes::control
+}; // namespace node::control
 
 #endif // CONTROL_HPP

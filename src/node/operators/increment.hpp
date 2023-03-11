@@ -5,7 +5,7 @@
 #include "unary_operator.hpp"
 
 
-namespace nodes::operators {
+namespace node::operators {
 class Increment : public UnaryOperator {
   private:
   bool m_prefix;
@@ -17,6 +17,6 @@ class Increment : public UnaryOperator {
 
   ~Increment() override = default;
 };
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif

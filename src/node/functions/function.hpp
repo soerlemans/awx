@@ -6,7 +6,7 @@
 
 #include "functions.hpp"
 
-namespace nodes::functions {
+namespace node::functions {
 class Function : public NodeInterface {
   private:
   std::string m_name;
@@ -24,6 +24,6 @@ class Function : public NodeInterface {
 
   ~Function() override = default;
 };
-} // namespace nodes::functions
+} // namespace node::functions
 
 #endif // FUNCTION_HPP

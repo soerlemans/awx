@@ -1,6 +1,6 @@
 #include "regex.hpp"
 
-using namespace nodes::rvalue;
+using namespace node::rvalue;
 
 
 Regex::Regex(std::string&& t_value)

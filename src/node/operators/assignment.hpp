@@ -18,7 +18,7 @@ enum AssignmentOp {
   REGULAR
 };
 
-namespace nodes::operators {
+namespace node::operators {
 class Assignment : public BinaryOperator {
   private:
   AssignmentOp m_op;
@@ -30,6 +30,6 @@ class Assignment : public BinaryOperator {
 
   ~Assignment() override = default;
 };
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif // ASSIGNMENT_HPP

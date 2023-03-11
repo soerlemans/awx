@@ -5,7 +5,7 @@
 #include "operators.hpp"
 
 
-namespace nodes::operators {
+namespace node::operators {
 class StringConcatenation : public BinaryOperator {
   private:
   public:
@@ -15,6 +15,6 @@ class StringConcatenation : public BinaryOperator {
 
   ~StringConcatenation() override = default;
 };
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif // STRING_CONCATENATION_HPP

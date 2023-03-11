@@ -1,7 +1,7 @@
 #include "recipe.hpp"
 
 
-using namespace nodes::recipes;
+using namespace node::recipes;
 
 Recipe::Recipe(NodePtr&& t_pattern, NodePtr&& t_body)
   : m_pattern{std::forward<NodePtr>(t_pattern)},

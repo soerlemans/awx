@@ -1,7 +1,7 @@
 #include "nil.hpp"
 
 
-using namespace nodes;
+using namespace node;
 
 auto Nil::accept(NodeVisitor* t_visitor) -> void
 {

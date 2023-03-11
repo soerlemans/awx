@@ -6,7 +6,7 @@
 // All Operator classes are part of this namespace
 // These forward declarations are also used by NodeVisitor
 // To declare its overload functions for visit()
-namespace nodes::operators {
+namespace node::operators {
 // Abstract Base classes:
 class UnaryOperator;
 class BinaryOperator;
@@ -48,6 +48,6 @@ class Assignment;
 
 // Trinary operator:
 class Ternary;
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif // OPERATORS_HPP

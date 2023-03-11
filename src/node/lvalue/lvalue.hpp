@@ -4,10 +4,10 @@
 #include "../node.hpp"
 
 
-namespace nodes::lvalue {
+namespace node::lvalue {
 class Array;
 class Variable;
 class FieldReference;
-} // namespace nodes::lvalue
+} // namespace node::lvalue
 
 #endif // LVALUE_HPP

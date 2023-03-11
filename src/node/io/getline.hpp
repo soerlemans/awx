@@ -6,7 +6,7 @@
 #include "io.hpp"
 
 
-namespace nodes::io {
+namespace node::io {
 class Getline : public NodeInterface {
   private:
   NodePtr m_var;
@@ -20,6 +20,6 @@ class Getline : public NodeInterface {
 
   ~Getline() override = default;
 };
-} // namespace nodes::io
+} // namespace node::io
 
 #endif // GETLINE_HPP

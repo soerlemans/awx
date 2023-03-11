@@ -1,7 +1,7 @@
 #include "redirection.hpp"
 
 
-using namespace nodes::io;
+using namespace node::io;
 
 Redirection::Redirection(RedirectionOp t_op, NodePtr&& t_left,
                          NodePtr&& t_right)

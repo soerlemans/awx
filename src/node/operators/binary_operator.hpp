@@ -11,7 +11,7 @@ enum Associativity : u16 {
   RIGHT,
 };
 
-namespace nodes::operators {
+namespace node::operators {
 class BinaryOperator : public UnaryOperator {
   protected:
   Associativity m_associativity;
@@ -28,6 +28,6 @@ class BinaryOperator : public UnaryOperator {
 
   ~BinaryOperator() override = default;
 };
-} // namespace nodes::operators
+} // namespace node::operators
 
 #endif // BINARY_OPERATOR_HPP
