@@ -1,10 +1,13 @@
 #ifndef AWK_PARSER_HPP
 #define AWK_PARSER_HPP
 
+// STL Includes:
 #include <functional>
 
+// Includes:
 #include "../visitor/print_visitor.hpp"
 
+// Local Includes:
 #include "parser.hpp"
 
 
@@ -21,8 +24,7 @@ class AwkParser;
 using ParserFunc = std::function<NodePtr()>;
 
 // Classes:
-/*! Top down parser for POSIX AWK. Grammar can be found in awk.yy file.
- */
+//! Top down parser for POSIX AWK. Grammar can be found in awk.yy file.
 class AwkParser : public Parser {
   private:
   // TODO: this is just here for debugging purposes
@@ -129,7 +131,7 @@ class AwkParser : public Parser {
 
   virtual auto program() -> NodeListPtr;
 
-  auto parse() -> Ast override;
+  auto parse() -> NodePtr override;
 
   // Desstructors:
   ~AwkParser() override = default;

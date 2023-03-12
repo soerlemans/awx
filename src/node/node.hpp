@@ -3,6 +3,7 @@
 
 // STL Includes:
 #include <memory>
+#include <stdexcept>
 
 
 namespace node {

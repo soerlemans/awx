@@ -3,9 +3,7 @@
 
 // Includes:
 #include "../lexer/lexer.hpp"
-
-// Local Includes:
-#include "ast.hpp"
+#include "../node/node.hpp"
 
 
 /*! Abstract parser class provides utilities that a parser would need to
@@ -32,7 +30,7 @@ class Parser {
 
   // The parse() method should be virtual cause in the future we may want to
   // have different dialects of AWX
-  virtual auto parse() -> Ast = 0;
+  virtual auto parse() -> NodePtr = 0;
 
   // Destructor:
   virtual ~Parser() = default;

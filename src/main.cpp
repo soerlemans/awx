@@ -17,6 +17,7 @@
 // Enums:
 enum ExitCode {
   OK = 0,
+	SIGNAL,
   EXCEPTION,
 };
 
@@ -57,7 +58,7 @@ auto run() -> void
   TokenStream tokenstream{lexer.tokenize()};
 
   AwkParser parser{tokenstream};
-  auto ast{parser.parse()};
+  auto node{parser.parse()};
 }
 
 auto main(int t_argc, char* t_argv[]) -> int

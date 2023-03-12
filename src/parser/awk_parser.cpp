@@ -1607,18 +1607,17 @@ auto AwkParser::program() -> NodeListPtr
   return nodes;
 }
 
-auto AwkParser::parse() -> Ast
+auto AwkParser::parse() -> NodePtr
 {
   DBG_PRINTLN("=== PARSING ===");
 
-  Ast ast;
-  NodePtr node{program()};
+  NodePtr ast{program()};
 
-  if(node) {
+  if(ast) {
     DBG_PRINTLN();
     DBG_PRINTLN("--- Print AST ---");
 
-    node->accept(&m_visitor);
+    ast->accept(&m_visitor);
   }
 
   DBG_PRINTLN();
