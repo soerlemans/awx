@@ -2,7 +2,7 @@
 #define NODE_VISITOR_HPP
 
 // Includes:
-#include "../node/declarations.hpp"
+#include "../node/node.hpp"
 
 
 // Implementation of the Visitor design pattern for Nodes
