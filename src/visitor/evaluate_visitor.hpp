@@ -8,9 +8,13 @@
 #include "node_visitor.hpp"
 
 
+/*! Evaluates each node and returns a result
+ * TODO: Have NodeVisitor be a template class and have each Node accept a
+ * pointer to NodeVisitor<T> this way we can
+ */
 class EvaluateVisitor : public NodeVisitor {
   private:
-  std::variant<int> m_result;
+  using Any = std::variant<bool, int, double, std::string>;
 
   public:
   EvaluateVisitor() = default;
