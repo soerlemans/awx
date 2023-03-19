@@ -221,7 +221,7 @@ auto TreeWalkInterpreter::visit(StringConcatenation* t_conc) -> void
   std::stringstream ss;
   std::visit(
     [&](auto&& t_left, auto&& t_right) {
-      ss << left << t_right;
+      ss << t_left << t_right;
     },
     left, m_result);
 
