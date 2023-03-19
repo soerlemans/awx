@@ -1,5 +1,8 @@
 #include "tree_walk_interpreter.hpp"
 
+// STL Includes:
+#include <iostream>
+
 // Includes:
 #include "../node/include.hpp"
 
@@ -43,10 +46,28 @@ auto TreeWalkInterpreter::visit(SpecialPattern* t_pattern) -> void
 {}
 
 auto TreeWalkInterpreter::visit(Recipe* t_recipe) -> void
-{}
+{
+  // TODO: Process pattern
+  // t_recipe->pattern()->accept(this);
+
+  t_recipe->body()->accept(this);
+}
 
 auto TreeWalkInterpreter::visit(Print* t_print) -> void
-{}
+{
+  if(const auto& params{t_print->params()}; params) {
+    for(const auto& param : *params) {
+      param->accept(this);
+      std::visit(
+        [&](auto&& t_result) {
+          std::cout << std::forward<decltype(t_result)>(t_result);
+        },
+        m_result);
+    }
+  }
+
+  std::cout << '\n';
+}
 
 auto TreeWalkInterpreter::visit(Printf* t_printf) -> void
 {}
@@ -73,7 +94,9 @@ auto TreeWalkInterpreter::visit(Integer* t_int) -> void
 {}
 
 auto TreeWalkInterpreter::visit(String* t_str) -> void
-{}
+{
+  m_result = t_str->get();
+}
 
 auto TreeWalkInterpreter::visit(Regex* t_regex) -> void
 {}
@@ -102,9 +125,9 @@ auto TreeWalkInterpreter::visit(Arithmetic* t_arithmetic) -> void
       break;
     }
 
-	default:
-		// TODO: Error handling
-		break;
+    default:
+      // TODO: Error handling
+      break;
   }
 }
 
@@ -148,7 +171,10 @@ auto TreeWalkInterpreter::visit(UnaryPrefix* t_unary_prefix) -> void
 {}
 
 auto TreeWalkInterpreter::visit(List* t_list) -> void
-{}
+{
+  for(const auto& element : *t_list)
+    element->accept(this);
+}
 
 auto TreeWalkInterpreter::visit(Nil* t_nil) -> void
 {}
