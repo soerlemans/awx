@@ -1,6 +1,8 @@
 # Variables:
 DEBUG := -DCMAKE_BUILD_TYPE=DEBUG
 
+.DEFAULT_GOAL := build
+
 # Rules:
 .PHONY: all \
 	build debug \
@@ -9,7 +11,7 @@ DEBUG := -DCMAKE_BUILD_TYPE=DEBUG
 	format lint \
 	docs docs-pdf
 
-all: build
+all: build debug
 build:
 	cmake -S . -B $@/
 	cmake --build $@/
@@ -44,5 +46,3 @@ docs:
 # Compile documentation as LaTex
 docs-pdf: docs
 	cd doxygen/latex/ && $(MAKE)
-
-
