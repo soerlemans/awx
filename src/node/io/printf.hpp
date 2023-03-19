@@ -17,7 +17,7 @@ class Printf : public NodeInterface {
 
   virtual auto params() -> NodeListPtr&;
 
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~Printf() override = default;
 };

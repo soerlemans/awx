@@ -18,7 +18,7 @@ class While : public NodeInterface {
   auto condition() -> NodePtr&;
   auto body() -> NodeListPtr&;
 
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~While() override = default;
 };

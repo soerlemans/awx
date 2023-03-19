@@ -13,7 +13,7 @@ class Increment : public UnaryOperator {
   public:
   Increment(NodePtr&& t_left, bool t_prefix);
 
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~Increment() override = default;
 };

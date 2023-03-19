@@ -18,7 +18,7 @@ class SpecialPattern : public NodeInterface {
 
   auto op() const -> SpecialPatternOp;
 
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~SpecialPattern() override = default;
 };

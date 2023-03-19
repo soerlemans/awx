@@ -26,7 +26,7 @@ class Arithmetic : public BinaryOperator {
 
 	auto op() -> ArithmeticOp;
 
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~Arithmetic() override = default;
 };

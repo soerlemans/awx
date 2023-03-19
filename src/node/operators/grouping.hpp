@@ -11,7 +11,7 @@ class Grouping : public UnaryOperator {
   public:
   Grouping(NodePtr&& t_expr);
 
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~Grouping() override = default;
 };

@@ -21,7 +21,7 @@ class BuiltinFunction : public NodeInterface {
   auto params() -> NodeListPtr&;
   auto body() -> NodeListPtr&;
 
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~BuiltinFunction() override = default;
 };

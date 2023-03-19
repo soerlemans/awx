@@ -36,7 +36,7 @@ class Expression : public NodeInterface {
 
   auto precedence() -> Precedence;
 
-  auto accept(NodeVisitor* t_visitor) -> void override = 0;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
 
   ~Expression() override = default;
 };

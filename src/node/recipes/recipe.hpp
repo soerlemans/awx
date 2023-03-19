@@ -20,7 +20,7 @@ class Recipe : public NodeInterface {
   auto pattern() -> NodePtr&;
   auto body() -> NodePtr&;
 
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~Recipe() override = default;
 };

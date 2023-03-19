@@ -9,7 +9,7 @@
 namespace node::control {
 class Continue : public NodeInterface {
   public:
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   virtual ~Continue() = default;
 };

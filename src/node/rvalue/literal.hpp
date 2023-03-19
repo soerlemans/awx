@@ -26,7 +26,7 @@ class Literal : public NodeInterface {
     return m_value;
   }
 
-  auto accept(NodeVisitor* t_visitor) -> void override
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override
   {
     t_visitor->visit(this);
   }

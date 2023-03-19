@@ -16,7 +16,7 @@ class Return : public NodeInterface {
 
   auto expr() -> NodePtr&;
 
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~Return() override = default;
 };

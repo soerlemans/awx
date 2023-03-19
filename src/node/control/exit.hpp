@@ -13,7 +13,7 @@ private:
   public:
   Exit(NodePtr&& t_expr);
 
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   virtual ~Exit() = default;
 };

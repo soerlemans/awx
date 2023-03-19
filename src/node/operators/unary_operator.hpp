@@ -15,7 +15,7 @@ class operators::UnaryOperator : public Expression {
 
   auto left() -> NodePtr&;
 
-  auto accept(NodeVisitor* t_visitor) -> void override = 0;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
 
   ~UnaryOperator() override = default;
 };

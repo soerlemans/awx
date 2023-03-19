@@ -24,7 +24,7 @@ class BinaryOperator : public UnaryOperator {
 
   auto right() -> NodePtr&;
 
-  auto accept(NodeVisitor* t_visitor) -> void override = 0;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override = 0;
 
   ~BinaryOperator() override = default;
 };

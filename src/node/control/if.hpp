@@ -20,7 +20,7 @@ class If : public NodeInterface {
   auto then() -> NodePtr&;
   auto alt() -> NodePtr&; // Alternative is a synonym for else
 
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~If() override = default;
 };

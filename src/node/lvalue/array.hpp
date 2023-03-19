@@ -15,7 +15,7 @@ class Array : public Variable {
   public:
   Array(std::string t_name, NodePtr&& t_expr_list = nullptr);
 
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~Array() override = default;
 };

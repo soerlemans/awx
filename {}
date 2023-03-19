@@ -1,0 +1,845 @@
+#include "print.hpp"
+
+#include <utility>
+
+
+using namespace node::io;
+
+using namespace visitor;
+
+Print::Print(NodeListPtr&& t_params)
+  : m_params{std::forward<NodeListPtr>(t_params)}
+{}
+
+auto Print::params() -> NodeListPtr&
+{
+  return m_params;
+}
+
+auto Print::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "redirection.hpp"
+
+
+using namespace node::io;
+
+using namespace visitor;
+
+Redirection::Redirection(RedirectionOp t_op, NodePtr&& t_left,
+                         NodePtr&& t_right)
+  : m_op{t_op},
+    m_left{std::forward<NodePtr>(t_left)},
+    m_right{std::forward<NodePtr>(t_right)}
+{}
+
+auto Redirection::left() -> NodePtr&
+{
+  return m_left;
+}
+
+auto Redirection::right() -> NodePtr&
+{
+  return m_right;
+}
+
+auto Redirection::op() const -> RedirectionOp
+{
+  return m_op;
+}
+
+auto Redirection::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "printf.hpp"
+
+#include <utility>
+
+
+using namespace node::io;
+
+using namespace visitor;
+
+Printf::Printf(NodeListPtr&& t_params)
+  : m_params{std::forward<NodeListPtr>(t_params)}
+{}
+
+auto Printf::params() -> NodeListPtr&
+{
+  return m_params;
+}
+
+auto Printf::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "getline.hpp"
+
+#include <utility>
+
+
+using namespace node::io;
+
+using namespace visitor;
+
+Getline::Getline(NodePtr&& t_var): m_var{std::forward<NodePtr>(t_var)}
+{}
+
+auto Getline::var() -> NodePtr&
+{
+  return m_var;
+}
+
+auto Getline::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "list.hpp"
+
+
+using namespace node;
+
+using namespace visitor;
+
+// Methods:
+auto List::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "unary_prefix.hpp"
+
+
+using namespace node::operators;
+
+using namespace visitor;
+
+namespace {
+constexpr auto tokentype2op(const TokenType t_tokentype) -> UnaryPrefixOp
+{
+  UnaryPrefixOp op;
+
+  switch(t_tokentype) {
+    case TokenType::PLUS:
+      op = UnaryPrefixOp::PLUS;
+      break;
+
+    case TokenType::MINUS:
+      op = UnaryPrefixOp::MINUS;
+      break;
+
+    default:
+      // TODO: Error handling
+      // This just prevents an warning
+      op = UnaryPrefixOp::PLUS;
+      break;
+  }
+
+  return op;
+}
+} // namespace
+
+UnaryPrefix::UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left)
+  : UnaryOperator{Precedence::UNARY_PREFIX, std::forward<NodePtr>(t_left)},
+    m_op{t_op}
+{}
+
+
+UnaryPrefix::UnaryPrefix(TokenType t_tokentype, NodePtr&& t_left)
+  : UnaryOperator{Precedence::UNARY_PREFIX, std::forward<NodePtr>(t_left)},
+    m_op{tokentype2op(t_tokentype)}
+{}
+
+auto UnaryPrefix::op() const -> UnaryPrefixOp
+{
+  return m_op;
+}
+
+auto UnaryPrefix::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "comparison.hpp"
+
+
+using namespace node::operators;
+
+using namespace visitor;
+
+Comparison::Comparison(ComparisonOp t_op, NodePtr&& t_left, NodePtr&& t_right)
+  : BinaryOperator{Precedence::COMPARISON, Associativity::NONE,
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)},
+    m_op{t_op}
+{}
+
+auto Comparison::op() const -> ComparisonOp
+{
+  return m_op;
+}
+
+auto Comparison::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "increment.hpp"
+
+
+using namespace node::operators;
+
+using namespace visitor;
+
+// Postfix:
+Increment::Increment(NodePtr&& t_left, bool t_prefix)
+  : UnaryOperator{Precedence::POSTFIX_INC_DEC, std::forward<NodePtr>(t_left)},
+    m_prefix{t_prefix}
+{}
+
+auto Increment::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "ternary.hpp"
+
+#include <utility>
+
+
+using namespace node::operators;
+
+using namespace visitor;
+
+// TODO: Error throw when a nullptr is given as agrg
+Ternary::Ternary(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else)
+  : BinaryOperator{Precedence::TERNARY, Associativity::RIGHT,
+                   std::forward<NodePtr>(t_condition),
+                   std::forward<NodePtr>(t_then)},
+    m_else{std::forward<NodePtr>(t_else)}
+{}
+
+auto Ternary::third() -> NodePtr&
+{
+  return m_else;
+}
+
+auto Ternary::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "delete.hpp"
+
+
+using namespace node::operators;
+
+using namespace visitor;
+
+Delete::Delete(std::string&& t_array, NodeListPtr&& t_expr_list)
+  : m_array{std::forward<std::string>(t_array)},
+    m_expr_list{std::forward<NodeListPtr>(t_expr_list)}
+{}
+
+auto Delete::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "membership.hpp"
+
+
+using namespace node::operators;
+
+using namespace visitor;
+
+Membership::Membership(NodePtr&& t_lhs, std::string&& t_name)
+  : UnaryOperator{Precedence::MEMBERSHIP, std::forward<NodePtr>(t_lhs)},
+    m_name{std::forward<std::string>(t_name)}
+{}
+
+auto Membership::name() const -> std::string_view
+{
+  return {m_name};
+}
+
+auto Membership::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "grouping.hpp"
+
+
+using namespace node::operators;
+
+using namespace visitor;
+
+Grouping::Grouping(NodePtr&& t_expr)
+  : UnaryOperator{Precedence::GROUPING, std::forward<NodePtr>(t_expr)}
+{}
+
+auto Grouping::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "arithmetic.hpp"
+
+
+using namespace node::operators;
+
+using namespace visitor;
+
+Arithmetic::Arithmetic(ArithmeticOp t_op, NodePtr&& t_left, NodePtr&& t_right)
+  // TODO: Fix the selection of the precedence
+  : BinaryOperator{Precedence::ARITHMETIC_MU_DI_MO, Associativity::RIGHT,
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)},
+    m_op{t_op}
+{}
+
+auto Arithmetic::op() -> ArithmeticOp
+{
+  return m_op;
+}
+
+auto Arithmetic::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "string_concatenation.hpp"
+
+
+using namespace node::operators;
+
+using namespace visitor;
+
+StringConcatenation::StringConcatenation(NodePtr&& t_left, NodePtr&& t_right)
+  : BinaryOperator{Precedence::STRING_CONCAT, Associativity::LEFT,
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
+{}
+
+auto StringConcatenation::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "assignment.hpp"
+
+
+using namespace node::operators;
+
+using namespace visitor;
+
+Assignment::Assignment(AssignmentOp t_op, NodePtr&& t_left, NodePtr&& t_right)
+  : BinaryOperator{Precedence::ASSIGNMENT, Associativity::RIGHT,
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)},
+    m_op{t_op}
+{}
+
+auto Assignment::accept([[maybe_unused]] NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "decrement.hpp"
+
+
+using namespace node::operators;
+
+using namespace visitor;
+
+Decrement::Decrement(NodePtr&& t_left, bool t_prefix)
+  : UnaryOperator{Precedence::POSTFIX_INC_DEC, std::forward<NodePtr>(t_left)},
+    m_prefix{t_prefix}
+{}
+
+auto Decrement::accept([[maybe_unused]] NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "match.hpp"
+
+
+using namespace node::operators;
+
+using namespace visitor;
+
+Match::Match(MatchOp t_op, NodePtr&& t_string, NodePtr&& t_pattern)
+  : BinaryOperator{Precedence::MATCH, Associativity::NONE,
+                   std::forward<NodePtr>(t_string),
+                   std::forward<NodePtr>(t_pattern)},
+    m_op{t_op}
+{}
+
+auto Match::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "unary_operator.hpp"
+
+using namespace node::operators;
+
+using namespace visitor;
+
+
+UnaryOperator::UnaryOperator(Precedence t_precedence, NodePtr&& t_left)
+  : Expression{t_precedence}, m_left{std::forward<NodePtr>(t_left)}
+{}
+
+auto UnaryOperator::left() -> NodePtr&
+{
+  return m_left;
+}
+#include "binary_operator.hpp"
+
+using namespace node::operators;
+
+using namespace visitor;
+
+
+BinaryOperator::BinaryOperator(Precedence t_precedence,
+                               Associativity t_associativity, NodePtr&& t_left,
+                               NodePtr&& t_right)
+  : UnaryOperator{t_precedence, std::forward<NodePtr>(t_left)},
+    m_associativity{t_associativity},
+    m_right{std::forward<NodePtr>(t_right)}
+{}
+
+auto BinaryOperator::right() -> NodePtr&
+{
+  return m_right;
+}
+#include "logical.hpp"
+
+
+using namespace node::operators;
+
+using namespace visitor;
+
+// Not:
+Not::Not(NodePtr&& t_left)
+  : UnaryOperator{Precedence::UNARY_PREFIX, std::forward<NodePtr>(t_left)}
+{}
+
+auto Not::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+
+// And:
+And::And(NodePtr&& t_left, NodePtr&& t_right)
+  : BinaryOperator{Precedence::LOGICAL_AND, Associativity::LEFT,
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
+{}
+
+auto And::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+
+// Or:
+Or::Or(NodePtr&& t_left, NodePtr&& t_right)
+  : BinaryOperator{Precedence::LOGICAL_OR, Associativity::LEFT,
+                   std::forward<NodePtr>(t_left),
+                   std::forward<NodePtr>(t_right)}
+{}
+
+auto Or::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "field_reference.hpp"
+
+
+using namespace node::lvalue;
+
+using namespace visitor;
+
+FieldReference::FieldReference(NodePtr&& t_expr)
+  : m_expr{std::forward<NodePtr>(t_expr)}
+{}
+
+auto FieldReference::expr() -> NodePtr&
+{
+  return m_expr;
+}
+
+auto FieldReference::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "array.hpp"
+
+#include <utility>
+
+
+using namespace node::lvalue;
+
+using namespace visitor;
+
+Array::Array(std::string t_name, NodePtr&& t_expr_list)
+  : Variable{std::move(t_name)}, m_expr_list{std::forward<NodePtr>(t_expr_list)}
+{}
+
+auto Array::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "variable.hpp"
+
+
+using namespace node::lvalue;
+
+using namespace visitor;
+
+Variable::Variable(const std::string& t_name): m_name{std::move(t_name)}
+{}
+
+auto Variable::name() const -> std::string_view
+{
+  return {m_name};
+}
+
+auto Variable::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "nil.hpp"
+
+
+using namespace node;
+
+using namespace visitor;
+
+auto Nil::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "expression.hpp"
+
+using namespace node;
+
+using namespace visitor;
+
+
+Expression::Expression(Precedence t_precedence): m_precedence{t_precedence}
+{}
+
+auto Expression::precedence() -> Precedence
+{
+  return m_precedence;
+}
+#include "function_call.hpp"
+
+
+using namespace node::functions;
+
+using namespace visitor;
+
+FunctionCall::FunctionCall(std::string&& t_name, NodeListPtr&& t_args)
+  : m_name{std::move(t_name)}, m_args{std::forward<NodeListPtr>(t_args)}
+{}
+
+auto FunctionCall::name() const -> std::string_view
+{
+  return {m_name};
+}
+
+auto FunctionCall::args() -> NodeListPtr&
+{
+  return m_args;
+}
+
+auto FunctionCall::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "function.hpp"
+
+
+using namespace node::functions;
+
+using namespace visitor;
+
+Function::Function(std::string t_name, NodeListPtr&& t_params,
+                   NodeListPtr&& t_body)
+  : m_name{std::move(t_name)},
+    m_params{std::forward<NodeListPtr>(t_params)},
+    m_body{std::forward<NodeListPtr>(t_body)}
+{}
+
+auto Function::name() const -> std::string_view
+{
+  return {m_name};
+}
+
+auto Function::params() -> NodeListPtr&
+{
+  return m_params;
+}
+
+auto Function::body() -> NodeListPtr&
+{
+  return m_body;
+}
+
+auto Function::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "builtin_function.hpp"
+
+
+using namespace node::functions;
+
+using namespace visitor;
+
+BuiltinFunction::BuiltinFunction(std::string t_name, NodeListPtr&& t_params,
+                                 NodeListPtr&& t_body)
+  : m_name{std::move(t_name)},
+    m_params{std::forward<NodeListPtr>(t_params)},
+    m_body{std::forward<NodeListPtr>(t_body)}
+{}
+
+auto BuiltinFunction::name() const -> std::string_view
+{
+  return {m_name};
+}
+
+auto BuiltinFunction::params() -> NodeListPtr&
+{
+  return m_params;
+}
+
+auto BuiltinFunction::body() -> NodeListPtr&
+{
+  return m_body;
+}
+
+auto BuiltinFunction::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "exit.hpp"
+
+
+using namespace node::control;
+
+using namespace visitor;
+
+Exit::Exit(NodePtr&& t_expr): m_expr{std::forward<NodePtr>(t_expr)}
+{}
+
+auto Exit::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "continue.hpp"
+
+
+using namespace node::control;
+
+using namespace visitor;
+
+auto Continue::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "for.hpp"
+
+#include "../list.hpp"
+
+
+using namespace node::control;
+
+using namespace visitor;
+
+For::For(NodePtr&& t_init, NodePtr&& t_condition, NodePtr&& t_expr,
+         NodeListPtr&& t_body)
+  : m_init{std::forward<NodePtr>(t_init)},
+    m_condition{std::forward<NodePtr>(t_condition)},
+    m_expr{std::forward<NodePtr>(t_expr)},
+    m_body{std::forward<NodeListPtr>(t_body)}
+{}
+
+auto For::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "return.hpp"
+
+
+using namespace node::control;
+
+using namespace visitor;
+
+Return::Return(NodePtr&& t_expr): m_expr{std::forward<NodePtr>(t_expr)}
+{}
+
+auto Return::expr() -> NodePtr&
+{
+  return m_expr;
+}
+
+auto Return::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "while.hpp"
+
+#include <utility>
+
+
+using namespace node::control;
+
+using namespace visitor;
+
+While::While(NodePtr&& t_condition, NodeListPtr&& t_body)
+  : m_condition{std::forward<NodePtr>(t_condition)},
+    m_body{std::forward<NodeListPtr>(t_body)}
+{}
+
+
+auto While::condition() -> NodePtr&
+{
+  return m_condition;
+}
+
+auto While::body() -> NodeListPtr&
+{
+  return m_body;
+}
+
+auto While::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "next.hpp"
+
+
+using namespace node::control;
+
+using namespace visitor;
+
+auto Next::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+
+#include "if.hpp"
+
+#include <utility>
+
+
+using namespace node::control;
+
+using namespace visitor;
+
+If ::If(NodePtr&& t_condition, NodePtr&& t_then)
+  : m_condition{std::forward<NodePtr>(t_condition)},
+    m_then{std::forward<NodePtr>(t_then)}
+{}
+
+
+If::If(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else)
+  : If{std::forward<NodePtr>(t_condition), std::forward<NodePtr>(t_then)}
+{}
+
+auto If::then() -> NodePtr&
+{
+  return m_then;
+}
+
+auto If::alt() -> NodePtr&
+{
+  return m_else;
+}
+
+auto If::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "for_in.hpp"
+
+
+using namespace node::control;
+
+using namespace visitor;
+
+ForIn::ForIn(NodePtr&& t_identifier, NodePtr&& t_array, NodeListPtr&& t_body)
+  : m_identifier{std::forward<NodePtr>(t_identifier)},
+    m_array{std::forward<NodePtr>(t_array)},
+    m_body{std::forward<NodeListPtr>(t_body)}
+{}
+
+auto ForIn::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "break.hpp"
+
+
+using namespace node::control;
+
+using namespace visitor;
+
+auto Break::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "recipe.hpp"
+
+
+using namespace node::recipes;
+
+using namespace visitor;
+
+Recipe::Recipe(NodePtr&& t_pattern, NodePtr&& t_body)
+  : m_pattern{std::forward<NodePtr>(t_pattern)},
+    m_body{std::forward<NodePtr>(t_body)}
+{}
+
+auto Recipe::pattern() -> NodePtr&
+{
+  return m_pattern;
+}
+
+auto Recipe::body() -> NodePtr&
+{
+  return m_body;
+}
+
+auto Recipe::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "special_pattern.hpp"
+
+
+using namespace node::recipes;
+
+using namespace visitor;
+
+SpecialPattern::SpecialPattern(SpecialPatternOp t_op): m_op{t_op}
+{}
+
+auto SpecialPattern::op() const -> SpecialPatternOp
+{
+  return m_op;
+}
+auto SpecialPattern::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}
+#include "regex.hpp"
+
+using namespace node::rvalue;
+
+using namespace visitor;
+
+
+Regex::Regex(std::string&& t_value)
+  : Literal<std::string>{std::forward<std::string>(t_value)}
+{}
+
+auto Regex::accept(NodeVisitor* t_visitor) -> void
+{
+  t_visitor->visit(this);
+}

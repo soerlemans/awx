@@ -16,7 +16,7 @@ class Match : public BinaryOperator {
   public:
   Match(MatchOp t_op, NodePtr&& t_string, NodePtr&& t_pattern);
 
-  auto accept(NodeVisitor* t_visitor) -> void override;
+  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~Match() override = default;
 };
