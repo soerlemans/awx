@@ -3,6 +3,8 @@
 
 using namespace node::recipes;
 
+using namespace visitor;
+
 Recipe::Recipe(NodePtr&& t_pattern, NodePtr&& t_body)
   : m_pattern{std::forward<NodePtr>(t_pattern)},
     m_body{std::forward<NodePtr>(t_body)}

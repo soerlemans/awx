@@ -5,6 +5,8 @@
 
 using namespace node::control;
 
+using namespace visitor;
+
 While::While(NodePtr&& t_condition, NodeListPtr&& t_body)
   : m_condition{std::forward<NodePtr>(t_condition)},
     m_body{std::forward<NodeListPtr>(t_body)}

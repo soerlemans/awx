@@ -3,6 +3,8 @@
 
 using namespace node::operators;
 
+using namespace visitor;
+
 // Not:
 Not::Not(NodePtr&& t_left)
   : UnaryOperator{Precedence::UNARY_PREFIX, std::forward<NodePtr>(t_left)}

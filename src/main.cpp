@@ -58,9 +58,9 @@ auto run() -> void
   TokenStream tokenstream{lexer.tokenize()};
 
   AwkParser parser{tokenstream};
-  auto ast{parser.parse()};
+  NodePtr ast{parser.parse()};
 
-	// Pretty print ast
+  // Pretty print ast
   visitor::PrintVisitor pretty_printer;
   pretty_printer.visit(ast);
 }

@@ -2,6 +2,8 @@
 
 using namespace node::operators;
 
+using namespace visitor;
+
 
 BinaryOperator::BinaryOperator(Precedence t_precedence,
                                Associativity t_associativity, NodePtr&& t_left,

@@ -5,6 +5,8 @@
 
 using namespace node::operators;
 
+using namespace visitor;
+
 // TODO: Error throw when a nullptr is given as agrg
 Ternary::Ternary(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else)
   : BinaryOperator{Precedence::TERNARY, Associativity::RIGHT,

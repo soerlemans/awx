@@ -3,6 +3,8 @@
 
 using namespace node::operators;
 
+using namespace visitor;
+
 // Postfix:
 Increment::Increment(NodePtr&& t_left, bool t_prefix)
   : UnaryOperator{Precedence::POSTFIX_INC_DEC, std::forward<NodePtr>(t_left)},

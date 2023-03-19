@@ -3,6 +3,8 @@
 
 using namespace node::operators;
 
+using namespace visitor;
+
 Match::Match(MatchOp t_op, NodePtr&& t_string, NodePtr&& t_pattern)
   : BinaryOperator{Precedence::MATCH, Associativity::NONE,
                    std::forward<NodePtr>(t_string),

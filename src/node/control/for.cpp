@@ -5,6 +5,8 @@
 
 using namespace node::control;
 
+using namespace visitor;
+
 For::For(NodePtr&& t_init, NodePtr&& t_condition, NodePtr&& t_expr,
          NodeListPtr&& t_body)
   : m_init{std::forward<NodePtr>(t_init)},

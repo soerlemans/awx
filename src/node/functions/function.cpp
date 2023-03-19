@@ -3,6 +3,8 @@
 
 using namespace node::functions;
 
+using namespace visitor;
+
 Function::Function(std::string t_name, NodeListPtr&& t_params,
                    NodeListPtr&& t_body)
   : m_name{std::move(t_name)},

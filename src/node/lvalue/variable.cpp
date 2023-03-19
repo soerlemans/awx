@@ -3,6 +3,8 @@
 
 using namespace node::lvalue;
 
+using namespace visitor;
+
 Variable::Variable(const std::string& t_name): m_name{std::move(t_name)}
 {}
 

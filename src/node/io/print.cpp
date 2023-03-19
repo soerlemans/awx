@@ -5,6 +5,8 @@
 
 using namespace node::io;
 
+using namespace visitor;
+
 Print::Print(NodeListPtr&& t_params)
   : m_params{std::forward<NodeListPtr>(t_params)}
 {}

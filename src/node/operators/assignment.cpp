@@ -3,6 +3,8 @@
 
 using namespace node::operators;
 
+using namespace visitor;
+
 Assignment::Assignment(AssignmentOp t_op, NodePtr&& t_left, NodePtr&& t_right)
   : BinaryOperator{Precedence::ASSIGNMENT, Associativity::RIGHT,
                    std::forward<NodePtr>(t_left),

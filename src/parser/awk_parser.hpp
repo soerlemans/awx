@@ -23,10 +23,6 @@ using ParserFunc = std::function<NodePtr()>;
 // Classes:
 //! Top down parser for POSIX AWK. Grammar can be found in awk.yy file.
 class AwkParser : public Parser {
-  private:
-  // TODO: this is just here for debugging purposes
-  PrintVisitor m_visitor{};
-
   public:
   // Constructors:
   AwkParser(TokenStream t_tokenstream);

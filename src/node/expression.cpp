@@ -2,6 +2,8 @@
 
 using namespace node;
 
+using namespace visitor;
+
 
 Expression::Expression(Precedence t_precedence): m_precedence{t_precedence}
 {}
