@@ -2,6 +2,7 @@
 #define TREE_WALK_INTERPRETER_HPP
 
 // STL Includes:
+#include <map>
 #include <variant>
 
 // Local Includes:
@@ -15,8 +16,15 @@ namespace visitor {
  */
 class TreeWalkInterpreter : public NodeVisitor {
   private:
+  // TODO: have Any support AWK arrays (can be represented as an std::map)
+  template<typename T>
+  using Store = std::map<std::string, T>;
   using Any = std::variant<bool, int, double, std::string>;
+
   Any m_result;
+
+  Store<Any> m_variable_store;
+  Store<NodePtr> m_function_store;
 
   public:
   TreeWalkInterpreter() = default;

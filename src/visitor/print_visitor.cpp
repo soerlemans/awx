@@ -346,7 +346,7 @@ auto PrintVisitor::visit(node::List* t_list) -> void
     node->accept(this);
 }
 
-auto PrintVisitor::visit(node::Nil* t_nil) -> void
+auto PrintVisitor::visit([[maybe_unused]] node::Nil* t_nil) -> void
 {
   Printer printer{m_counter};
 

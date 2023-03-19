@@ -56,13 +56,20 @@ auto TreeWalkInterpreter::visit(Recipe* t_recipe) -> void
 auto TreeWalkInterpreter::visit(Print* t_print) -> void
 {
   if(const auto& params{t_print->params()}; params) {
+    std::size_t index{0};
     for(const auto& param : *params) {
       param->accept(this);
       std::visit(
         [&](auto&& t_result) {
           std::cout << std::forward<decltype(t_result)>(t_result);
+
+          // Insert spaces in between printing
+          if(index < params->size() - 1)
+            std::cout << ' ';
         },
         m_result);
+
+      index++;
     }
   }
 
@@ -85,11 +92,13 @@ auto TreeWalkInterpreter::visit(FieldReference* t_fr) -> void
 {}
 
 auto TreeWalkInterpreter::visit(Variable* t_var) -> void
-{}
+{
+  m_result = t_var->name();
+}
 
 auto TreeWalkInterpreter::visit(Float* t_float) -> void
 {
-	m_result = t_float->get();
+  m_result = t_float->get();
 }
 
 auto TreeWalkInterpreter::visit(Integer* t_int) -> void
@@ -136,7 +145,43 @@ auto TreeWalkInterpreter::visit(Arithmetic* t_arithmetic) -> void
 }
 
 auto TreeWalkInterpreter::visit(Assignment* t_assignment) -> void
-{}
+{
+	t_assignment->left()->accept(this);
+  std::string name{std::get<std::string>(m_result)};
+
+  t_assignment->right()->accept(this);
+  switch(const auto op{t_assignment->op()}; op) {
+    case AssignmentOp::POWER: {
+      break;
+    }
+
+    case AssignmentOp::MULTIPLY: {
+      break;
+    }
+    case AssignmentOp::DIVIDE: {
+      break;
+    }
+    case AssignmentOp::MODULO: {
+      break;
+    }
+    case AssignmentOp::ADD: {
+      break;
+    }
+
+    case AssignmentOp::SUBTRACT: {
+      break;
+    }
+
+    case AssignmentOp::REGULAR: {
+      m_variable_store[name] = m_result;
+      break;
+    }
+
+    default:
+      // TODO: Error handling
+      break;
+  }
+}
 
 auto TreeWalkInterpreter::visit(Comparison* t_comparison) -> void
 {}
@@ -181,5 +226,5 @@ auto TreeWalkInterpreter::visit(List* t_list) -> void
   }
 }
 
-auto TreeWalkInterpreter::visit(Nil* t_nil) -> void
+auto TreeWalkInterpreter::visit([[maybe_unused]] Nil* t_nil) -> void
 {}

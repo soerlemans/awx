@@ -1,5 +1,6 @@
 #!/usr/bin/awk -f
 
 BEGIN {
-		print "monkeys"
+		monkey = "monkeys"
+		print "I like", monkeys
 }

@@ -8,9 +8,9 @@ using namespace visitor;
 Variable::Variable(const std::string& t_name): m_name{std::move(t_name)}
 {}
 
-auto Variable::name() const -> std::string_view
+auto Variable::name() const -> const std::string&
 {
-  return {m_name};
+  return m_name;
 }
 
 auto Variable::accept(NodeVisitor* t_visitor) -> void

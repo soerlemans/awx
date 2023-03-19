@@ -26,6 +26,8 @@ class Assignment : public BinaryOperator {
   public:
   Assignment(AssignmentOp t_op, NodePtr&& t_left, NodePtr&& t_right);
 
+	auto op() const -> AssignmentOp;
+
   auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~Assignment() override = default;
