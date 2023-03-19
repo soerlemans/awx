@@ -53,7 +53,7 @@ auto AwkParser::simple_get() -> NodePtr
   if(next_if(TokenType::GETLINE)) {
     DBG_TRACE_PRINT(INFO, "Found GETLINE");
 
-    node = std::make_unique<Getline>(lvalue());
+    node = std::make_shared<Getline>(lvalue());
   }
 
   return node;
@@ -67,7 +67,7 @@ auto AwkParser::unary_input_function() -> NodePtr
   if(NodePtr lhs{unary_expr()}; lhs) {
     expect(TokenType::PIPE, "|");
 
-    node = std::make_unique<Redirection>(RedirectionOp::PIPE, std::move(lhs),
+    node = std::make_shared<Redirection>(RedirectionOp::PIPE, std::move(lhs),
                                          simple_get());
   }
 
@@ -86,7 +86,7 @@ auto AwkParser::non_unary_input_function() -> NodePtr
   // Recursive causes endless loop
   if(auto lhs{simple_get()}; lhs) {
     if(next_if(TokenType::LESS_THAN)) {
-      node = std::make_unique<Redirection>(RedirectionOp::READ, std::move(lhs),
+      node = std::make_shared<Redirection>(RedirectionOp::READ, std::move(lhs),
                                            expr());
     } else {
       node = std::move(lhs);
@@ -96,7 +96,7 @@ auto AwkParser::non_unary_input_function() -> NodePtr
   // else if(auto lhs{non_unary_expr()}; lhs) {
   //   expect(TokenType::PIPE, "|");
 
-  //   node = std::make_unique<Redirection>(RedirectionOp::PIPE, std::move(lhs),
+  //   node = std::make_shared<Redirection>(RedirectionOp::PIPE, std::move(lhs),
   //                                        simple_get());
   // }
 
@@ -115,19 +115,19 @@ auto AwkParser::lvalue() -> NodePtr
       // We really dont expect these next_tokens to fail
       if(next_if(TokenType::BRACE_OPEN)) {
         DBG_TRACE_PRINT(INFO, "Found ARRAY SUBSCRIPT");
-        node = std::make_unique<Array>(name, expr_list());
+        node = std::make_shared<Array>(name, expr_list());
 
         expect(TokenType::BRACE_CLOSE, "]");
       } else {
         DBG_TRACE_PRINT(INFO, "Found VARIABLE: ", name);
-        node = std::make_unique<Variable>(name);
+        node = std::make_shared<Variable>(name);
       }
       break;
     }
 
     case TokenType::DOLLAR_SIGN: {
       DBG_TRACE_PRINT(INFO, "Found FIELD REFERENCE");
-      node = std::make_unique<FieldReference>(expr());
+      node = std::make_shared<FieldReference>(expr());
       break;
     }
 
@@ -159,12 +159,12 @@ auto AwkParser::function() -> NodePtr
       expect(TokenType::PAREN_CLOSE, ")");
 
       newline_opt();
-      NodeListPtr body{static_cast<List*>(action().release())};
+      NodeListPtr body{action()};
 
       DBG_TRACE_PRINT(INFO, "Found a FUNCTION");
 
       node =
-        std::make_unique<Function>(name, std::move(params), std::move(body));
+        std::make_shared<Function>(name, std::move(params), std::move(body));
     } else {
       // TODO: Error handling
     }
@@ -191,7 +191,7 @@ auto AwkParser::function_call() -> NodePtr
       auto name{token.value<std::string>()};
       DBG_TRACE_PRINT(INFO, "Found a FUNCTION CALL: ", name);
 
-      node = std::make_unique<FunctionCall>(std::move(name), std::move(args));
+      node = std::make_shared<FunctionCall>(std::move(name), std::move(args));
       break;
     }
 
@@ -215,7 +215,7 @@ auto AwkParser::match(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
       throw std::runtime_error{"Expected Expression after (NO)MATCH"};
 
     return NodePtr{
-      std::make_unique<Match>(t_op, std::move(t_lhs), std::move(rhs))};
+      std::make_shared<Match>(t_op, std::move(t_lhs), std::move(rhs))};
   }};
 
   switch(next().type()) {
@@ -249,7 +249,7 @@ auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
       throw std::runtime_error{"Expected Expression after ARITHMETIC"};
 
     return NodePtr{
-      std::make_unique<Arithmetic>(t_op, std::move(t_lhs), std::move(ptr))};
+      std::make_shared<Arithmetic>(t_op, std::move(t_lhs), std::move(ptr))};
   };
 
   switch(next().type()) {
@@ -304,7 +304,7 @@ auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
       throw std::runtime_error{"Expected Expression after ASSIGNMENT"};
 
     return NodePtr{
-      std::make_unique<Assignment>(t_op, std::move(t_lhs), std::move(rhs))};
+      std::make_shared<Assignment>(t_op, std::move(t_lhs), std::move(rhs))};
   };
 
   switch(next().type()) {
@@ -361,7 +361,7 @@ auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
     if(!rhs)
       throw std::runtime_error{"Expected Expression after COMPARISON"};
 
-    return std::make_unique<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
+    return std::make_shared<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
   };
 
   switch(next().type()) {
@@ -412,7 +412,7 @@ auto AwkParser::membership(NodePtr& t_lhs) -> NodePtr
     DBG_TRACE_PRINT(VERBOSE, "Found MEMBERSHIP");
     const auto name{expect(TokenType::IDENTIFIER, "NAME")};
     node =
-      std::make_unique<Membership>(std::move(t_lhs), name.value<std::string>());
+      std::make_shared<Membership>(std::move(t_lhs), name.value<std::string>());
   }
 
   return node;
@@ -429,7 +429,7 @@ auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
       // Optional newlines are allowed after &&
       newline_opt();
       if(auto rhs{t_rhs()}; rhs) {
-        node = std::make_unique<And>(std::move(t_lhs), std::move(rhs));
+        node = std::make_shared<And>(std::move(t_lhs), std::move(rhs));
       } else {
         // TODO: Error handling empty rhs expression is not allowed
       }
@@ -441,7 +441,7 @@ auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
       // Optional newlines are allowed after ||
       newline_opt();
       if(auto rhs{t_rhs()}; rhs) {
-        node = std::make_unique<Or>(std::move(t_lhs), std::move(rhs));
+        node = std::make_shared<Or>(std::move(t_lhs), std::move(rhs));
       } else {
         // TODO: Error handling empty rhs expression is not allowed
       }
@@ -477,7 +477,7 @@ auto AwkParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
       // TODO: Error handling
     }
 
-    node = std::make_unique<Ternary>(std::move(t_lhs), std::move(then_ptr),
+    node = std::make_shared<Ternary>(std::move(t_lhs), std::move(then_ptr),
                                      std::move(else_ptr));
   }
 
@@ -495,7 +495,7 @@ auto AwkParser::universal_print_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   // if(auto rhs{non_unary_expr()}; rhs) {
   //   DBG_TRACE_PRINT(INFO, "Found STRING CONCAT");
   //   node =
-  //     std::make_unique<StringConcatenation>(std::move(node), std::move(rhs));
+  //     std::make_shared<StringConcatenation>(std::move(node), std::move(rhs));
   // } else
 
   if(auto ptr{arithmetic(t_lhs, t_rhs)}; ptr) {
@@ -538,7 +538,7 @@ auto AwkParser::grouping() -> NodePtr
   if(next_if(TokenType::PAREN_OPEN)) {
     DBG_TRACE_PRINT(VERBOSE, "Found GROUPING");
 
-    node = std::make_unique<Grouping>(expr());
+    node = std::make_shared<Grouping>(expr());
     expect(TokenType::PAREN_CLOSE, ")");
   }
 
@@ -554,7 +554,7 @@ auto AwkParser::negation(const ParserFunc& t_expr) -> NodePtr
   if(next_if(TokenType::NOT)) {
     DBG_TRACE_PRINT(INFO, "Found NOT");
     if(NodePtr expr_ptr{t_expr()}; expr_ptr) {
-      node = std::make_unique<Not>(std::move(expr_ptr));
+      node = std::make_shared<Not>(std::move(expr_ptr));
     } else {
       // TODO: Error handling
     }
@@ -575,27 +575,27 @@ auto AwkParser::literal() -> NodePtr
     // differently?
     case TokenType::FLOAT:
       DBG_TRACE_PRINT(INFO, "Found FLOAT literal");
-      node = std::make_unique<Float>(token.value<double>());
+      node = std::make_shared<Float>(token.value<double>());
       break;
 
     case TokenType::HEX:
       [[fallthrough]];
     case TokenType::INTEGER:
       DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ");
-      node = std::make_unique<Integer>(token.value<int>());
+      node = std::make_shared<Integer>(token.value<int>());
       break;
 
     case TokenType::STRING:
       DBG_TRACE_PRINT(INFO,
                       "Found STRING literal: ", token.value<std::string>());
-      node = std::make_unique<String>(token.value<std::string>());
+      node = std::make_shared<String>(token.value<std::string>());
       break;
 
     // TODO: match
     case TokenType::REGEX:
       DBG_TRACE_PRINT(INFO,
                       "Found REGEX literal: ", token.value<std::string>());
-      node = std::make_unique<Regex>(token.value<std::string>());
+      node = std::make_shared<Regex>(token.value<std::string>());
       break;
 
     default:
@@ -617,7 +617,7 @@ auto AwkParser::prefix_operator() -> NodePtr
     case TokenType::INCREMENT: {
       DBG_TRACE_PRINT(INFO, "Found --INCREMENT");
       if(auto ptr{lvalue()}; ptr) {
-        node = std::make_unique<Increment>(std::move(ptr), true);
+        node = std::make_shared<Increment>(std::move(ptr), true);
       } else {
         // TODO: Error handling
       }
@@ -627,7 +627,7 @@ auto AwkParser::prefix_operator() -> NodePtr
     case TokenType::DECREMENT: {
       DBG_TRACE_PRINT(INFO, "Found --DECREMENT");
       if(auto ptr{lvalue()}; ptr) {
-        node = std::make_unique<Decrement>(std::move(ptr), true);
+        node = std::make_shared<Decrement>(std::move(ptr), true);
       } else {
         // TODO: Error handling
       }
@@ -655,12 +655,12 @@ auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
     switch(next().type()) {
       case TokenType::INCREMENT:
         DBG_TRACE_PRINT(INFO, "Found INCREMENT++");
-        node = std::make_unique<Increment>(std::move(t_lhs), false);
+        node = std::make_shared<Increment>(std::move(t_lhs), false);
         break;
 
       case TokenType::DECREMENT:
         DBG_TRACE_PRINT(INFO, "Found DECREMENT--");
-        node = std::make_unique<Decrement>(std::move(t_lhs), false);
+        node = std::make_shared<Decrement>(std::move(t_lhs), false);
         break;
 
       default:
@@ -688,7 +688,7 @@ auto AwkParser::unary_prefix(const ParserFunc& t_rhs) -> NodePtr
         throw std::runtime_error{"Expected an expression after + or -"};
       }
 
-      node = std::make_unique<UnaryPrefix>(tokentype, std::move(rhs));
+      node = std::make_shared<UnaryPrefix>(tokentype, std::move(rhs));
       break;
     }
     default:
@@ -721,11 +721,11 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
       // cast?
       NodeListPtr body;
       if(auto ptr{t_body()}; ptr) {
-        body = std::make_unique<List>();
+        body = std::make_shared<List>();
         body->push_back(std::move(ptr));
       }
 
-      node = std::make_unique<While>(std::move(condition), std::move(body));
+      node = std::make_shared<While>(std::move(condition), std::move(body));
       break;
     }
 
@@ -749,15 +749,15 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 
           NodeListPtr body;
           if(auto ptr{t_body()}; ptr) {
-            body = std::make_unique<List>();
+            body = std::make_shared<List>();
             body->push_back(std::move(ptr));
           }
 
           const auto name_identifier{identifier.value<std::string>()};
           const auto name_array{array.value<std::string>()};
-          node = std::make_unique<ForIn>(
-            std::make_unique<Variable>(name_identifier),
-            std::make_unique<Array>(name_array), std::move(body));
+          node = std::make_shared<ForIn>(
+            std::make_shared<Variable>(name_identifier),
+            std::make_shared<Array>(name_array), std::move(body));
         } else {
           prev();
         }
@@ -776,11 +776,11 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 
           NodeListPtr body;
           if(auto ptr{t_body()}; ptr) {
-            body = std::make_unique<List>();
+            body = std::make_shared<List>();
             body->push_back(std::move(ptr));
           }
 
-          node = std::make_unique<For>(std::move(ptr), std::move(condition),
+          node = std::make_shared<For>(std::move(ptr), std::move(condition),
                                        std::move(post_expr), std::move(body));
         }
       }
@@ -832,7 +832,7 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
     if(auto rhs{non_unary_print_expr()}; rhs) {
       DBG_TRACE_PRINT(INFO, "Found STRING CONCAT");
       node =
-        std::make_unique<StringConcatenation>(std::move(nupe), std::move(rhs));
+        std::make_shared<StringConcatenation>(std::move(nupe), std::move(rhs));
     } else if(auto ptr{universal_print_expr(nupe, lambda)}; ptr) {
       node = std::move(ptr);
     } else {
@@ -887,7 +887,7 @@ auto AwkParser::print_expr() -> NodePtr
 auto AwkParser::print_expr_list() -> NodeListPtr
 {
   DBG_TRACE(VERBOSE, "PRINT EXPR LIST");
-  NodeListPtr nodes{std::make_unique<List>()};
+  NodeListPtr nodes{std::make_shared<List>()};
 
   if(auto ptr{print_expr()}; ptr) {
     DBG_TRACE_PRINT(INFO, "Found PRINT_EXPR");
@@ -961,7 +961,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
     if(auto rhs{non_unary_expr()}; rhs) {
       DBG_TRACE_PRINT(INFO, "Found STRING CONCAT");
       node =
-        std::make_unique<StringConcatenation>(std::move(nue), std::move(rhs));
+        std::make_shared<StringConcatenation>(std::move(nue), std::move(rhs));
     } else if(auto ptr{universal_expr(nue, lambda)}; ptr) {
       node = std::move(ptr);
     } else {
@@ -1024,7 +1024,7 @@ auto AwkParser::expr_opt() -> NodePtr
 auto AwkParser::multiple_expr_list() -> NodeListPtr
 {
   DBG_TRACE(VERBOSE, "MULTIPLE EXPR LIST");
-  NodeListPtr nodes{std::make_unique<List>()};
+  NodeListPtr nodes{std::make_shared<List>()};
 
   if(auto ptr{expr()}; ptr) {
     DBG_TRACE_PRINT(INFO, "Found EXPR");
@@ -1095,7 +1095,7 @@ auto AwkParser::output_redirection(NodePtr& t_lhs) -> NodePtr
     if(!rhs)
       throw std::runtime_error{"Expected Expression after REDIRECTION"};
 
-    return std::make_unique<Redirection>(t_op, std::move(t_lhs),
+    return std::make_shared<Redirection>(t_op, std::move(t_lhs),
                                          std::move(rhs));
   }};
 
@@ -1148,11 +1148,11 @@ auto AwkParser::simple_print_statement() -> NodePtr
   if(next_if(TokenType::PRINT)) {
     DBG_TRACE_PRINT(INFO, "Found 'print'");
 
-    node = std::make_unique<Print>(lambda());
+    node = std::make_shared<Print>(lambda());
   } else if(next_if(TokenType::PRINTF)) {
     DBG_TRACE_PRINT(INFO, "Found 'printf");
 
-    node = std::make_unique<Printf>(lambda());
+    node = std::make_shared<Printf>(lambda());
   }
 
   return node;
@@ -1187,7 +1187,7 @@ auto AwkParser::simple_statement() -> NodePtr
     auto list{expr_list()};
     expect(TokenType::BRACE_CLOSE, "]");
 
-    node = std::make_unique<Delete>(name.value<std::string>(), std::move(list));
+    node = std::make_shared<Delete>(name.value<std::string>(), std::move(list));
   } else if(auto ptr{expr()}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{print_statement()}; ptr) {
@@ -1221,23 +1221,23 @@ auto AwkParser::terminatable_statement() -> NodePtr
   const auto keyword{next()};
   switch(keyword.type()) {
     case TokenType::BREAK:
-      node = std::make_unique<Break>();
+      node = std::make_shared<Break>();
       break;
 
     case TokenType::CONTINUE:
-      node = std::make_unique<Continue>();
+      node = std::make_shared<Continue>();
       break;
 
     case TokenType::NEXT:
-      node = std::make_unique<Next>();
+      node = std::make_shared<Next>();
       break;
 
     case TokenType::EXIT:
-      node = std::make_unique<Exit>(expr_opt());
+      node = std::make_shared<Exit>(expr_opt());
       break;
 
     case TokenType::RETURN:
-      node = std::make_unique<Return>(expr_opt());
+      node = std::make_shared<Return>(expr_opt());
       break;
 
     case TokenType::DO:
@@ -1250,7 +1250,7 @@ auto AwkParser::terminatable_statement() -> NodePtr
 
       // TODO: Implement Do while
       DBG_PRINTLN("WARNING: Do While loops are not yet implemented!");
-      node = std::make_unique<Nil>();
+      node = std::make_shared<Nil>();
       break;
 
     default:
@@ -1295,11 +1295,11 @@ auto AwkParser::unterminated_statement() -> NodePtr
 
     newline_opt();
     if(auto ptr{unterminated_statement()}; ptr) {
-      node = std::make_unique<If>(std::move(condition), std::move(ptr));
+      node = std::make_shared<If>(std::move(condition), std::move(ptr));
     } else if(auto then{terminated_statement()}; then) {
       expect(TokenType::ELSE, "else");
       newline_opt();
-      node = std::make_unique<If>(std::move(condition), std::move(then),
+      node = std::make_shared<If>(std::move(condition), std::move(then),
                                   unterminated_statement());
     }
   } else if(auto ptr{loop(lambda)}; ptr) {
@@ -1337,17 +1337,17 @@ auto AwkParser::terminated_statement() -> NodePtr
 
     if(next_if(TokenType::ELSE)) {
       newline_opt();
-      node = std::make_unique<If>(std::move(condition), std::move(then),
+      node = std::make_shared<If>(std::move(condition), std::move(then),
                                   terminated_statement());
     } else {
-      node = std::make_unique<If>(std::move(condition), std::move(then));
+      node = std::make_shared<If>(std::move(condition), std::move(then));
     }
   } else if(auto ptr{loop(lambda)}; ptr) {
     node = std::move(ptr);
   } else if(next_if(TokenType::SEMICOLON)) {
     newline_opt();
 
-    node = std::make_unique<Nil>();
+    node = std::make_shared<Nil>();
   } else if(auto ptr{terminatable_statement()}; ptr) {
     if(tokentype::is_terminator(get_token().type())) {
       next();
@@ -1368,7 +1368,7 @@ auto AwkParser::terminated_statement() -> NodePtr
 auto AwkParser::unterminated_statement_list() -> NodeListPtr
 {
   DBG_TRACE(VERBOSE, "UNTERMINATED STATEMENT LIST");
-  NodeListPtr nodes{std::make_unique<List>()};
+  NodeListPtr nodes{std::make_shared<List>()};
 
   while(!eos()) {
     if(auto ptr{unterminated_statement()}; ptr) {
@@ -1390,7 +1390,7 @@ auto AwkParser::unterminated_statement_list() -> NodeListPtr
 auto AwkParser::terminated_statement_list() -> NodeListPtr
 {
   DBG_TRACE(VERBOSE, "TERMINATED STATEMENT LIST");
-  NodeListPtr nodes{std::make_unique<List>()};
+  NodeListPtr nodes{std::make_shared<List>()};
 
   while(!eos()) {
     if(auto ptr{terminated_statement()}; ptr) {
@@ -1435,7 +1435,7 @@ auto AwkParser::action() -> NodeListPtr
     } else if(auto ptr{unterminated_statement_list()}; ptr) {
       node = std::move(ptr);
     } else {
-      // node = std::make_unique<List>();
+      // node = std::make_shared<List>();
     }
 
     expect(TokenType::ACCOLADE_CLOSE, "}");
@@ -1453,12 +1453,12 @@ auto AwkParser::special_pattern() -> NodePtr
   if(next_if(TokenType::BEGIN)) {
     DBG_TRACE_PRINT(INFO, "Found 'BEGIN'");
 
-    node = std::make_unique<SpecialPattern>(SpecialPatternOp::BEGIN);
+    node = std::make_shared<SpecialPattern>(SpecialPatternOp::BEGIN);
 
   } else if(next_if(TokenType::END)) {
     DBG_TRACE_PRINT(INFO, "Found 'END'");
 
-    node = std::make_unique<SpecialPattern>(SpecialPatternOp::END);
+    node = std::make_shared<SpecialPattern>(SpecialPatternOp::END);
   }
 
   return node;
@@ -1505,12 +1505,12 @@ auto AwkParser::pattern() -> NodePtr
 auto AwkParser::param_list() -> NodeListPtr
 {
   DBG_TRACE(VERBOSE, "PARAM LIST");
-  NodeListPtr nodes{std::make_unique<List>()};
+  NodeListPtr nodes{std::make_shared<List>()};
 
   if(const auto token{next()}; token.type() == TokenType::IDENTIFIER) {
     DBG_TRACE_PRINT(INFO, "Found NAME");
 
-    nodes->push_back(std::make_unique<Variable>(token.value<std::string>()));
+    nodes->push_back(std::make_shared<Variable>(token.value<std::string>()));
   } else {
     prev();
   }
@@ -1520,7 +1520,7 @@ auto AwkParser::param_list() -> NodeListPtr
       DBG_TRACE_PRINT(INFO, "Found ',' NAME");
       const auto token{expect(TokenType::IDENTIFIER, "NAME")};
 
-      nodes->push_back(std::make_unique<Variable>(token.value<std::string>()));
+      nodes->push_back(std::make_shared<Variable>(token.value<std::string>()));
     } else {
       break;
     }
@@ -1554,7 +1554,7 @@ auto AwkParser::item() -> NodePtr
   } else if(auto pattern_ptr{pattern()}; pattern_ptr) {
     if(auto action_ptr{action()}; action_ptr) {
       node =
-        std::make_unique<Recipe>(std::move(pattern_ptr), std::move(action_ptr));
+        std::make_shared<Recipe>(std::move(pattern_ptr), std::move(action_ptr));
     } else {
       // TODO: Properly throw later
       throw std::runtime_error{"Expected an ITEM"};
@@ -1574,7 +1574,7 @@ auto AwkParser::item() -> NodePtr
 auto AwkParser::item_list() -> NodeListPtr
 {
   DBG_TRACE(VERBOSE, "ITEM LIST");
-  NodeListPtr nodes{std::make_unique<List>()};
+  NodeListPtr nodes{std::make_shared<List>()};
 
   while(!eos()) {
     // Remove newlines before items

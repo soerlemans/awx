@@ -33,7 +33,7 @@ class Nil;
 } // namespace node
 
 // Aliases:
-using NodePtr = std::unique_ptr<node::NodeInterface>;
-using NodeListPtr = std::unique_ptr<node::List>;
+using NodePtr = std::shared_ptr<node::NodeInterface>;
+using NodeListPtr = std::shared_ptr<node::List>;
 
 #endif // NODES_HPP
