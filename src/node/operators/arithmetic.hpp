@@ -24,6 +24,8 @@ class Arithmetic : public BinaryOperator {
   public:
   Arithmetic(ArithmeticOp t_op, NodePtr&& t_left, NodePtr&& t_right);
 
+	auto op() -> ArithmeticOp;
+
   auto accept(NodeVisitor* t_visitor) -> void override;
 
   ~Arithmetic() override = default;

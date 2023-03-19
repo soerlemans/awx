@@ -1613,13 +1613,6 @@ auto AwkParser::parse() -> NodePtr
 
   NodePtr ast{program()};
 
-  if(ast) {
-    DBG_PRINTLN();
-    DBG_PRINTLN("--- Print AST ---");
-
-    ast->accept(&m_visitor);
-  }
-
   DBG_PRINTLN();
 
   return ast;

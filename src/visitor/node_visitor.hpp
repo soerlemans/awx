@@ -5,6 +5,7 @@
 #include "../node/node.hpp"
 
 
+namespace visitor {
 /*! Implementation of the Visitor design pattern for Nodes
  * This creates a recursive dependency on the different kind of nodes
  * So all nodes need to be forward declared in this header
@@ -68,5 +69,6 @@ class NodeVisitor {
 
   virtual ~NodeVisitor() = default;
 };
+} // namespace visitor
 
 #endif // NODE_VISITOR_HPP

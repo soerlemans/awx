@@ -15,14 +15,14 @@ namespace node::operators {
 class BinaryOperator : public UnaryOperator {
   protected:
   Associativity m_associativity;
-  NodePtr m_second;
+  NodePtr m_right;
 
   public:
   explicit BinaryOperator(Precedence t_precedence,
                           Associativity t_associativity, NodePtr&& t_left,
                           NodePtr&& t_right);
 
-  auto second() -> NodePtr&;
+  auto right() -> NodePtr&;
 
   auto accept(NodeVisitor* t_visitor) -> void override = 0;
 

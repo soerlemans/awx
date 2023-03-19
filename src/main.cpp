@@ -10,6 +10,7 @@
 #include "debug/log.hpp"
 #include "file_buffer.hpp"
 #include "parser/awk_parser.hpp"
+#include "visitor/print_visitor.hpp"
 
 // Local Includes:
 #include "enum.hpp"
@@ -17,7 +18,7 @@
 // Enums:
 enum ExitCode {
   OK = 0,
-	SIGNAL,
+  SIGNAL,
   EXCEPTION,
 };
 
@@ -36,12 +37,11 @@ auto parse_args(const int t_argc, char* t_argv[]) -> int
 
   CLI11_PARSE(app, t_argc, t_argv);
 
-	std::cout << filename << std::endl;
+  std::cout << filename << std::endl;
   config.add_file(fs::path{filename});
 
-	return ExitCode::OK;
+  return ExitCode::OK;
 }
-
 // NOLINTEND
 
 auto run() -> void
@@ -58,7 +58,11 @@ auto run() -> void
   TokenStream tokenstream{lexer.tokenize()};
 
   AwkParser parser{tokenstream};
-  auto node{parser.parse()};
+  auto ast{parser.parse()};
+
+	// Pretty print ast
+  visitor::PrintVisitor pretty_printer;
+  pretty_printer.visit(ast);
 }
 
 auto main(int t_argc, char* t_argv[]) -> int

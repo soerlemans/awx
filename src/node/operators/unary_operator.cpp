@@ -3,11 +3,11 @@
 using namespace node::operators;
 
 
-UnaryOperator::UnaryOperator(Precedence t_precedence, NodePtr&& t_first)
-  : Expression{t_precedence}, m_first{std::forward<NodePtr>(t_first)}
+UnaryOperator::UnaryOperator(Precedence t_precedence, NodePtr&& t_left)
+  : Expression{t_precedence}, m_left{std::forward<NodePtr>(t_left)}
 {}
 
-auto UnaryOperator::first() -> NodePtr&
+auto UnaryOperator::left() -> NodePtr&
 {
-  return m_first;
+  return m_left;
 }

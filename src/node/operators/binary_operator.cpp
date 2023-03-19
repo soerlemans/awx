@@ -8,10 +8,10 @@ BinaryOperator::BinaryOperator(Precedence t_precedence,
                                NodePtr&& t_right)
   : UnaryOperator{t_precedence, std::forward<NodePtr>(t_left)},
     m_associativity{t_associativity},
-    m_second{std::forward<NodePtr>(t_right)}
+    m_right{std::forward<NodePtr>(t_right)}
 {}
 
-auto BinaryOperator::second() -> NodePtr&
+auto BinaryOperator::right() -> NodePtr&
 {
-  return m_second;
+  return m_right;
 }

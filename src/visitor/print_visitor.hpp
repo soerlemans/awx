@@ -12,12 +12,13 @@
 #include "node_visitor.hpp"
 
 
-// Visitor made for printing the AST Node per node
-// Has a unique overload for every print
+namespace visitor {
+/*! Visitor made for printing the AST Node per node
+ * Has a unique overload for every print
+ */
 class PrintVisitor : public NodeVisitor {
   private:
-  // Classes:
-  // This class is made for pretty printing the AST
+  //! This class is made for pretty printing the AST
   class Printer {
     private:
     int& m_counter;
@@ -115,5 +116,6 @@ class PrintVisitor : public NodeVisitor {
 
   ~PrintVisitor() override = default;
 };
+} // namespace visitor
 
 #endif // PRINT_VISITOR_HPP

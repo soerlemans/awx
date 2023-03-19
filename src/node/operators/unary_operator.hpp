@@ -8,12 +8,12 @@
 namespace node {
 class operators::UnaryOperator : public Expression {
   protected:
-  NodePtr m_first;
+  NodePtr m_left;
 
   public:
-  explicit UnaryOperator(Precedence t_precedence, NodePtr&& t_first);
+  explicit UnaryOperator(Precedence t_precedence, NodePtr&& t_left);
 
-  auto first() -> NodePtr&;
+  auto left() -> NodePtr&;
 
   auto accept(NodeVisitor* t_visitor) -> void override = 0;
 

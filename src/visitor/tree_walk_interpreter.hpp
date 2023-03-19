@@ -1,5 +1,5 @@
-#ifndef EVALUATE_VISITOR_HPP
-#define EVALUATE_VISITOR_HPP
+#ifndef TREE_WALK_INTERPRETER_HPP
+#define TREE_WALK_INTERPRETER_HPP
 
 // STL Includes:
 #include <variant>
@@ -8,16 +8,18 @@
 #include "node_visitor.hpp"
 
 
+namespace visitor {
 /*! Evaluates each node and returns a result
  * TODO: Have NodeVisitor be a template class and have each Node accept a
  * pointer to NodeVisitor<T> this way we can
  */
-class EvaluateVisitor : public NodeVisitor {
+class TreeWalkInterpreter : public NodeVisitor {
   private:
   using Any = std::variant<bool, int, double, std::string>;
+  Any m_result;
 
   public:
-  EvaluateVisitor() = default;
+  TreeWalkInterpreter() = default;
 
   auto visit(node::control::If* t_if) -> void override;
   auto visit(node::control::While* t_while) -> void override;
@@ -69,7 +71,8 @@ class EvaluateVisitor : public NodeVisitor {
   auto visit(node::List* t_list) -> void override;
   auto visit(node::Nil* t_nil) -> void override;
 
-  ~EvaluateVisitor() override = default;
+  ~TreeWalkInterpreter() override = default;
 };
+} // namespace visitor
 
-#endif // EVALUATE_VISITOR_HPP
+#endif // TREE_WALK_INTERPRETER_HPP

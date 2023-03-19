@@ -1,6 +1,8 @@
 #include "print_visitor.hpp"
 
 
+using namespace visitor;
+
 auto PrintVisitor::visit(node::control::If* t_if) -> void
 {
   Printer printer{m_counter};
@@ -252,8 +254,8 @@ auto PrintVisitor::visit(node::operators::Not* t_not) -> void
   Printer printer{m_counter};
 
   printer.print("NOT");
-  printer.print("| FIRST");
-  t_not->first()->accept(this);
+  printer.print("| LEFT");
+  t_not->left()->accept(this);
 }
 
 auto PrintVisitor::visit(node::operators::And* t_and) -> void
@@ -261,11 +263,11 @@ auto PrintVisitor::visit(node::operators::And* t_and) -> void
   Printer printer{m_counter};
 
   printer.print("AND");
-  printer.print("| FIRST");
-  t_and->first()->accept(this);
+  printer.print("| LEFT");
+  t_and->left()->accept(this);
 
   printer.print("| SECOND");
-  t_and->second()->accept(this);
+  t_and->right()->accept(this);
 }
 
 auto PrintVisitor::visit(node::operators::Or* t_or) -> void
@@ -274,11 +276,11 @@ auto PrintVisitor::visit(node::operators::Or* t_or) -> void
 
   printer.print("OR");
 
-  printer.print("| FIRST");
-  t_or->first()->accept(this);
+  printer.print("| LEFT");
+  t_or->left()->accept(this);
 
-  printer.print("| SECOND");
-  t_or->second()->accept(this);
+  printer.print("| right");
+  t_or->right()->accept(this);
 }
 
 auto PrintVisitor::visit(node::operators::StringConcatenation* t_conc) -> void
@@ -287,11 +289,11 @@ auto PrintVisitor::visit(node::operators::StringConcatenation* t_conc) -> void
 
   printer.print("STRING CONCATENATION");
 
-  printer.print("| FIRST");
-  t_conc->first()->accept(this);
+  printer.print("| LEFT");
+  t_conc->left()->accept(this);
 
-  printer.print("| SECOND");
-  t_conc->second()->accept(this);
+  printer.print("| RIGHT");
+  t_conc->right()->accept(this);
 }
 
 auto PrintVisitor::visit(node::operators::Grouping* t_grouping) -> void
@@ -307,12 +309,12 @@ auto PrintVisitor::visit(node::operators::Ternary* t_ternary) -> void
 
   printer.print("TERNARY");
 
-  if(NodePtr & condition{t_ternary->first()}; condition) {
+  if(NodePtr & condition{t_ternary->left()}; condition) {
     printer.print("| CONDITION");
     condition->accept(this);
   }
 
-  if(NodePtr & then{t_ternary->second()}; then) {
+  if(NodePtr & then{t_ternary->right()}; then) {
     printer.print("| THEN");
     then->accept(this);
   }
@@ -331,7 +333,7 @@ auto PrintVisitor::visit(node::operators::UnaryPrefix* t_unary_prefix) -> void
   printer.print("| OP: ", "IMPLEMENT");
 
   // Visit the unary expression
-  t_unary_prefix->first()->accept(this);
+  t_unary_prefix->left()->accept(this);
 }
 
 auto PrintVisitor::visit(node::List* t_list) -> void

@@ -21,7 +21,7 @@ namespace node {
  */
 class NodeInterface {
   public:
-  virtual auto accept(NodeVisitor* t_visitor) -> void = 0;
+  virtual auto accept(visitor::NodeVisitor* t_visitor) -> void = 0;
 
   virtual ~NodeInterface() = default;
 };
