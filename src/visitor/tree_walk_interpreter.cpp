@@ -88,10 +88,14 @@ auto TreeWalkInterpreter::visit(Variable* t_var) -> void
 {}
 
 auto TreeWalkInterpreter::visit(Float* t_float) -> void
-{}
+{
+	m_result = t_float->get();
+}
 
 auto TreeWalkInterpreter::visit(Integer* t_int) -> void
-{}
+{
+  m_result = t_int->get();
+}
 
 auto TreeWalkInterpreter::visit(String* t_str) -> void
 {
@@ -172,8 +176,9 @@ auto TreeWalkInterpreter::visit(UnaryPrefix* t_unary_prefix) -> void
 
 auto TreeWalkInterpreter::visit(List* t_list) -> void
 {
-  for(const auto& element : *t_list)
+  for(const auto& element : *t_list) {
     element->accept(this);
+  }
 }
 
 auto TreeWalkInterpreter::visit(Nil* t_nil) -> void

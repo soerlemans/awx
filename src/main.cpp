@@ -66,8 +66,10 @@ auto run() -> void
   ast->accept(&pretty_printer);
 
   // Execute program via tree walk interpreter
+  DBG_PRINTLN("#== EXECUTING ==#");
   visitor::TreeWalkInterpreter interpreter;
   ast->accept(&interpreter);
+  DBG_PRINTLN('-');
 }
 
 auto main(int t_argc, char* t_argv[]) -> int
