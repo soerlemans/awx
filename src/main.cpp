@@ -11,6 +11,7 @@
 #include "file_buffer.hpp"
 #include "parser/awk_parser.hpp"
 #include "visitor/print_visitor.hpp"
+#include "visitor/tree_walk_interpreter.hpp"
 
 // Local Includes:
 #include "enum.hpp"
@@ -62,7 +63,11 @@ auto run() -> void
 
   // Pretty print ast
   visitor::PrintVisitor pretty_printer;
-  pretty_printer.visit(ast);
+  ast->accept(&pretty_printer);
+
+  // Execute program via tree walk interpreter
+  visitor::TreeWalkInterpreter interpreter;
+  ast->accept(&interpreter);
 }
 
 auto main(int t_argc, char* t_argv[]) -> int
