@@ -256,11 +256,13 @@ auto TreeWalkInterpreter::visit(Ternary* t_ternary) -> void
 auto TreeWalkInterpreter::visit(UnaryPrefix* t_unary_prefix) -> void
 {
   const auto visit{[&](auto&& t_lambda) {
+    t_unary_prefix->left()->accept(this);
+
     std::visit(
       [&](auto&& t_left) {
         using T = decltype(t_left);
-        if constexpr(std::is_same<T, int>() || std::is_same<T, double>()) {
-          lambda(std::forward<decltype(t_left)>());
+        if(std::is_same<T, int>() || std::is_same<T, double>()) {
+          t_lambda(std::forward<decltype(t_left)>(t_left));
         } else {
           m_result = 0;
         }
