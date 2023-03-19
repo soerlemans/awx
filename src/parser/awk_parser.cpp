@@ -1152,7 +1152,14 @@ auto AwkParser::simple_print_statement() -> NodePtr
   } else if(next_if(TokenType::PRINTF)) {
     DBG_TRACE_PRINT(INFO, "Found 'printf");
 
-    node = std::make_shared<Printf>(lambda());
+		auto params{lambda()};
+		// TODO: Improve error handling:
+		if(params->size() < 1)
+			throw std::runtime_error{"printf needs atleast one argument"};
+
+		auto format{params->front()};
+		params->pop_front();
+    node = std::make_shared<Printf>(std::move(format), std::move(params));
   }
 
   return node;

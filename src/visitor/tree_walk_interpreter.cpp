@@ -1,8 +1,10 @@
 #include "tree_walk_interpreter.hpp"
 
 // STL Includes:
+#include <functional>
 #include <iostream>
 #include <sstream>
+#include <tuple>
 
 // Includes:
 #include "../node/include.hpp"
@@ -57,20 +59,15 @@ auto TreeWalkInterpreter::visit(Recipe* t_recipe) -> void
 auto TreeWalkInterpreter::visit(Print* t_print) -> void
 {
   if(const auto& params{t_print->params()}; params) {
-    std::size_t index{0};
+    char separator;
     for(const auto& param : *params) {
       param->accept(this);
       std::visit(
         [&](auto&& t_result) {
-          std::cout << std::forward<decltype(t_result)>(t_result);
-
-          // Insert spaces in between printing
-          if(index < params->size() - 1)
-            std::cout << ' ';
+          std::cout << separator << std::forward<decltype(t_result)>(t_result);
         },
         m_result);
-
-      index++;
+      separator = ' ';
     }
   }
 
@@ -87,14 +84,20 @@ auto TreeWalkInterpreter::visit(Redirection* t_redirection) -> void
 {}
 
 auto TreeWalkInterpreter::visit(Array* t_array) -> void
-{}
+{
+  // As result set the name and current value of the variable
+  m_name = t_array->name();
+  // m_result = m_variables[m_name];
+}
 
 auto TreeWalkInterpreter::visit(FieldReference* t_fr) -> void
 {}
 
 auto TreeWalkInterpreter::visit(Variable* t_var) -> void
 {
-  m_result = t_var->name();
+  // As result set the name and current value of the variable
+  m_name = t_var->name();
+  m_result = m_variables[m_name];
 }
 
 auto TreeWalkInterpreter::visit(Float* t_float) -> void
@@ -117,6 +120,21 @@ auto TreeWalkInterpreter::visit(Regex* t_regex) -> void
 
 auto TreeWalkInterpreter::visit(Arithmetic* t_arithmetic) -> void
 {
+  //! Helper struct for using overloading to select correct lambda
+  // template<typename... Args>
+  // struct overloaded : Args... {
+  //   using Args::operator()...;
+  // };
+
+  const auto lambda{[&]() -> std::tuple<Any, Any> {
+    t_arithmetic->left()->accept(this);
+    Any lhs{m_result};
+
+    t_arithmetic->right()->accept(this);
+
+    return {lhs, m_result};
+  }};
+
   switch(const auto op{t_arithmetic->op()}; op) {
     case ArithmeticOp::POWER: {
       break;
@@ -132,6 +150,7 @@ auto TreeWalkInterpreter::visit(Arithmetic* t_arithmetic) -> void
       break;
     }
     case ArithmeticOp::ADD: {
+      auto [lhs, rhs] = lambda();
       break;
     }
 
@@ -148,7 +167,7 @@ auto TreeWalkInterpreter::visit(Arithmetic* t_arithmetic) -> void
 auto TreeWalkInterpreter::visit(Assignment* t_assignment) -> void
 {
   t_assignment->left()->accept(this);
-  const std::string name{std::get<std::string>(m_result)};
+  const std::string name{m_name};
 
   t_assignment->right()->accept(this);
   switch(const auto op{t_assignment->op()}; op) {
@@ -177,7 +196,7 @@ auto TreeWalkInterpreter::visit(Assignment* t_assignment) -> void
     }
 
     case AssignmentOp::REGULAR: {
-      m_variable_store[name] = m_result;
+      m_variables[name] = m_result;
       break;
     }
 
@@ -235,7 +254,38 @@ auto TreeWalkInterpreter::visit(Ternary* t_ternary) -> void
 {}
 
 auto TreeWalkInterpreter::visit(UnaryPrefix* t_unary_prefix) -> void
-{}
+{
+  const auto visit{[&](auto&& t_lambda) {
+    std::visit(
+      [&](auto&& t_left) {
+        using T = decltype(t_left);
+        if constexpr(std::is_same<T, int>() || std::is_same<T, double>()) {
+          lambda(std::forward<decltype(t_left)>());
+        } else {
+          m_result = 0;
+        }
+      },
+      m_result);
+  }};
+
+  switch(t_unary_prefix->op()) {
+    case UnaryPrefixOp::PLUS:
+      visit([&](auto&& t_left) {
+        m_result = +t_left;
+      });
+      break;
+
+    case UnaryPrefixOp::MINUS:
+      visit([&](auto&& t_left) {
+        m_result = -t_left;
+      });
+      break;
+
+    default:
+      // TODO: Error handling
+      break;
+  }
+}
 
 auto TreeWalkInterpreter::visit(List* t_list) -> void
 {

@@ -1,6 +1,8 @@
 #!/usr/bin/awk -f
 
 BEGIN {
-		monkey = "monkeys" " <3"
-		print "I like", monkeys
+		monkey = "monkeys"
+		addition = 10 + 10
+		# print "I like", monkey, addition, -40
+		print "I like", monkey, -40
 }

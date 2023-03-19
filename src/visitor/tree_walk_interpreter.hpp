@@ -21,10 +21,12 @@ class TreeWalkInterpreter : public NodeVisitor {
   using Store = std::map<std::string, T>;
   using Any = std::variant<bool, int, double, std::string>;
 
+	// Sometimes we need the name of a variable or function
+	std::string m_name;
   Any m_result;
 
-  Store<Any> m_variable_store;
-  Store<NodePtr> m_function_store;
+  Store<Any> m_variables;
+  Store<NodePtr> m_functions;
 
   public:
   TreeWalkInterpreter() = default;

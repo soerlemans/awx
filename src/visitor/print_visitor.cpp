@@ -124,9 +124,9 @@ auto PrintVisitor::visit(node::io::Printf* t_printf) -> void
   Printer printer{m_counter};
 
   printer.print("PRINTF");
-  printer.print("| PARAMS:");
 
-  visit(t_printf->params().get());
+  printer.print_if(t_printf->format(), this, "| FORMAT:");
+  printer.print_if(t_printf->format(), this, "| PARAMS:");
 }
 
 auto PrintVisitor::visit(node::io::Getline* t_getline) -> void
@@ -330,7 +330,9 @@ auto PrintVisitor::visit(node::operators::UnaryPrefix* t_unary_prefix) -> void
   Printer printer{m_counter};
 
   printer.print("UNARY PREFIX");
-  printer.print("| OP: ", "IMPLEMENT");
+  // printer.print("| OP: ");
+
+	// TODO: Implement plus or minus printing
 
   // Visit the unary expression
   t_unary_prefix->left()->accept(this);
