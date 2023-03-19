@@ -2,6 +2,7 @@
 
 // STL Includes:
 #include <iostream>
+#include <sstream>
 
 // Includes:
 #include "../node/include.hpp"
@@ -146,8 +147,8 @@ auto TreeWalkInterpreter::visit(Arithmetic* t_arithmetic) -> void
 
 auto TreeWalkInterpreter::visit(Assignment* t_assignment) -> void
 {
-	t_assignment->left()->accept(this);
-  std::string name{std::get<std::string>(m_result)};
+  t_assignment->left()->accept(this);
+  const std::string name{std::get<std::string>(m_result)};
 
   t_assignment->right()->accept(this);
   switch(const auto op{t_assignment->op()}; op) {
@@ -158,12 +159,15 @@ auto TreeWalkInterpreter::visit(Assignment* t_assignment) -> void
     case AssignmentOp::MULTIPLY: {
       break;
     }
+
     case AssignmentOp::DIVIDE: {
       break;
     }
+
     case AssignmentOp::MODULO: {
       break;
     }
+
     case AssignmentOp::ADD: {
       break;
     }
@@ -208,7 +212,21 @@ auto TreeWalkInterpreter::visit(Or* t_or) -> void
 {}
 
 auto TreeWalkInterpreter::visit(StringConcatenation* t_conc) -> void
-{}
+{
+  t_conc->left()->accept(this);
+  Any left = m_result;
+
+  t_conc->right()->accept(this);
+
+  std::stringstream ss;
+  std::visit(
+    [&](auto&& t_left, auto&& t_right) {
+      ss << left << t_right;
+    },
+    left, m_result);
+
+  m_result = ss.str();
+}
 
 auto TreeWalkInterpreter::visit(Grouping* t_grouping) -> void
 {}
