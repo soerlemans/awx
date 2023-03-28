@@ -58,7 +58,7 @@ auto run() -> void
   Lexer lexer{fb};
   token::TokenStream tokenstream{lexer.tokenize()};
 
-  AwkParser parser{tokenstream};
+  parser::AwkParser parser{tokenstream};
   node::NodePtr ast{parser.parse()};
 
   // Pretty print ast

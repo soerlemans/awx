@@ -4,8 +4,9 @@
 #include "../types.hpp"
 
 
-// Enum definitions:
-enum class TokenType : u16 {
+namespace token {
+// Enums:
+enum class TokenType {
   NONE = 0,
 
   // Identifiers:
@@ -126,5 +127,6 @@ enum class TokenType : u16 {
   DOLLAR_SIGN,
   NEWLINE, // 58
 };
+} // namespace token
 
 #endif // TOKEN_TYPE_HPP

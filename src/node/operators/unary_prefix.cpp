@@ -4,6 +4,7 @@
 using namespace node::operators;
 
 using namespace visitor;
+using namespace token;
 
 namespace {
 constexpr auto tokentype2op(const TokenType t_tokentype) -> UnaryPrefixOp

@@ -1,6 +1,7 @@
 #include "parser.hpp"
 
 
+using namespace parser;
 using namespace token;
 
 // Constructor:

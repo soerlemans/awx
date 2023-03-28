@@ -2,6 +2,7 @@
 #define TOKEN_TYPE_WRAPPER_HPP
 
 
+namespace token::reserved {
 // Concepts:
 // The Identifier is either one character or a string_view
 template<typename T>
@@ -9,7 +10,6 @@ concept TokenTypeWrapperIdentifierConcept =
   std::same_as<T, std::string_view> || std::same_as<T, char>;
 
 // AWX reserved keywords and symbols
-namespace reserved {
 // Helper class for the Reserved global variable definitions
 // Is intended for attaching some more important data to a certain TokenType
 template<typename T = std::string_view>
@@ -53,5 +53,6 @@ class TokenTypeWrapper {
 
   ~TokenTypeWrapper() = default;
 };
+} // namespace token::reserved
 
 #endif // TOKEN_TYPE_WRAPPER_HPP

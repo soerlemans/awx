@@ -22,6 +22,12 @@ class Stream : public T {
   Stream(): m_iter{this->begin()}
   {}
 
+  Stream(const Stream& t_stream): T{t_stream}, m_iter{this->begin()}
+  {}
+
+  Stream(Stream&& t_stream): T{std::move(t_stream)}, m_iter{this->begin()}
+  {}
+
   virtual auto next() -> Value&
   {
     auto iter{m_iter};

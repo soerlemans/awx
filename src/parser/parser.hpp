@@ -6,6 +6,7 @@
 #include "../node/node.hpp"
 
 
+namespace parser {
 /*! Abstract parser class provides utilities that a parser would need to
  * implement
  */
@@ -18,11 +19,12 @@ class Parser {
   auto eos() -> bool;
   auto error(std::string_view t_msg) -> void;
 
-  auto check(TokenType t_tokentype) -> bool;
+  auto check(token::TokenType t_tokentype) -> bool;
   auto next() -> token::Token&;
-  auto next_if(TokenType t_tokentype) -> bool;
+  auto next_if(token::TokenType t_tokentype) -> bool;
   auto prev() -> token::Token&;
-  auto expect(TokenType t_tokentype, std::string_view t_msg) -> token::Token&;
+  auto expect(token::TokenType t_tokentype, std::string_view t_msg)
+    -> token::Token&;
   auto get_token() -> token::Token;
 
   public:
@@ -35,5 +37,6 @@ class Parser {
   // Destructor:
   virtual ~Parser() = default;
 };
+} // namespace parser
 
 #endif /* PARSER_H */

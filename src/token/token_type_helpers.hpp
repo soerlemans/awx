@@ -4,6 +4,7 @@
 #include "token_type.hpp"
 
 
+namespace token {
 // TODO: All these functions can be templated with a simple macro
 #define CASE_TOKEN_TYPE(tokentype) case TokenType::tokentype:
 
@@ -94,5 +95,6 @@ DEFINE_TOKEN_TYPE_HELPER(is_valid_function_identifier,
                            CASE_TOKEN_TYPE(FUNCTION_IDENTIFIER));
 
 }; // namespace tokentype
+} // namespace token
 
 #endif // TOKEN_TYPE_HELPERS_HPP

@@ -15,7 +15,7 @@
 class Lexer {
   private:
   FileBuffer& m_filebuffer;
-	token::TokenStream m_tokenstream;
+  token::TokenStream m_tokenstream;
 
   // Token stream handling:
   // Create a token with its file_position
@@ -41,8 +41,9 @@ class Lexer {
   Lexer(FileBuffer& t_filebuffer);
 
   // Lexer functions:
-  static auto is_keyword(std::string_view t_identifier) -> TokenType;
-  static auto is_builtin_function(std::string_view t_identifier) -> TokenType;
+  static auto is_keyword(std::string_view t_identifier) -> token::TokenType;
+  static auto is_builtin_function(std::string_view t_identifier)
+    -> token::TokenType;
   auto identifier() -> token::Token;
 
   auto is_hex_literal() -> bool;
@@ -55,8 +56,8 @@ class Lexer {
   auto literal_string() -> token::Token;
   auto literal_regex() -> token::Token;
 
-  auto is_multi_symbol() -> TokenType;
-  auto is_single_symbol() -> TokenType;
+  auto is_multi_symbol() -> token::TokenType;
+  auto is_single_symbol() -> token::TokenType;
   auto symbol() -> token::Token;
 
   auto next_char() const -> char;

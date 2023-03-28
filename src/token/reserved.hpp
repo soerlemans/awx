@@ -11,6 +11,7 @@
 #include "token_type_wrapper.hpp"
 
 
+namespace token::reserved {
 // Macros:
 // Do not use these macros outside of this file!
 #define DEFINE_RESERVED(name, id, token) \

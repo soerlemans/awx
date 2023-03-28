@@ -12,10 +12,12 @@
 #include "../token/token_type.hpp"
 #include "../token/token_type_helpers.hpp"
 
-// Using statements:
-using namespace reserved::symbols;
+
+// Using statements;
+using namespace parser;
 
 using namespace token;
+using namespace reserved::symbols;
 
 using namespace node;
 using namespace node::control;

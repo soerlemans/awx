@@ -8,6 +8,7 @@
 #include "parser.hpp"
 
 
+namespace parser {
 // TODO: Some day split the Parser into different components that can be
 // Individually extended and changed as of now its all put together into the
 // Same file
@@ -16,8 +17,8 @@
 class AwkParser;
 
 // Aliases:
-// Used for functions that need to have different parsing rules dependent on
-// Context
+//! Used for functions that need to have different parsing rules dependent on
+//! Context
 using ParserFunc = std::function<node::NodePtr()>;
 
 // Classes:
@@ -44,17 +45,23 @@ class AwkParser : public Parser {
   // Common expressions:
   // TODO: Maybe replace the switch cases in these functions with macros?
   // TODO: Implement shunting yard algorithm for binary_operators
-  virtual auto match(node::NodePtr& t_lhs, const ParserFunc& t_rhs) -> node::NodePtr;
-  virtual auto arithmetic(node::NodePtr& t_lhs, const ParserFunc& t_rhs) -> node::NodePtr;
-  virtual auto assignment(node::NodePtr& t_lhs, const ParserFunc& t_rhs) -> node::NodePtr;
-  virtual auto comparison(node::NodePtr& t_lhs, const ParserFunc& t_rhs) -> node::NodePtr;
+  virtual auto match(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
+    -> node::NodePtr;
+  virtual auto arithmetic(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
+    -> node::NodePtr;
+  virtual auto assignment(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
+    -> node::NodePtr;
+  virtual auto comparison(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
+    -> node::NodePtr;
   virtual auto membership(node::NodePtr& t_lhs) -> node::NodePtr;
-  virtual auto logical(node::NodePtr& t_lhs, const ParserFunc& t_rhs) -> node::NodePtr;
-  virtual auto ternary(node::NodePtr& t_lhs, const ParserFunc& t_rhs) -> node::NodePtr;
+  virtual auto logical(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
+    -> node::NodePtr;
+  virtual auto ternary(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
+    -> node::NodePtr;
 
   // Universal expressions are common expressions shared by other rules
-  virtual auto universal_print_expr(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
-    -> node::NodePtr;
+  virtual auto universal_print_expr(node::NodePtr& t_lhs,
+                                    const ParserFunc& t_rhs) -> node::NodePtr;
   virtual auto universal_expr(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> node::NodePtr;
 
@@ -129,5 +136,6 @@ class AwkParser : public Parser {
   // Desstructors:
   ~AwkParser() override = default;
 };
+} // namespace parser
 
 #endif // AWK_PARSER_HPP
