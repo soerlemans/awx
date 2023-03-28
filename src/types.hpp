@@ -1,10 +1,17 @@
 #ifndef TYPES_HPP
 #define TYPES_HPP
 
+// STL Includes:
 #include <cstdint>
+#include <string>
+#include <string_view>
 
 
-// Integer type definitions:
+// Aliases:
+// using string = std::string;
+// using string_view = std::string_view;
+
+// Integer type aliases:
 using u8 = std::uint8_t;
 using u16 = std::uint16_t;
 using u32 = std::uint32_t;

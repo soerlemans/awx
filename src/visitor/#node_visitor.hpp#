@@ -1,0 +1,75 @@
+#ifndef NODE_VISITOR_HPP
+#define NODE_VISITOR_HPP
+
+// Includes:
+#include "../node/node.hpp"
+
+
+namespace visitor {
+/*! Implementation of the Visitor design pattern for Nodes
+ * This creates a recursive dependency on the different kind of nodes
+ * So all nodes need to be forward declared in this header
+ */
+template<typename T>
+class NodeVisitor {
+  private:
+  public:
+  NodeVisitor() = default;
+
+  virtual auto visit(node::control::If* t_if) -> T = 0;
+  virtual auto visit(node::control::While* t_while) -> T = 0;
+  virtual auto visit(node::control::For* t_for) -> T = 0;
+  virtual auto visit(node::control::ForIn* t_for) -> T = 0;
+  virtual auto visit(node::control::Return* t_return) -> T = 0;
+
+  virtual auto visit(node::functions::Function* t_fn) -> T = 0;
+  virtual auto visit(node::functions::FunctionCall* t_fn_call) -> T = 0;
+  virtual auto visit(node::functions::BuiltinFunction* t_fn) -> T = 0;
+
+  virtual auto visit(node::recipes::SpecialPattern* t_pattern) -> T = 0;
+  virtual auto visit(node::recipes::Recipe* t_recipe) -> T = 0;
+
+  virtual auto visit(node::io::Print* t_print) -> T = 0;
+  virtual auto visit(node::io::Printf* t_printf) -> T = 0;
+  virtual auto visit(node::io::Getline* t_getline) -> T = 0;
+  virtual auto visit(node::io::Redirection* t_redirection) -> T = 0;
+
+  virtual auto visit(node::lvalue::Array* t_array) -> T = 0;
+  virtual auto visit(node::lvalue::FieldReference* t_fr) -> T = 0;
+  virtual auto visit(node::lvalue::Variable* t_var) -> T = 0;
+
+  virtual auto visit(node::rvalue::Float* t_float) -> T = 0;
+  virtual auto visit(node::rvalue::Integer* t_int) -> T = 0;
+  virtual auto visit(node::rvalue::String* t_str) -> T = 0;
+  virtual auto visit(node::rvalue::Regex* t_regex) -> T = 0;
+
+  virtual auto visit(node::operators::Arithmetic* t_arithmetic) -> T = 0;
+  virtual auto visit(node::operators::Assignment* t_assignment) -> T = 0;
+  virtual auto visit(node::operators::Comparison* t_comparison) -> T = 0;
+
+  virtual auto visit(node::operators::Increment* t_increment) -> T = 0;
+  virtual auto visit(node::operators::Decrement* t_decrement) -> T = 0;
+
+  virtual auto visit(node::operators::Delete* t_delete) -> T = 0;
+  virtual auto visit(node::operators::Match* t_match) -> T = 0;
+
+  virtual auto visit(node::operators::Not* t_not) -> T = 0;
+  virtual auto visit(node::operators::And* t_and) -> T = 0;
+  virtual auto visit(node::operators::Or* t_or) -> T = 0;
+
+  virtual auto visit(node::operators::StringConcatenation* t_conc) -> T = 0;
+  virtual auto visit(node::operators::Grouping* t_grouping) -> T = 0;
+  virtual auto visit(node::operators::Ternary* t_ternary) -> T = 0;
+
+  virtual auto visit(node::operators::UnaryPrefix* t_unary_prefix) -> T = 0;
+
+  virtual auto visit(node::List* t_list) -> T = 0;
+  virtual auto visit(node::Nil* t_nil) -> T = 0;
+
+  virtual auto visit(node::NodeInterface* t_node) -> T;
+
+  virtual ~NodeVisitor() = default;
+};
+} // namespace visitor
+
+#endif // NODE_VISITOR_HPP

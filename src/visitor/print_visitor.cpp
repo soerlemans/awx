@@ -2,6 +2,7 @@
 
 
 using namespace visitor;
+using namespace node;
 
 auto PrintVisitor::visit(node::control::If* t_if) -> void
 {

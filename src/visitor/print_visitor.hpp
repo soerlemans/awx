@@ -30,7 +30,7 @@ class PrintVisitor : public NodeVisitor {
     }
 
     template<typename... Args>
-    auto print_if(NodePtr& t_ptr, PrintVisitor* t_this, Args&&... t_args)
+    auto print_if(node::NodePtr& t_ptr, PrintVisitor* t_this, Args&&... t_args)
       -> void
     {
       if(t_ptr) {

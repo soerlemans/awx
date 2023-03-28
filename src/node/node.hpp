@@ -18,6 +18,7 @@
 
 
 namespace node {
+// Forward Declarations:
 // Abstract base Node class
 class NodeInterface;
 
@@ -30,10 +31,9 @@ class Expression;
 // Empty Node that does nothing (intended for empty statements)
 class Nil;
 
-} // namespace node
-
 // Aliases:
-using NodePtr = std::shared_ptr<node::NodeInterface>;
-using NodeListPtr = std::shared_ptr<node::List>;
+using NodePtr = std::shared_ptr<NodeInterface>;
+using NodeListPtr = std::shared_ptr<List>;
+} // namespace node
 
 #endif // NODES_HPP

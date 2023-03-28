@@ -21,15 +21,21 @@ class TreeWalkInterpreter : public NodeVisitor {
   using Store = std::map<std::string, T>;
   using Any = std::variant<bool, int, double, std::string>;
 
-  // Sometimes we need the name of a variable or function
-  std::string m_name;
-  Any m_result;
+  //!
+  struct Context {
+    // Sometimes we need the name of a variable or function
+    std::string m_name;
+    Any m_result;
+  } m_context;
 
   Store<Any> m_variables;
-  Store<NodePtr> m_functions;
+  Store<node::NodePtr> m_functions;
 
   public:
   TreeWalkInterpreter() = default;
+
+  //! Walk returns the m_result
+  auto walk(node::NodePtr t_node) -> Context&;
 
   auto visit(node::control::If* t_if) -> void override;
   auto visit(node::control::While* t_while) -> void override;

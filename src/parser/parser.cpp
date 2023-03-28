@@ -1,8 +1,7 @@
 #include "parser.hpp"
 
-// STL Includes:
-// #include <stacktrace>
 
+using namespace token;
 
 // Constructor:
 Parser::Parser(TokenStream&& t_tokenstream)
@@ -34,7 +33,7 @@ auto Parser::check(const TokenType t_tokentype) -> bool
 {
   error("Tried to check for token at EOS!");
 
-  const auto token{m_tokenstream.token()};
+  const auto token{m_tokenstream.current()};
 
   return token.type() == t_tokentype;
 }
@@ -67,7 +66,7 @@ auto Parser::get_token() -> Token
 {
   error("Tried to return get token at EOS!");
 
-  return m_tokenstream.token();
+  return m_tokenstream.current();
 }
 
 auto Parser::expect(const TokenType t_tokentype, const std::string_view t_msg)
@@ -77,7 +76,7 @@ auto Parser::expect(const TokenType t_tokentype, const std::string_view t_msg)
     std::stringstream ss;
     ss << "Expected -> ";
     ss << t_msg << '\n';
-    ss << m_tokenstream.token().file_position();
+    ss << m_tokenstream.current().file_position();
 
     // Only print stack trace information on DEBUG build
     // ss << "Stack trace:\n";

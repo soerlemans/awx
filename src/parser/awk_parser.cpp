@@ -15,6 +15,8 @@
 // Using statements:
 using namespace reserved::symbols;
 
+using namespace token;
+
 using namespace node;
 using namespace node::control;
 using namespace node::functions;
@@ -205,6 +207,8 @@ auto AwkParser::function_call() -> NodePtr
 
 auto AwkParser::match(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
+  using namespace node;
+
   DBG_TRACE(VERBOSE, "MATCH");
   NodePtr node;
 
@@ -1152,13 +1156,13 @@ auto AwkParser::simple_print_statement() -> NodePtr
   } else if(next_if(TokenType::PRINTF)) {
     DBG_TRACE_PRINT(INFO, "Found 'printf");
 
-		auto params{lambda()};
-		// TODO: Improve error handling:
-		if(params->size() < 1)
-			throw std::runtime_error{"printf needs atleast one argument"};
+    auto params{lambda()};
+    // TODO: Improve error handling:
+    if(params->size() < 1)
+      throw std::runtime_error{"printf needs atleast one argument"};
 
-		auto format{params->front()};
-		params->pop_front();
+    auto format{params->front()};
+    params->pop_front();
     node = std::make_shared<Printf>(std::move(format), std::move(params));
   }
 

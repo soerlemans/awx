@@ -1,22 +1,34 @@
 #ifndef TOKEN_HPP
 #define TOKEN_HPP
 
+// STL Includes:
 #include <iostream>
 #include <string>
 #include <tuple>
 #include <type_traits>
 #include <variant>
+#include <vector>
 
+// Includes:
 #include "../file_position.hpp"
+#include "../stream.hpp"
 
+// Local Includes:
 #include "token_type.hpp"
 
+
+namespace token {
+// Forward Declarations:
+class Token;
 
 // Concepts:
 template<typename T>
 concept TokenValueConcept =
   std::same_as<T, int> || std::same_as<T, double> || std::same_as<T,
                                                                   std::string>;
+
+// Aliases:
+using TokenStream = Stream<std::vector<Token>>;
 
 // Classes:
 class Token {
@@ -94,5 +106,6 @@ class Token {
   // Destructors:
   virtual ~Token() = default;
 };
+} // namespace token
 
 #endif // TOKEN_HPP

@@ -21,6 +21,13 @@ using namespace node::rvalue;
 
 using namespace visitor;
 
+auto TreeWalkInterpreter::walk(node::NodePtr t_node) -> Context&
+{
+  t_node->accept(this);
+
+  return m_context;
+}
+
 auto TreeWalkInterpreter::visit(If* t_if) -> void
 {}
 
@@ -51,9 +58,9 @@ auto TreeWalkInterpreter::visit(SpecialPattern* t_pattern) -> void
 auto TreeWalkInterpreter::visit(Recipe* t_recipe) -> void
 {
   // TODO: Process pattern
-  // t_recipe->pattern()->accept(this);
+  // walk(t_recipe->pattern());
 
-  t_recipe->body()->accept(this);
+  walk(t_recipe->body());
 }
 
 auto TreeWalkInterpreter::visit(Print* t_print) -> void
@@ -61,12 +68,11 @@ auto TreeWalkInterpreter::visit(Print* t_print) -> void
   if(const auto& params{t_print->params()}; params) {
     char separator;
     for(const auto& param : *params) {
-      param->accept(this);
       std::visit(
         [&](auto&& t_result) {
           std::cout << separator << std::forward<decltype(t_result)>(t_result);
         },
-        m_result);
+        walk(param).m_result);
       separator = ' ';
     }
   }
@@ -85,9 +91,12 @@ auto TreeWalkInterpreter::visit(Redirection* t_redirection) -> void
 
 auto TreeWalkInterpreter::visit(Array* t_array) -> void
 {
-  // As result set the name and current value of the variable
-  m_name = t_array->name();
-  // m_result = m_variables[m_name];
+  auto& name{m_context.m_name};
+  auto& result{m_context.m_result};
+
+  // As result set the name and current value of the variable.
+  name = t_array->name();
+  result = m_variables[name];
 }
 
 auto TreeWalkInterpreter::visit(FieldReference* t_fr) -> void
@@ -95,24 +104,33 @@ auto TreeWalkInterpreter::visit(FieldReference* t_fr) -> void
 
 auto TreeWalkInterpreter::visit(Variable* t_var) -> void
 {
+  auto& name{m_context.m_name};
+  auto& result{m_context.m_result};
+
   // As result set the name and current value of the variable
-  m_name = t_var->name();
-  m_result = m_variables[m_name];
+  name = t_var->name();
+  result = m_variables[name];
 }
 
 auto TreeWalkInterpreter::visit(Float* t_float) -> void
 {
-  m_result = t_float->get();
+  auto& result{m_context.m_result};
+
+  result = t_float->get();
 }
 
 auto TreeWalkInterpreter::visit(Integer* t_int) -> void
 {
-  m_result = t_int->get();
+  auto& result{m_context.m_result};
+
+  result = t_int->get();
 }
 
 auto TreeWalkInterpreter::visit(String* t_str) -> void
 {
-  m_result = t_str->get();
+  auto& result{m_context.m_result};
+
+  result = t_str->get();
 }
 
 auto TreeWalkInterpreter::visit(Regex* t_regex) -> void
@@ -127,12 +145,10 @@ auto TreeWalkInterpreter::visit(Arithmetic* t_arithmetic) -> void
   // };
 
   const auto lambda{[&]() -> std::tuple<Any, Any> {
-    t_arithmetic->left()->accept(this);
-    Any lhs{m_result};
+    Any lhs{walk(t_arithmetic->left()).m_result};
+    Any rhs{walk(t_arithmetic->right()).m_result};
 
-    t_arithmetic->right()->accept(this);
-
-    return {lhs, m_result};
+    return {lhs, rhs};
   }};
 
   switch(const auto op{t_arithmetic->op()}; op) {
@@ -166,10 +182,9 @@ auto TreeWalkInterpreter::visit(Arithmetic* t_arithmetic) -> void
 
 auto TreeWalkInterpreter::visit(Assignment* t_assignment) -> void
 {
-  t_assignment->left()->accept(this);
-  const std::string name{m_name};
+  const auto name{walk(t_assignment->left()).m_name};
 
-  t_assignment->right()->accept(this);
+  auto context{walk(t_assignment->right())};
   switch(const auto op{t_assignment->op()}; op) {
     case AssignmentOp::POWER: {
       break;
@@ -196,7 +211,7 @@ auto TreeWalkInterpreter::visit(Assignment* t_assignment) -> void
     }
 
     case AssignmentOp::REGULAR: {
-      m_variables[name] = m_result;
+      m_variables[name] = m_context.m_result;
       break;
     }
 
@@ -232,19 +247,17 @@ auto TreeWalkInterpreter::visit(Or* t_or) -> void
 
 auto TreeWalkInterpreter::visit(StringConcatenation* t_conc) -> void
 {
-  t_conc->left()->accept(this);
-  Any left = m_result;
-
-  t_conc->right()->accept(this);
+  Any left{walk(t_conc->left()).m_result};
+  Any right{walk(t_conc->right()).m_result};
 
   std::stringstream ss;
   std::visit(
     [&](auto&& t_left, auto&& t_right) {
       ss << t_left << t_right;
     },
-    left, m_result);
+    left, right);
 
-  m_result = ss.str();
+  m_context.m_result = ss.str();
 }
 
 auto TreeWalkInterpreter::visit(Grouping* t_grouping) -> void
@@ -255,38 +268,36 @@ auto TreeWalkInterpreter::visit(Ternary* t_ternary) -> void
 
 auto TreeWalkInterpreter::visit(UnaryPrefix* t_unary_prefix) -> void
 {
-  const auto visit{[&](auto&& t_lambda) {
-    t_unary_prefix->left()->accept(this);
+  // const auto visit{[&](auto&& t_lambda) {
+  //   std::visit(
+  //     [&](auto&& t_left) {
+  //       using T = decltype(t_left);
+  //       if(std::is_same<T, int>() || std::is_same<T, double>()) {
+  //         t_lambda(std::forward<decltype(t_left)>(t_left));
+  //       } else {
+  //         m_result = 0;
+  //       }
+  //     },
+  //     walk(t_unary_prefix->left()));
+  // }};
 
-    std::visit(
-      [&](auto&& t_left) {
-        using T = decltype(t_left);
-        if(std::is_same<T, int>() || std::is_same<T, double>()) {
-          t_lambda(std::forward<decltype(t_left)>(t_left));
-        } else {
-          m_result = 0;
-        }
-      },
-      m_result);
-  }};
+  // switch(t_unary_prefix->op()) {
+  //   case UnaryPrefixOp::PLUS:
+  //     visit([&](auto&& t_left) {
+  //       // m_result = +t_left;
+  //     });
+  //     break;
 
-  switch(t_unary_prefix->op()) {
-    case UnaryPrefixOp::PLUS:
-      visit([&](auto&& t_left) {
-        m_result = +t_left;
-      });
-      break;
+  //   case UnaryPrefixOp::MINUS:
+  //     visit([&](auto&& t_left) {
+  //       // m_result = -t_left;
+  //     });
+  //     break;
 
-    case UnaryPrefixOp::MINUS:
-      visit([&](auto&& t_left) {
-        m_result = -t_left;
-      });
-      break;
-
-    default:
-      // TODO: Error handling
-      break;
-  }
+  //   default:
+  //     // TODO: Error handling
+  //     break;
+  // }
 }
 
 auto TreeWalkInterpreter::visit(List* t_list) -> void

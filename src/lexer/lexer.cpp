@@ -14,6 +14,8 @@
 #include "../token/token_type_helpers.hpp"
 
 
+using namespace token;
+
 // TokenStream handling:
 auto Lexer::add_token(const Token& t_token) -> void
 {

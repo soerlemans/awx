@@ -1,38 +1,37 @@
 #ifndef LEXER_HPP
 #define LEXER_HPP
 
+// STL Includes:
 #include <string>
 #include <string_view>
 #include <tuple>
 
+// Includes:
 #include "../file_buffer.hpp"
-
 #include "../token/reserved.hpp"
-#include "../token/token_stream.hpp"
+#include "../token/token.hpp"
 
-
-// Aliases:
-// using TokenStream = std::vector<Token>;
 
 class Lexer {
   private:
   FileBuffer& m_filebuffer;
-  TokenStream m_tokenstream;
+	token::TokenStream m_tokenstream;
 
   // Token stream handling:
   // Create a token with its file_position
   template<typename... Args>
-  auto create_token(Args&&... t_args) -> Token
+  auto create_token(Args&&... t_args) -> token::Token
   {
     static_assert(sizeof...(Args) <= 2,
                   "create_token(), does not accept more than two args.");
 
-    return Token{std::forward<Args>(t_args)..., m_filebuffer.file_position()};
+    return token::Token{std::forward<Args>(t_args)...,
+                        m_filebuffer.file_position()};
   }
 
   // Add token to token stream
-  auto add_token(const Token& t_token) -> void;
-  auto add_token(Token&& t_token) -> void;
+  auto add_token(const token::Token& t_token) -> void;
+  auto add_token(token::Token&& t_token) -> void;
 
   // Error handling:
   auto syntax_error(std::string_view t_msg) const -> void;
@@ -44,25 +43,26 @@ class Lexer {
   // Lexer functions:
   static auto is_keyword(std::string_view t_identifier) -> TokenType;
   static auto is_builtin_function(std::string_view t_identifier) -> TokenType;
-  auto identifier() -> Token;
+  auto identifier() -> token::Token;
 
   auto is_hex_literal() -> bool;
-  auto handle_hex() -> Token;
-  auto handle_float(std::string_view t_str = "", bool t_dot = false) -> Token;
-  auto handle_integer() -> Token;
+  auto handle_hex() -> token::Token;
+  auto handle_float(std::string_view t_str = "", bool t_dot = false)
+    -> token::Token;
+  auto handle_integer() -> token::Token;
 
-  auto literal_numeric() -> Token;
-  auto literal_string() -> Token;
-  auto literal_regex() -> Token;
+  auto literal_numeric() -> token::Token;
+  auto literal_string() -> token::Token;
+  auto literal_regex() -> token::Token;
 
   auto is_multi_symbol() -> TokenType;
   auto is_single_symbol() -> TokenType;
-  auto symbol() -> Token;
+  auto symbol() -> token::Token;
 
   auto next_char() const -> char;
   auto eol() const -> bool;
 
-  auto tokenize() -> TokenStream;
+  auto tokenize() -> token::TokenStream;
 
   virtual ~Lexer() = default;
 };

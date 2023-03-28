@@ -31,7 +31,7 @@ auto parse_args(const int t_argc, char* t_argv[]) -> int
 {
   auto& config{Config::get_instance()};
 
-  CLI::App app{"AWX stands for (POSIX) AWk With Extensions."};
+  CLI::App app{"AWX stands for AWK With Extensions."};
 
   std::string filename;
   app.add_option("-f,--file", filename, "A help string");
@@ -56,10 +56,10 @@ auto run() -> void
   FileBuffer fb{config.get_files().front()};
 
   Lexer lexer{fb};
-  TokenStream tokenstream{lexer.tokenize()};
+  token::TokenStream tokenstream{lexer.tokenize()};
 
   AwkParser parser{tokenstream};
-  NodePtr ast{parser.parse()};
+  node::NodePtr ast{parser.parse()};
 
   // Pretty print ast
   visitor::PrintVisitor pretty_printer;
