@@ -1,7 +1,6 @@
 #ifndef PRINT_VISITOR_HPP
 #define PRINT_VISITOR_HPP
 
-
 // STL Includes:
 #include <iostream>
 

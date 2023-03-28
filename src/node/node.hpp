@@ -6,8 +6,7 @@
 #include <stdexcept>
 
 // Local Includes:
-/*! Contains the forward declarations of all Node classes
- */
+// Forward declarations all Node classes:
 #include "control/control.hpp"
 #include "functions/functions.hpp"
 #include "io/io.hpp"
@@ -19,17 +18,10 @@
 
 namespace node {
 // Forward Declarations:
-// Abstract base Node class
 class NodeInterface;
-
-// Specifies List of NodePtr's
-class List;
-
-// Most Node types inherit from Expression
+class List;       // List of NodePtr's
 class Expression;
-
-// Empty Node that does nothing (intended for empty statements)
-class Nil;
+class Nil;        // Node that indicates nothing
 
 // Aliases:
 using NodePtr = std::shared_ptr<NodeInterface>;

@@ -1,18 +1,20 @@
 #ifndef FILE_BUFFER_HPP
 #define FILE_BUFFER_HPP
 
+// STL Includes:
 #include <filesystem>
 #include <string>
 #include <string_view>
 #include <vector>
 
+// Local Includes:
 #include "file_position.hpp"
 #include "types.hpp"
 
-namespace fs = std::filesystem;
-
 class FileBuffer {
   private:
+  namespace fs = std::filesystem;
+
   // Private variables:
   fs::path m_path;
   std::vector<std::string> m_filebuffer;

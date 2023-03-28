@@ -5,7 +5,6 @@
 
 
 using namespace visitor;
-
 using namespace node;
 
 auto NodeVisitor::visit(NodeInterface* t_node) -> void
