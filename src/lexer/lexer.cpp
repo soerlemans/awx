@@ -14,6 +14,7 @@
 #include "../token/token_type_helpers.hpp"
 
 
+using namespace lexer;
 using namespace token;
 
 // TokenStream handling:

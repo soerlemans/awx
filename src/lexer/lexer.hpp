@@ -12,6 +12,7 @@
 #include "../token/token.hpp"
 
 
+namespace lexer {
 class Lexer {
   private:
   FileBuffer& m_filebuffer;
@@ -67,6 +68,6 @@ class Lexer {
 
   virtual ~Lexer() = default;
 };
-
+} // namespace lexer
 
 #endif // LEXER_HPP

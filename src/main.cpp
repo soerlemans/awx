@@ -55,7 +55,7 @@ auto run() -> void
 
   FileBuffer fb{config.get_files().front()};
 
-  Lexer lexer{fb};
+	lexer::Lexer lexer{fb};
   token::TokenStream tokenstream{lexer.tokenize()};
 
   parser::AwkParser parser{tokenstream};
