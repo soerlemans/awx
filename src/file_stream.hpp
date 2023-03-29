@@ -10,12 +10,13 @@
 // Local Includes:
 #include "stream.hpp"
 
+namespace fs = std::filesystem;
+
 //! Filestream loads an entire file in as a sequential
 class FileStream : public Stream<std::string> {
   private:
-  namespace fs = std::filesystem;
-
   public:
+  FileStream(fs::path t_path);
 };
 
 #endif // FILE_STREAM_HPP

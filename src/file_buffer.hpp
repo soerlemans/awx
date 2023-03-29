@@ -11,10 +11,10 @@
 #include "file_position.hpp"
 #include "types.hpp"
 
+namespace fs = std::filesystem;
+
 class FileBuffer {
   private:
-  namespace fs = std::filesystem;
-
   // Private variables:
   fs::path m_path;
   std::vector<std::string> m_filebuffer;
