@@ -36,7 +36,7 @@ class Config {
   private:
   // Regular private variables:
   AwxMode m_awx_mode{AwxMode::AWK};
-  std::vector<FileBuffer> m_file_buffers;
+  std::vector<fs::path> m_paths;
 
   protected:
   // Singleton data:
@@ -45,7 +45,7 @@ class Config {
   Config() = default;
 
   // Setters:
-  auto add_file(FileBuffer&& t_fb) -> void;
+  auto add_file(const fs::path& t_path) -> void;
 
   public:
   // Constructors:
@@ -61,7 +61,7 @@ class Config {
   }
 
   // Getters:
-  auto get_files() const -> std::vector<FileBuffer>;
+  auto get_files() const -> std::vector<fs::path>;
 
   // Friend declarations:
   friend auto parse_args(const int t_argc, char* t_argv[]) -> int; // NOLINT

@@ -15,30 +15,25 @@
 namespace lexer {
 class Lexer {
   private:
-  FileStream& m_filestream;
-  token::TokenStream m_tokenstream;
+  FileStream& m_fs;
+  token::TokenStream m_ts;
 
   // Token stream handling:
   // Create a token with its file_position
   template<typename... Args>
   auto create_token(Args&&... t_args) -> token::Token
   {
-    static_assert(sizeof...(Args) <= 2,
-                  "create_token(), does not accept more than two args.");
+    // static_assert(sizeof...(Args) <= 2,
+    //               "create_token(), does not accept more than two args.");
 
-    return token::Token{std::forward<Args>(t_args)...,
-                        m_filestream.file_position()};
+    // return token::Token{std::forward<Args>(t_args)...,
+    // 										m_ts.file_position()};
   }
-
-  // Add token to token stream
-  auto add_token(const token::Token& t_token) -> void;
-  auto add_token(token::Token&& t_token) -> void;
 
   // Error handling:
   auto syntax_error(std::string_view t_msg) const -> void;
 
   public:
-  Lexer() = delete;
   Lexer(FileStream& t_filestream);
 
   // Lexer functions:

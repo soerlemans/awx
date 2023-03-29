@@ -5,13 +5,13 @@
 std::unique_ptr<Config> Config::m_singleton;
 
 // Protected methods:
-auto Config::add_file(FileBuffer&& t_fb) -> void
+auto Config::add_file(const fs::path& t_path) -> void
 {
-  m_file_buffers.push_back(std::forward<FileBuffer>(t_fb));
+  m_paths.push_back(t_path);
 }
 
 // Public methods:
-auto Config::get_files() const -> std::vector<FileBuffer>
+auto Config::get_files() const -> std::vector<fs::path>
 {
-  return m_file_buffers;
+  return m_paths;
 }
