@@ -7,7 +7,7 @@
 #include <tuple>
 
 // Includes:
-#include "../file_buffer.hpp"
+#include "../file_stream.hpp"
 #include "../token/reserved.hpp"
 #include "../token/token.hpp"
 
@@ -15,7 +15,7 @@
 namespace lexer {
 class Lexer {
   private:
-  FileBuffer& m_filebuffer;
+  FileStream& m_filestream;
   token::TokenStream m_tokenstream;
 
   // Token stream handling:
@@ -27,7 +27,7 @@ class Lexer {
                   "create_token(), does not accept more than two args.");
 
     return token::Token{std::forward<Args>(t_args)...,
-                        m_filebuffer.file_position()};
+                        m_filestream.file_position()};
   }
 
   // Add token to token stream
@@ -39,7 +39,7 @@ class Lexer {
 
   public:
   Lexer() = delete;
-  Lexer(FileBuffer& t_filebuffer);
+  Lexer(FileStream& t_filestream);
 
   // Lexer functions:
   static auto is_keyword(std::string_view t_identifier) -> token::TokenType;

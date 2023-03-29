@@ -17,6 +17,8 @@ class FileStream : public Stream<std::string> {
   private:
   public:
   FileStream(fs::path t_path);
+
+	auto advance_to(char t_character) -> void;
 };
 
 #endif // FILE_STREAM_HPP
