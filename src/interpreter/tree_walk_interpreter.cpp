@@ -11,9 +11,6 @@
 #include "../node/include.hpp"
 
 
-// Using statements:
-using namespace visitor;
-
 using namespace node;
 using namespace node::control;
 using namespace node::functions;
@@ -23,13 +20,8 @@ using namespace node::operators;
 using namespace node::recipes;
 using namespace node::rvalue;
 
-//! Helper struct that selects correct lambda to execute in std::visit
-template<class... Ts>
-struct Oveload : Ts... {
-  using Ts::operator()...;
-};
+using namespace visitor;
 
-// Public Methods:
 auto TreeWalkInterpreter::walk(node::NodePtr t_node) -> Context&
 {
   t_node->accept(this);
@@ -283,9 +275,8 @@ auto TreeWalkInterpreter::visit(Ternary* t_ternary) -> void
 
 auto TreeWalkInterpreter::visit(UnaryPrefix* t_unary_prefix) -> void
 {
-  auto context{walk(t_unary_prefix->left())};
-
   const auto visit{[&](auto&& t_lambda) {
+    auto context{walk(t_unary_prefix->left())};
     std::visit(
       [&](auto&& t_left) {
         using T = decltype(t_left);
@@ -301,11 +292,6 @@ auto TreeWalkInterpreter::visit(UnaryPrefix* t_unary_prefix) -> void
   DBG_LOG(ERROR, "TEST");
   switch(t_unary_prefix->op()) {
     case UnaryPrefixOp::PLUS:
-      std::visit(Overloaded{[&](double t_left) {
-                            },
-                            [&](std::string& t_left) {
-                            }},
-                 context.m_result);
       visit([&](double t_left) {
         DBG_LOG(ERROR, "+: ", +t_left);
         m_context.m_result = +t_left;

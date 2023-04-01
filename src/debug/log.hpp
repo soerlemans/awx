@@ -47,7 +47,7 @@ enum class LogLevel : u16 {
   ERROR,
   WARNING,
   INFO,
-  VERBOSE,
+  VERBOSE
 };
 
 #if DEBUG
