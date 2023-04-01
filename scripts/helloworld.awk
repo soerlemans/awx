@@ -7,11 +7,5 @@ BEGIN {
 	} else {
 		print ("False")
 	}
-
-	if ("10.0019999" == 10.0019999) {
-		print ("Wow")
-	} else {
-		print ("False")
-	}
 }
 

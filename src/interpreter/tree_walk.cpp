@@ -1,4 +1,4 @@
-#include "tree_walk_interpreter.hpp"
+#include "tree_walk.hpp"
 
 // STL Includes:
 #include <functional>
@@ -287,6 +287,7 @@ auto TreeWalkInterpreter::visit(Assignment* t_assignment) -> void
   }
 }
 
+// TODO: This method can be drastically shortened with a good lambda.
 auto TreeWalkInterpreter::visit(Comparison* t_comparison) -> void
 {
   auto lhs{walk(t_comparison->left())};

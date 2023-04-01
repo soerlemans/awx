@@ -1,12 +1,12 @@
-#ifndef TREE_WALK_INTERPRETER_HPP
-#define TREE_WALK_INTERPRETER_HPP
+#ifndef TREE_WALK_HPP
+#define TREE_WALK_HPP
 
 // STL Includes:
 #include <map>
 #include <variant>
 
 // Local Includes:
-#include "node_visitor.hpp"
+#include "../visitor/node_visitor.hpp"
 
 
 namespace visitor {
@@ -37,7 +37,7 @@ class TreeWalkInterpreter : public NodeVisitor {
   //! Walk returns the updated context
   auto walk(node::NodePtr t_node) -> Context&;
   auto eval_condition(node::NodePtr t_node) -> bool;
-	auto double2str(double t_number) -> std::string;
+  auto double2str(double t_number) -> std::string;
 
   auto visit(node::control::If* t_if) -> void override;
   auto visit(node::control::While* t_while) -> void override;
@@ -93,4 +93,4 @@ class TreeWalkInterpreter : public NodeVisitor {
 };
 } // namespace visitor
 
-#endif // TREE_WALK_INTERPRETER_HPP
+#endif // TREE_WALK_HPP

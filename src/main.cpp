@@ -11,7 +11,7 @@
 #include "file_buffer.hpp"
 #include "parser/awk_parser.hpp"
 #include "visitor/print_visitor.hpp"
-#include "visitor/tree_walk_interpreter.hpp"
+#include "interpreter/tree_walk.hpp"
 
 // Local Includes:
 #include "enum.hpp"

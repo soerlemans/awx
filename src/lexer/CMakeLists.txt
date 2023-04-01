@@ -1,4 +1,4 @@
-
-
 # Add source files
-target_sources(${PROJECT_NAME} PRIVATE lexer.cpp)
+target_sources(${PROJECT_NAME} PRIVATE
+	lexer.cpp
+)

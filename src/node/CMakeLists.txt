@@ -1,7 +1,9 @@
-
-
 # Add source files
-target_sources(${PROJECT_NAME} PRIVATE list.cpp expression.cpp nil.cpp)
+target_sources(${PROJECT_NAME} PRIVATE
+	list.cpp
+	expression.cpp
+	nil.cpp
+)
 
 # Add subdirectories
 add_subdirectory(control)
