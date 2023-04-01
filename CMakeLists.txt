@@ -11,7 +11,17 @@ set(CMAKE_CXX_COMPILER "clang++")
 # set(CMAKE_CXX_COMPILER "g++")
 
 # Define the project
-project(awx CXX)
+project(awx
+	VERSION 0.2.0
+	DESCRIPTION "An awk interpreter written in C++."
+	LANGUAGES CXX
+)
+
+# Create version header
+configure_file(
+	${PROJECT_SOURCE_DIR}/src/version.hpp.in
+	${PROJECT_SOURCE_DIR}/src/version.hpp
+)
 
 # Define the executable that will be made
 add_executable(${PROJECT_NAME})
@@ -27,8 +37,8 @@ target_compile_options(${PROJECT_NAME} PRIVATE
   -Wall
   -Wextra
   -pedantic
-  -ggdb
-  -g3
+  $<$<CONFIG:Debug>:-ggdb>
+  $<$<CONFIG:Debug>:-g3>
   $<$<CONFIG:Release>:-O2>
 )
 

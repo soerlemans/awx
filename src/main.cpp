@@ -9,12 +9,13 @@
 #include "config/config.hpp"
 #include "debug/log.hpp"
 #include "file_buffer.hpp"
+#include "interpreter/tree_walk.hpp"
 #include "parser/awk_parser.hpp"
 #include "visitor/print_visitor.hpp"
-#include "interpreter/tree_walk.hpp"
 
 // Local Includes:
 #include "enum.hpp"
+#include "version.hpp"
 
 // Enums:
 enum ExitCode {
@@ -33,6 +34,9 @@ auto parse_args(Config& t_config, const int t_argc, char* t_argv[]) -> int
 
   std::string filename;
   app.add_option("-f,--file", filename, "A help string");
+
+  bool version{false};
+  app.add_flag("-v,--version", version, "Display the current AWX version");
 
   CLI11_PARSE(app, t_argc, t_argv);
 

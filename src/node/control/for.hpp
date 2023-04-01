@@ -19,6 +19,12 @@ class For : public NodeInterface {
   For(NodePtr&& t_init, NodePtr&& t_condition, NodePtr&& t_expr,
       NodeListPtr&& t_body);
 
+	auto init() -> NodePtr&;
+	auto condition() -> NodePtr&;
+	auto expr() -> NodePtr&;
+
+	auto body() -> NodeListPtr&;
+
   auto accept(visitor::NodeVisitor* t_visitor) -> void override;
 
   ~For() override = default;

@@ -2,10 +2,9 @@
 
 
 BEGIN {
-	if (10.001 == "10.001") {
-		print ("Wow")
-	} else {
-		print ("False")
-	}
+		getline var
+
+		print "var:", var
+		print "var + var:", var + var
 }
 

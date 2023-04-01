@@ -1,6 +1,7 @@
 #include "tree_walk.hpp"
 
 // STL Includes:
+#include <cstdio>
 #include <functional>
 #include <iomanip>
 #include <iostream>
@@ -95,7 +96,16 @@ auto TreeWalkInterpreter::visit(While* t_while) -> void
 }
 
 auto TreeWalkInterpreter::visit(For* t_for) -> void
-{}
+{
+  // We dont do anything with the result of the init expression
+  walk(t_for->init());
+
+  while(eval_condition(t_for->condition())) {
+    walk(t_for->body());
+
+    walk(t_for->expr());
+  }
+}
 
 auto TreeWalkInterpreter::visit(ForIn* t_for) -> void
 {}
@@ -118,7 +128,7 @@ auto TreeWalkInterpreter::visit(SpecialPattern* t_pattern) -> void
 auto TreeWalkInterpreter::visit(Recipe* t_recipe) -> void
 {
   // TODO: Process pattern
-  // walk(t_recipe->pattern());
+  walk(t_recipe->pattern());
 
   walk(t_recipe->body());
 }
@@ -145,10 +155,23 @@ auto TreeWalkInterpreter::visit(Print* t_print) -> void
 }
 
 auto TreeWalkInterpreter::visit(Printf* t_printf) -> void
-{}
+{
+  // auto format{walk(t_printf->format())};
+  // std::printf();
+}
 
 auto TreeWalkInterpreter::visit(Getline* t_getline) -> void
-{}
+{
+  auto [name, result] = walk(t_getline->var());
+
+  auto& variable{m_variables[name]};
+
+  // Get input
+  std::string input;
+  std::cin >> input;
+
+  variable = input;
+}
 
 auto TreeWalkInterpreter::visit(Redirection* t_redirection) -> void
 {}
@@ -197,7 +220,11 @@ auto TreeWalkInterpreter::visit(String* t_str) -> void
 }
 
 auto TreeWalkInterpreter::visit(Regex* t_regex) -> void
-{}
+{
+  auto& result{m_context.m_result};
+
+  result = t_regex->get();
+}
 
 auto TreeWalkInterpreter::visit(Arithmetic* t_arithmetic) -> void
 {
@@ -362,6 +389,23 @@ auto TreeWalkInterpreter::visit(Comparison* t_comparison) -> void
         lhs.m_result, rhs.m_result);
       break;
 
+    case ComparisonOp::NOT_EQUAL:
+      std::visit(
+        Overload{[&](double t_left, double t_right) {
+                   m_context.m_result = (double)(t_left != t_right);
+                 },
+                 [&](double t_left, const std::string& t_right) {
+                   m_context.m_result = (double)(double2str(t_left) != t_right);
+                 },
+                 [&](const std::string& t_left, double t_right) {
+                   m_context.m_result = (double)(t_left != double2str(t_right));
+                 },
+                 [&](const std::string& t_left, const std::string& t_right) {
+                   m_context.m_result = (double)(t_left != t_right);
+                 }},
+        lhs.m_result, rhs.m_result);
+      break;
+
     case ComparisonOp::EQUAL:
       std::visit(
         Overload{[&](double t_left, double t_right) {
@@ -382,10 +426,32 @@ auto TreeWalkInterpreter::visit(Comparison* t_comparison) -> void
 }
 
 auto TreeWalkInterpreter::visit(Increment* t_increment) -> void
-{}
+{
+  auto lhs{walk(t_increment->left())};
+
+  std::visit(Overload{[&](double& t_left) {
+                        t_left++;
+                      },
+                      [&](const std::string& t_left) {
+                      }},
+             m_variables[lhs.m_name]);
+
+  // TODO: Implement postfix increment
+}
 
 auto TreeWalkInterpreter::visit(Decrement* t_decrement) -> void
-{}
+{
+  auto lhs{walk(t_decrement->left())};
+
+  std::visit(Overload{[&](double& t_left) {
+                        t_left--;
+                      },
+                      [&](const std::string& t_left) {
+                      }},
+             m_variables[lhs.m_name]);
+
+  // TODO: Implement postfix increment
+}
 
 auto TreeWalkInterpreter::visit(Delete* t_delete) -> void
 {}

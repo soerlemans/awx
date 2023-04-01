@@ -37,6 +37,9 @@
 # Dont include gdb_history file
 .gdb_history
 
+# Generated version header:
+src/version.hpp
+
 # Build directories
 build/*
 debug/*

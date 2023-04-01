@@ -11,6 +11,11 @@ Increment::Increment(NodePtr&& t_left, bool t_prefix)
     m_prefix{t_prefix}
 {}
 
+auto Increment::prefix() const -> bool
+{
+  return m_prefix;
+}
+
 auto Increment::accept(NodeVisitor* t_visitor) -> void
 {
   t_visitor->visit(this);
