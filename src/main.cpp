@@ -40,8 +40,13 @@ auto parse_args(Config& t_config, const int t_argc, char* t_argv[]) -> int
 
   CLI11_PARSE(app, t_argc, t_argv);
 
-  std::cout << filename << std::endl;
   t_config.m_paths.push_back(filename);
+
+	// TODO: Improve this (temporary)
+  if(version) {
+    std::cout << "Version: " << t_config.m_version << '\n';
+    exit(0);
+  }
 
   return ExitCode::OK;
 }
@@ -73,7 +78,7 @@ auto run(Config& t_config) -> void
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
-  Config config{AwxMode::AWK};
+  Config config{AwxMode::AWK, AWX_VERSION};
 
   parse_args(config, t_argc, t_argv);
 

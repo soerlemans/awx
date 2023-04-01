@@ -3,10 +3,10 @@
 
 
 //! Cmake substitutes the version numbers specified in the root CMakeLists.txt
-#define AWX_VERSION_MAJOR @AWX_VERSION_MAJOR@
-#define AWX_VERSION_MINOR @AWX_VERSION_MINOR@
-#define AWX_VERSION_PATCH @AWX_VERSION_PATCH@
+#define AWX_VERSION_MAJOR @awx_VERSION_MAJOR@
+#define AWX_VERSION_MINOR @awx_VERSION_MINOR@
+#define AWX_VERSION_PATCH @awx_VERSION_PATCH@
 
-#define AWX_VERSION @AWX_VERSION@
+#define AWX_VERSION "@awx_VERSION@"
 
 #endif // VERSION_HPP

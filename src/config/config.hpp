@@ -32,9 +32,11 @@ enum AwxMode {
  */
 struct Config {
   AwxMode m_awx_mode;
+  std::string_view m_version;
+
   std::vector<std::string> m_paths;
 
-  Config(AwxMode t_mode);
+  Config(AwxMode t_awx_mode, std::string_view t_version);
 };
 
 #endif // CONFIG_HPP
