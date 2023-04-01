@@ -73,7 +73,7 @@ auto Lexer::identifier() -> Token
   };
 
   while(lambda(m_fs.current()) && !eol())
-    ss << m_fs.next();
+    ss << next_char();
 
   // Function names are instantly followed by a '('
   // TODO: Throw an error if we find a space and then '('
@@ -114,8 +114,8 @@ auto Lexer::is_hex_literal() -> bool
 
   // Octal literals are not specified in the POSIX AWK standard
   // So just treat leading zeroes as as normal
-  if(m_fs.next() == '0' && m_fs.current() == 'x') {
-    m_fs.next(); // Discard 'x'
+  if(next_char() == '0' && m_fs.current() == 'x') {
+    next_char(); // Discard 'x'
 
     is_hex = true;
   } else {
@@ -134,7 +134,7 @@ auto Lexer::handle_hex() -> Token
     const char character{m_fs.current()};
 
     if(std::isxdigit(character)) {
-      ss << m_fs.next();
+      ss << next_char();
     } else {
       m_fs.prev();
       break;
@@ -159,13 +159,13 @@ auto Lexer::handle_float(std::string_view t_str, bool t_dot) -> Token
   ss << t_str;
 
   if(t_dot)
-    m_fs.next();
+    next_char();
 
   while(!eol()) {
     const char character{m_fs.current()};
 
     if(std::isdigit(character)) {
-      ss << m_fs.next();
+      ss << next_char();
     } else if(character == g_dot.identifier()) {
       if(t_dot) {
         syntax_error("Cant have a second '.' in a float literal.");
@@ -192,7 +192,7 @@ auto Lexer::handle_integer() -> Token
     const char character{m_fs.current()};
 
     if(std::isdigit(character)) {
-      ss << m_fs.next();
+      ss << next_char();
     } else if(character == g_dot.identifier()) {
       // Handle float as a float
       return handle_float(ss.str(), true);
@@ -228,7 +228,7 @@ auto Lexer::literal_string() -> Token
   std::stringstream ss;
 
   // Discard starting " character
-  m_fs.next();
+  next_char();
 
   bool quit{false};
   while(!quit && !eol()) {
@@ -240,11 +240,11 @@ auto Lexer::literal_string() -> Token
         break;
 
       case g_backslash.identifier():
-        ss << m_fs.next();
+        ss << next_char();
         [[fallthrough]];
 
       default:
-        ss << m_fs.next();
+        ss << next_char();
         break;
     }
   }
@@ -260,7 +260,7 @@ auto Lexer::literal_regex() -> Token
   std::stringstream ss;
 
   // Discard starting / character
-  m_fs.next();
+  next_char();
 
   // TODO: As of now regex literals perform no checks if the identifier in
   // front of the literal has an integer type or not, as of now we just assume
@@ -284,11 +284,11 @@ auto Lexer::literal_regex() -> Token
 
         // TODO: Take care of handling octal escape codes and other
       case none::g_backslash.identifier():
-        ss << m_fs.next();
+        ss << next_char();
         [[fallthrough]];
 
       default:
-        ss << m_fs.next();
+        ss << next_char();
         break;
     }
   }
@@ -311,7 +311,7 @@ auto Lexer::is_multi_symbol() -> TokenType
   // Refactor someday
   for(const auto multi : g_multi_symbols)
     if(character == multi.identifier().front()) {
-      m_fs.next();
+      next_char();
       ss << m_fs.current();
 
       if(!eol())
@@ -374,6 +374,32 @@ auto Lexer::symbol() -> Token
   return create_token(tokentype);
 }
 
+auto Lexer::next_char() const -> char
+{
+  m_fp.m_columno++;
+
+  return m_fs.next();
+}
+
+auto prev_char() const -> char
+{
+  m_fp.m_columno--;
+
+  return m_fs.prev();
+}
+
+//! Search till end of line and then quit
+auto Lexer::next_line() const -> void
+{
+  while(!m_fs.eos()) {
+    if(!eol()) {
+      next_char();
+    } else {
+      m_fp.m_columno = 0;
+      m_fp.m_lineno++;
+    }
+  }
+}
 auto Lexer::eol() const -> bool
 {
   return m_fs.current() == '\n';
@@ -389,7 +415,7 @@ auto Lexer::tokenize() -> TokenStream
   constexpr char double_quote{none::g_double_quote.identifier()};
   constexpr char slash{g_slash.identifier()};
 
-  for(; !m_fs.eos(); m_fs.next()) {
+  for(; !m_fs.eos(); next_char()) {
     const char character{m_fs.current()};
 
     // TODO: This should have its own function

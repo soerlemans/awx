@@ -12,7 +12,7 @@ struct FilePosition {
   std::size_t m_columno;
 
   // Constructors:
-  FilePosition() = default;
+  FilePosition();
   FilePosition(std::string t_path, std::string t_line, std::size_t t_lineno,
                std::size_t t_columnno);
 

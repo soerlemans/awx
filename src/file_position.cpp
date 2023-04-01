@@ -1,7 +1,11 @@
 #include "file_position.hpp"
 
+// STL Includes:
 #include <sstream>
 
+
+FilePosition::FilePosition(): m_path{""}, m_line{""}, m_lineno{0}, m_columno{0}
+{}
 
 // Its important to note that lines are zero indexed
 FilePosition::FilePosition(std::string t_path, std::string t_line,

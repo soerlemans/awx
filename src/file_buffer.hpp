@@ -11,6 +11,7 @@
 #include "file_position.hpp"
 #include "types.hpp"
 
+
 namespace fs = std::filesystem;
 
 class FileBuffer {
