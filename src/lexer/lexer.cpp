@@ -193,6 +193,8 @@ auto Lexer::handle_integer() -> Token
     if(std::isdigit(character)) {
       ss << m_fb.forward();
     } else if(character == g_dot.identifier()) {
+      ss << m_fb.character();
+
       // Handle float as a float
       return handle_float(ss.str(), true);
     } else {

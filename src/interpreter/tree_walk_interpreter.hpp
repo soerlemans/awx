@@ -18,7 +18,7 @@ class TreeWalkInterpreter : public NodeVisitor {
   private:
   template<typename T>
   using Store = std::map<std::string, T>;
-  using Any = std::variant<double, std::string>;
+  using Any = std::variant<bool, int, double, std::string>;
   // using Array = std::map<Any, Any>;
 
   //! Context contains the result of

@@ -37,6 +37,7 @@ class TreeWalkInterpreter : public NodeVisitor {
   //! Walk returns the updated context
   auto walk(node::NodePtr t_node) -> Context&;
   auto eval_condition(node::NodePtr t_node) -> bool;
+	auto double2str(double t_number) -> std::string;
 
   auto visit(node::control::If* t_if) -> void override;
   auto visit(node::control::While* t_while) -> void override;

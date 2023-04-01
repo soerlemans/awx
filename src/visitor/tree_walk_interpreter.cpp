@@ -2,7 +2,9 @@
 
 // STL Includes:
 #include <functional>
+#include <iomanip>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <tuple>
 
@@ -60,6 +62,18 @@ auto TreeWalkInterpreter::eval_condition(node::NodePtr t_node) -> bool
              context.m_result);
 
   return truthy;
+}
+
+auto TreeWalkInterpreter::double2str(const double t_number) -> std::string
+{
+  std::stringstream ss;
+
+  const auto precision{std::numeric_limits<decltype(t_number)>::digits10};
+  ss << std::setprecision(precision) << t_number;
+  std::cout << t_number << " " << std::setprecision(precision) << t_number
+            << '\n';
+
+  return ss.str();
 }
 
 auto TreeWalkInterpreter::visit(If* t_if) -> void
@@ -276,7 +290,31 @@ auto TreeWalkInterpreter::visit(Assignment* t_assignment) -> void
 }
 
 auto TreeWalkInterpreter::visit(Comparison* t_comparison) -> void
-{}
+{
+  auto lhs{walk(t_comparison->left())};
+  auto rhs{walk(t_comparison->right())};
+
+  switch(t_comparison->op()) {
+    case ComparisonOp::EQUAL:
+      std::visit(
+        Overload{[&](double t_left, double t_right) {
+                   m_context.m_result = (double)(t_left == t_right);
+                 },
+                 [&](double t_left, const std::string& t_right) {
+                   DBG_LOG(WARNING, "double: ", t_left, " str: ", t_right);
+                   m_context.m_result = (double)(double2str(t_left) == t_right);
+                 },
+                 [&](const std::string& t_left, double t_right) {
+                   DBG_LOG(WARNING, "str: ", t_left, " double", t_right);
+                   m_context.m_result = (double)(t_left == double2str(t_right));
+                 },
+                 [&](const std::string& t_left, const std::string& t_right) {
+                   m_context.m_result = (double)(t_left == t_right);
+                 }},
+        lhs.m_result, rhs.m_result);
+      break;
+  }
+}
 
 auto TreeWalkInterpreter::visit(Increment* t_increment) -> void
 {}
