@@ -23,11 +23,16 @@ using namespace node::operators;
 using namespace node::recipes;
 using namespace node::rvalue;
 
+// Overload pattern:
 //! Helper struct that selects correct lambda to execute in std::visit
 template<class... Ts>
-struct Oveload : Ts... {
+struct Overload : Ts... {
   using Ts::operator()...;
 };
+
+// Deduction guide for the struct to work
+template<class... Ts>
+Overload(Ts...) -> Overload<Ts...>;
 
 // Public Methods:
 auto TreeWalkInterpreter::walk(node::NodePtr t_node) -> Context&
@@ -285,38 +290,23 @@ auto TreeWalkInterpreter::visit(UnaryPrefix* t_unary_prefix) -> void
 {
   auto context{walk(t_unary_prefix->left())};
 
-  const auto visit{[&](auto&& t_lambda) {
-    std::visit(
-      [&](auto&& t_left) {
-        using T = decltype(t_left);
-        if constexpr(std::is_same<T, double>()) {
-          t_lambda(t_left);
-        } else {
-          // TODO: Think about how std::string should be handled
-        }
-      },
-      context.m_result);
-  }};
-
-  DBG_LOG(ERROR, "TEST");
   switch(t_unary_prefix->op()) {
     case UnaryPrefixOp::PLUS:
-      std::visit(Overloaded{[&](double t_left) {
-                            },
-                            [&](std::string& t_left) {
-                            }},
+      std::visit(Overload{[&](double t_left) {
+                            m_context.m_result = +t_left;
+                          },
+                          [](std::string& t_left) {
+                          }},
                  context.m_result);
-      visit([&](double t_left) {
-        DBG_LOG(ERROR, "+: ", +t_left);
-        m_context.m_result = +t_left;
-      });
       break;
 
     case UnaryPrefixOp::MINUS:
-      visit([&](double t_left) {
-        DBG_LOG(ERROR, "-: ", -t_left);
-        m_context.m_result = -t_left;
-      });
+      std::visit(Overload{[&](double t_left) {
+                            m_context.m_result = -t_left;
+                          },
+                          [](std::string& t_left) {
+                          }},
+                 context.m_result);
       break;
   }
 }
