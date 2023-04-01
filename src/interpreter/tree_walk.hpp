@@ -28,6 +28,7 @@ class TreeWalkInterpreter : public NodeVisitor {
     Any m_result;
   } m_context;
 
+  // Store<Any> m_local_scope;
   Store<Any> m_variables;
   Store<node::NodePtr> m_functions;
 

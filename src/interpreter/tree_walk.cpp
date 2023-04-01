@@ -114,13 +114,41 @@ auto TreeWalkInterpreter::visit(Return* t_return) -> void
 {}
 
 auto TreeWalkInterpreter::visit(Function* t_fn) -> void
-{}
+{
+  // auto name{t_fn->name()};
+
+  // m_functions[name] = t_fn;
+	// A variable can be scoped by deleting it at the end of a tree walk
+}
 
 auto TreeWalkInterpreter::visit(FunctionCall* t_fn_call) -> void
 {}
 
 auto TreeWalkInterpreter::visit(BuiltinFunction* t_fn) -> void
-{}
+{
+  // TODO: Convert each of these to a case and call
+  // DEFINE_RESERVED(g_atan2,    "atan2",    BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_close,    "close",    BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_cos,      "cos",      BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_exp,      "exp",      BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_gsub,     "gsub",     BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_int,      "int",      BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_index,    "index",    BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_length,   "length",   BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_log,      "log",      BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_match,    "match",    BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_rand,     "rand",     BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_sin,      "sin",      BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_split,    "split",    BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_sprintf,  "sprintf",  BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_sqrt,     "sqrt",     BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_srand,    "srand",    BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_sub,      "sub",      BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_substr,   "substr",   BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_system,   "system",   BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_tolower,  "tolower",  BUILTIN_FUNCTION);
+  // DEFINE_RESERVED(g_toupper,  "toupper",  BUILTIN_FUNCTION);
+}
 
 auto TreeWalkInterpreter::visit(SpecialPattern* t_pattern) -> void
 {}
