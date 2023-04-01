@@ -24,12 +24,11 @@ auto Lexer::syntax_error(std::string_view t_msg) const -> void
   // properly adjusted
 
   // Throws a SyntaxError with a message
-  // FIXME: Syntax error now uses the file_position of the previous token
-  throw SyntaxError{std::string{t_msg}, m_fs.current().file_position()};
+  throw SyntaxError{std::string{t_msg}, m_fb.file_position()};
 }
 
 // Public constructors:
-Lexer::Lexer(FileStream& t_filestream): m_fs{t_filestream}
+Lexer::Lexer(FileBuffer& t_fb): m_fb{t_fb}
 {}
 
 // Public methods:
@@ -72,16 +71,16 @@ auto Lexer::identifier() -> Token
     return std::isalnum(t_char) || t_char == '_';
   };
 
-  while(lambda(m_fs.current()) && !eol())
-    ss << next_char();
+  while(lambda(m_fb.character()) && !m_fb.eol())
+    ss << m_fb.forward();
 
   // Function names are instantly followed by a '('
   // TODO: Throw an error if we find a space and then '('
-  const bool is_fn_id = m_fs.current() == g_paren_open.identifier();
+  const bool is_fn_id = m_fb.character() == g_paren_open.identifier();
 
   // We go back one since we add till we find a character that does not
   // Match so we have to unget it
-  m_fs.prev();
+  m_fb.backward();
 
   // Verify if it is a keyword or not
   if(const auto tokentype{is_keyword(ss.str())}; tokentype != TokenType::NONE) {
@@ -114,13 +113,13 @@ auto Lexer::is_hex_literal() -> bool
 
   // Octal literals are not specified in the POSIX AWK standard
   // So just treat leading zeroes as as normal
-  if(next_char() == '0' && m_fs.current() == 'x') {
-    next_char(); // Discard 'x'
+  if(m_fb.forward() == '0' && m_fb.character() == 'x') {
+    m_fb.forward(); // Discard 'x'
 
     is_hex = true;
   } else {
     // If we just have a zero we should go back to not discard the zero
-    m_fs.prev();
+    m_fb.backward();
   }
 
   return is_hex;
@@ -130,13 +129,13 @@ auto Lexer::handle_hex() -> Token
 {
   std::stringstream ss;
 
-  while(!eol()) {
-    const char character{m_fs.current()};
+  while(!m_fb.eol()) {
+    const char character{m_fb.character()};
 
     if(std::isxdigit(character)) {
-      ss << next_char();
+      ss << m_fb.forward();
     } else {
-      m_fs.prev();
+      m_fb.backward();
       break;
     }
   }
@@ -159,13 +158,13 @@ auto Lexer::handle_float(std::string_view t_str, bool t_dot) -> Token
   ss << t_str;
 
   if(t_dot)
-    next_char();
+    m_fb.forward();
 
-  while(!eol()) {
-    const char character{m_fs.current()};
+  while(!m_fb.eol()) {
+    const char character{m_fb.character()};
 
     if(std::isdigit(character)) {
-      ss << next_char();
+      ss << m_fb.forward();
     } else if(character == g_dot.identifier()) {
       if(t_dot) {
         syntax_error("Cant have a second '.' in a float literal.");
@@ -173,7 +172,7 @@ auto Lexer::handle_float(std::string_view t_str, bool t_dot) -> Token
         t_dot = true;
       }
     } else {
-      m_fs.prev();
+      m_fb.backward();
       break;
     }
   }
@@ -188,16 +187,16 @@ auto Lexer::handle_integer() -> Token
 
   std::stringstream ss;
 
-  while(!eol()) {
-    const char character{m_fs.current()};
+  while(!m_fb.eol()) {
+    const char character{m_fb.character()};
 
     if(std::isdigit(character)) {
-      ss << next_char();
+      ss << m_fb.forward();
     } else if(character == g_dot.identifier()) {
       // Handle float as a float
       return handle_float(ss.str(), true);
     } else {
-      m_fs.prev();
+      m_fb.backward();
       break;
     }
   }
@@ -228,11 +227,11 @@ auto Lexer::literal_string() -> Token
   std::stringstream ss;
 
   // Discard starting " character
-  next_char();
+  m_fb.forward();
 
   bool quit{false};
-  while(!quit && !eol()) {
-    const char character{m_fs.current()};
+  while(!quit && !m_fb.eol()) {
+    const char character{m_fb.character()};
 
     switch(character) {
       case g_double_quote.identifier():
@@ -240,11 +239,11 @@ auto Lexer::literal_string() -> Token
         break;
 
       case g_backslash.identifier():
-        ss << next_char();
+        ss << m_fb.forward();
         [[fallthrough]];
 
       default:
-        ss << next_char();
+        ss << m_fb.forward();
         break;
     }
   }
@@ -260,15 +259,15 @@ auto Lexer::literal_regex() -> Token
   std::stringstream ss;
 
   // Discard starting / character
-  next_char();
+  m_fb.forward();
 
   // TODO: As of now regex literals perform no checks if the identifier in
   // front of the literal has an integer type or not, as of now we just assume
   // it is a regex expression we should also throw an error or assume a
-  // division if we do not find a corresponding / before the EOL
+  // division if we do not find a corresponding / before the EOL.
   bool quit{false};
-  while(!quit && !eol()) {
-    const char character{m_fs.current()};
+  while(!quit && !m_fb.eol()) {
+    const char character{m_fb.character()};
 
     switch(character) {
       case g_newline.identifier():
@@ -281,14 +280,13 @@ auto Lexer::literal_regex() -> Token
         quit = true;
         break;
 
-
         // TODO: Take care of handling octal escape codes and other
       case none::g_backslash.identifier():
-        ss << next_char();
+        ss << m_fb.forward();
         [[fallthrough]];
 
       default:
-        ss << next_char();
+        ss << m_fb.forward();
         break;
     }
   }
@@ -303,7 +301,7 @@ auto Lexer::is_multi_symbol() -> TokenType
 
   std::stringstream ss;
   TokenType tokentype{TokenType::NONE};
-  const char character{m_fs.current()};
+  const char character{m_fb.character()};
 
   ss << character;
 
@@ -311,10 +309,10 @@ auto Lexer::is_multi_symbol() -> TokenType
   // Refactor someday
   for(const auto multi : g_multi_symbols)
     if(character == multi.identifier().front()) {
-      next_char();
-      ss << m_fs.current();
+      m_fb.forward();
+      ss << m_fb.character();
 
-      if(!eol())
+      if(!m_fb.eol())
         for(const auto multi : g_multi_symbols)
           if(ss.str() == multi.identifier()) {
             tokentype = TokenType{multi};
@@ -326,7 +324,7 @@ auto Lexer::is_multi_symbol() -> TokenType
       // If the next character is not part of
       // A multi symbol just undo the forward
       if(tokentype == TokenType::NONE)
-        m_fs.prev();
+        m_fb.backward();
 
       // We compare against all reserverd multi symbols in the second loop
       // So there is no need to iterate againt after we found our first match
@@ -340,7 +338,7 @@ auto Lexer::is_single_symbol() -> TokenType
 {
   using namespace reserved::symbols;
 
-  const char character{m_fs.current()};
+  const char character{m_fb.character()};
   TokenType tokentype{TokenType::NONE};
 
   for(const auto single : g_single_symbols)
@@ -366,43 +364,12 @@ auto Lexer::symbol() -> Token
 
   // Throw if it is neither
   if(tokentype == TokenType::NONE) {
-    std::cout << "Token Error: " << m_fs.current() << '\n';
+    std::cout << "Token Error: " << m_fb.character() << '\n';
     syntax_error("Character encountered is not valid AWX!");
   }
 
   // Add the symbol if we recognize it
   return create_token(tokentype);
-}
-
-auto Lexer::next_char() const -> char
-{
-  m_fp.m_columno++;
-
-  return m_fs.next();
-}
-
-auto prev_char() const -> char
-{
-  m_fp.m_columno--;
-
-  return m_fs.prev();
-}
-
-//! Search till end of line and then quit
-auto Lexer::next_line() const -> void
-{
-  while(!m_fs.eos()) {
-    if(!eol()) {
-      next_char();
-    } else {
-      m_fp.m_columno = 0;
-      m_fp.m_lineno++;
-    }
-  }
-}
-auto Lexer::eol() const -> bool
-{
-  return m_fs.current() == '\n';
 }
 
 // TODO: refactor this
@@ -415,47 +382,48 @@ auto Lexer::tokenize() -> TokenStream
   constexpr char double_quote{none::g_double_quote.identifier()};
   constexpr char slash{g_slash.identifier()};
 
-  for(; !m_fs.eos(); next_char()) {
-    const char character{m_fs.current()};
+  for(; !m_fb.eof(); m_fb.next()) {
+    for(; !m_fb.eol(); m_fb.forward()) {
+      const char character{m_fb.character()};
 
-    // TODO: This should have its own function
-    const auto lambda{[&]() -> bool {
-      const auto last_tokentype{m_ts.back().type()};
-      return character == slash && !m_ts.empty()
-             && !tokentype::is_int(last_tokentype)
-             && last_tokentype != TokenType::IDENTIFIER;
-    }};
+      // TODO: This should have its own function
+      const auto lambda{[&]() -> bool {
+        const auto last_tokentype{m_ts.back().type()};
+        return character == slash && !m_ts.empty()
+               && !tokentype::is_int(last_tokentype)
+               && last_tokentype != TokenType::IDENTIFIER;
+      }};
 
-    if(std::isspace(character)) {
-      // Just ignore whitespace, but do not ignore newlines
-      if(character == g_newline.identifier()) {
-        DBG_LOG(INFO, "NEWLINE");
+      if(std::isspace(character)) {
+        // Just ignore whitespace, but do not ignore newlines
+        if(character == g_newline.identifier()) {
+          DBG_LOG(INFO, "NEWLINE");
+          m_ts.push_back(create_token(TokenType::NEWLINE));
+        }
+      } else if(character == '#') {
+        // '#' are used for comments.
+        // If we just skip to the next line we ignore the \n at the end, so we
+        // Must add a NEWLINE explicitly!
+        DBG_LOG(INFO, "INSERTING NEWLINE");
         m_ts.push_back(create_token(TokenType::NEWLINE));
-      }
-    } else if(character == '#') {
-      // '#' are used for comments.
-      // If we just skip to the next line we ignore the \n at the end, so we
-      // Must add a NEWLINE explicitly!
-      DBG_LOG(INFO, "INSERTING NEWLINE");
-      m_ts.push_back(create_token(TokenType::NEWLINE));
 
-      // Skip to next line
-      break;
-    } else if(std::isalpha(character)) {
-      m_ts.push_back(identifier());
-    } else if(std::isdigit(character)) {
-      m_ts.push_back(literal_numeric());
-    } else if(character == double_quote) {
-      m_ts.push_back(literal_string());
-    } else if(lambda()) {
-      m_ts.push_back(literal_regex());
-    } else {
-      m_ts.push_back(symbol());
+        // Skip to next line
+        break;
+      } else if(std::isalpha(character)) {
+        m_ts.push_back(identifier());
+      } else if(std::isdigit(character)) {
+        m_ts.push_back(literal_numeric());
+      } else if(character == double_quote) {
+        m_ts.push_back(literal_string());
+      } else if(lambda()) {
+        m_ts.push_back(literal_regex());
+      } else {
+        m_ts.push_back(symbol());
+      }
     }
   }
-}
 
-DBG_PRINTLN();
+  DBG_PRINTLN();
 
-return m_ts;
+  return m_ts;
 }

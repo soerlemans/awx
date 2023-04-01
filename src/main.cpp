@@ -27,10 +27,8 @@ enum ExitCode {
 // NOLINTBEGIN
 // Parse command line arguments and store them in a configuration class
 // Warning: This is friend of the ConfigStore class
-auto parse_args(const int t_argc, char* t_argv[]) -> int
+auto parse_args(Config& t_config, const int t_argc, char* t_argv[]) -> int
 {
-  auto& config{Config::get_instance()};
-
   CLI::App app{"AWX stands for AWK With Extensions."};
 
   std::string filename;
@@ -39,23 +37,21 @@ auto parse_args(const int t_argc, char* t_argv[]) -> int
   CLI11_PARSE(app, t_argc, t_argv);
 
   std::cout << filename << std::endl;
-  config.add_file(fs::path{filename});
+  t_config.m_paths.push_back(filename);
 
   return ExitCode::OK;
 }
 // NOLINTEND
 
-auto run() -> void
+auto run(Config& t_config) -> void
 {
-  auto& config{Config::get_instance()};
-
   // TODO: Remove this is temporary testing code
-  if(config.get_files().empty())
+  if(t_config.m_paths.empty())
     return;
 
-  FileStream filestream{config.get_files().front()};
+  FileBuffer fb{t_config.m_paths.front()};
 
-  lexer::Lexer lexer{filestream};
+  lexer::Lexer lexer{fb};
   token::TokenStream tokenstream{lexer.tokenize()};
 
   parser::AwkParser parser{tokenstream};
@@ -73,14 +69,16 @@ auto run() -> void
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
-  parse_args(t_argc, t_argv);
+  Config config{AwxMode::AWK};
+
+  parse_args(config, t_argc, t_argv);
 
   // Set loglevel for now for debugging purposes
   DBG_SET_LOGLEVEL(VERBOSE);
   DBG_PRINTLN("#== BEGIN ==#");
 
   try {
-    run();
+    run(config);
   } catch(std::exception& e) {
     std::cerr << '\n' << "EXCEPTION OCCURED - \n" << e.what() << '\n';
 
