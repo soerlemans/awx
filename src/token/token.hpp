@@ -41,22 +41,16 @@ class Token {
 
   explicit Token(TokenType t_type, const FilePosition& t_file_pos);
   explicit Token(TokenType t_type, TokenValue t_value,
-                 const FilePosition& t_file_pos)
-    : m_type{t_type}, m_value{t_value}, m_file_pos{t_file_pos}
-  {}
+                 const FilePosition& t_file_pos);
 
   auto type() const -> TokenType;
+
+  auto value() const -> TokenValue;
 
   template<typename T>
   auto value() const -> T
   {
     return std::get<T>(m_value);
-  }
-
-  template<typename T>
-  auto get() const -> std::tuple<TokenType, TokenValue>
-  {
-    return {m_type, std::get<T>(m_value)};
   }
 
   auto file_position() const -> const FilePosition&;
