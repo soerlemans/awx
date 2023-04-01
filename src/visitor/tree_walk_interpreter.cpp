@@ -42,9 +42,9 @@ auto TreeWalkInterpreter::walk(node::NodePtr t_node) -> Context&
   return m_context;
 }
 
-auto TreeWalkInterpreter::visit(If* t_if) -> void
+auto TreeWalkInterpreter::eval_condition(node::NodePtr t_node) -> bool
 {
-  auto& context{walk(t_if->condition())};
+  auto& context{walk(t_node)};
 
   bool truthy{false};
   std::visit(Overload{[&](double t_val) {
@@ -59,7 +59,12 @@ auto TreeWalkInterpreter::visit(If* t_if) -> void
                       }},
              context.m_result);
 
-  if(truthy) {
+  return truthy;
+}
+
+auto TreeWalkInterpreter::visit(If* t_if) -> void
+{
+  if(eval_condition(t_if->condition())) {
     walk(t_if->then());
   } else {
     // TODO: Check for nullptr, We should probably make If::m_alt point to a Nil
@@ -71,7 +76,11 @@ auto TreeWalkInterpreter::visit(If* t_if) -> void
 }
 
 auto TreeWalkInterpreter::visit(While* t_while) -> void
-{}
+{
+  while(eval_condition(t_while->condition())) {
+    eval_condition(t_while->body());
+  }
+}
 
 auto TreeWalkInterpreter::visit(For* t_for) -> void
 {}
