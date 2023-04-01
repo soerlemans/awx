@@ -66,11 +66,15 @@ auto TreeWalkInterpreter::visit(Recipe* t_recipe) -> void
 auto TreeWalkInterpreter::visit(Print* t_print) -> void
 {
   if(const auto& params{t_print->params()}; params) {
-    char separator;
+    char separator = '\0';
     for(const auto& param : *params) {
       std::visit(
         [&](auto&& t_result) {
-          std::cout << separator << std::forward<decltype(t_result)>(t_result);
+          if(separator) {
+            std::cout << separator;
+          }
+
+          std::cout << std::forward<decltype(t_result)>(t_result);
         },
         walk(param).m_result);
       separator = ' ';
@@ -91,8 +95,7 @@ auto TreeWalkInterpreter::visit(Redirection* t_redirection) -> void
 
 auto TreeWalkInterpreter::visit(Array* t_array) -> void
 {
-  auto& name{m_context.m_name};
-  auto& result{m_context.m_result};
+  auto& [name, result] = m_context;
 
   // As result set the name and current value of the variable.
   name = t_array->name();
@@ -104,8 +107,7 @@ auto TreeWalkInterpreter::visit(FieldReference* t_fr) -> void
 
 auto TreeWalkInterpreter::visit(Variable* t_var) -> void
 {
-  auto& name{m_context.m_name};
-  auto& result{m_context.m_result};
+  auto& [name, result] = m_context;
 
   // As result set the name and current value of the variable
   name = t_var->name();

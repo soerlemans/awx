@@ -16,12 +16,12 @@ namespace visitor {
  */
 class TreeWalkInterpreter : public NodeVisitor {
   private:
-  // TODO: have Any support AWK arrays (can be represented as an std::map)
   template<typename T>
   using Store = std::map<std::string, T>;
   using Any = std::variant<bool, int, double, std::string>;
+  // using Array = std::map<Any, Any>;
 
-  //!
+  //! Context contains the result of
   struct Context {
     // Sometimes we need the name of a variable or function
     std::string m_name;
@@ -34,7 +34,7 @@ class TreeWalkInterpreter : public NodeVisitor {
   public:
   TreeWalkInterpreter() = default;
 
-  //! Walk returns the m_result
+  //! Walk returns the updated context
   auto walk(node::NodePtr t_node) -> Context&;
 
   auto visit(node::control::If* t_if) -> void override;
