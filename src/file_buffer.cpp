@@ -38,11 +38,6 @@ auto FileBuffer::load() -> void
   }
 }
 
-auto FileBuffer::path() const -> fs::path
-{
-  return m_path;
-}
-
 auto FileBuffer::next() const -> std::string
 {
   // Changing lines resets the column number
@@ -90,16 +85,6 @@ auto FileBuffer::character() const -> char
   return m_filebuffer[m_lineno][m_columnno];
 }
 
-auto FileBuffer::lineno() const -> std::size_t
-{
-  return m_lineno;
-}
-
-auto FileBuffer::columnno() const -> std::size_t
-{
-  return m_columnno;
-}
-
 auto FileBuffer::file_position() const -> FilePosition
 {
   // Return the current position in the filebuffer as a FilePosition struct
@@ -119,18 +104,4 @@ auto FileBuffer::eol() const -> bool
 auto FileBuffer::eof() const -> bool
 {
   return m_lineno >= size();
-}
-
-auto FileBuffer::print() const -> void
-{
-  std::cout << "FileBuffer - ";
-
-  for(; !this->eof(); this->next())
-    std::cout << "Line(" << this->lineno() << "): " << this->line() << '\n';
-}
-
-// Operators:
-auto FileBuffer::operator[](std::size_t t_index) -> std::string&
-{
-  return m_filebuffer[t_index];
 }
