@@ -11,12 +11,13 @@ class If : public NodeInterface {
   private:
   NodePtr m_condition;
   NodePtr m_then;
-  NodePtr m_else;
+  NodePtr m_alt;
 
   public:
   If(NodePtr&& t_condition, NodePtr&& t_then);
   If(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else);
 
+  auto condition() -> NodePtr&;
   auto then() -> NodePtr&;
   auto alt() -> NodePtr&; // Alternative is a synonym for else
 
