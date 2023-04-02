@@ -7,15 +7,17 @@
 #include <iostream>
 #include <limits>
 #include <sstream>
+#include <stdexcept>
 #include <tuple>
 
 // Includes:
 #include "../debug/log.hpp"
 #include "../node/include.hpp"
+#include "return_exception.hpp"
 
 
 // Using statements:
-using namespace visitor;
+using namespace interpreter;
 
 using namespace node;
 using namespace node::control;
@@ -47,7 +49,7 @@ auto TreeWalkInterpreter::walk(node::NodePtr t_node) -> Context&
 
 auto TreeWalkInterpreter::eval_condition(node::NodePtr t_node) -> bool
 {
-  auto& context{walk(t_node)};
+  auto context{walk(t_node)};
 
   bool truthy{false};
   std::visit(Overload{[&](double t_val) {
@@ -75,6 +77,7 @@ auto TreeWalkInterpreter::double2str(const double t_number) -> std::string
   return ss.str();
 }
 
+// Visit Methods:
 auto TreeWalkInterpreter::visit(If* t_if) -> void
 {
   if(eval_condition(t_if->condition())) {
@@ -111,18 +114,57 @@ auto TreeWalkInterpreter::visit(ForIn* t_for) -> void
 {}
 
 auto TreeWalkInterpreter::visit(Return* t_return) -> void
-{}
+{
+  if(auto ptr{t_return->expr()}; ptr) {
+    walk(ptr);
+  } else {
+    // Just set context to empty
+    m_context.m_name.clear();
+    m_context.m_result = 0.0;
+  }
+
+  // Unwind the stack
+  throw ReturnException{};
+}
 
 auto TreeWalkInterpreter::visit(Function* t_fn) -> void
 {
-  // auto name{t_fn->name()};
+  std::string name{t_fn->name()};
 
-  // m_functions[name] = t_fn;
-	// A variable can be scoped by deleting it at the end of a tree walk
+  // FIXME: For now we will completely copy the function (this is functional but
+  // bad performance wise performance wise)
+  m_functions[name] = std::make_shared<Function>(*t_fn);
+
+  // A variable can be scoped by creating a constructor and destructor that sets
+  // and removes the variable
 }
 
 auto TreeWalkInterpreter::visit(FunctionCall* t_fn_call) -> void
-{}
+{
+  std::string name{t_fn_call->name()};
+
+  // auto& function{m_functions[name]};
+  if(!m_functions.count(name)) {
+    // TODO: Create separate runtime exception type
+    throw std::runtime_error{"Calling to non existent function"};
+  }
+
+  auto& fn{m_functions[name]};
+
+  // Call function and catch Return exception if thrown
+  try {
+    // TODO: Bring parameters into scope for function execution
+
+    walk(fn->body());
+
+    // If there was no return statement in the body of the function we have to
+    // cleanup the context
+    m_context.m_name.clear();
+    m_context.m_result = "";
+
+  } catch(ReturnException& e) {
+  }
+}
 
 auto TreeWalkInterpreter::visit(BuiltinFunction* t_fn) -> void
 {
@@ -163,6 +205,7 @@ auto TreeWalkInterpreter::visit(Recipe* t_recipe) -> void
 
 auto TreeWalkInterpreter::visit(Print* t_print) -> void
 {
+  // FIXME: This acts differently from when you call gawk or mawk
   if(const auto& params{t_print->params()}; params) {
     char separator = '\0';
     for(const auto& param : *params) {

@@ -1,10 +1,17 @@
 #!/usr/bin/env -S awk -f
 
 
-BEGIN {
-		getline var
+function test () {
+		# print "printing"
 
-		print "var:", var
-		print "var + var:", var + var
+		return 10;
+}
+
+function noreturn(){
+		addition = 20
+}
+
+BEGIN {
+		print("Results:", test(), noreturn(), 30)
 }
 

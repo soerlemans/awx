@@ -5,32 +5,31 @@
 #include <map>
 #include <variant>
 
-// Local Includes:
+// Includes:
 #include "../visitor/node_visitor.hpp"
 
+// Local Includes:
+#include "context.hpp"
+#include "return_exception.hpp"
 
-namespace visitor {
+
+namespace interpreter {
 /*! Evaluates each node and returns a result
  * TODO: Have NodeVisitor be a template class and have each Node accept a
  * pointer to NodeVisitor<T> this way we can
  */
-class TreeWalkInterpreter : public NodeVisitor {
+class TreeWalkInterpreter : public visitor::NodeVisitor {
   private:
   template<typename T>
   using Store = std::map<std::string, T>;
-  using Any = std::variant<double, std::string>;
   // using Array = std::map<Any, Any>;
-
-  //! Context contains the result of
-  struct Context {
-    // Sometimes we need the name of a variable or function
-    std::string m_name;
-    Any m_result;
-  } m_context;
 
   // Store<Any> m_local_scope;
   Store<Any> m_variables;
-  Store<node::NodePtr> m_functions;
+  Store<node::functions::NodeFuncPtr> m_functions;
+
+  //! Context gets set when an expression is evaluated
+  Context m_context;
 
   public:
   TreeWalkInterpreter() = default;
@@ -40,6 +39,7 @@ class TreeWalkInterpreter : public NodeVisitor {
   auto eval_condition(node::NodePtr t_node) -> bool;
   auto double2str(double t_number) -> std::string;
 
+  // Visit Methods:
   auto visit(node::control::If* t_if) -> void override;
   auto visit(node::control::While* t_while) -> void override;
   auto visit(node::control::For* t_for) -> void override;
@@ -92,6 +92,6 @@ class TreeWalkInterpreter : public NodeVisitor {
 
   ~TreeWalkInterpreter() override = default;
 };
-} // namespace visitor
+} // namespace interpreter
 
 #endif // TREE_WALK_HPP
