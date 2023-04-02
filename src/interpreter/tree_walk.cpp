@@ -52,17 +52,19 @@ auto TreeWalkInterpreter::eval_condition(node::NodePtr t_node) -> bool
   auto context{walk(t_node)};
 
   bool truthy{false};
-  std::visit(Overload{[&](double t_val) {
-                        if(t_val) {
-                          truthy = true;
-                        }
-                      },
-                      [&](std::string t_val) {
-                        if(!t_val.empty()) {
-                          truthy = true;
-                        }
-                      }},
-             context.m_result);
+  const auto lambda_double{[&](double t_val) {
+    if(t_val) {
+      truthy = true;
+    }
+  }};
+
+  const auto lambda_str{[&](std::string t_val) {
+    if(!t_val.empty()) {
+      truthy = true;
+    }
+  }};
+
+  std::visit(Overload{lambda_double, lambda_str}, context.m_result);
 
   return truthy;
 }
@@ -166,7 +168,7 @@ auto TreeWalkInterpreter::visit(FunctionCall* t_fn_call) -> void
   }
 }
 
-auto TreeWalkInterpreter::visit(BuiltinFunction* t_fn) -> void
+auto TreeWalkInterpreter::visit(BuiltinFunctionCall* t_fn) -> void
 {
   // TODO: Convert each of these to a case and call
   // DEFINE_RESERVED(g_atan2,    "atan2",    BUILTIN_FUNCTION);

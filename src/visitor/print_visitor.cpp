@@ -77,7 +77,7 @@ auto PrintVisitor::visit(node::functions::FunctionCall* t_fn_call) -> void
   }
 }
 
-auto PrintVisitor::visit(node::functions::BuiltinFunction* t_fn) -> void
+auto PrintVisitor::visit(node::functions::BuiltinFunctionCall* t_fn) -> void
 {
   Printer printer{m_counter};
 
@@ -333,7 +333,7 @@ auto PrintVisitor::visit(node::operators::UnaryPrefix* t_unary_prefix) -> void
   printer.print("UNARY PREFIX");
   // printer.print("| OP: ");
 
-	// TODO: Implement plus or minus printing
+  // TODO: Implement plus or minus printing
 
   // Visit the unary expression
   t_unary_prefix->left()->accept(this);

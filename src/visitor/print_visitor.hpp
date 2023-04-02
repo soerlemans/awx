@@ -71,7 +71,7 @@ class PrintVisitor : public NodeVisitor {
 
   auto visit(node::functions::Function* t_fn) -> void override;
   auto visit(node::functions::FunctionCall* t_fn_call) -> void override;
-  auto visit(node::functions::BuiltinFunction* t_fn) -> void override;
+  auto visit(node::functions::BuiltinFunctionCall* t_fn) -> void override;
 
   auto visit(node::recipes::SpecialPattern* t_pattern) -> void override;
   auto visit(node::recipes::Recipe* t_recipe) -> void override;

@@ -9,9 +9,9 @@
 namespace node::functions {
 // Forward Declarations
 class Function;
-class BuiltinFunction;
 
 class FunctionCall;
+class BuiltinFunctionCall;
 
 // Aliases:
 using NodeFuncPtr = std::shared_ptr<Function>;

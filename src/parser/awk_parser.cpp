@@ -185,8 +185,19 @@ auto AwkParser::function_call() -> NodePtr
   NodePtr node;
 
   switch(const auto token{next()}; token.type()) {
-    case TokenType::BUILTIN_FUNCTION:
-      [[fallthrough]];
+    case TokenType::BUILTIN_FUNCTION: {
+      expect(TokenType::PAREN_OPEN, "(");
+      NodeListPtr args{expr_list_opt()};
+      expect(TokenType::PAREN_CLOSE, ")");
+
+      auto name{token.value<std::string>()};
+      DBG_TRACE_PRINT(INFO, "Found a BUILTIN FUNCTION CALL: ", name);
+
+      node =
+        std::make_shared<BuiltinFunctionCall>(std::move(name), std::move(args));
+      break;
+    }
+
     case TokenType::FUNCTION_IDENTIFIER: {
       expect(TokenType::PAREN_OPEN, "(");
       NodeListPtr args{expr_list_opt()};

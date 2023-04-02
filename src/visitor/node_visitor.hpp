@@ -23,7 +23,7 @@ class NodeVisitor {
 
   virtual auto visit(node::functions::Function* t_fn) -> void = 0;
   virtual auto visit(node::functions::FunctionCall* t_fn_call) -> void = 0;
-  virtual auto visit(node::functions::BuiltinFunction* t_fn) -> void = 0;
+  virtual auto visit(node::functions::BuiltinFunctionCall* t_fn) -> void = 0;
 
   virtual auto visit(node::recipes::SpecialPattern* t_pattern) -> void = 0;
   virtual auto visit(node::recipes::Recipe* t_recipe) -> void = 0;
