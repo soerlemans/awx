@@ -47,7 +47,7 @@ auto TreeWalkInterpreter::walk(node::NodePtr t_node) -> Context&
   return m_context;
 }
 
-auto TreeWalkInterpreter::eval_condition(node::NodePtr t_node) -> bool
+auto TreeWalkInterpreter::eval_bool(node::NodePtr t_node) -> bool
 {
   auto context{walk(t_node)};
 
@@ -79,10 +79,31 @@ auto TreeWalkInterpreter::double2str(const double t_number) -> std::string
   return ss.str();
 }
 
+auto TreeWalkInterpreter::set_variable(const std::string t_name,
+                                       const Any t_variable) -> void
+{
+  if(!m_scope.empty() && m_scope.top().count(t_name)) {
+    auto& variables{m_scope.top()};
+    variables[t_name] = t_variable;
+  } else {
+    m_globals[t_name] = t_variable;
+  }
+}
+
+auto TreeWalkInterpreter::get_variable(const std::string t_name) -> Any
+{
+  if(!m_scope.empty() && m_scope.top().count(t_name)) {
+    auto& variables{m_scope.top()};
+    return variables[t_name];
+  } else {
+    return m_globals[t_name];
+  }
+}
+
 // Visit Methods:
 auto TreeWalkInterpreter::visit(If* t_if) -> void
 {
-  if(eval_condition(t_if->condition())) {
+  if(eval_bool(t_if->condition())) {
     walk(t_if->then());
   } else {
     // TODO: Check for nullptr, We should probably make If::m_alt point to a Nil
@@ -95,8 +116,8 @@ auto TreeWalkInterpreter::visit(If* t_if) -> void
 
 auto TreeWalkInterpreter::visit(While* t_while) -> void
 {
-  while(eval_condition(t_while->condition())) {
-    eval_condition(t_while->body());
+  while(eval_bool(t_while->condition())) {
+    eval_bool(t_while->body());
   }
 }
 
@@ -105,7 +126,7 @@ auto TreeWalkInterpreter::visit(For* t_for) -> void
   // We dont do anything with the result of the init expression
   walk(t_for->init());
 
-  while(eval_condition(t_for->condition())) {
+  while(eval_bool(t_for->condition())) {
     walk(t_for->body());
 
     walk(t_for->expr());
@@ -153,19 +174,38 @@ auto TreeWalkInterpreter::visit(FunctionCall* t_fn_call) -> void
 
   auto& fn{m_functions[name]};
 
+  Store<Any> temp;
+  auto& args{*t_fn_call->args()};
+  auto iter{args.begin()};
+  for(auto& param : *fn->params()) {
+    if(iter == args.end()) {
+      // TODO: Error handling, too little arguments
+    }
+
+    auto& name{walk(param).m_name};
+    auto& result{walk(*iter).m_result};
+    temp[name] = result;
+    iter++;
+  }
+  m_scope.push(std::move(temp));
+
+  if(iter != args.end()) {
+    // TODO: Error handling, too many arguments
+  }
+
   // Call function and catch Return exception if thrown
   try {
-    // TODO: Bring parameters into scope for function execution
-
     walk(fn->body());
 
     // If there was no return statement in the body of the function we have to
     // cleanup the context
     m_context.m_name.clear();
     m_context.m_result = "";
-
   } catch(ReturnException& e) {
   }
+
+  // Clear thescope
+  m_scope.pop();
 }
 
 auto TreeWalkInterpreter::visit(BuiltinFunctionCall* t_fn) -> void
@@ -235,15 +275,13 @@ auto TreeWalkInterpreter::visit(Printf* t_printf) -> void
 
 auto TreeWalkInterpreter::visit(Getline* t_getline) -> void
 {
-  auto [name, result] = walk(t_getline->var());
-
-  auto& variable{m_variables[name]};
+  auto& [name, result] = walk(t_getline->var());
 
   // Get input
   std::string input;
   std::cin >> input;
 
-  variable = input;
+  set_variable(name, input);
 }
 
 auto TreeWalkInterpreter::visit(Redirection* t_redirection) -> void
@@ -251,11 +289,9 @@ auto TreeWalkInterpreter::visit(Redirection* t_redirection) -> void
 
 auto TreeWalkInterpreter::visit(Array* t_array) -> void
 {
-  auto& [name, result] = m_context;
+  const auto& result = m_context.m_result;
 
-  // As result set the name and current value of the variable.
-  name = t_array->name();
-  result = m_variables[name];
+  set_variable(t_array->name(), result);
 }
 
 auto TreeWalkInterpreter::visit(FieldReference* t_fr) -> void
@@ -263,16 +299,14 @@ auto TreeWalkInterpreter::visit(FieldReference* t_fr) -> void
 
 auto TreeWalkInterpreter::visit(Variable* t_var) -> void
 {
-  auto& [name, result] = m_context;
+  const auto& result = m_context.m_result;
 
-  // As result set the name and current value of the variable
-  name = t_var->name();
-  result = m_variables[name];
+  set_variable(t_var->name(), result);
 }
 
 auto TreeWalkInterpreter::visit(Float* t_float) -> void
 {
-  auto& result{m_context.m_result};
+  auto& result = m_context.m_result;
 
   result = t_float->get();
 }
@@ -348,8 +382,6 @@ auto TreeWalkInterpreter::visit(Assignment* t_assignment) -> void
   const auto lhs{walk(t_assignment->left())};
   auto rhs{walk(t_assignment->right())};
 
-  auto& variable{m_variables[lhs.m_name]};
-
   switch(const auto op{t_assignment->op()}; op) {
     case AssignmentOp::POWER: {
       break;
@@ -377,7 +409,7 @@ auto TreeWalkInterpreter::visit(Assignment* t_assignment) -> void
     }
 
     case AssignmentOp::REGULAR: {
-      variable = rhs.m_result;
+      set_variable(lhs.m_name, rhs.m_result);
       break;
     }
 
@@ -507,7 +539,7 @@ auto TreeWalkInterpreter::visit(Increment* t_increment) -> void
                       },
                       [&](const std::string& t_left) {
                       }},
-             m_variables[lhs.m_name]);
+             get_variable(lhs.m_name));
 
   // TODO: Implement postfix increment
 }
@@ -521,7 +553,7 @@ auto TreeWalkInterpreter::visit(Decrement* t_decrement) -> void
                       },
                       [&](const std::string& t_left) {
                       }},
-             m_variables[lhs.m_name]);
+             get_variable(lhs.m_name));
 
   // TODO: Implement postfix increment
 }

@@ -3,34 +3,46 @@
 
 // STL Includes:
 #include <cmath>
+#include <functional>
 #include <map>
 
 
-namespace interpreter {
-// const std::map<std::string_view, > g_builtin_functions;
- // "atan2",
- // "close",
- // "cos",
- // "exp",
- // "gsub",
- // "int",
- // "index",
- // "length",
- // "log",
- // "match",
- // "rand",
- // "sin",
- // "split",
- // "sprintf",
- // "sqrt",
- // "srand",
- // "sub",
- // "substr",
- // "system",
- // "tolower",
- // "toupper",
+namespace interpreter::builtin {
+// Macros:
+#define BUILTIN_FUNCTION_PAIR(func) \
+  {                                 \
+#func, func                     \
+  }
 
-auto atan2() -> void;
-} // namespace interpreter
+// Aliases:
+using BuiltinFuncPtr = std::function<Any(Any)>;
+
+// Globals:
+// extern const std::map<std::string_view, > g_builtin_functions;
+
+// Functions:
+auto atan2() -> Any;
+auto close() -> Any;
+auto cos() -> Any;
+auto exp() -> Any;
+auto gsub() -> Any;
+auto extract_int() -> Any;
+auto index() -> Any;
+auto length() -> Any;
+auto log() -> Any;
+auto match() -> Any;
+auto rand() -> Any;
+auto sin() -> Any;
+auto split() -> Any;
+auto sprintf() -> Any;
+auto sqrt() -> Any;
+auto srand() -> Any;
+auto sub() -> Any;
+auto substr() -> Any;
+auto system() -> Any;
+auto tolower() -> Any;
+auto toupper() -> Any;
+
+} // namespace interpreter::builtin
 
 #endif // BUILTIN_FUNCTIONS_HPP

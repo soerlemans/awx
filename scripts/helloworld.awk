@@ -1,10 +1,8 @@
 #!/usr/bin/env -S awk -f
 
 
-function test () {
-		# print "printing"
-
-		return 10;
+function test (t_arg, owww, yeahhh) {
+		print t_arg, owww, yeahhh
 }
 
 function noreturn(){
@@ -12,6 +10,9 @@ function noreturn(){
 }
 
 BEGIN {
-		print("Results:", test(), noreturn(), 30)
+		test(100, 200, 100)
+
+		print 100, 200, 100
+		print t_arg, owww, yeahhh
 }
 
