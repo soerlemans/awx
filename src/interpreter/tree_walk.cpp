@@ -79,6 +79,12 @@ auto TreeWalkInterpreter::double2str(const double t_number) -> std::string
   return ss.str();
 }
 
+auto TreeWalkInterpreter::clear_context() -> void
+{
+  m_context.m_name.clear();
+  m_context.m_result = 0.0;
+}
+
 auto TreeWalkInterpreter::set_variable(const std::string t_name,
                                        const Any t_variable) -> void
 {
@@ -123,12 +129,12 @@ auto TreeWalkInterpreter::visit(While* t_while) -> void
 
 auto TreeWalkInterpreter::visit(For* t_for) -> void
 {
-  // We dont do anything with the result of the init expression
+  // We just execute the init expression we do not use it
   walk(t_for->init());
-
   while(eval_bool(t_for->condition())) {
     walk(t_for->body());
 
+    // Execute the expr at the end
     walk(t_for->expr());
   }
 }
@@ -141,9 +147,7 @@ auto TreeWalkInterpreter::visit(Return* t_return) -> void
   if(auto ptr{t_return->expr()}; ptr) {
     walk(ptr);
   } else {
-    // Just set context to empty
-    m_context.m_name.clear();
-    m_context.m_result = 0.0;
+    clear_context();
   }
 
   // Unwind the stack
@@ -164,9 +168,8 @@ auto TreeWalkInterpreter::visit(Function* t_fn) -> void
 
 auto TreeWalkInterpreter::visit(FunctionCall* t_fn_call) -> void
 {
-  std::string name{t_fn_call->name()};
+  const std::string name{t_fn_call->name()};
 
-  // auto& function{m_functions[name]};
   if(!m_functions.count(name)) {
     // TODO: Create separate runtime exception type
     throw std::runtime_error{"Calling to non existent function"};
@@ -174,34 +177,26 @@ auto TreeWalkInterpreter::visit(FunctionCall* t_fn_call) -> void
 
   auto& fn{m_functions[name]};
 
-  Store<Any> temp;
-  auto& args{*t_fn_call->args()};
-  auto iter{args.begin()};
-  for(auto& param : *fn->params()) {
-    if(iter == args.end()) {
-      // TODO: Error handling, too little arguments
+  m_scope.emplace();
+  if(auto& params{*fn->params()}; !params.empty()) {
+    auto iter{params.begin()};
+    for(auto& arg : *t_fn_call->args()) {
+      const auto& name{walk(*iter).m_name};
+      const auto& result{walk(arg).m_result};
+
+      auto& scope{m_scope.top()};
+      scope[name] = result;
+      iter++;
     }
-
-    auto& name{walk(param).m_name};
-    auto& result{walk(*iter).m_result};
-    temp[name] = result;
-    iter++;
-  }
-  m_scope.push(std::move(temp));
-
-  if(iter != args.end()) {
-    // TODO: Error handling, too many arguments
   }
 
-  // Call function and catch Return exception if thrown
   try {
     walk(fn->body());
 
-    // If there was no return statement in the body of the function we have to
-    // cleanup the context
-    m_context.m_name.clear();
-    m_context.m_result = "";
+    // If the function does not return we need to clear the context
+    clear_context();
   } catch(ReturnException& e) {
+    // Call function and catch Return exception if thrown
   }
 
   // Clear thescope
@@ -261,6 +256,8 @@ auto TreeWalkInterpreter::visit(Print* t_print) -> void
         },
         walk(param).m_result);
       separator = ' ';
+
+      clear_context();
     }
   }
 

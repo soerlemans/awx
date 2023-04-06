@@ -40,6 +40,8 @@ class TreeWalkInterpreter : public visitor::NodeVisitor {
   auto eval_bool(node::NodePtr t_node) -> bool;
   auto double2str(double t_number) -> std::string;
 
+  auto clear_context() -> void;
+
   auto set_variable(std::string t_name, Any t_variable) -> void;
   auto get_variable(const std::string t_name) -> Any&;
 
