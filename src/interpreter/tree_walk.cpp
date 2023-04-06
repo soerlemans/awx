@@ -88,6 +88,8 @@ auto TreeWalkInterpreter::clear_context() -> void
 auto TreeWalkInterpreter::set_variable(const std::string t_name,
                                        const Any t_variable) -> void
 {
+  m_context.m_name = t_name;
+
   if(!m_scope.empty() && m_scope.top().count(t_name)) {
     auto& variables{m_scope.top()};
     variables[t_name] = t_variable;
@@ -98,6 +100,8 @@ auto TreeWalkInterpreter::set_variable(const std::string t_name,
 
 auto TreeWalkInterpreter::get_variable(const std::string t_name) -> Any&
 {
+  m_context.m_name = t_name;
+
   if(!m_scope.empty() && m_scope.top().count(t_name)) {
     auto& variables{m_scope.top()};
     return variables[t_name];
@@ -177,6 +181,7 @@ auto TreeWalkInterpreter::visit(FunctionCall* t_fn_call) -> void
 
   auto& fn{m_functions[name]};
 
+  // Create the stack frame
   m_scope.emplace();
   if(auto& params{*fn->params()}; !params.empty()) {
     auto iter{params.begin()};
@@ -199,7 +204,7 @@ auto TreeWalkInterpreter::visit(FunctionCall* t_fn_call) -> void
     // Call function and catch Return exception if thrown
   }
 
-  // Clear thescope
+  // Pop the stack frame
   m_scope.pop();
 }
 
