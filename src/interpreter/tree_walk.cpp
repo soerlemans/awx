@@ -51,22 +51,22 @@ auto TreeWalkInterpreter::eval_bool(node::NodePtr t_node) -> bool
 {
   auto context{walk(t_node)};
 
-  bool truthy{false};
+  bool is_true{false};
   const auto lambda_double{[&](double t_val) {
     if(t_val) {
-      truthy = true;
+      is_true = true;
     }
   }};
 
   const auto lambda_str{[&](std::string t_val) {
     if(!t_val.empty()) {
-      truthy = true;
+      is_true = true;
     }
   }};
 
   std::visit(Overload{lambda_double, lambda_str}, context.m_result);
 
-  return truthy;
+  return is_true;
 }
 
 auto TreeWalkInterpreter::double2str(const double t_number) -> std::string
@@ -90,7 +90,7 @@ auto TreeWalkInterpreter::set_variable(const std::string t_name,
   }
 }
 
-auto TreeWalkInterpreter::get_variable(const std::string t_name) -> Any
+auto TreeWalkInterpreter::get_variable(const std::string t_name) -> Any&
 {
   if(!m_scope.empty() && m_scope.top().count(t_name)) {
     auto& variables{m_scope.top()};
@@ -539,7 +539,8 @@ auto TreeWalkInterpreter::visit(Increment* t_increment) -> void
                       },
                       [&](const std::string& t_left) {
                       }},
-             get_variable(lhs.m_name));
+             m_globals[lhs.m_name]);
+  // get_variable(lhs.m_name));
 
   // TODO: Implement postfix increment
 }
@@ -553,7 +554,8 @@ auto TreeWalkInterpreter::visit(Decrement* t_decrement) -> void
                       },
                       [&](const std::string& t_left) {
                       }},
-             get_variable(lhs.m_name));
+             m_globals[lhs.m_name]);
+  // get_variable(lhs.m_name));
 
   // TODO: Implement postfix increment
 }

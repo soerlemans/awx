@@ -41,7 +41,7 @@ class TreeWalkInterpreter : public visitor::NodeVisitor {
   auto double2str(double t_number) -> std::string;
 
   auto set_variable(std::string t_name, Any t_variable) -> void;
-  auto get_variable(const std::string t_name) -> Any;
+  auto get_variable(const std::string t_name) -> Any&;
 
   // Visit Methods:
   auto visit(node::control::If* t_if) -> void override;
