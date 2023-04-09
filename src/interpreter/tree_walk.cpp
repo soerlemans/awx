@@ -241,8 +241,11 @@ auto TreeWalkInterpreter::visit(Recipe* t_recipe) -> void
 {
   // TODO: Process pattern
   walk(t_recipe->pattern());
+  // if(){
 
   walk(t_recipe->body());
+
+  //}
 }
 
 auto TreeWalkInterpreter::visit(Print* t_print) -> void
@@ -251,6 +254,7 @@ auto TreeWalkInterpreter::visit(Print* t_print) -> void
   if(const auto& params{t_print->params()}; params) {
     char separator = '\0';
     for(const auto& param : *params) {
+      const auto& result{walk(param).m_result};
       std::visit(
         [&](auto&& t_result) {
           if(separator) {
@@ -259,7 +263,7 @@ auto TreeWalkInterpreter::visit(Print* t_print) -> void
 
           std::cout << std::forward<decltype(t_result)>(t_result);
         },
-        walk(param).m_result);
+        result);
       separator = ' ';
 
       clear_context();
@@ -291,9 +295,9 @@ auto TreeWalkInterpreter::visit(Redirection* t_redirection) -> void
 
 auto TreeWalkInterpreter::visit(Array* t_array) -> void
 {
-  const auto& result = m_context.m_result;
+  auto& result = m_context.m_result;
 
-  set_variable(t_array->name(), result);
+  result = get_variable(t_array->name());
 }
 
 auto TreeWalkInterpreter::visit(FieldReference* t_fr) -> void
@@ -301,9 +305,9 @@ auto TreeWalkInterpreter::visit(FieldReference* t_fr) -> void
 
 auto TreeWalkInterpreter::visit(Variable* t_var) -> void
 {
-  const auto& result = m_context.m_result;
+  auto& result = m_context.m_result;
 
-  set_variable(t_var->name(), result);
+  result = get_variable(t_var->name());
 }
 
 auto TreeWalkInterpreter::visit(Float* t_float) -> void
