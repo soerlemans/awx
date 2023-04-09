@@ -569,13 +569,39 @@ auto TreeWalkInterpreter::visit(Match* t_match) -> void
 {}
 
 auto TreeWalkInterpreter::visit(Not* t_not) -> void
-{}
+{
+  const auto lhs{eval_bool(t_not->left())};
+
+  if(lhs) {
+    m_context.m_result = 0.0;
+  } else {
+    m_context.m_result = 1.0;
+  }
+}
 
 auto TreeWalkInterpreter::visit(And* t_and) -> void
-{}
+{
+  const auto lhs{eval_bool(t_and->left())};
+  const auto rhs{eval_bool(t_and->right())};
+
+  if(lhs && rhs) {
+    m_context.m_result = 1.0;
+  } else {
+    m_context.m_result = 0.0;
+  }
+}
 
 auto TreeWalkInterpreter::visit(Or* t_or) -> void
-{}
+{
+  const auto lhs{eval_bool(t_or->left())};
+  const auto rhs{eval_bool(t_or->right())};
+
+  if(lhs || rhs) {
+    m_context.m_result = 1.0;
+  } else {
+    m_context.m_result = 0.0;
+  }
+}
 
 auto TreeWalkInterpreter::visit(StringConcatenation* t_conc) -> void
 {
