@@ -13,6 +13,9 @@
 // Includes:
 #include "../debug/log.hpp"
 #include "../node/include.hpp"
+
+// Local Includes:
+#include "comparisons.hpp"
 #include "return_exception.hpp"
 
 
@@ -85,8 +88,8 @@ auto TreeWalk::clear_context() -> void
   m_context.m_result = 0.0;
 }
 
-auto TreeWalk::set_variable(const std::string t_name,
-                                       const Any t_variable) -> void
+auto TreeWalk::set_variable(const std::string t_name, const Any t_variable)
+  -> void
 {
   m_context.m_name = t_name;
 
@@ -519,18 +522,9 @@ auto TreeWalk::visit(Comparison* t_comparison) -> void
 
     case ComparisonOp::EQUAL:
       std::visit(
-        Overload{[&](double t_left, double t_right) {
-                   m_context.m_result = (double)(t_left == t_right);
-                 },
-                 [&](double t_left, const std::string& t_right) {
-                   m_context.m_result = (double)(double2str(t_left) == t_right);
-                 },
-                 [&](const std::string& t_left, double t_right) {
-                   m_context.m_result = (double)(t_left == double2str(t_right));
-                 },
-                 [&](const std::string& t_left, const std::string& t_right) {
-                   m_context.m_result = (double)(t_left == t_right);
-                 }},
+        [&](auto&& t_lhs, auto&& t_rhs) {
+          m_context.m_result = (double)equal(t_lhs, t_rhs);
+        },
         lhs.m_result, rhs.m_result);
       break;
   }

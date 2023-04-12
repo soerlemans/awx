@@ -2,18 +2,19 @@
 #define TOKEN_TYPE_WRAPPER_HPP
 
 
+#include <type_traits>
 namespace token::reserved {
 // Concepts:
 // The Identifier is either one character or a string_view
 template<typename T>
-concept TokenTypeWrapperIdentifierConcept =
-  std::same_as<T, std::string_view> || std::same_as<T, char>;
+concept StringLike =
+  std::is_convertible_v<T, std::string_view> || std::same_as<T, char>;
 
 // AWX reserved keywords and symbols
 // Helper class for the Reserved global variable definitions
 // Is intended for attaching some more important data to a certain TokenType
 template<typename T = std::string_view>
-requires TokenTypeWrapperIdentifierConcept<T>
+requires StringLike<T>
 class TokenTypeWrapper {
   private:
   const T m_identifier;
