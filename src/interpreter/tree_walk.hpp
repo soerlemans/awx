@@ -19,7 +19,7 @@ namespace interpreter {
  * TODO: Have NodeVisitor be a template class and have each Node accept a
  * pointer to NodeVisitor<T> this way we can
  */
-class TreeWalkInterpreter : public visitor::NodeVisitor {
+class TreeWalk : public visitor::NodeVisitor {
   private:
   template<typename T>
   using Store = std::map<std::string, T>;
@@ -33,7 +33,7 @@ class TreeWalkInterpreter : public visitor::NodeVisitor {
   Context m_context;
 
   public:
-  TreeWalkInterpreter() = default;
+  TreeWalk() = default;
 
   //! Walk returns the updated context
   auto walk(node::NodePtr t_node) -> Context&;
@@ -96,7 +96,7 @@ class TreeWalkInterpreter : public visitor::NodeVisitor {
   auto visit(node::List* t_list) -> void override;
   auto visit(node::Nil* t_nil) -> void override;
 
-  ~TreeWalkInterpreter() override = default;
+  ~TreeWalk() override = default;
 };
 } // namespace interpreter
 

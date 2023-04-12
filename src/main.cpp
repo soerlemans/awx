@@ -42,7 +42,7 @@ auto parse_args(Config& t_config, const int t_argc, char* t_argv[]) -> int
 
   t_config.m_paths.push_back(filename);
 
-	// TODO: Improve this (temporary)
+  // TODO: Improve this (temporary)
   if(version) {
     std::cout << "Version: " << t_config.m_version << '\n';
     exit(0);
@@ -72,7 +72,7 @@ auto run(Config& t_config) -> void
 
   // Execute program via tree walk interpreter
   DBG_PRINTLN("#== EXECUTING ==#");
-  interpreter::TreeWalkInterpreter interpreter;
+  interpreter::TreeWalk interpreter;
   ast->accept(&interpreter);
 }
 

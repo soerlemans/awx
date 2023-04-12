@@ -6,7 +6,8 @@
 
 
 namespace interpreter {
-auto greater_than();
+template<typename L, typename R>
+auto comparison(L t_lhs, R t_rhs);
 }
 
 #endif // COMPARISONS_HPP

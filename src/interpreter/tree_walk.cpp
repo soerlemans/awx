@@ -40,14 +40,14 @@ template<class... Ts>
 Overload(Ts...) -> Overload<Ts...>;
 
 // Public Methods:
-auto TreeWalkInterpreter::walk(node::NodePtr t_node) -> Context&
+auto TreeWalk::walk(node::NodePtr t_node) -> Context&
 {
   t_node->accept(this);
 
   return m_context;
 }
 
-auto TreeWalkInterpreter::eval_bool(node::NodePtr t_node) -> bool
+auto TreeWalk::eval_bool(node::NodePtr t_node) -> bool
 {
   auto context{walk(t_node)};
 
@@ -69,7 +69,7 @@ auto TreeWalkInterpreter::eval_bool(node::NodePtr t_node) -> bool
   return is_true;
 }
 
-auto TreeWalkInterpreter::double2str(const double t_number) -> std::string
+auto TreeWalk::double2str(const double t_number) -> std::string
 {
   std::stringstream ss;
 
@@ -79,13 +79,13 @@ auto TreeWalkInterpreter::double2str(const double t_number) -> std::string
   return ss.str();
 }
 
-auto TreeWalkInterpreter::clear_context() -> void
+auto TreeWalk::clear_context() -> void
 {
   m_context.m_name.clear();
   m_context.m_result = 0.0;
 }
 
-auto TreeWalkInterpreter::set_variable(const std::string t_name,
+auto TreeWalk::set_variable(const std::string t_name,
                                        const Any t_variable) -> void
 {
   m_context.m_name = t_name;
@@ -98,7 +98,7 @@ auto TreeWalkInterpreter::set_variable(const std::string t_name,
   }
 }
 
-auto TreeWalkInterpreter::get_variable(const std::string t_name) -> Any&
+auto TreeWalk::get_variable(const std::string t_name) -> Any&
 {
   m_context.m_name = t_name;
 
@@ -111,7 +111,7 @@ auto TreeWalkInterpreter::get_variable(const std::string t_name) -> Any&
 }
 
 // Visit Methods:
-auto TreeWalkInterpreter::visit(If* t_if) -> void
+auto TreeWalk::visit(If* t_if) -> void
 {
   if(eval_bool(t_if->condition())) {
     walk(t_if->then());
@@ -124,14 +124,14 @@ auto TreeWalkInterpreter::visit(If* t_if) -> void
   }
 }
 
-auto TreeWalkInterpreter::visit(While* t_while) -> void
+auto TreeWalk::visit(While* t_while) -> void
 {
   while(eval_bool(t_while->condition())) {
     eval_bool(t_while->body());
   }
 }
 
-auto TreeWalkInterpreter::visit(For* t_for) -> void
+auto TreeWalk::visit(For* t_for) -> void
 {
   // We just execute the init expression we do not use it
   walk(t_for->init());
@@ -143,10 +143,10 @@ auto TreeWalkInterpreter::visit(For* t_for) -> void
   }
 }
 
-auto TreeWalkInterpreter::visit(ForIn* t_for) -> void
+auto TreeWalk::visit(ForIn* t_for) -> void
 {}
 
-auto TreeWalkInterpreter::visit(Return* t_return) -> void
+auto TreeWalk::visit(Return* t_return) -> void
 {
   if(auto ptr{t_return->expr()}; ptr) {
     walk(ptr);
@@ -158,7 +158,7 @@ auto TreeWalkInterpreter::visit(Return* t_return) -> void
   throw ReturnException{};
 }
 
-auto TreeWalkInterpreter::visit(Function* t_fn) -> void
+auto TreeWalk::visit(Function* t_fn) -> void
 {
   std::string name{t_fn->name()};
 
@@ -170,7 +170,7 @@ auto TreeWalkInterpreter::visit(Function* t_fn) -> void
   // and removes the variable
 }
 
-auto TreeWalkInterpreter::visit(FunctionCall* t_fn_call) -> void
+auto TreeWalk::visit(FunctionCall* t_fn_call) -> void
 {
   const std::string name{t_fn_call->name()};
 
@@ -208,7 +208,7 @@ auto TreeWalkInterpreter::visit(FunctionCall* t_fn_call) -> void
   m_scope.pop();
 }
 
-auto TreeWalkInterpreter::visit(BuiltinFunctionCall* t_fn) -> void
+auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
 {
   // TODO: Convert each of these to a case and call
   // DEFINE_RESERVED(g_atan2,    "atan2",    BUILTIN_FUNCTION);
@@ -234,10 +234,10 @@ auto TreeWalkInterpreter::visit(BuiltinFunctionCall* t_fn) -> void
   // DEFINE_RESERVED(g_toupper,  "toupper",  BUILTIN_FUNCTION);
 }
 
-auto TreeWalkInterpreter::visit(SpecialPattern* t_pattern) -> void
+auto TreeWalk::visit(SpecialPattern* t_pattern) -> void
 {}
 
-auto TreeWalkInterpreter::visit(Recipe* t_recipe) -> void
+auto TreeWalk::visit(Recipe* t_recipe) -> void
 {
   // TODO: Process pattern
   walk(t_recipe->pattern());
@@ -248,7 +248,7 @@ auto TreeWalkInterpreter::visit(Recipe* t_recipe) -> void
   //}
 }
 
-auto TreeWalkInterpreter::visit(Print* t_print) -> void
+auto TreeWalk::visit(Print* t_print) -> void
 {
   // FIXME: This acts differently from when you call gawk or mawk
   if(const auto& params{t_print->params()}; params) {
@@ -273,13 +273,13 @@ auto TreeWalkInterpreter::visit(Print* t_print) -> void
   std::cout << '\n';
 }
 
-auto TreeWalkInterpreter::visit(Printf* t_printf) -> void
+auto TreeWalk::visit(Printf* t_printf) -> void
 {
   // auto format{walk(t_printf->format())};
   // std::printf();
 }
 
-auto TreeWalkInterpreter::visit(Getline* t_getline) -> void
+auto TreeWalk::visit(Getline* t_getline) -> void
 {
   auto& [name, result] = walk(t_getline->var());
 
@@ -290,34 +290,34 @@ auto TreeWalkInterpreter::visit(Getline* t_getline) -> void
   set_variable(name, input);
 }
 
-auto TreeWalkInterpreter::visit(Redirection* t_redirection) -> void
+auto TreeWalk::visit(Redirection* t_redirection) -> void
 {}
 
-auto TreeWalkInterpreter::visit(Array* t_array) -> void
+auto TreeWalk::visit(Array* t_array) -> void
 {
   auto& result = m_context.m_result;
 
   result = get_variable(t_array->name());
 }
 
-auto TreeWalkInterpreter::visit(FieldReference* t_fr) -> void
+auto TreeWalk::visit(FieldReference* t_fr) -> void
 {}
 
-auto TreeWalkInterpreter::visit(Variable* t_var) -> void
+auto TreeWalk::visit(Variable* t_var) -> void
 {
   auto& result = m_context.m_result;
 
   result = get_variable(t_var->name());
 }
 
-auto TreeWalkInterpreter::visit(Float* t_float) -> void
+auto TreeWalk::visit(Float* t_float) -> void
 {
   auto& result = m_context.m_result;
 
   result = t_float->get();
 }
 
-auto TreeWalkInterpreter::visit(Integer* t_int) -> void
+auto TreeWalk::visit(Integer* t_int) -> void
 {
   auto& result{m_context.m_result};
 
@@ -325,21 +325,21 @@ auto TreeWalkInterpreter::visit(Integer* t_int) -> void
   result = (double)t_int->get();
 }
 
-auto TreeWalkInterpreter::visit(String* t_str) -> void
+auto TreeWalk::visit(String* t_str) -> void
 {
   auto& result{m_context.m_result};
 
   result = t_str->get();
 }
 
-auto TreeWalkInterpreter::visit(Regex* t_regex) -> void
+auto TreeWalk::visit(Regex* t_regex) -> void
 {
   auto& result{m_context.m_result};
 
   result = t_regex->get();
 }
 
-auto TreeWalkInterpreter::visit(Arithmetic* t_arithmetic) -> void
+auto TreeWalk::visit(Arithmetic* t_arithmetic) -> void
 {
   //! Helper struct for using overloading to select correct lambda
   // template<typename... Args>
@@ -383,7 +383,7 @@ auto TreeWalkInterpreter::visit(Arithmetic* t_arithmetic) -> void
   }
 }
 
-auto TreeWalkInterpreter::visit(Assignment* t_assignment) -> void
+auto TreeWalk::visit(Assignment* t_assignment) -> void
 {
   const auto lhs{walk(t_assignment->left())};
   auto rhs{walk(t_assignment->right())};
@@ -426,7 +426,7 @@ auto TreeWalkInterpreter::visit(Assignment* t_assignment) -> void
 }
 
 // TODO: This method can be drastically shortened with a good lambda.
-auto TreeWalkInterpreter::visit(Comparison* t_comparison) -> void
+auto TreeWalk::visit(Comparison* t_comparison) -> void
 {
   auto lhs{walk(t_comparison->left())};
   auto rhs{walk(t_comparison->right())};
@@ -536,7 +536,7 @@ auto TreeWalkInterpreter::visit(Comparison* t_comparison) -> void
   }
 }
 
-auto TreeWalkInterpreter::visit(Increment* t_increment) -> void
+auto TreeWalk::visit(Increment* t_increment) -> void
 {
   auto lhs{walk(t_increment->left())};
 
@@ -551,7 +551,7 @@ auto TreeWalkInterpreter::visit(Increment* t_increment) -> void
   // TODO: Implement postfix increment
 }
 
-auto TreeWalkInterpreter::visit(Decrement* t_decrement) -> void
+auto TreeWalk::visit(Decrement* t_decrement) -> void
 {
   auto lhs{walk(t_decrement->left())};
 
@@ -566,13 +566,13 @@ auto TreeWalkInterpreter::visit(Decrement* t_decrement) -> void
   // TODO: Implement postfix increment
 }
 
-auto TreeWalkInterpreter::visit(Delete* t_delete) -> void
+auto TreeWalk::visit(Delete* t_delete) -> void
 {}
 
-auto TreeWalkInterpreter::visit(Match* t_match) -> void
+auto TreeWalk::visit(Match* t_match) -> void
 {}
 
-auto TreeWalkInterpreter::visit(Not* t_not) -> void
+auto TreeWalk::visit(Not* t_not) -> void
 {
   const auto lhs{eval_bool(t_not->left())};
 
@@ -583,7 +583,7 @@ auto TreeWalkInterpreter::visit(Not* t_not) -> void
   }
 }
 
-auto TreeWalkInterpreter::visit(And* t_and) -> void
+auto TreeWalk::visit(And* t_and) -> void
 {
   const auto lhs{eval_bool(t_and->left())};
   const auto rhs{eval_bool(t_and->right())};
@@ -595,7 +595,7 @@ auto TreeWalkInterpreter::visit(And* t_and) -> void
   }
 }
 
-auto TreeWalkInterpreter::visit(Or* t_or) -> void
+auto TreeWalk::visit(Or* t_or) -> void
 {
   const auto lhs{eval_bool(t_or->left())};
   const auto rhs{eval_bool(t_or->right())};
@@ -607,7 +607,7 @@ auto TreeWalkInterpreter::visit(Or* t_or) -> void
   }
 }
 
-auto TreeWalkInterpreter::visit(StringConcatenation* t_conc) -> void
+auto TreeWalk::visit(StringConcatenation* t_conc) -> void
 {
   Any left{walk(t_conc->left()).m_result};
   Any right{walk(t_conc->right()).m_result};
@@ -622,13 +622,13 @@ auto TreeWalkInterpreter::visit(StringConcatenation* t_conc) -> void
   m_context.m_result = ss.str();
 }
 
-auto TreeWalkInterpreter::visit(Grouping* t_grouping) -> void
+auto TreeWalk::visit(Grouping* t_grouping) -> void
 {}
 
-auto TreeWalkInterpreter::visit(Ternary* t_ternary) -> void
+auto TreeWalk::visit(Ternary* t_ternary) -> void
 {}
 
-auto TreeWalkInterpreter::visit(UnaryPrefix* t_unary_prefix) -> void
+auto TreeWalk::visit(UnaryPrefix* t_unary_prefix) -> void
 {
   auto context{walk(t_unary_prefix->left())};
 
@@ -653,12 +653,12 @@ auto TreeWalkInterpreter::visit(UnaryPrefix* t_unary_prefix) -> void
   }
 }
 
-auto TreeWalkInterpreter::visit(List* t_list) -> void
+auto TreeWalk::visit(List* t_list) -> void
 {
   for(const auto& element : *t_list) {
     element->accept(this);
   }
 }
 
-auto TreeWalkInterpreter::visit([[maybe_unused]] Nil* t_nil) -> void
+auto TreeWalk::visit([[maybe_unused]] Nil* t_nil) -> void
 {}
