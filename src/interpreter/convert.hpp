@@ -27,6 +27,7 @@ auto convert(T t_func, const std::string& t_lhs, const std::string& t_rhs)
   return t_func(t_lhs, t_rhs);
 }
 
+// TODO: Make this variadic
 template<typename T, typename L, typename R>
 requires VariableLike<L> && VariableLike<R>
 auto convert(T t_func, L t_lhs, R t_rhs)

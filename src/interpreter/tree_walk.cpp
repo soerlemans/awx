@@ -472,7 +472,6 @@ auto TreeWalk::visit(Comparison* t_comparison) -> void
         },
         lhs.m_result, rhs.m_result);
       break;
-
   }
 }
 
