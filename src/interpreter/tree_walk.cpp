@@ -425,88 +425,19 @@ auto TreeWalk::visit(Comparison* t_comparison) -> void
   auto rhs{walk(t_comparison->right())};
 
   switch(t_comparison->op()) {
-    case ComparisonOp::GREATER_THAN:
-      std::visit(
-        Overload{[&](double t_left, double t_right) {
-                   m_context.m_result = (double)(t_left > t_right);
-                 },
-                 [&](double t_left, const std::string& t_right) {
-                   m_context.m_result = (double)(double2str(t_left) > t_right);
-                 },
-                 [&](const std::string& t_left, double t_right) {
-                   m_context.m_result = (double)(t_left > double2str(t_right));
-                 },
-                 [&](const std::string& t_left, const std::string& t_right) {
-                   m_context.m_result = (double)(t_left > t_right);
-                 }},
-        lhs.m_result, rhs.m_result);
-      break;
-
-    case ComparisonOp::GREATER_THAN_EQUAL:
-      std::visit(
-        Overload{[&](double t_left, double t_right) {
-                   m_context.m_result = (double)(t_left >= t_right);
-                 },
-                 [&](double t_left, const std::string& t_right) {
-                   m_context.m_result = (double)(double2str(t_left) >= t_right);
-                 },
-                 [&](const std::string& t_left, double t_right) {
-                   m_context.m_result = (double)(t_left >= double2str(t_right));
-                 },
-                 [&](const std::string& t_left, const std::string& t_right) {
-                   m_context.m_result = (double)(t_left >= t_right);
-                 }},
-        lhs.m_result, rhs.m_result);
-      break;
-
     case ComparisonOp::LESS_THAN:
       std::visit(
-        Overload{[&](double t_left, double t_right) {
-                   m_context.m_result = (double)(t_left < t_right);
-                 },
-                 [&](double t_left, const std::string& t_right) {
-                   m_context.m_result = (double)(double2str(t_left) < t_right);
-                 },
-                 [&](const std::string& t_left, double t_right) {
-                   m_context.m_result = (double)(t_left < double2str(t_right));
-                 },
-                 [&](const std::string& t_left, const std::string& t_right) {
-                   m_context.m_result = (double)(t_left < t_right);
-                 }},
+        [&](auto&& t_lhs, auto&& t_rhs) {
+          m_context.m_result = (double)less_than(t_lhs, t_rhs);
+        },
         lhs.m_result, rhs.m_result);
       break;
 
     case ComparisonOp::LESS_THAN_EQUAL:
       std::visit(
-        Overload{[&](double t_left, double t_right) {
-                   m_context.m_result = (double)(t_left <= t_right);
-                 },
-                 [&](double t_left, const std::string& t_right) {
-                   m_context.m_result = (double)(double2str(t_left) <= t_right);
-                 },
-                 [&](const std::string& t_left, double t_right) {
-                   m_context.m_result = (double)(t_left <= double2str(t_right));
-                 },
-                 [&](const std::string& t_left, const std::string& t_right) {
-                   m_context.m_result = (double)(t_left <= t_right);
-                 }},
-        lhs.m_result, rhs.m_result);
-      break;
-
-    case ComparisonOp::NOT_EQUAL:
-      std::visit(
-        Overload{[&](double t_left, double t_right) {
-                   m_context.m_result = (double)(t_left != t_right);
-                 },
-                 [&](double t_left, const std::string& t_right) {
-                   m_context.m_result = (double)(double2str(t_left) != t_right);
-                 },
-                 [&](const std::string& t_left, double t_right) {
-                   m_context.m_result = (double)(t_left != double2str(t_right));
-                 },
-                 [&](const std::string& t_left, const std::string& t_right) {
-                   m_context.m_result = (double)(t_left != t_right);
-                 }},
+        [&](auto&& t_lhs, auto&& t_rhs) {
+          m_context.m_result = (double)less_than_equal(t_lhs, t_rhs);
+        },
         lhs.m_result, rhs.m_result);
       break;
 
@@ -517,6 +448,31 @@ auto TreeWalk::visit(Comparison* t_comparison) -> void
         },
         lhs.m_result, rhs.m_result);
       break;
+
+    case ComparisonOp::NOT_EQUAL:
+      std::visit(
+        [&](auto&& t_lhs, auto&& t_rhs) {
+          m_context.m_result = (double)not_equal(t_lhs, t_rhs);
+        },
+        lhs.m_result, rhs.m_result);
+      break;
+
+    case ComparisonOp::GREATER_THAN:
+      std::visit(
+        [&](auto&& t_lhs, auto&& t_rhs) {
+          m_context.m_result = (double)greater_than(t_lhs, t_rhs);
+        },
+        lhs.m_result, rhs.m_result);
+      break;
+
+    case ComparisonOp::GREATER_THAN_EQUAL:
+      std::visit(
+        [&](auto&& t_lhs, auto&& t_rhs) {
+          m_context.m_result = (double)greater_than_equal(t_lhs, t_rhs);
+        },
+        lhs.m_result, rhs.m_result);
+      break;
+
   }
 }
 
