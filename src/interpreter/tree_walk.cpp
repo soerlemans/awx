@@ -16,6 +16,7 @@
 
 // Local Includes:
 #include "comparisons.hpp"
+#include "overload.hpp"
 #include "return_exception.hpp"
 
 
@@ -30,17 +31,6 @@ using namespace node::lvalue;
 using namespace node::operators;
 using namespace node::recipes;
 using namespace node::rvalue;
-
-// Overload pattern:
-//! Helper struct that selects correct lambda to execute in std::visit
-template<class... Ts>
-struct Overload : Ts... {
-  using Ts::operator()...;
-};
-
-// Deduction guide for the struct to work
-template<class... Ts>
-Overload(Ts...) -> Overload<Ts...>;
 
 // Public Methods:
 auto TreeWalk::walk(node::NodePtr t_node) -> Context&
