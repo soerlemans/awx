@@ -17,6 +17,7 @@ using Any = std::variant<double, std::string>;
 //   using std::map<Any, Any>::map;
 // };
 
+//! Context stores the result of the last expression
 struct Context {
   // Sometimes we need the name of a variable or function
   std::string m_name;

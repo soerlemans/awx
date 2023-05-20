@@ -1,5 +1,5 @@
-#ifndef BUILTIN_FUNCTIONS_HPP
-#define BUILTIN_FUNCTIONS_HPP
+#ifndef INTERPRETER_BUILTIN_FUNCTIONS_HPP
+#define INTERPRETER_BUILTIN_FUNCTIONS_HPP
 
 // STL Includes:
 #include <cmath>
@@ -45,4 +45,4 @@ auto toupper() -> Any;
 
 } // namespace interpreter::builtin
 
-#endif // BUILTIN_FUNCTIONS_HPP
+#endif // INTERPRETER_BUILTIN_FUNCTIONS_HPP

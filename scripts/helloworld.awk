@@ -1,8 +1,8 @@
 #!/usr/bin/env -S awk -f
 BEGIN {
-		if(100 == "100")
-				print "true"
-		else
-				print "false"
+		i = "1000str"
+		i--
+		i--
+		print i
 }
 

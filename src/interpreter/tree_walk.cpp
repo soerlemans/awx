@@ -13,9 +13,9 @@
 // Includes:
 #include "../debug/log.hpp"
 #include "../node/include.hpp"
+#include "builtin/operators.hpp"
 
 // Local Includes:
-#include "comparisons.hpp"
 #include "overload.hpp"
 #include "return_exception.hpp"
 
@@ -40,6 +40,7 @@ auto TreeWalk::walk(node::NodePtr t_node) -> Context&
   return m_context;
 }
 
+//! Evaluates the result of walking a Node and if it should be true
 auto TreeWalk::eval_bool(node::NodePtr t_node) -> bool
 {
   auto context{walk(t_node)};
@@ -334,15 +335,10 @@ auto TreeWalk::visit(Regex* t_regex) -> void
 
 auto TreeWalk::visit(Arithmetic* t_arithmetic) -> void
 {
-  //! Helper struct for using overloading to select correct lambda
-  // template<typename... Args>
-  // struct overloaded : Args... {
-  //   using Args::operator()...;
-  // };
-
   const auto lambda{[&]() -> std::tuple<Any, Any> {
     Any lhs{walk(t_arithmetic->left()).m_result};
     Any rhs{walk(t_arithmetic->right()).m_result};
+
 
     return {lhs, rhs};
   }};
@@ -421,88 +417,86 @@ auto TreeWalk::visit(Assignment* t_assignment) -> void
 // TODO: This method can be drastically shortened with a good lambda.
 auto TreeWalk::visit(Comparison* t_comparison) -> void
 {
+	using namespace builtin;
+
   auto lhs{walk(t_comparison->left())};
   auto rhs{walk(t_comparison->right())};
 
+  auto lambda{[&](auto t_func) {
+    std::visit(
+      [&](auto&& t_lhs, auto&& t_rhs) {
+        m_context.m_result = (double)t_func(t_lhs, t_rhs);
+      },
+      lhs.m_result, rhs.m_result);
+  }};
+
   switch(t_comparison->op()) {
     case ComparisonOp::LESS_THAN:
-      std::visit(
-        [&](auto&& t_lhs, auto&& t_rhs) {
-          m_context.m_result = (double)less_than(t_lhs, t_rhs);
-        },
-        lhs.m_result, rhs.m_result);
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return less_than(t_lhs, t_rhs);
+      });
       break;
 
     case ComparisonOp::LESS_THAN_EQUAL:
-      std::visit(
-        [&](auto&& t_lhs, auto&& t_rhs) {
-          m_context.m_result = (double)less_than_equal(t_lhs, t_rhs);
-        },
-        lhs.m_result, rhs.m_result);
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return less_than_equal(t_lhs, t_rhs);
+      });
       break;
 
     case ComparisonOp::EQUAL:
-      std::visit(
-        [&](auto&& t_lhs, auto&& t_rhs) {
-          m_context.m_result = (double)equal(t_lhs, t_rhs);
-        },
-        lhs.m_result, rhs.m_result);
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return less_than_equal(t_lhs, t_rhs);
+      });
       break;
 
     case ComparisonOp::NOT_EQUAL:
-      std::visit(
-        [&](auto&& t_lhs, auto&& t_rhs) {
-          m_context.m_result = (double)not_equal(t_lhs, t_rhs);
-        },
-        lhs.m_result, rhs.m_result);
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return not_equal(t_lhs, t_rhs);
+      });
       break;
 
     case ComparisonOp::GREATER_THAN:
-      std::visit(
-        [&](auto&& t_lhs, auto&& t_rhs) {
-          m_context.m_result = (double)greater_than(t_lhs, t_rhs);
-        },
-        lhs.m_result, rhs.m_result);
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return greater_than(t_lhs, t_rhs);
+      });
       break;
 
     case ComparisonOp::GREATER_THAN_EQUAL:
-      std::visit(
-        [&](auto&& t_lhs, auto&& t_rhs) {
-          m_context.m_result = (double)greater_than_equal(t_lhs, t_rhs);
-        },
-        lhs.m_result, rhs.m_result);
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return greater_than_equal(t_lhs, t_rhs);
+      });
       break;
   }
 }
 
+// TODO: Implement postfix increment
 auto TreeWalk::visit(Increment* t_increment) -> void
 {
   auto lhs{walk(t_increment->left())};
+  auto& var{m_globals[lhs.m_name]};
 
   std::visit(Overload{[&](double& t_left) {
                         t_left++;
                       },
                       [&](const std::string& t_left) {
+                        var = convert(t_left) + 1.0;
                       }},
-             m_globals[lhs.m_name]);
-  // get_variable(lhs.m_name));
-
-  // TODO: Implement postfix increment
+             var);
 }
 
+// TODO: Implement postfix increment
 auto TreeWalk::visit(Decrement* t_decrement) -> void
 {
   auto lhs{walk(t_decrement->left())};
+  auto& var{m_globals[lhs.m_name]};
 
   std::visit(Overload{[&](double& t_left) {
                         t_left--;
                       },
                       [&](const std::string& t_left) {
+                        var = convert(t_left) - 1.0;
                       }},
-             m_globals[lhs.m_name]);
-  // get_variable(lhs.m_name));
-
-  // TODO: Implement postfix increment
+             var);
 }
 
 auto TreeWalk::visit(Delete* t_delete) -> void
