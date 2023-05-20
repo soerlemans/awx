@@ -1,8 +1,6 @@
 #!/usr/bin/env -S awk -f
 BEGIN {
-		i = "1000str"
-		i--
-		i--
+		i = "10str" ^ "10"
 		print i
 }
 

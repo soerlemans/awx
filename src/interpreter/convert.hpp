@@ -17,7 +17,7 @@ namespace interpreter {
   do {                                                   \
     if constexpr(std::is_same<std::remove_cvref_t<type>, \
                               std::string>::value) {     \
-      dst = std::stod(src);                              \
+      dst = convert(src);                                \
     } else {                                             \
       dst = src;                                         \
     }                                                    \

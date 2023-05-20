@@ -335,34 +335,67 @@ auto TreeWalk::visit(Regex* t_regex) -> void
 
 auto TreeWalk::visit(Arithmetic* t_arithmetic) -> void
 {
-  const auto lambda{[&]() -> std::tuple<Any, Any> {
-    Any lhs{walk(t_arithmetic->left()).m_result};
-    Any rhs{walk(t_arithmetic->right()).m_result};
+  using namespace builtin;
 
+  auto lhs{walk(t_arithmetic->left())};
+  auto rhs{walk(t_arithmetic->right())};
 
-    return {lhs, rhs};
+  auto lambda{[&](auto t_func) {
+    std::visit(Overload{[&](std::string& t_lhs, std::string& t_rhs) {
+                          DBG_LOG(CRITICAL, "lhs: ", convert(t_lhs));
+                          DBG_LOG(CRITICAL, "rhs: ", convert(t_rhs));
+                          // One argument must be converted to a double as the
+                          // convert function for binary operations will use the
+                          // same operation on strings as doubles
+                          m_context.m_result =
+                            (double)t_func(convert(t_lhs), t_rhs);
+                        },
+                        [&](auto&& t_lhs, auto&& t_rhs) {
+                          m_context.m_result = (double)t_func(t_lhs, t_rhs);
+                        }},
+               lhs.m_result, rhs.m_result);
   }};
 
   switch(const auto op{t_arithmetic->op()}; op) {
     case ArithmeticOp::POWER: {
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return power(t_lhs, t_rhs);
+      });
       break;
     }
 
     case ArithmeticOp::MULTIPLY: {
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return multiply(t_lhs, t_rhs);
+      });
       break;
     }
+
     case ArithmeticOp::DIVIDE: {
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return divide(t_lhs, t_rhs);
+      });
       break;
     }
+
     case ArithmeticOp::MODULO: {
+      // lambda([](auto&& t_lhs, auto&& t_rhs) {
+      //   return modulo(t_lhs, t_rhs);
+      // });
       break;
     }
+
     case ArithmeticOp::ADD: {
-      auto [lhs, rhs] = lambda();
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return add(t_lhs, t_rhs);
+      });
       break;
     }
 
     case ArithmeticOp::SUBTRACT: {
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return subtract(t_lhs, t_rhs);
+      });
       break;
     }
 
@@ -417,7 +450,7 @@ auto TreeWalk::visit(Assignment* t_assignment) -> void
 // TODO: This method can be drastically shortened with a good lambda.
 auto TreeWalk::visit(Comparison* t_comparison) -> void
 {
-	using namespace builtin;
+  using namespace builtin;
 
   auto lhs{walk(t_comparison->left())};
   auto rhs{walk(t_comparison->right())};

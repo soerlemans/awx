@@ -28,12 +28,14 @@ auto power(L t_lhs, R t_rhs) -> bool
   return convert(lambda, t_lhs, t_rhs);
 }
 
-INTERPRETER_DEFINE_BINOP_FUNCTION(+, addition)
-INTERPRETER_DEFINE_BINOP_FUNCTION(-, subtraction)
+INTERPRETER_DEFINE_BINOP_FUNCTION(*, multiply)
+INTERPRETER_DEFINE_BINOP_FUNCTION(/, divide)
 
-INTERPRETER_DEFINE_BINOP_FUNCTION(*, multiplication)
-INTERPRETER_DEFINE_BINOP_FUNCTION(/, division)
-INTERPRETER_DEFINE_BINOP_FUNCTION(%, modulo)
+// Modulo can not use this macro either
+// INTERPRETER_DEFINE_BINOP_FUNCTION(%, modulo)
+
+INTERPRETER_DEFINE_BINOP_FUNCTION(+, add)
+INTERPRETER_DEFINE_BINOP_FUNCTION(-, subtract)
 
 // Comparisons:
 INTERPRETER_DEFINE_BINOP_FUNCTION(<, less_than)
