@@ -342,8 +342,6 @@ auto TreeWalk::visit(Arithmetic* t_arithmetic) -> void
 
   auto lambda{[&](auto t_func) {
     std::visit(Overload{[&](std::string& t_lhs, std::string& t_rhs) {
-                          DBG_LOG(CRITICAL, "lhs: ", convert(t_lhs));
-                          DBG_LOG(CRITICAL, "rhs: ", convert(t_rhs));
                           // One argument must be converted to a double as the
                           // convert function for binary operations will use the
                           // same operation on strings as doubles

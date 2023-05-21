@@ -1,5 +1,5 @@
-#ifndef INTERPRETER_BUILTIN_OPERATORS_HPP
-#define INTERPRETER_BUILTIN_OPERATORS_HPP
+#ifndef AWX_INTERPRETER_BUILTIN_OPERATORS_HPP
+#define AWX_INTERPRETER_BUILTIN_OPERATORS_HPP
 
 // STL Includes:
 #include <cmath>
@@ -19,9 +19,9 @@ namespace interpreter::builtin {
  */
 template<typename L, typename R>
 requires VariableLike<L> && VariableLike<R>
-auto power(L t_lhs, R t_rhs) -> bool
+auto power(L t_lhs, R t_rhs)
 {
-  const auto lambda{[](const auto& t_lhs, const auto& t_rhs) -> bool {
+  const auto lambda{[](const auto& t_lhs, const auto& t_rhs) {
     return std::pow(t_lhs, t_rhs);
   }};
 
@@ -48,4 +48,4 @@ INTERPRETER_DEFINE_BINOP_FUNCTION(>, greater_than)
 INTERPRETER_DEFINE_BINOP_FUNCTION(>=, greater_than_equal)
 } // namespace interpreter::builtin
 
-#endif // INTERPRETER_BUILTIN_OPERATORS_HPP
+#endif // AWX_INTERPRETER_BUILTIN_OPERATORS_HPP

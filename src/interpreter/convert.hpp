@@ -1,6 +1,5 @@
-#ifndef INTERPRETER_CONVERT_HPP
-#define INTERPRETER_CONVERT_HPP
-
+#ifndef AWX_INTERPRETER_CONVERT_HPP
+#define AWX_INTERPRETER_CONVERT_HPP
 
 /*! In AWK string's are often converted to doubles for a lot of operations.
  * This gets tricky to define manually for binary operations as the down cast to
@@ -8,8 +7,6 @@
  * string. This file defines a template function called convert that does this.
  */
 
-#include <cctype>
-#include <string>
 namespace interpreter {
 // Macros:
 //! Following macro converts a parameter if it is a string to a double
@@ -26,16 +23,16 @@ namespace interpreter {
 /*! Cookie cut macro for easily defining binary operations that use the convert
  * Function
  */
-#define INTERPRETER_DEFINE_BINOP_FUNCTION(op, func_name)                 \
-  template<typename L, typename R>                                       \
-  requires VariableLike<L> && VariableLike<R>                            \
-  auto func_name(L t_lhs, R t_rhs)->bool                                 \
-  {                                                                      \
-    const auto lambda{[](const auto& t_lhs, const auto& t_rhs) -> bool { \
-      return t_lhs op t_rhs;                                             \
-    }};                                                                  \
-                                                                         \
-    return convert(lambda, t_lhs, t_rhs);                                \
+#define INTERPRETER_DEFINE_BINOP_FUNCTION(op, func_name)         \
+  template<typename L, typename R>                               \
+  requires VariableLike<L> && VariableLike<R>                    \
+  auto func_name(L t_lhs, R t_rhs)                               \
+  {                                                              \
+    const auto lambda{[](const auto& t_lhs, const auto& t_rhs) { \
+      return t_lhs op t_rhs;                                     \
+    }};                                                          \
+                                                                 \
+    return convert(lambda, t_lhs, t_rhs);                        \
   }
 
 // Concepts:
@@ -81,4 +78,4 @@ auto convert(T t_func, L t_lhs, R t_rhs)
 }
 } // namespace interpreter
 
-#endif // INTERPRETER_CONVERT_HPP
+#endif // AWX_INTERPRETER_CONVERT_HPP

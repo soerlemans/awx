@@ -66,9 +66,11 @@ auto run(Config& t_config) -> void
   parser::AwkParser parser{tokenstream};
   node::NodePtr ast{parser.parse()};
 
+#if DEBUG
   // Pretty print ast
   visitor::PrintVisitor pretty_printer;
   ast->accept(&pretty_printer);
+#endif // DEBUG
 
   // Execute program via tree walk interpreter
   DBG_PRINTLN("#== EXECUTING ==#");

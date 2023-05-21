@@ -1,5 +1,5 @@
-#ifndef TREE_WALK_HPP
-#define TREE_WALK_HPP
+#ifndef AWX_INTERPRETER_TREE_WALK_HPP
+#define AWX_INTERPRETER_TREE_WALK_HPP
 
 // STL Includes:
 #include <map>
@@ -100,4 +100,4 @@ class TreeWalk : public visitor::NodeVisitor {
 };
 } // namespace interpreter
 
-#endif // TREE_WALK_HPP
+#endif // AWX_INTERPRETER_TREE_WALK_HPP
