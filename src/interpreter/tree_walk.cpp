@@ -405,32 +405,62 @@ auto TreeWalk::visit(Arithmetic* t_arithmetic) -> void
 
 auto TreeWalk::visit(Assignment* t_assignment) -> void
 {
-  const auto lhs{walk(t_assignment->left())};
+  using namespace builtin;
+
+  auto lhs{walk(t_assignment->left())};
   auto rhs{walk(t_assignment->right())};
+
+  auto lambda{[&](auto t_func) {
+    std::visit(Overload{[&](std::string& t_lhs, std::string& t_rhs) {
+                          set_variable(lhs.m_name,
+                                       t_func(convert(t_lhs), t_rhs));
+                        },
+                        [&](auto&& t_lhs, auto&& t_rhs) {
+                          set_variable(lhs.m_name, t_func(t_lhs, t_rhs));
+                        }},
+               lhs.m_result, rhs.m_result);
+  }};
 
   switch(const auto op{t_assignment->op()}; op) {
     case AssignmentOp::POWER: {
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return power(t_lhs, t_rhs);
+      });
       break;
     }
 
     case AssignmentOp::MULTIPLY: {
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return multiply(t_lhs, t_rhs);
+      });
       break;
     }
 
     case AssignmentOp::DIVIDE: {
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return divide(t_lhs, t_rhs);
+      });
       break;
     }
 
     case AssignmentOp::MODULO: {
+      // lambda([](auto&& t_lhs, auto&& t_rhs) {
+      //   return modulo(t_lhs, t_rhs);
+      // });
       break;
     }
 
     case AssignmentOp::ADD: {
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return add(t_lhs, t_rhs);
+      });
       break;
     }
 
     case AssignmentOp::SUBTRACT: {
-      // variable = rhs.m_result;
+      lambda([](auto&& t_lhs, auto&& t_rhs) {
+        return subtract(t_lhs, t_rhs);
+      });
       break;
     }
 
