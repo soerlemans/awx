@@ -31,6 +31,7 @@ enum ExitCode {
 auto parse_args(Config& t_config, const int t_argc, char* t_argv[]) -> int
 {
   CLI::App app{"AWX stands for AWK With Extensions."};
+  app.remaining(true); // Dont discard extra positional arguments
 
   std::string program_path;
   app.add_option("-f,--file", program_path,
@@ -40,15 +41,14 @@ auto parse_args(Config& t_config, const int t_argc, char* t_argv[]) -> int
   bool version{false};
   app.add_flag("-v,--version", version, "Display the current AWX version");
 
-	// TODO: FIGURE this out
   std::vector<std::string> filenames;
-  app.add_option("", filenames, "Positional arguments");
+  app.add_option("{}", filenames, "Postional arguments");
 
   CLI11_PARSE(app, t_argc, t_argv);
 
   t_config.m_paths.push_back(program_path);
 
-  for(auto i : filenames)
+  for(auto& i : filenames)
     std::cout << "file: " << i << '\n';
 
   // TODO: Improve this (temporary)
