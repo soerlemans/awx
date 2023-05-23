@@ -13,8 +13,9 @@
 
 namespace fs = std::filesystem;
 
-// The AWX mode determines the interpreters mode and what it considers valid
-// syntax and supported features
+/*!The AWX mode determines the interpreters mode and what it considers valid
+ * syntax and supported features
+ */
 enum AwxMode {
   // Function strictly as POSIX compatible AWK interpreter
   AWK_STRICT = 0,
@@ -27,17 +28,15 @@ enum AwxMode {
   AWX,
 };
 
-/*! Config store contains global configuration data like settings we pass from
- * the command line or from a awx module settings file
+/*! The Config contains global data like options passed from the command line
  */
 struct Config {
   AwxMode m_awx_mode;
-  std::string_view m_version;
 
-  std::vector<std::string> m_paths;
+  std::vector<std::string> m_scripts;
   std::vector<std::string> m_filepaths;
 
-  Config(AwxMode t_awx_mode, std::string_view t_version);
+  Config(AwxMode t_awx_mode);
 };
 
 #endif // CONFIG_HPP

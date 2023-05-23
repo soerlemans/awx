@@ -1,10 +1,13 @@
 // STL Includes:
+#include <CLI/App.hpp>
 #include <functional>
 #include <iostream>
 
 // Library Includes:
 #include <CLI/CLI.hpp>
 #include <CLI/Validators.hpp>
+#include <sstream>
+#include <string>
 
 // Includes:
 #include "config/config.hpp"
@@ -29,48 +32,35 @@ enum ExitCode {
 // NOLINTBEGIN
 // Parse command line arguments and store them in a configuration class
 // Warning: This is friend of the ConfigStore class
-auto parse_args(Config& t_config, const int t_argc, char* t_argv[]) -> int
+auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
+                char* t_argv[]) -> void
 {
-  CLI::App app{"AWX stands for AWK With Extensions."};
+  t_app.failure_message(CLI::FailureMessage::help);
 
-  // Program file
-  std::string script;
-  app.add_option("-f,--file", script, "AWX program that needs to be executed")
+  // Program files
+  t_app
+    .add_option("-f,--file", t_config.m_scripts,
+                "AWX program that needs to be executed")
+    ->required()
     ->check(CLI::ExistingFile);
 
   // Version flag
-  bool version{false};
-  app.add_flag("-v,--version", version, "Display the current AWX version");
+  std::stringstream ss;
+  ss << "Version: " << AWX_VERSION;
+  t_app.set_version_flag("-V,--version", ss.str(), "Displays the AWX version.");
 
   // Remaining positional arguments are filepaths preceding -- is optional
-  std::vector<std::string> filenames;
-  app.add_option("{}", filenames, "Postional arguments")
+  t_app.add_option("{}", t_config.m_filepaths, "Postional arguments")
     ->check(CLI::ExistingFile);
 
-  CLI11_PARSE(app, t_argc, t_argv);
-
-  t_config.m_paths.push_back(script);
-
-  for(auto& i : filenames)
-    std::cout << "file: " << i << '\n';
-
-  // TODO: Improve this (temporary)
-  if(version) {
-    std::cout << "Version: " << t_config.m_version << '\n';
-    exit(0);
-  }
-
-  return ExitCode::OK;
+  // Parse CLI args
+  t_app.parse(t_argc, t_argv);
 }
 // NOLINTEND
 
 auto run(Config& t_config) -> void
 {
-  // TODO: Remove this is temporary testing code
-  if(t_config.m_paths.empty())
-    return;
-
-  FileBuffer fb{t_config.m_paths.front()};
+  FileBuffer fb{t_config.m_scripts.front()};
 
   lexer::Lexer lexer{fb};
   token::TokenStream tokenstream{lexer.tokenize()};
@@ -92,9 +82,15 @@ auto run(Config& t_config) -> void
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
-  Config config{AwxMode::AWK, AWX_VERSION};
+  CLI::App app{"AWX stands for AWK With Extensions."};
+  Config config{AwxMode::AWK};
 
-  parse_args(config, t_argc, t_argv);
+	// Parse command line arguments
+  try {
+    parse_args(config, app, t_argc, t_argv);
+  } catch(const CLI::ParseError& e) {
+    return app.exit(e);
+  }
 
   // Set loglevel for now for debugging purposes
   DBG_SET_LOGLEVEL(VERBOSE);
