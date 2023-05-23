@@ -4,6 +4,7 @@
 
 // Library Includes:
 #include <CLI/CLI.hpp>
+#include <CLI/Validators.hpp>
 
 // Includes:
 #include "config/config.hpp"
@@ -32,21 +33,23 @@ auto parse_args(Config& t_config, const int t_argc, char* t_argv[]) -> int
 {
   CLI::App app{"AWX stands for AWK With Extensions."};
 
-  std::string program_path;
-  app.add_option("-f,--file", program_path,
-                 "AWX program that needs to be executed");
+  // Program file
+  std::string script;
+  app.add_option("-f,--file", script, "AWX program that needs to be executed")
+    ->check(CLI::ExistingFile);
 
-
+  // Version flag
   bool version{false};
   app.add_flag("-v,--version", version, "Display the current AWX version");
 
-	// Remaining positional arguments are treated as file input
+  // Remaining positional arguments are filepaths preceding -- is optional
   std::vector<std::string> filenames;
-  app.add_option("{}", filenames, "Postional arguments");
+  app.add_option("{}", filenames, "Postional arguments")
+    ->check(CLI::ExistingFile);
 
   CLI11_PARSE(app, t_argc, t_argv);
 
-  t_config.m_paths.push_back(program_path);
+  t_config.m_paths.push_back(script);
 
   for(auto& i : filenames)
     std::cout << "file: " << i << '\n';

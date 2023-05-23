@@ -35,6 +35,7 @@ struct Config {
   std::string_view m_version;
 
   std::vector<std::string> m_paths;
+  std::vector<std::string> m_filepaths;
 
   Config(AwxMode t_awx_mode, std::string_view t_version);
 };

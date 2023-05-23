@@ -7,13 +7,11 @@ set(CMAKE_CXX_STANDARD 23)
 # Set the compiler
 set(CMAKE_C_COMPILER "clang")
 set(CMAKE_CXX_COMPILER "clang++")
-# set(CMAKE_C_COMPILER "gcc")
-# set(CMAKE_CXX_COMPILER "g++")
 
 # Define the project
 project(awx
 	VERSION 0.2.0
-	DESCRIPTION "An awk interpreter written in C++."
+	DESCRIPTION "An AWK interpreter written in C++."
 	LANGUAGES CXX
 )
 
