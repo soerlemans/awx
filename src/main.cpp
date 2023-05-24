@@ -82,7 +82,7 @@ auto run(Config& t_config) -> void
       // Execute program via tree walk interpreter
       DBG_PRINTLN("#== EXECUTING ==#");
       interpreter::TreeWalk interpreter;
-      ast->accept(&interpreter);
+      interpreter.run(ast, input);
     }
   }
 }

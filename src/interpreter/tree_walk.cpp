@@ -13,9 +13,9 @@
 // Includes:
 #include "../debug/log.hpp"
 #include "../node/include.hpp"
-#include "builtin/operators.hpp"
 
 // Local Includes:
+#include "builtin/operators.hpp"
 #include "overload.hpp"
 #include "return_exception.hpp"
 
@@ -656,3 +656,11 @@ auto TreeWalk::visit(List* t_list) -> void
 
 auto TreeWalk::visit([[maybe_unused]] Nil* t_nil) -> void
 {}
+
+auto TreeWalk::run(node::NodePtr& t_ast, const FileBuffer& t_input) -> void
+{
+  m_input = &t_input;
+  m_ast = t_ast;
+
+  m_ast->accept(this);
+}

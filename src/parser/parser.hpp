@@ -1,5 +1,5 @@
-#ifndef PARSER_HPP
-#define PARSER_HPP
+#ifndef AWX_PARSER_PARSER_HPP
+#define AWX_PARSER_PARSER_HPP
 
 // Includes:
 #include "../lexer/lexer.hpp"
@@ -39,4 +39,4 @@ class Parser {
 };
 } // namespace parser
 
-#endif /* PARSER_H */
+#endif // AWX_PARSER_PARSER_HPP

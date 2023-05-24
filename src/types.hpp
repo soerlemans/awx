@@ -1,5 +1,5 @@
-#ifndef TYPES_HPP
-#define TYPES_HPP
+#ifndef AWX_TYPES_HPP
+#define AWX_TYPES_HPP
 
 // STL Includes:
 #include <cstdint>
@@ -22,4 +22,4 @@ using i16 = std::int16_t;
 using i32 = std::int32_t;
 using i64 = std::int64_t;
 
-#endif /* TYPES_H */
+#endif // AWX_TYPES_HPP

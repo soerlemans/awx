@@ -7,6 +7,7 @@
 #include <variant>
 
 // Includes:
+#include "../file_buffer.hpp"
 #include "../visitor/node_visitor.hpp"
 
 // Local Includes:
@@ -21,10 +22,15 @@ namespace interpreter {
  */
 class TreeWalk : public visitor::NodeVisitor {
   private:
+  // Aliases:
   template<typename T>
   using Store = std::map<std::string, T>;
 
-  // Store<Any> m_local_scope;
+  // Members:
+  const FileBuffer* m_input;
+  node::NodePtr m_ast;
+
+  // Runtime environment variables:
   Store<Any> m_globals;
   std::stack<Store<Any>> m_scope;
   Store<node::functions::NodeFuncPtr> m_functions;
@@ -95,6 +101,8 @@ class TreeWalk : public visitor::NodeVisitor {
 
   auto visit(node::List* t_list) -> void override;
   auto visit(node::Nil* t_nil) -> void override;
+
+  auto run(node::NodePtr& t_ast, const FileBuffer& t_input) -> void;
 
   ~TreeWalk() override = default;
 };

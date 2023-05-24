@@ -1,8 +1,10 @@
-#ifndef TOKEN_TYPE_WRAPPER_HPP
-#define TOKEN_TYPE_WRAPPER_HPP
+#ifndef AWX_TOKEN_TOKEN_TYPE_WRAPPER_HPP
+#define AWX_TOKEN_TOKEN_TYPE_WRAPPER_HPP
 
-
+// STL Includes:
 #include <type_traits>
+
+
 namespace token::reserved {
 // Concepts:
 // The Identifier is either one character or a string_view
@@ -56,4 +58,4 @@ class TokenTypeWrapper {
 };
 } // namespace token::reserved
 
-#endif // TOKEN_TYPE_WRAPPER_HPP
+#endif // AWX_TOKEN_TOKEN_TYPE_WRAPPER_HPP
