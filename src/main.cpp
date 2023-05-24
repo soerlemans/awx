@@ -60,24 +60,26 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
 
 auto run(Config& t_config) -> void
 {
-  FileBuffer fb{t_config.m_scripts.front()};
+  for(auto& script : t_config.m_scripts) {
+    FileBuffer fb{script};
 
-  lexer::Lexer lexer{fb};
-  token::TokenStream tokenstream{lexer.tokenize()};
+    lexer::Lexer lexer{fb};
+    token::TokenStream tokenstream{lexer.tokenize()};
 
-  parser::AwkParser parser{tokenstream};
-  node::NodePtr ast{parser.parse()};
+    parser::AwkParser parser{tokenstream};
+    node::NodePtr ast{parser.parse()};
 
 #if DEBUG
-  // Pretty print ast
-  visitor::PrintVisitor pretty_printer;
-  ast->accept(&pretty_printer);
+    // Pretty print ast
+    visitor::PrintVisitor pretty_printer;
+    ast->accept(&pretty_printer);
 #endif // DEBUG
 
-  // Execute program via tree walk interpreter
-  DBG_PRINTLN("#== EXECUTING ==#");
-  interpreter::TreeWalk interpreter;
-  ast->accept(&interpreter);
+    // Execute program via tree walk interpreter
+    DBG_PRINTLN("#== EXECUTING ==#");
+    interpreter::TreeWalk interpreter;
+    ast->accept(&interpreter);
+  }
 }
 
 auto main(int t_argc, char* t_argv[]) -> int
@@ -85,7 +87,7 @@ auto main(int t_argc, char* t_argv[]) -> int
   CLI::App app{"AWX stands for AWK With Extensions."};
   Config config{AwxMode::AWK};
 
-	// Parse command line arguments
+  // Parse command line arguments
   try {
     parse_args(config, app, t_argc, t_argv);
   } catch(const CLI::ParseError& e) {
