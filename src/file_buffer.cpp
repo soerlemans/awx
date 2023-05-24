@@ -105,3 +105,13 @@ auto FileBuffer::eof() const -> bool
 {
   return m_lineno >= size();
 }
+
+// Operators:
+auto operator<<(std::ostream& t_os, const FileBuffer& t_fb) -> std::ostream&
+{
+  for(auto& line : t_fb.m_filebuffer) {
+    t_os << line;
+  }
+
+  return t_os;
+}

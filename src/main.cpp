@@ -61,31 +61,36 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
 auto run(Config& t_config) -> void
 {
   for(auto& script : t_config.m_scripts) {
-    FileBuffer fb{script};
+    for(auto& filepath : t_config.m_filepaths) {
+      FileBuffer program{script};
+      FileBuffer input{filepath};
 
-    lexer::Lexer lexer{fb};
-    token::TokenStream tokenstream{lexer.tokenize()};
+      std::cout << "Input:\n" << input;
 
-    parser::AwkParser parser{tokenstream};
-    node::NodePtr ast{parser.parse()};
+      lexer::Lexer lexer{program};
+      token::TokenStream tokenstream{lexer.tokenize()};
+
+      parser::AwkParser parser{tokenstream};
+      node::NodePtr ast{parser.parse()};
 
 #if DEBUG
-    // Pretty print ast
-    visitor::PrintVisitor pretty_printer;
-    ast->accept(&pretty_printer);
+      // Pretty print ast
+      visitor::PrintVisitor pretty_printer;
+      ast->accept(&pretty_printer);
 #endif // DEBUG
 
-    // Execute program via tree walk interpreter
-    DBG_PRINTLN("#== EXECUTING ==#");
-    interpreter::TreeWalk interpreter;
-    ast->accept(&interpreter);
+      // Execute program via tree walk interpreter
+      DBG_PRINTLN("#== EXECUTING ==#");
+      interpreter::TreeWalk interpreter;
+      ast->accept(&interpreter);
+    }
   }
 }
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
   CLI::App app{"AWX stands for AWK With Extensions."};
-  Config config{AwxMode::AWK};
+  Config config{AwxMode::POSIX_AWK};
 
   // Parse command line arguments
   try {

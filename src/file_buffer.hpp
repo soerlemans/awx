@@ -47,6 +47,10 @@ class FileBuffer {
   auto eol() const -> bool;
   auto eof() const -> bool;
 
+  // Operators:
+  friend auto operator<<(std::ostream& t_os, const FileBuffer& t_fb)
+    -> std::ostream&;
+
   virtual ~FileBuffer() = default;
 };
 

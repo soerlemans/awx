@@ -17,15 +17,10 @@ namespace fs = std::filesystem;
  * syntax and supported features
  */
 enum AwxMode {
-  // Function strictly as POSIX compatible AWK interpreter
-  AWK_STRICT = 0,
-
-  // Be backwards compatible with AWK and allow AWX extensions, that do not
-  // break backwards compatibility
-  AWK,
-
-  // Disregard all backwards compatibility and run as AWX interpreter
-  AWX,
+  POSIX_AWK = 0,   // Run as POSIX compatable AWK
+  TRADITIONAL_AWK, // Run as Brian Kernighan's AWK
+  AWK, // Allow AWX extensions but do not break backwards compatibility
+  AWX, // Disregard all backwards compatibility and run as AWX interpreter
 };
 
 /*! The Config contains global data like options passed from the command line
