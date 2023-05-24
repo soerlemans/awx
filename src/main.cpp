@@ -51,6 +51,7 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
 
   // Remaining positional arguments are filepaths preceding -- is optional
   t_app.add_option("{}", t_config.m_filepaths, "Postional arguments")
+    ->required()
     ->check(CLI::ExistingFile);
 
   // Parse CLI args
