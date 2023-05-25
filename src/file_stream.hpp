@@ -1,5 +1,5 @@
-#ifndef FILE_STREAM_HPP
-#define FILE_STREAM_HPP
+#ifndef AWX_FILE_STREAM_HPP
+#define AWX_FILE_STREAM_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -17,4 +17,4 @@ class FileStream : public Stream<std::string> {
   FileStream(fs::path t_path);
 };
 
-#endif // FILE_STREAM_HPP
+#endif // AWX_FILE_STREAM_HPP

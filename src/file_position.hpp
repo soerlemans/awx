@@ -1,5 +1,5 @@
-#ifndef FILE_POSITION_HPP
-#define FILE_POSITION_HPP
+#ifndef AWX_FILE_POSITION_HPP
+#define AWX_FILE_POSITION_HPP
 
 #include <string>
 
@@ -24,4 +24,4 @@ struct FilePosition {
   virtual ~FilePosition() = default;
 };
 
-#endif // FILE_POSITION_HPP
+#endif // AWX_FILE_POSITION_HPP

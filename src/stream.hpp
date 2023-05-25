@@ -1,5 +1,5 @@
-#ifndef STREAM_HPP
-#define STREAM_HPP
+#ifndef AWX_STREAM_HPP
+#define AWX_STREAM_HPP
 
 // STL Includes:
 #include <concepts>
@@ -57,4 +57,4 @@ class Stream : public T {
   virtual ~Stream() = default;
 };
 
-#endif // STREAM_HPP
+#endif // AWX_STREAM_HPP

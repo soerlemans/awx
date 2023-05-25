@@ -1,5 +1,5 @@
-#ifndef FILE_BUFFER_HPP
-#define FILE_BUFFER_HPP
+#ifndef AWX_FILE_BUFFER_HPP
+#define AWX_FILE_BUFFER_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -54,4 +54,4 @@ class FileBuffer {
   virtual ~FileBuffer() = default;
 };
 
-#endif // FILE_BUFFER_HPP
+#endif // AWX_FILE_BUFFER_HPP

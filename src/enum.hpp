@@ -1,5 +1,5 @@
-#ifndef ENUM_HPP
-#define ENUM_HPP
+#ifndef AWX_ENUM_HPP
+#define AWX_ENUM_HPP
 
 #include <type_traits>
 
@@ -14,4 +14,4 @@ constexpr auto enum2int(const T t_value)
   return static_cast<std::underlying_type_t<T>>(t_value);
 }
 
-#endif // ENUM_HPP
+#endif // AWX_ENUM_HPP
