@@ -1,5 +1,5 @@
-#ifndef VERSION_HPP
-#define VERSION_HPP
+#ifndef AWX_VERSION_HPP
+#define AWX_VERSION_HPP
 
 
 //! Cmake substitutes the version numbers specified in the root CMakeLists.txt
@@ -9,4 +9,4 @@
 
 #define AWX_VERSION "@awx_VERSION@"
 
-#endif // VERSION_HPP
+#endif // AWX_VERSION_HPP
