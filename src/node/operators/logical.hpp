@@ -1,5 +1,5 @@
-#ifndef LOGICAL_HPP
-#define LOGICAL_HPP
+#ifndef AWX_NODE_OPERATORS_LOGICAL_HPP
+#define AWX_NODE_OPERATORS_LOGICAL_HPP
 
 #include "binary_operator.hpp"
 #include "operators.hpp"
@@ -40,4 +40,4 @@ class Or : public BinaryOperator {
 };
 } // namespace node::operators
 
-#endif // LOGICAL_HPP
+#endif // AWX_NODE_OPERATORS_LOGICAL_HPP

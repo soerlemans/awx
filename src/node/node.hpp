@@ -1,5 +1,5 @@
-#ifndef NODES_HPP
-#define NODES_HPP
+#ifndef AWX_NODE_NODE_HPP
+#define AWX_NODE_NODE_HPP
 
 // STL Includes:
 #include <memory>
@@ -28,4 +28,4 @@ using NodePtr = std::shared_ptr<NodeInterface>;
 using NodeListPtr = std::shared_ptr<List>;
 } // namespace node
 
-#endif // NODES_HPP
+#endif // AWX_NODE_NODE_HPP

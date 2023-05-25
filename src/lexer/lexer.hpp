@@ -1,5 +1,5 @@
-#ifndef LEXER_HPP
-#define LEXER_HPP
+#ifndef AWX_LEXER_LEXER_HPP
+#define AWX_LEXER_LEXER_HPP
 
 // STL Includes:
 #include <string>
@@ -61,4 +61,4 @@ class Lexer {
 };
 } // namespace lexer
 
-#endif // LEXER_HPP
+#endif // AWX_LEXER_LEXER_HPP

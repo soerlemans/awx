@@ -1,5 +1,5 @@
-#ifndef GROUPING_HPP
-#define GROUPING_HPP
+#ifndef AWX_NODE_OPERATORS_GROUPING_HPP
+#define AWX_NODE_OPERATORS_GROUPING_HPP
 
 #include "operators.hpp"
 #include "unary_operator.hpp"
@@ -17,4 +17,4 @@ class Grouping : public UnaryOperator {
 };
 } // namespace node::operators
 
-#endif // GROUPING_HPP
+#endif // AWX_NODE_OPERATORS_GROUPING_HPP

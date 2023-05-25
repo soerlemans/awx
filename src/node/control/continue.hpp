@@ -1,5 +1,5 @@
-#ifndef CONTINUE_HPP
-#define CONTINUE_HPP
+#ifndef AWX_NODE_CONTROL_CONTINUE_HPP
+#define AWX_NODE_CONTROL_CONTINUE_HPP
 
 #include "../node_interface.hpp"
 
@@ -16,4 +16,4 @@ class Continue : public NodeInterface {
 
 } // namespace node::control
 
-#endif // CONTINUE_HPP
+#endif // AWX_NODE_CONTROL_CONTINUE_HPP

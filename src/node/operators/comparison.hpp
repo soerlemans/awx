@@ -1,5 +1,5 @@
-#ifndef COMPARISON_HPP
-#define COMPARISON_HPP
+#ifndef AWX_NODE_OPERATORS_COMPARISON_HPP
+#define AWX_NODE_OPERATORS_COMPARISON_HPP
 
 #include "binary_operator.hpp"
 #include "operators.hpp"
@@ -32,4 +32,4 @@ class Comparison : public BinaryOperator {
 };
 } // namespace node::operators
 
-#endif // COMPARISON_HPP
+#endif // AWX_NODE_OPERATORS_COMPARISON_HPP

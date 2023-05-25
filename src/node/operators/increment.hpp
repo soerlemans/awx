@@ -1,5 +1,5 @@
-#ifndef INCREMENT_HPP
-#define INCREMENT_HPP
+#ifndef AWX_NODE_OPERATORS_INCREMENT_HPP
+#define AWX_NODE_OPERATORS_INCREMENT_HPP
 
 #include "operators.hpp"
 #include "unary_operator.hpp"

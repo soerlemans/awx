@@ -1,5 +1,5 @@
-#ifndef TRACE_HPP
-#define TRACE_HPP
+#ifndef AWX_TRACE_HPP
+#define AWX_TRACE_HPP
 
 #include <string>
 
@@ -67,4 +67,4 @@ class Trace {
   } while(false)
 
 #endif // DEBUG
-#endif // TRACE_HPP
+#endif // AWX_TRACE_HPP

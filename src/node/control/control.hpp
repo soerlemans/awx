@@ -1,5 +1,5 @@
-#ifndef CONTROL_HPP
-#define CONTROL_HPP
+#ifndef AWX_NODE_CONTROL_CONTROL_HPP
+#define AWX_NODE_CONTROL_CONTROL_HPP
 
 
 namespace node::control {
@@ -17,4 +17,4 @@ class Return;
 class DoWhile;
 }; // namespace node::control
 
-#endif // CONTROL_HPP
+#endif // AWX_NODE_CONTROL_CONTROL_HPP

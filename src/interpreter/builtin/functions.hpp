@@ -1,5 +1,5 @@
-#ifndef INTERPRETER_BUILTIN_FUNCTIONS_HPP
-#define INTERPRETER_BUILTIN_FUNCTIONS_HPP
+#ifndef AWX_INTERPRETER_BUILTIN_FUNCTIONS_HPP
+#define AWX_INTERPRETER_BUILTIN_FUNCTIONS_HPP
 
 // STL Includes:
 #include <cmath>
@@ -9,7 +9,7 @@
 
 namespace interpreter::builtin {
 // Macros:
-#define BUILTIN_FUNCTION_PAIR(func) \
+#define AWX_INTERPRETER_BUILTIN_FUNCTIONS_HPP
   {                                 \
 #func, func                     \
   }
@@ -45,4 +45,4 @@ auto toupper() -> Any;
 
 } // namespace interpreter::builtin
 
-#endif // INTERPRETER_BUILTIN_FUNCTIONS_HPP
+#endif // AWX_INTERPRETER_BUILTIN_FUNCTIONS_HPP

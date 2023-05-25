@@ -1,5 +1,5 @@
-#ifndef MATCH_HPP
-#define MATCH_HPP
+#ifndef AWX_NODE_OPERATORS_MATCH_HPP
+#define AWX_NODE_OPERATORS_MATCH_HPP
 
 #include "binary_operator.hpp"
 #include "operators.hpp"
@@ -22,4 +22,4 @@ class Match : public BinaryOperator {
 };
 } // namespace node::operators
 
-#endif // MATCH_HPP
+#endif // AWX_NODE_OPERATORS_MATCH_HPP

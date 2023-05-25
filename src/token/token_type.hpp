@@ -1,5 +1,5 @@
-#ifndef TOKEN_TYPE_HPP
-#define TOKEN_TYPE_HPP
+#ifndef AWX_TOKEN_TOKEN_TYPE_HPP
+#define AWX_TOKEN_TOKEN_TYPE_HPP
 
 #include "../types.hpp"
 
@@ -129,4 +129,4 @@ enum class TokenType {
 };
 } // namespace token
 
-#endif // TOKEN_TYPE_HPP
+#endif // AWX_TOKEN_TOKEN_TYPE_HPP

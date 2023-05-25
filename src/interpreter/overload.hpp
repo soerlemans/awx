@@ -1,5 +1,5 @@
-#ifndef INTERPRETER_OVERLOAD_HPP
-#define INTERPRETER_OVERLOAD_HPP
+#ifndef AWX_INTERPRETER_OVERLOAD_HPP
+#define AWX_INTERPRETER_OVERLOAD_HPP
 
 
 namespace interpreter {
@@ -15,4 +15,4 @@ template<class... Ts>
 Overload(Ts...) -> Overload<Ts...>;
 } // namespace interpreter
 
-#endif // INTERPRETER_OVERLOAD_HPP
+#endif // AWX_INTERPRETER_OVERLOAD_HPP

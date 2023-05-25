@@ -1,5 +1,5 @@
-#ifndef NEXT_HPP
-#define NEXT_HPP
+#ifndef AWX_NODE_CONTROL_NEXT_HPP
+#define AWX_NODE_CONTROL_NEXT_HPP
 
 #include "../node_interface.hpp"
 
@@ -14,4 +14,4 @@ class Next : public NodeInterface {
 };
 } // namespace node::control
 
-#endif // NEXT_HPP
+#endif // AWX_NODE_CONTROL_NEXT_HPP

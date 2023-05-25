@@ -1,5 +1,5 @@
-#ifndef BREAK_HPP
-#define BREAK_HPP
+#ifndef AWX_NODE_CONTROL_BREAK_HPP
+#define AWX_NODE_CONTROL_BREAK_HPP
 
 #include "../node_interface.hpp"
 
@@ -14,4 +14,4 @@ class Break : public NodeInterface {
 };
 } // namespace node::control
 
-#endif // BREAK_HPP
+#endif // AWX_NODE_CONTROL_BREAK_HPP

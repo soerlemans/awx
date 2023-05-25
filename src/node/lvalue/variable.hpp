@@ -1,5 +1,5 @@
-#ifndef VARIABLE_HPP
-#define VARIABLE_HPP
+#ifndef AWX_NODE_LVALUE_VARIABLE_HPP
+#define AWX_NODE_LVALUE_VARIABLE_HPP
 
 #include <string_view>
 
@@ -24,4 +24,4 @@ class Variable : public NodeInterface {
 };
 } // namespace node::lvalue
 
-#endif // VARIABLE_HPP
+#endif // AWX_NODE_LVALUE_VARIABLE_HPP

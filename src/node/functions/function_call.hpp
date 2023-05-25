@@ -1,5 +1,5 @@
-#ifndef FUNCTION_CALL_HPP
-#define FUNCTION_CALL_HPP
+#ifndef AWX_NODE_FUNCTIONS_FUNCTION_CALL_HPP
+#define AWX_NODE_FUNCTIONS_FUNCTION_CALL_HPP
 
 #include <string>
 #include <string_view>
@@ -28,4 +28,4 @@ class FunctionCall : public NodeInterface {
 };
 } // namespace node::functions
 
-#endif // FUNCTION_CALL_HPP
+#endif // AWX_NODE_FUNCTIONS_FUNCTION_CALL_HPP

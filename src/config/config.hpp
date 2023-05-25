@@ -1,5 +1,5 @@
-#ifndef CONFIG_HPP
-#define CONFIG_HPP
+#ifndef AWX_CONFIG_CONFIG_HPP
+#define AWX_CONFIG_CONFIG_HPP
 
 // STL Includes:
 #include <filesystem>
@@ -34,4 +34,4 @@ struct Config {
   Config(AwxMode t_awx_mode);
 };
 
-#endif // CONFIG_HPP
+#endif // AWX_CONFIG_CONFIG_HPP

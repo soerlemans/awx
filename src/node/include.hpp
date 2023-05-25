@@ -1,5 +1,5 @@
-#ifndef INCLUDE_HPP
-#define INCLUDE_HPP
+#ifndef AWX_NODE_INCLUDE_HPP
+#define AWX_NODE_INCLUDE_HPP
 
 /*! This header is made to include the headers of all classes that inherit from
  * Node, this to
@@ -68,4 +68,4 @@
 #include "../node/operators/ternary.hpp"
 #include "../node/operators/unary_prefix.hpp"
 
-#endif // INCLUDE_HPP
+#endif // AWX_NODE_INCLUDE_HPP

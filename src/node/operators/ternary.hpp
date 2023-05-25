@@ -1,5 +1,5 @@
-#ifndef TERNARY_HPP
-#define TERNARY_HPP
+#ifndef AWX_NODE_OPERATORS_TERNARY_HPP
+#define AWX_NODE_OPERATORS_TERNARY_HPP
 
 #include "binary_operator.hpp"
 #include "operators.hpp"
@@ -21,4 +21,4 @@ class Ternary : public BinaryOperator {
 };
 } // namespace node::operators
 
-#endif // TERNARY_HPP
+#endif // AWX_NODE_OPERATORS_TERNARY_HPP

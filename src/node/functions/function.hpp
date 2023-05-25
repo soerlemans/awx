@@ -1,5 +1,5 @@
-#ifndef FUNCTION_HPP
-#define FUNCTION_HPP
+#ifndef AWX_NODE_FUNCTIONS_FUNCTION_HPP
+#define AWX_NODE_FUNCTIONS_FUNCTION_HPP
 
 #include "../list.hpp"
 #include "../node_interface.hpp"
@@ -26,4 +26,4 @@ class Function : public NodeInterface {
 };
 } // namespace node::functions
 
-#endif // FUNCTION_HPP
+#endif // AWX_NODE_FUNCTIONS_FUNCTION_HPP

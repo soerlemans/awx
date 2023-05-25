@@ -1,5 +1,5 @@
-#ifndef ARRAY_HPP
-#define ARRAY_HPP
+#ifndef AWX_NODE_LVALUE_ARRAY_HPP
+#define AWX_NODE_LVALUE_ARRAY_HPP
 
 #include "lvalue.hpp"
 #include "variable.hpp"
@@ -21,4 +21,4 @@ class Array : public Variable {
 };
 } // namespace node::lvalue
 
-#endif // ARRAY_HPP
+#endif // AWX_NODE_LVALUE_ARRAY_HPP

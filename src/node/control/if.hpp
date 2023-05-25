@@ -1,5 +1,5 @@
-#ifndef IF_HPP
-#define IF_HPP
+#ifndef AWX_NODE_CONTROL_IF_HPP
+#define AWX_NODE_CONTROL_IF_HPP
 
 #include "../node_interface.hpp"
 
@@ -27,4 +27,4 @@ class If : public NodeInterface {
 };
 } // namespace node::control
 
-#endif // IF_HPP
+#endif // AWX_NODE_CONTROL_IF_HPP

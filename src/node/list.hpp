@@ -1,5 +1,5 @@
-#ifndef LIST_HPP
-#define LIST_HPP
+#ifndef AWX_NODE_LIST_HPP
+#define AWX_NODE_LIST_HPP
 
 #include <list>
 #include <memory>
@@ -26,4 +26,4 @@ class List : public NodeInterface, public std::list<NodePtr> {
 };
 } // namespace node
 
-#endif // LIST_HPP
+#endif // AWX_NODE_LIST_HPP

@@ -1,5 +1,5 @@
-#ifndef WHILE_HPP
-#define WHILE_HPP
+#ifndef AWX_NODE_CONTROL_WHILE_HPP
+#define AWX_NODE_CONTROL_WHILE_HPP
 
 #include "../list.hpp"
 
@@ -24,4 +24,4 @@ class While : public NodeInterface {
 };
 } // namespace node::control
 
-#endif // WHILE_HPP
+#endif // AWX_NODE_CONTROL_WHILE_HPP

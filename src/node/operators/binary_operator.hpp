@@ -1,5 +1,5 @@
-#ifndef BINARY_OPERATOR_HPP
-#define BINARY_OPERATOR_HPP
+#ifndef AWX_NODE_OPERATORS_BINARY_OPERATOR_HPP
+#define AWX_NODE_OPERATORS_BINARY_OPERATOR_HPP
 
 #include "operators.hpp"
 #include "unary_operator.hpp"
@@ -30,4 +30,4 @@ class BinaryOperator : public UnaryOperator {
 };
 } // namespace node::operators
 
-#endif // BINARY_OPERATOR_HPP
+#endif // AWX_NODE_OPERATORS_BINARY_OPERATOR_HPP

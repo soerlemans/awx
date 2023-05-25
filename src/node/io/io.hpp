@@ -1,5 +1,5 @@
-#ifndef IO_HPP
-#define IO_HPP
+#ifndef AWX_NODE_IO_IO_HPP
+#define AWX_NODE_IO_IO_HPP
 
 
 namespace node::io {
@@ -14,4 +14,4 @@ class Getline;
 class Redirection;
 } // namespace node::io
 
-#endif // IO_HPP
+#endif // AWX_NODE_IO_IO_HPP

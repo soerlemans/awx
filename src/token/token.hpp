@@ -1,5 +1,5 @@
-#ifndef TOKEN_HPP
-#define TOKEN_HPP
+#ifndef AWX_TOKEN_TOKEN_HPP
+#define AWX_TOKEN_TOKEN_HPP
 
 // STL Includes:
 #include <iostream>
@@ -64,4 +64,4 @@ class Token {
 };
 } // namespace token
 
-#endif // TOKEN_HPP
+#endif // AWX_TOKEN_TOKEN_HPP

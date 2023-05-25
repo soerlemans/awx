@@ -1,5 +1,5 @@
-#ifndef RETURN_HPP
-#define RETURN_HPP
+#ifndef AWX_NODE_CONTROL_RETURN_HPP
+#define AWX_NODE_CONTROL_RETURN_HPP
 
 #include "../node_interface.hpp"
 
@@ -22,4 +22,4 @@ class Return : public NodeInterface {
 };
 } // namespace node::control
 
-#endif // RETURN_HPP
+#endif // AWX_NODE_CONTROL_RETURN_HPP

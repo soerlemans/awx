@@ -1,5 +1,5 @@
-#ifndef FIELD_REFERENCE_HPP
-#define FIELD_REFERENCE_HPP
+#ifndef AWX_NODE_LVALUE_FIELD_REFERENCE_HPP
+#define AWX_NODE_LVALUE_FIELD_REFERENCE_HPP
 
 #include "../node_interface.hpp"
 
@@ -20,4 +20,4 @@ class FieldReference : public NodeInterface {
 };
 } // namespace node::lvalue
 
-#endif // FIELD_REFERENCE_HPP
+#endif // AWX_NODE_LVALUE_FIELD_REFERENCE_HPP

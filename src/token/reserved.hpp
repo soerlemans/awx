@@ -1,5 +1,5 @@
-#ifndef RESERVED_HPP
-#define RESERVED_HPP
+#ifndef AWX_TOKEN_RESERVED_HPP
+#define AWX_TOKEN_RESERVED_HPP
 
 // STL Includes:
 #include <array>
@@ -266,4 +266,4 @@ namespace none {
 } // namespace reserved
 // clang-format on
 
-#endif // RESERVED_HPP
+#endif // AWX_TOKEN_RESERVED_HPP

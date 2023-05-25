@@ -1,5 +1,5 @@
-#ifndef NODE_VISITOR_HPP
-#define NODE_VISITOR_HPP
+#ifndef AWX_VISITOR_NODE_VISITOR_HPP
+#define AWX_VISITOR_NODE_VISITOR_HPP
 
 // Includes:
 #include "../node/node.hpp"
@@ -71,4 +71,4 @@ class NodeVisitor {
 };
 } // namespace visitor
 
-#endif // NODE_VISITOR_HPP
+#endif // AWX_VISITOR_NODE_VISITOR_HPP

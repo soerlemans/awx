@@ -1,5 +1,5 @@
-#ifndef CONTEXT_HPP
-#define CONTEXT_HPP
+#ifndef AWX_INTERPRETER_CONTEXT_HPP
+#define AWX_INTERPRETER_CONTEXT_HPP
 
 // STL Includes:
 #include <map>
@@ -25,4 +25,4 @@ struct Context {
 };
 } // namespace interpreter
 
-#endif // CONTEXT_HPP
+#endif // AWX_INTERPRETER_CONTEXT_HPP

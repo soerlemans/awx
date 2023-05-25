@@ -1,5 +1,5 @@
-#ifndef RVALUE_HPP
-#define RVALUE_HPP
+#ifndef AWX_NODE_RVALUE_RVALUE_HPP
+#define AWX_NODE_RVALUE_RVALUE_HPP
 
 #include "../node.hpp"
 
@@ -16,4 +16,4 @@ using Float = Literal<double>;
 using String = Literal<std::string>;
 } // namespace node::rvalue
 
-#endif // RVALUE_HPP
+#endif // AWX_NODE_RVALUE_RVALUE_HPP

@@ -1,5 +1,5 @@
-#ifndef SPECIAL_PATTERN_HPP
-#define SPECIAL_PATTERN_HPP
+#ifndef AWX_NODE_RECIPES_SPECIAL_PATTERN_HPP
+#define AWX_NODE_RECIPES_SPECIAL_PATTERN_HPP
 
 
 // Includes:
@@ -27,4 +27,4 @@ class SpecialPattern : public NodeInterface {
 };
 } // namespace node::recipes
 
-#endif // SPECIAL_PATTERN_HPP
+#endif // AWX_NODE_RECIPES_SPECIAL_PATTERN_HPP

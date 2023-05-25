@@ -1,5 +1,5 @@
-#ifndef GETLINE_HPP
-#define GETLINE_HPP
+#ifndef AWX_NODE_IO_GETLINE_HPP
+#define AWX_NODE_IO_GETLINE_HPP
 
 #include "../node_interface.hpp"
 
@@ -22,4 +22,4 @@ class Getline : public NodeInterface {
 };
 } // namespace node::io
 
-#endif // GETLINE_HPP
+#endif // AWX_NODE_IO_GETLINE_HPP

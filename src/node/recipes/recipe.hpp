@@ -1,5 +1,5 @@
-#ifndef RECIPE_HPP
-#define RECIPE_HPP
+#ifndef AWX_NODE_RECIPES_RECIPE_HPP
+#define AWX_NODE_RECIPES_RECIPE_HPP
 
 #include "../list.hpp"
 #include "../node_interface.hpp"
@@ -26,4 +26,4 @@ class Recipe : public NodeInterface {
 };
 } // namespace node::recipes
 
-#endif // RECIPE_HPP
+#endif // AWX_NODE_RECIPES_RECIPE_HPP

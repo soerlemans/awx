@@ -1,5 +1,5 @@
-#ifndef LVALUE_HPP
-#define LVALUE_HPP
+#ifndef AWX_NODE_LVALUE_LVALUE_HPP
+#define AWX_NODE_LVALUE_LVALUE_HPP
 
 #include "../node.hpp"
 
@@ -10,4 +10,4 @@ class Variable;
 class FieldReference;
 } // namespace node::lvalue
 
-#endif // LVALUE_HPP
+#endif // AWX_NODE_LVALUE_LVALUE_HPP

@@ -1,5 +1,5 @@
-#ifndef AWK_PARSER_HPP
-#define AWK_PARSER_HPP
+#ifndef AWX_PARSER_AWK_PARSER_HPP
+#define AWX_PARSER_AWK_PARSER_HPP
 
 // STL Includes:
 #include <functional>
@@ -138,4 +138,4 @@ class AwkParser : public Parser {
 };
 } // namespace parser
 
-#endif // AWK_PARSER_HPP
+#endif // AWX_PARSER_AWK_PARSER_HPP

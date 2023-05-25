@@ -1,5 +1,5 @@
-#ifndef RETURN_EXCEPTION_HPP
-#define RETURN_EXCEPTION_HPP
+#ifndef AWX_INTERPRETER_RETURN_EXCEPTION_HPP
+#define AWX_INTERPRETER_RETURN_EXCEPTION_HPP
 
 // STL Includes:
 #include <optional>
@@ -17,4 +17,4 @@ struct ReturnException {
 };
 } // namespace interpreter
 
-#endif // RETURN_EXCEPTION_HPP
+#endif // AWX_INTERPRETER_RETURN_EXCEPTION_HPP

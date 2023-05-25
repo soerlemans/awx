@@ -1,5 +1,5 @@
-#ifndef ASSIGNMENT_HPP
-#define ASSIGNMENT_HPP
+#ifndef AWX_NODE_OPERATORS_ASSIGNMENT_HPP
+#define AWX_NODE_OPERATORS_ASSIGNMENT_HPP
 
 #include "binary_operator.hpp"
 #include "operators.hpp"
@@ -34,4 +34,4 @@ class Assignment : public BinaryOperator {
 };
 } // namespace node::operators
 
-#endif // ASSIGNMENT_HPP
+#endif // AWX_NODE_OPERATORS_ASSIGNMENT_HPP

@@ -1,5 +1,5 @@
-#ifndef MEMBERSHIP_HPP
-#define MEMBERSHIP_HPP
+#ifndef AWX_NODE_OPERATORS_MEMBERSHIP_HPP
+#define AWX_NODE_OPERATORS_MEMBERSHIP_HPP
 
 #include "operators.hpp"
 #include "unary_operator.hpp"
@@ -20,4 +20,4 @@ class Membership : public UnaryOperator {
 };
 } // namespace node::operators
 
-#endif // MEMBERSHIP_HPP
+#endif // AWX_NODE_OPERATORS_MEMBERSHIP_HPP

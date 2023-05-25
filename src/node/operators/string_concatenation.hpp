@@ -1,5 +1,5 @@
-#ifndef STRING_CONCATENATION_HPP
-#define STRING_CONCATENATION_HPP
+#ifndef AWX_NODE_OPERATORS_STRING_CONCATENATION_HPP
+#define AWX_NODE_OPERATORS_STRING_CONCATENATION_HPP
 
 #include "binary_operator.hpp"
 #include "operators.hpp"
@@ -17,4 +17,4 @@ class StringConcatenation : public BinaryOperator {
 };
 } // namespace node::operators
 
-#endif // STRING_CONCATENATION_HPP
+#endif // AWX_NODE_OPERATORS_STRING_CONCATENATION_HPP

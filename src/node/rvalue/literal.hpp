@@ -1,5 +1,5 @@
-#ifndef LITERAL_HPP
-#define LITERAL_HPP
+#ifndef AWX_NODE_RVALUE_LITERAL_HPP
+#define AWX_NODE_RVALUE_LITERAL_HPP
 
 #include <string>
 #include <variant>
@@ -35,4 +35,4 @@ class Literal : public NodeInterface {
 };
 } // namespace node::rvalue
 
-#endif // LITERAL_HPP
+#endif // AWX_NODE_RVALUE_LITERAL_HPP

@@ -1,5 +1,5 @@
-#ifndef OPERATORS_HPP
-#define OPERATORS_HPP
+#ifndef AWX_NODE_OPERATORS_OPERATORS_HPP
+#define AWX_NODE_OPERATORS_OPERATORS_HPP
 
 #include "../node.hpp"
 
@@ -50,4 +50,4 @@ class Assignment;
 class Ternary;
 } // namespace node::operators
 
-#endif // OPERATORS_HPP
+#endif // AWX_NODE_OPERATORS_OPERATORS_HPP

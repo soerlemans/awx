@@ -1,5 +1,5 @@
-#ifndef EXIT_HPP
-#define EXIT_HPP
+#ifndef AWX_NODE_CONTROL_EXIT_HPP
+#define AWX_NODE_CONTROL_EXIT_HPP
 
 #include "../node_interface.hpp"
 
@@ -19,4 +19,4 @@ private:
 };
 } // namespace node::control
 
-#endif // EXIT_HPP
+#endif // AWX_NODE_CONTROL_EXIT_HPP

@@ -1,5 +1,5 @@
-#ifndef DELETE_HPP
-#define DELETE_HPP
+#ifndef AWX_NODE_OPERATORS_DELETE_HPP
+#define AWX_NODE_OPERATORS_DELETE_HPP
 
 #include "../list.hpp"
 #include "operators.hpp"
@@ -24,4 +24,4 @@ class Delete : public NodeInterface {
 };
 } // namespace node::operators
 
-#endif // DELETE_HPP
+#endif // AWX_NODE_OPERATORS_DELETE_HPP

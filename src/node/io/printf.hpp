@@ -1,5 +1,5 @@
-#ifndef PRINTF_HPP
-#define PRINTF_HPP
+#ifndef AWX_NODE_IO_PRINTF_HPP
+#define AWX_NODE_IO_PRINTF_HPP
 
 // Includes:
 #include "../list.hpp"
@@ -27,4 +27,4 @@ class Printf : public NodeInterface {
 };
 } // namespace node::io
 
-#endif // PRINTF_HPP
+#endif // AWX_NODE_IO_PRINTF_HPP

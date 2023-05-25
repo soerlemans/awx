@@ -1,5 +1,5 @@
-#ifndef EXPRESSION_HPP
-#define EXPRESSION_HPP
+#ifndef AWX_NODE_EXPRESSION_HPP
+#define AWX_NODE_EXPRESSION_HPP
 
 #include "node_interface.hpp"
 
@@ -42,4 +42,4 @@ class Expression : public NodeInterface {
 };
 } // namespace node
 
-#endif // EXPRESSION_HPP
+#endif // AWX_NODE_EXPRESSION_HPP

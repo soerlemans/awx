@@ -1,5 +1,5 @@
-#ifndef NODE_INTERFACE_HPP
-#define NODE_INTERFACE_HPP
+#ifndef AWX_NODE_NODE_INTERFACE_HPP
+#define AWX_NODE_NODE_INTERFACE_HPP
 
 // STL Includes:
 #include <memory>
@@ -27,4 +27,4 @@ class NodeInterface {
 };
 } // namespace node
 
-#endif // NODE_INTERFACE_HPP
+#endif // AWX_NODE_NODE_INTERFACE_HPP

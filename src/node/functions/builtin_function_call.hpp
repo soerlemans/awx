@@ -1,5 +1,5 @@
-#ifndef BUILTIN_FUNCTION_CALL_HPP
-#define BUILTIN_FUNCTION_CALL_HPP
+#ifndef AWX_NODE_FUNCTIONS_BUILTIN_FUNCTION_CALL_HPP
+#define AWX_NODE_FUNCTIONS_BUILTIN_FUNCTION_CALL_HPP
 
 // Includes:
 #include "../list.hpp"
@@ -26,4 +26,4 @@ class BuiltinFunctionCall : public NodeInterface {
 };
 } // namespace node::functions
 
-#endif // BUILTIN_FUNCTION_CALL_HPP
+#endif // AWX_NODE_FUNCTIONS_BUILTIN_FUNCTION_CALL_HPP

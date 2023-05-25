@@ -1,5 +1,5 @@
-#ifndef PRINT_VISITOR_HPP
-#define PRINT_VISITOR_HPP
+#ifndef AWX_VISITOR_PRINT_VISITOR_HPP
+#define AWX_VISITOR_PRINT_VISITOR_HPP
 
 // STL Includes:
 #include <iostream>
@@ -117,4 +117,4 @@ class PrintVisitor : public NodeVisitor {
 };
 } // namespace visitor
 
-#endif // PRINT_VISITOR_HPP
+#endif // AWX_VISITOR_PRINT_VISITOR_HPP

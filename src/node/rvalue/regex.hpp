@@ -1,5 +1,5 @@
-#ifndef REGEX_HPP
-#define REGEX_HPP
+#ifndef AWX_NODE_RVALUE_REGEX_HPP
+#define AWX_NODE_RVALUE_REGEX_HPP
 
 #include "literal.hpp"
 
@@ -15,4 +15,4 @@ class Regex : public Literal<std::string> {
 };
 } // namespace node::rvalue
 
-#endif // REGEX_HPP
+#endif // AWX_NODE_RVALUE_REGEX_HPP

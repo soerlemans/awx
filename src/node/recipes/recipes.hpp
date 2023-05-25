@@ -1,5 +1,5 @@
-#ifndef RECIPES_HPP
-#define RECIPES_HPP
+#ifndef AWX_NODE_RECIPES_RECIPES_HPP
+#define AWX_NODE_RECIPES_RECIPES_HPP
 
 #include "../node.hpp"
 
@@ -9,4 +9,4 @@ class SpecialPattern;
 class Recipe;
 } // namespace node::recipes
 
-#endif // RECIPES_HPP
+#endif // AWX_NODE_RECIPES_RECIPES_HPP

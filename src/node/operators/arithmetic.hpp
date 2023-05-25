@@ -1,5 +1,5 @@
-#ifndef ARITHMETIC_HPP
-#define ARITHMETIC_HPP
+#ifndef AWX_NODE_OPERATORS_ARITHMETIC_HPP
+#define AWX_NODE_OPERATORS_ARITHMETIC_HPP
 
 #include "binary_operator.hpp"
 #include "operators.hpp"

@@ -1,5 +1,5 @@
-#ifndef REDIRECTION_HPP
-#define REDIRECTION_HPP
+#ifndef AWX_NODE_IO_REDIRECTION_HPP
+#define AWX_NODE_IO_REDIRECTION_HPP
 
 #include "../node_interface.hpp"
 
@@ -28,4 +28,4 @@ class Redirection : public NodeInterface {
 };
 } // namespace node::io
 
-#endif // REDIRECTION_HPP
+#endif // AWX_NODE_IO_REDIRECTION_HPP

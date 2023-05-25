@@ -1,5 +1,5 @@
-#ifndef DECREMENT_HPP
-#define DECREMENT_HPP
+#ifndef AWX_NODE_OPERATORS_DECREMENT_HPP
+#define AWX_NODE_OPERATORS_DECREMENT_HPP
 
 #include "operators.hpp"
 #include "unary_operator.hpp"
@@ -19,4 +19,4 @@ class Decrement : public UnaryOperator {
 };
 } // namespace node::operators
 
-#endif // DECREMENT_HPP
+#endif // AWX_NODE_OPERATORS_DECREMENT_HPP

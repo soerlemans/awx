@@ -1,5 +1,5 @@
-#ifndef NIL_HPP
-#define NIL_HPP
+#ifndef AWX_NODE_NIL_HPP
+#define AWX_NODE_NIL_HPP
 
 #include "node_interface.hpp"
 
@@ -14,4 +14,4 @@ class Nil : public NodeInterface {
 };
 } // namespace node
 
-#endif // NIL_HPP
+#endif // AWX_NODE_NIL_HPP

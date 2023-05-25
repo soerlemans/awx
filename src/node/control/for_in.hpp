@@ -1,5 +1,5 @@
-#ifndef FOR_IN_HPP
-#define FOR_IN_HPP
+#ifndef AWX_NODE_CONTROL_FOR_IN_HPP
+#define AWX_NODE_CONTROL_FOR_IN_HPP
 
 #include "../list.hpp"
 
@@ -22,4 +22,4 @@ class ForIn : public NodeInterface {
 };
 } // namespace node::control
 
-#endif // FOR_IN_HPP
+#endif // AWX_NODE_CONTROL_FOR_IN_HPP

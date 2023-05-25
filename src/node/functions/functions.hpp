@@ -1,5 +1,5 @@
-#ifndef FUNCTIONS_HPP
-#define FUNCTIONS_HPP
+#ifndef AWX_NODE_FUNCTIONS_FUNCTIONS_HPP
+#define AWX_NODE_FUNCTIONS_FUNCTIONS_HPP
 
 // Includes:
 #include "../node.hpp"
@@ -17,4 +17,4 @@ class BuiltinFunctionCall;
 using NodeFuncPtr = std::shared_ptr<Function>;
 } // namespace node::functions
 
-#endif // FUNCTIONS_HPP
+#endif // AWX_NODE_FUNCTIONS_FUNCTIONS_HPP

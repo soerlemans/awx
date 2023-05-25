@@ -1,5 +1,5 @@
-#ifndef UNARY_OPERATOR_HPP
-#define UNARY_OPERATOR_HPP
+#ifndef AWX_NODE_OPERATORS_UNARY_OPERATOR_HPP
+#define AWX_NODE_OPERATORS_UNARY_OPERATOR_HPP
 
 #include "../expression.hpp"
 
@@ -21,4 +21,4 @@ class operators::UnaryOperator : public Expression {
 };
 } // namespace node
 
-#endif // UNARY_OPERATOR_HPP
+#endif // AWX_NODE_OPERATORS_UNARY_OPERATOR_HPP
