@@ -1,4 +1,4 @@
-#!/usr/bin/env -S awk -f 
+#!/usr/bin/env -S gawk -i inplace -f 
 
 
 # Generate header guard
