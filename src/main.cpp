@@ -51,7 +51,6 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
 
   // Remaining positional arguments are filepaths preceding -- is optional
   t_app.add_option("{}", t_config.m_filepaths, "Postional arguments")
-    ->required()
     ->check(CLI::ExistingFile);
 
   // Parse CLI args
@@ -61,6 +60,8 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
 
 auto run(Config& t_config) -> void
 {
+  // TODO: Have the program also work if no files are given (read from STDIN in
+  // this case)
   for(auto& script : t_config.m_scripts) {
     for(auto& filepath : t_config.m_filepaths) {
       FileBuffer program{script};
