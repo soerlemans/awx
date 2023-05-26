@@ -20,6 +20,7 @@ class NodeVisitor {
   virtual auto visit(node::control::For* t_for) -> void = 0;
   virtual auto visit(node::control::ForIn* t_for) -> void = 0;
   virtual auto visit(node::control::Return* t_return) -> void = 0;
+  virtual auto visit(node::control::Next* t_next) -> void = 0;
 
   virtual auto visit(node::functions::Function* t_fn) -> void = 0;
   virtual auto visit(node::functions::FunctionCall* t_fn_call) -> void = 0;

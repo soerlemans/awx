@@ -13,7 +13,7 @@
 #include "config/config.hpp"
 #include "debug/log.hpp"
 #include "file_buffer.hpp"
-#include "interpreter/tree_walk.hpp"
+#include "interpreter/tree_walk/tree_walk.hpp"
 #include "parser/awk_parser.hpp"
 #include "visitor/print_visitor.hpp"
 
@@ -83,7 +83,7 @@ auto run(Config& t_config) -> void
 
       // Execute program via tree walk interpreter
       DBG_PRINTLN("#== EXECUTING ==#");
-      interpreter::TreeWalk interpreter;
+      interpreter::tree_walk::TreeWalk interpreter;
       interpreter.run(ast, input);
     }
   }

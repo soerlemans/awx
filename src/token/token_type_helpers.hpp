@@ -1,5 +1,5 @@
-#ifndef AWX_TOKEN_TYPE_HELPERS_HPP
-#define AWX_TOKEN_TYPE_HELPERS_HPP
+#ifndef AWX_TOKEN_TOKEN_TYPE_HELPERS_HPP
+#define AWX_TOKEN_TOKEN_TYPE_HELPERS_HPP
 
 #include "token_type.hpp"
 
@@ -97,4 +97,4 @@ DEFINE_TOKEN_TYPE_HELPER(is_valid_function_identifier,
 }; // namespace tokentype
 } // namespace token
 
-#endif // AWX_TOKEN_TYPE_HELPERS_HPP
+#endif // AWX_TOKEN_TOKEN_TYPE_HELPERS_HPP

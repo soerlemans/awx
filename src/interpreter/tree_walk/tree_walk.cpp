@@ -11,17 +11,17 @@
 #include <tuple>
 
 // Includes:
-#include "../debug/log.hpp"
-#include "../node/include.hpp"
+#include "../../debug/log.hpp"
+#include "../../node/include.hpp"
+#include "../builtin/operators.hpp"
+#include "../overload.hpp"
 
 // Local Includes:
-#include "builtin/operators.hpp"
-#include "overload.hpp"
-#include "return_exception.hpp"
+#include "control.hpp"
 
 
 // Using statements:
-using namespace interpreter;
+using namespace interpreter::tree_walk;
 
 using namespace node;
 using namespace node::control;
@@ -33,7 +33,7 @@ using namespace node::recipes;
 using namespace node::rvalue;
 
 // Public Methods:
-auto TreeWalk::walk(node::NodePtr t_node) -> Context&
+auto TreeWalk::walk(NodePtr t_node) -> Context&
 {
   t_node->accept(this);
 
@@ -41,7 +41,7 @@ auto TreeWalk::walk(node::NodePtr t_node) -> Context&
 }
 
 //! Evaluates the result of walking a Node and if it should be true
-auto TreeWalk::eval_bool(node::NodePtr t_node) -> bool
+auto TreeWalk::eval_bool(NodePtr t_node) -> bool
 {
   auto context{walk(t_node)};
 
@@ -149,7 +149,12 @@ auto TreeWalk::visit(Return* t_return) -> void
   }
 
   // Unwind the stack
-  throw ReturnException{};
+  throw ReturnExcept{};
+}
+
+auto TreeWalk::visit(node::control::Next* t_next) -> void
+{
+  throw NextExcept{};
 }
 
 auto TreeWalk::visit(Function* t_fn) -> void
@@ -194,7 +199,7 @@ auto TreeWalk::visit(FunctionCall* t_fn_call) -> void
 
     // If the function does not return we need to clear the context
     clear_context();
-  } catch(ReturnException& e) {
+  } catch(ReturnExcept& e) {
     // Call function and catch Return exception if thrown
   }
 
@@ -657,7 +662,7 @@ auto TreeWalk::visit(List* t_list) -> void
 auto TreeWalk::visit([[maybe_unused]] Nil* t_nil) -> void
 {}
 
-auto TreeWalk::run(node::NodePtr& t_ast, const FileBuffer& t_input) -> void
+auto TreeWalk::run(NodePtr& t_ast, const FileBuffer& t_input) -> void
 {
   m_input = &t_input;
   m_ast = t_ast;

@@ -1,5 +1,5 @@
-#ifndef AWX_INTERPRETER_TREE_WALK_HPP
-#define AWX_INTERPRETER_TREE_WALK_HPP
+#ifndef AWX_INTERPRETER_TREE_WALK_TREE_WALK_HPP
+#define AWX_INTERPRETER_TREE_WALK_TREE_WALK_HPP
 
 // STL Includes:
 #include <map>
@@ -7,15 +7,15 @@
 #include <variant>
 
 // Includes:
-#include "../file_buffer.hpp"
-#include "../visitor/node_visitor.hpp"
+#include "../../file_buffer.hpp"
+#include "../../visitor/node_visitor.hpp"
+#include "../context.hpp"
 
 // Local Includes:
-#include "context.hpp"
-#include "return_exception.hpp"
+#include "control.hpp"
 
 
-namespace interpreter {
+namespace interpreter::tree_walk {
 /*! Evaluates each node and returns a result
  * TODO: Have NodeVisitor be a template class and have each Node accept a
  * pointer to NodeVisitor<T> this way we can
@@ -57,6 +57,7 @@ class TreeWalk : public visitor::NodeVisitor {
   auto visit(node::control::For* t_for) -> void override;
   auto visit(node::control::ForIn* t_for) -> void override;
   auto visit(node::control::Return* t_return) -> void override;
+  auto visit(node::control::Next* t_next) -> void override;
 
   auto visit(node::functions::Function* t_fn) -> void override;
   auto visit(node::functions::FunctionCall* t_fn_call) -> void override;
@@ -108,4 +109,4 @@ class TreeWalk : public visitor::NodeVisitor {
 };
 } // namespace interpreter
 
-#endif // AWX_INTERPRETER_TREE_WALK_HPP
+#endif // AWX_INTERPRETER_TREE_WALK_TREE_WALK_HPP

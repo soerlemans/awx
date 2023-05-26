@@ -45,6 +45,13 @@ auto PrintVisitor::visit(node::control::Return* t_return) -> void
   printer.print("RETURN");
 }
 
+auto PrintVisitor::visit(node::control::Next* t_next) -> void
+{
+  Printer printer{m_counter};
+
+  printer.print("NEXT");
+}
+
 auto PrintVisitor::visit(node::functions::Function* t_fn) -> void
 {
   Printer printer{m_counter};

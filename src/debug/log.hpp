@@ -1,5 +1,5 @@
-#ifndef AWX_LOG_HPP
-#define AWX_LOG_HPP
+#ifndef AWX_DEBUG_LOG_HPP
+#define AWX_DEBUG_LOG_HPP
 
 // STL Includes:
 #include <iostream>
@@ -116,4 +116,4 @@ auto log(std::string_view t_file, std::string_view t_function, int t_lineno,
 #endif // DEBUG
 } // namespace debug
 
-#endif // AWX_LOG_HPP
+#endif // AWX_DEBUG_LOG_HPP

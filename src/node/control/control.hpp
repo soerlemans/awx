@@ -5,6 +5,7 @@
 namespace node::control {
 class If;
 class While;
+class DoWhile;
 
 class For;
 class ForIn;
@@ -14,7 +15,6 @@ class Continue;
 class Next;
 class Exit;
 class Return;
-class DoWhile;
 }; // namespace node::control
 
 #endif // AWX_NODE_CONTROL_CONTROL_HPP
