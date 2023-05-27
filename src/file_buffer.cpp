@@ -106,6 +106,11 @@ auto FileBuffer::eof() const -> bool
   return m_lineno >= size();
 }
 
+auto FileBuffer::path() const -> fs::path
+{
+  return m_path;
+}
+
 // Operators:
 auto operator<<(std::ostream& t_os, const FileBuffer& t_fb) -> std::ostream&
 {

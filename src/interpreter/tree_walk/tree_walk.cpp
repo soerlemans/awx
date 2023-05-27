@@ -668,6 +668,8 @@ auto TreeWalk::run(NodePtr& t_ast, const FileBuffer& t_input) -> void
   m_ast = t_ast;
 
   set_variable("FNR", (double)m_input->size());
+  // set_variable("CONVFMT", "%.6g");
+  set_variable("FILENAME", m_input->path().string());
 
   for(std::size_t nr{1}; !m_input->eof(); m_input->next()) {
     set_variable("NR", (double)nr);
