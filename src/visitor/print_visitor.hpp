@@ -65,10 +65,14 @@ class PrintVisitor : public NodeVisitor {
 
   auto visit(node::control::If* t_if) -> void override;
   auto visit(node::control::While* t_while) -> void override;
+  auto visit(node::control::DoWhile* t_do_while) -> void override;
   auto visit(node::control::For* t_for) -> void override;
-  auto visit(node::control::ForIn* t_for) -> void override;
-  auto visit(node::control::Return* t_return) -> void override;
+  auto visit(node::control::ForIn* t_for_in) -> void override;
+  auto visit(node::control::Continue* t_continue) -> void override;
+  auto visit(node::control::Break* t_break) -> void override;
   auto visit(node::control::Next* t_next) -> void override;
+  auto visit(node::control::Exit* t_exit) -> void override;
+  auto visit(node::control::Return* t_return) -> void override;
 
   auto visit(node::functions::Function* t_fn) -> void override;
   auto visit(node::functions::FunctionCall* t_fn_call) -> void override;

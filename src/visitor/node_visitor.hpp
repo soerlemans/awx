@@ -17,10 +17,14 @@ class NodeVisitor {
 
   virtual auto visit(node::control::If* t_if) -> void = 0;
   virtual auto visit(node::control::While* t_while) -> void = 0;
+  virtual auto visit(node::control::DoWhile* t_do_while) -> void = 0;
   virtual auto visit(node::control::For* t_for) -> void = 0;
-  virtual auto visit(node::control::ForIn* t_for) -> void = 0;
-  virtual auto visit(node::control::Return* t_return) -> void = 0;
+  virtual auto visit(node::control::ForIn* t_for_in) -> void = 0;
+  virtual auto visit(node::control::Continue* t_continue) -> void = 0;
+  virtual auto visit(node::control::Break* t_break) -> void = 0;
   virtual auto visit(node::control::Next* t_next) -> void = 0;
+  virtual auto visit(node::control::Exit* t_exit) -> void = 0;
+  virtual auto visit(node::control::Return* t_return) -> void = 0;
 
   virtual auto visit(node::functions::Function* t_fn) -> void = 0;
   virtual auto visit(node::functions::FunctionCall* t_fn_call) -> void = 0;

@@ -121,8 +121,27 @@ auto TreeWalk::visit(If* t_if) -> void
 auto TreeWalk::visit(While* t_while) -> void
 {
   while(eval_bool(t_while->condition())) {
-    eval_bool(t_while->body());
+    try {
+      walk(t_while->body());
+    } catch(ContinueExcept) {
+    } catch(BreakExcept& e) {
+      break;
+    }
   }
+}
+
+auto TreeWalk::visit(DoWhile* t_do_while) -> void
+{
+  do {
+    try {
+      // eval_bool(t_do_while->body());
+      walk(t_do_while->body());
+    } catch(ContinueExcept) {
+    } catch(BreakExcept& e) {
+      break;
+    }
+
+  } while(eval_bool(t_do_while->condition()));
 }
 
 auto TreeWalk::visit(For* t_for) -> void
@@ -130,15 +149,41 @@ auto TreeWalk::visit(For* t_for) -> void
   // We just execute the init expression we do not use it
   walk(t_for->init());
   while(eval_bool(t_for->condition())) {
-    walk(t_for->body());
+    try {
+      walk(t_for->body());
+    } catch(ContinueExcept) {
+    } catch(BreakExcept& e) {
+      break;
+    }
 
     // Execute the expr at the end
     walk(t_for->expr());
   }
 }
 
-auto TreeWalk::visit(ForIn* t_for) -> void
+auto TreeWalk::visit(ForIn* t_for_in) -> void
 {}
+
+auto TreeWalk::visit(Continue* t_continue) -> void
+{
+  throw ContinueExcept{};
+}
+
+auto TreeWalk::visit(Break* t_break) -> void
+{
+  throw BreakExcept{};
+}
+
+auto TreeWalk::visit(Next* t_next) -> void
+{
+  throw NextExcept{};
+}
+
+auto TreeWalk::visit(Exit* t_exit) -> void
+{
+  // walk(t_exit->ex)
+  // throw ExitExcept{};
+}
 
 auto TreeWalk::visit(Return* t_return) -> void
 {
@@ -150,11 +195,6 @@ auto TreeWalk::visit(Return* t_return) -> void
 
   // Unwind the stack
   throw ReturnExcept{};
-}
-
-auto TreeWalk::visit(node::control::Next* t_next) -> void
-{
-  throw NextExcept{};
 }
 
 auto TreeWalk::visit(Function* t_fn) -> void
@@ -511,7 +551,7 @@ auto TreeWalk::visit(Comparison* t_comparison) -> void
 
     case ComparisonOp::EQUAL:
       lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return less_than_equal(t_lhs, t_rhs);
+        return equal(t_lhs, t_rhs);
       });
       break;
 
@@ -691,6 +731,8 @@ auto TreeWalk::run(NodePtr& t_ast, const FileBuffer& t_input) -> void
     try {
       m_ast->accept(this);
     } catch(NextExcept& except) {
+    } catch(ExitExcept& except) {
+      break; // Return the expressions value somehow?
     }
 
     nr++;

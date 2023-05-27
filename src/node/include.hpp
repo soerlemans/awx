@@ -15,6 +15,7 @@
 #include "../node/control/break.hpp"
 #include "../node/control/continue.hpp"
 #include "../node/control/control.hpp"
+#include "../node/control/do_while.hpp"
 #include "../node/control/exit.hpp"
 #include "../node/control/for.hpp"
 #include "../node/control/for_in.hpp"

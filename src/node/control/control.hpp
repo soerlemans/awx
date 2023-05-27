@@ -10,8 +10,8 @@ class DoWhile;
 class For;
 class ForIn;
 
-class Break;
 class Continue;
+class Break;
 class Next;
 class Exit;
 class Return;

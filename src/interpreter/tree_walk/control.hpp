@@ -3,15 +3,13 @@
 
 
 namespace interpreter::tree_walk {
-/*! For our Tree Walk Interpreter we implement return statements as a standalone
- * exception as to not get caught by other exception handlers.
- */
-struct ReturnExcept {};
-
-/*! For our Tree Walk Interpreter we implement next statements as a standalone
- * exception as to not get caught by other exception handlers.
- */
+// These exceptions are for implementing control flow functionality in the Tree
+// Walk interpreter
+struct BreakExcept {};
+struct ContinueExcept {};
+struct ExitExcept {};
 struct NextExcept {};
+struct ReturnExcept {};
 } // namespace interpreter::tree_walk
 
 #endif // AWX_INTERPRETER_TREE_WALK_CONTROL_HPP
