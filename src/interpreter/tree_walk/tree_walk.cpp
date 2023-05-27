@@ -667,9 +667,24 @@ auto TreeWalk::run(NodePtr& t_ast, const FileBuffer& t_input) -> void
   m_input = &t_input;
   m_ast = t_ast;
 
+  // TODO: Clean this up
   set_variable("FNR", (double)m_input->size());
   // set_variable("CONVFMT", "%.6g");
+  // set_variable("OFMT", "%.6g");
   set_variable("FILENAME", m_input->path().string());
+
+  set_variable("FS", " ");
+  set_variable("OFS", " ");
+
+  set_variable("SUBSEP", "\034");
+
+  set_variable("$0", "\034");
+
+  set_variable("RS", "\n");
+  set_variable("ORS", "\n");
+
+  // TODO: Implement these special variables
+  // set_variable("NF", " ");
 
   for(std::size_t nr{1}; !m_input->eof(); m_input->next()) {
     set_variable("NR", (double)nr);
