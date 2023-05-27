@@ -51,23 +51,22 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
 
   // Remaining positional arguments are filepaths preceding -- is optional
   t_app.add_option("{}", t_config.m_filepaths, "Postional arguments")
+    ->required() // Temporary required, remove when as input works
     ->check(CLI::ExistingFile);
 
   // Parse CLI args
   t_app.parse(t_argc, t_argv);
 }
 // NOLINTEND
-
 auto run(Config& t_config) -> void
 {
   // TODO: Have the program also work if no files are given (read from STDIN in
   // this case)
   for(auto& script : t_config.m_scripts) {
+    // For now always expect a filepath
     for(auto& filepath : t_config.m_filepaths) {
       FileBuffer program{script};
       FileBuffer input{filepath};
-
-      std::cout << "Input:\n" << input;
 
       lexer::Lexer lexer{program};
       token::TokenStream tokenstream{lexer.tokenize()};
@@ -98,7 +97,7 @@ auto main(int t_argc, char* t_argv[]) -> int
   try {
     parse_args(config, app, t_argc, t_argv);
   } catch(const CLI::ParseError& e) {
-    return app.exit(e);
+    return -app.exit(e);
   }
 
   // Set loglevel for now for debugging purposes

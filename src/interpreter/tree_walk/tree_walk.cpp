@@ -199,7 +199,7 @@ auto TreeWalk::visit(FunctionCall* t_fn_call) -> void
 
     // If the function does not return we need to clear the context
     clear_context();
-  } catch(ReturnExcept& e) {
+  } catch(ReturnExcept& except) {
     // Call function and catch Return exception if thrown
   }
 
@@ -667,5 +667,15 @@ auto TreeWalk::run(NodePtr& t_ast, const FileBuffer& t_input) -> void
   m_input = &t_input;
   m_ast = t_ast;
 
-  m_ast->accept(this);
+  set_variable("FNR", (double)m_input->size());
+
+  for(std::size_t nr{1}; !m_input->eof(); m_input->next()) {
+    set_variable("NR", (double)nr);
+    try {
+      m_ast->accept(this);
+    } catch(NextExcept& except) {
+    }
+
+    nr++;
+  }
 }
