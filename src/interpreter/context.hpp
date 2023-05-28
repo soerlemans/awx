@@ -3,14 +3,17 @@
 
 // STL Includes:
 #include <map>
+#include <string>
 
 namespace interpreter {
 // Forward Declarations:
 // struct ArrayType;
+struct RegexType : public std::string {};
 
 // Aliases:
 // using Any = std::variant<double, std::string, ArrayType>;
 using Any = std::variant<double, std::string>;
+// using Any = std::variant<double, std::string, RegexType>;
 
 // Structs:
 // struct ArrayType : public std::map<Any, Any> {

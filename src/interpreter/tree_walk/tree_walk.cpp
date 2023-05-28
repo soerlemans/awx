@@ -58,6 +58,11 @@ auto TreeWalk::eval_bool(NodePtr t_node) -> bool
     }
   }};
 
+  // const auto lambda_regex{[&](RegexType t_val) {
+  //   if(t_val == get_variable("")) {
+  //   }
+  // }};
+
   std::visit(Overload{lambda_double, lambda_str}, context.m_result);
 
   return is_true;
@@ -280,11 +285,9 @@ auto TreeWalk::visit(Recipe* t_recipe) -> void
 {
   // TODO: Process pattern
   walk(t_recipe->pattern());
-  // if(){
-
-  walk(t_recipe->body());
-
-  //}
+  if(true) {
+    walk(t_recipe->body());
+  }
 }
 
 auto TreeWalk::visit(Print* t_print) -> void

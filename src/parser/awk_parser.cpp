@@ -945,8 +945,7 @@ auto AwkParser::print_expr_list_opt() -> NodeListPtr
 auto AwkParser::non_unary_expr() -> NodePtr
 {
   DBG_TRACE(VERBOSE, "NON UNARY EXPR");
-  NodePtr node;
-  NodePtr nue;
+  NodePtr node, nue;
 
   const auto lambda = [&]() {
     return this->expr();
@@ -1488,28 +1487,21 @@ auto AwkParser::special_pattern() -> NodePtr
   return node;
 }
 
-// normal_pattern   : expr
-//                  | expr ',' newline_opt expr
-//                  ;
-auto AwkParser::normal_pattern() -> NodePtr
+auto AwkParser::normal_pattern() -> NodeListPtr
 {
   DBG_TRACE(VERBOSE, "NORMAL PATTERN");
-  NodePtr node;
+  NodeListPtr nodes{std::make_shared<List>()};
 
   if(auto ptr{expr()}; ptr) {
-    const auto token{next()};
-    if(token.type() == TokenType::COMMA) {
-      newline_opt();
-      expr();
+    nodes->push_back(std::move(ptr));
 
-      // TODO: We must create a NodelistPtr to combine both expr
-    } else {
-      prev();
-      node = std::move(ptr);
+    if(next_if(TokenType::COMMA)) {
+      newline_opt();
+      nodes->push_back(std::move(expr()));
     }
   }
 
-  return node;
+  return nodes;
 }
 
 auto AwkParser::pattern() -> NodePtr

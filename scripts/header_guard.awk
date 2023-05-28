@@ -1,9 +1,11 @@
 #!/usr/bin/env -S gawk -i inplace -f
 
 
-# This script is very useful to run with:
-# shopt -s globstar
-# Then you can use **.hpp
+# AWK script that replaces C++ header guards with an unique header guard
+# Use at base of the project
+
+# Example usage:
+# ./header_guard.awk src/lexer/lexer.hpp src/parser/parser.hpp
 
 # Generate header guard
 function gen_hg()

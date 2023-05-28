@@ -1,9 +1,16 @@
 #!/usr/bin/env -S awk -f
-BEGIN {
-		i += "10str" + "10"
-		i += 10
-		i2 = "10str" == "10"
 
-		print i, i2
+
+BEGIN {
+	i = 0 == 5
+	print i
 }
 
+
+/BEGIN/ {
+	print "Found BEGIN!"
+}
+
+1 && 1 {
+	print "Found BEGIN!"
+}

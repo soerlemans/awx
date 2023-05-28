@@ -120,7 +120,7 @@ class AwkParser : public Parser {
 
   // Patterns:
   virtual auto special_pattern() -> node::NodePtr;
-  virtual auto normal_pattern() -> node::NodePtr;
+  virtual auto normal_pattern() -> node::NodeListPtr;
   virtual auto pattern() -> node::NodePtr;
 
   virtual auto param_list() -> node::NodeListPtr;
