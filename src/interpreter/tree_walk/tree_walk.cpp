@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <regex>
 #include <sstream>
 #include <stdexcept>
 #include <tuple>
@@ -57,11 +58,6 @@ auto TreeWalk::eval_bool(NodePtr t_node) -> bool
       is_true = true;
     }
   }};
-
-  // const auto lambda_regex{[&](RegexType t_val) {
-  //   if(t_val == get_variable("")) {
-  //   }
-  // }};
 
   std::visit(Overload{lambda_double, lambda_str}, context.m_result);
 
@@ -283,9 +279,7 @@ auto TreeWalk::visit(SpecialPattern* t_pattern) -> void
 
 auto TreeWalk::visit(Recipe* t_recipe) -> void
 {
-  // TODO: Process pattern
-  walk(t_recipe->pattern());
-  if(true) {
+  if(eval_bool(t_recipe->pattern())) {
     walk(t_recipe->body());
   }
 }
@@ -378,7 +372,11 @@ auto TreeWalk::visit(Regex* t_regex) -> void
 {
   auto& result{m_context.m_result};
 
-  result = t_regex->get();
+  std::sub_match m;
+  std::regex re{t_regex->get()};
+  std::regex_match(std::get<std::string>(get_variable("$0")), m, re);
+
+  // result = t_regex->get();
 }
 
 auto TreeWalk::visit(Arithmetic* t_arithmetic) -> void
