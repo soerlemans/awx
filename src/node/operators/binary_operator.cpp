@@ -6,11 +6,11 @@ using namespace visitor;
 
 
 BinaryOperator::BinaryOperator(Precedence t_precedence,
-                               Associativity t_associativity, NodePtr&& t_left,
-                               NodePtr&& t_right)
-  : UnaryOperator{t_precedence, std::forward<NodePtr>(t_left)},
+                               Associativity t_associativity, NodePtr&& t_lhs,
+                               NodePtr&& t_rhs)
+  : UnaryOperator{t_precedence, std::forward<NodePtr>(t_lhs)},
     m_associativity{t_associativity},
-    m_right{std::forward<NodePtr>(t_right)}
+    m_right{std::forward<NodePtr>(t_rhs)}
 {}
 
 auto BinaryOperator::right() -> NodePtr&

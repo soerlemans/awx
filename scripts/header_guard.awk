@@ -18,8 +18,8 @@ function gen_hg()
 }
 
 # Replace header guard definition with unique header guard
-FNR <= 2 && /^#(define|ifndef).+_HPP$/ {
-		print $1, gen_hg()
+NR <= 2 && /^#(define|ifndef).+_HPP$/ {
+		print $1, gen_hg();
 		next
 }
 

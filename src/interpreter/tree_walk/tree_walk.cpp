@@ -544,6 +544,7 @@ auto TreeWalk::visit(Comparison* t_comparison) -> void
   auto lambda{[&](auto t_func) {
     std::visit(
       [&](auto&& t_lhs, auto&& t_rhs) {
+        std::cout << t_lhs << " " << t_rhs << '\n';
         m_context.m_result = (double)t_func(t_lhs, t_rhs);
       },
       lhs.m_result, rhs.m_result);

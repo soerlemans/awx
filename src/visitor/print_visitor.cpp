@@ -258,6 +258,14 @@ auto PrintVisitor::visit(Comparison* t_comparison) -> void
   Printer printer{m_counter};
 
   printer.print("COMPARISON");
+
+  // TODO: Add print statement for comparison operator
+
+  printer.print("| LEFT");
+  t_comparison->left()->accept(this);
+
+  printer.print("| RIGHT");
+  t_comparison->right()->accept(this);
 }
 
 auto PrintVisitor::visit(Increment* t_increment) -> void
@@ -305,7 +313,7 @@ auto PrintVisitor::visit(And* t_and) -> void
   printer.print("| LEFT");
   t_and->left()->accept(this);
 
-  printer.print("| SECOND");
+  printer.print("| RIGHT");
   t_and->right()->accept(this);
 }
 
