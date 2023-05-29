@@ -372,10 +372,6 @@ auto TreeWalk::visit(Regex* t_regex) -> void
 {
   auto& result{m_context.m_result};
 
-  // std::sub_match m;
-  // std::regex re{t_regex->get()};
-  // std::regex_match(std::get<std::string>(get_variable("$0")), m, re);
-
   result = t_regex->get();
 }
 
