@@ -13,7 +13,3 @@ auto Variable::name() const -> const std::string&
   return m_name;
 }
 
-auto Variable::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

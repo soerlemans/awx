@@ -19,7 +19,3 @@ auto FunctionCall::args() -> NodeListPtr&
   return m_args;
 }
 
-auto FunctionCall::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

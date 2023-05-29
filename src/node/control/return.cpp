@@ -13,7 +13,3 @@ auto Return::expr() -> NodePtr&
   return m_expr;
 }
 
-auto Return::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

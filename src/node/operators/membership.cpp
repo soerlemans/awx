@@ -15,7 +15,3 @@ auto Membership::name() const -> std::string_view
   return {m_name};
 }
 
-auto Membership::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

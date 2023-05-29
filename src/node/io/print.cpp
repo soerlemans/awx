@@ -16,7 +16,3 @@ auto Print::params() -> NodeListPtr&
   return m_params;
 }
 
-auto Print::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

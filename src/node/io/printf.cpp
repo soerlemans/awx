@@ -23,7 +23,3 @@ auto Printf::params() -> NodeListPtr&
   return m_params;
 }
 
-auto Printf::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

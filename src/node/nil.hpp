@@ -8,7 +8,7 @@ namespace node {
 class Nil : public NodeInterface {
   private:
   public:
-  virtual auto accept(visitor::NodeVisitor* t_visitor) -> void;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Nil() = default;
 };

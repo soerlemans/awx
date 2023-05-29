@@ -15,7 +15,3 @@ auto Getline::var() -> NodePtr&
   return m_var;
 }
 
-auto Getline::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

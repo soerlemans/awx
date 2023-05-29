@@ -10,10 +10,6 @@ Not::Not(NodePtr&& t_left)
   : UnaryOperator{Precedence::UNARY_PREFIX, std::forward<NodePtr>(t_left)}
 {}
 
-auto Not::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}
 
 // And:
 And::And(NodePtr&& t_left, NodePtr&& t_right)
@@ -22,10 +18,6 @@ And::And(NodePtr&& t_left, NodePtr&& t_right)
                    std::forward<NodePtr>(t_right)}
 {}
 
-auto And::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}
 
 // Or:
 Or::Or(NodePtr&& t_left, NodePtr&& t_right)
@@ -34,7 +26,3 @@ Or::Or(NodePtr&& t_left, NodePtr&& t_right)
                    std::forward<NodePtr>(t_right)}
 {}
 
-auto Or::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

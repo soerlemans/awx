@@ -16,7 +16,3 @@ auto Increment::prefix() const -> bool
   return m_prefix;
 }
 
-auto Increment::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

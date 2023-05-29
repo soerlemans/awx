@@ -35,7 +35,3 @@ auto For::body() -> NodeListPtr&
   return m_body;
 }
 
-auto For::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

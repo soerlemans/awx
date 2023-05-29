@@ -12,7 +12,3 @@ auto SpecialPattern::op() const -> SpecialPatternOp
 {
   return m_op;
 }
-auto SpecialPattern::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

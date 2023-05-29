@@ -34,7 +34,3 @@ auto If::alt() -> NodePtr&
   return m_alt;
 }
 
-auto If::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

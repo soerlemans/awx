@@ -18,7 +18,3 @@ auto Arithmetic::op() -> ArithmeticOp
   return m_op;
 }
 
-auto Arithmetic::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

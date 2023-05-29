@@ -20,7 +20,3 @@ auto BuiltinFunctionCall::args() -> NodeListPtr&
   return m_args;
 }
 
-auto BuiltinFunctionCall::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

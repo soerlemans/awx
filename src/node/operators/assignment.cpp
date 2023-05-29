@@ -17,7 +17,3 @@ auto Assignment::op() const -> AssignmentOp
   return m_op;
 }
 
-auto Assignment::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

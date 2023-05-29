@@ -23,7 +23,3 @@ auto DoWhile::body() -> NodeListPtr&
   return m_body;
 }
 
-auto DoWhile::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

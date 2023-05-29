@@ -27,7 +27,3 @@ auto Redirection::op() const -> RedirectionOp
   return m_op;
 }
 
-auto Redirection::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

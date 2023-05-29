@@ -11,7 +11,3 @@ StringConcatenation::StringConcatenation(NodePtr&& t_left, NodePtr&& t_right)
                    std::forward<NodePtr>(t_right)}
 {}
 
-auto StringConcatenation::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

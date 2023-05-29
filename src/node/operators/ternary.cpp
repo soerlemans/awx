@@ -20,7 +20,3 @@ auto Ternary::third() -> NodePtr&
   return m_else;
 }
 
-auto Ternary::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

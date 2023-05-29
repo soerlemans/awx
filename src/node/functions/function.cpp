@@ -27,7 +27,3 @@ auto Function::body() -> NodeListPtr&
   return m_body;
 }
 
-auto Function::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

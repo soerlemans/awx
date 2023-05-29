@@ -47,7 +47,3 @@ auto UnaryPrefix::op() const -> UnaryPrefixOp
   return m_op;
 }
 
-auto UnaryPrefix::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}

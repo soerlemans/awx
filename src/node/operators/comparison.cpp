@@ -17,7 +17,3 @@ auto Comparison::op() const -> ComparisonOp
   return m_op;
 }
 
-auto Comparison::accept(NodeVisitor* t_visitor) -> void
-{
-  t_visitor->visit(this);
-}
