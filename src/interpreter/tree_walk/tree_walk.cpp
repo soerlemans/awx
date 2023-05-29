@@ -34,7 +34,7 @@ using namespace node::recipes;
 using namespace node::rvalue;
 
 // Public Methods:
-TreeWalk::TreeWalk(): m_resolve{false}
+TreeWalk::TreeWalk(): m_resolve{true}
 {}
 
 auto TreeWalk::walk(NodePtr t_node) -> Context&
@@ -346,7 +346,6 @@ auto TreeWalk::visit(FieldReference* t_fr) -> void
   auto& context{walk(t_fr->expr())};
 
   // Resolve field reference
-	// FIXME: This value this returns is ridiculous
   std::visit(
     [this](auto&& t_index) {
       m_context.m_result = m_fields.get(convert(t_index));
@@ -372,7 +371,6 @@ auto TreeWalk::visit(Integer* t_int) -> void
 {
   auto& result{m_context.m_result};
 
-  // TODO: Maybe not separate type system in float and integer?
   result = (double)t_int->get();
 }
 
