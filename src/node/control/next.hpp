@@ -8,7 +8,7 @@
 namespace node::control {
 class Next : public NodeInterface {
   public:
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Next() = default;
 };

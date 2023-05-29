@@ -21,7 +21,7 @@ class If : public NodeInterface {
   auto then() -> NodePtr&;
   auto alt() -> NodePtr&; // Alternative is a synonym for else
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~If() override = default;
 };

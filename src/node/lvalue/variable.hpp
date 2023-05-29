@@ -18,7 +18,7 @@ class Variable : public NodeInterface {
 
   auto name() const -> const std::string&;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Variable() override = default;
 };

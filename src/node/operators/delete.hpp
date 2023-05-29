@@ -18,7 +18,7 @@ class Delete : public NodeInterface {
   public:
   Delete(std::string&& t_array, NodeListPtr&& t_expr_list);
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Delete() override = default;
 };

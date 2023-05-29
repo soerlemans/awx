@@ -10,9 +10,9 @@
 namespace interpreter::builtin {
 // Macros:
 #define AWX_INTERPRETER_BUILTIN_FUNCTIONS_HPP
-  {                                 \
-#func, func                     \
-  }
+{
+#func, func
+}
 
 // Aliases:
 using BuiltinFuncPtr = std::function<Any(Any)>;

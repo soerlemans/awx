@@ -7,13 +7,13 @@
 
 namespace node::control {
 class Exit : public NodeInterface {
-private:
+  private:
   NodePtr m_expr;
 
   public:
   Exit(NodePtr&& t_expr);
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Exit() = default;
 };

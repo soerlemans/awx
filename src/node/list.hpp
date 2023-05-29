@@ -20,7 +20,7 @@ class List : public NodeInterface, public std::list<NodePtr> {
   // Must be defaulted, in order to create this function
   List(List&& t_list) = default;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~List() override = default;
 };

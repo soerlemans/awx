@@ -22,7 +22,7 @@ class Redirection : public NodeInterface {
   auto right() -> NodePtr&;
   auto op() const -> RedirectionOp;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Redirection() override = default;
 };

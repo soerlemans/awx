@@ -13,7 +13,7 @@ class Not : public UnaryOperator {
   public:
   Not(NodePtr&& t_left);
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Not() override = default;
 };
@@ -24,7 +24,7 @@ class And : public BinaryOperator {
   public:
   And(NodePtr&& t_left, NodePtr&& t_right);
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~And() override = default;
 };
@@ -34,7 +34,7 @@ class Or : public BinaryOperator {
   public:
   Or(NodePtr&& t_left, NodePtr&& t_right);
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Or() override = default;
 };

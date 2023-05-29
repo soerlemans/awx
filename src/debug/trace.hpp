@@ -59,11 +59,11 @@ class Trace {
 
 // Stub the macros if we are not on the debugging build
 #define DBG_TRACE(loglevel, ...) \
-  do {                       \
+  do {                           \
   } while(false)
 
 #define DBG_TRACE_PRINT(loglevel, ...) \
-  do {                             \
+  do {                                 \
   } while(false)
 
 #endif // DEBUG

@@ -111,6 +111,6 @@ class TreeWalk : public visitor::NodeVisitor {
 
   ~TreeWalk() override = default;
 };
-} // namespace interpreter
+} // namespace interpreter::tree_walk
 
 #endif // AWX_INTERPRETER_TREE_WALK_TREE_WALK_HPP

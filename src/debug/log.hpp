@@ -42,13 +42,7 @@
 namespace debug {
 // Enums:
 // Different logging levels
-enum class LogLevel : u16 {
-  CRITICAL = 0,
-  ERROR,
-  WARNING,
-  INFO,
-  VERBOSE
-};
+enum class LogLevel : u16 { CRITICAL = 0, ERROR, WARNING, INFO, VERBOSE };
 
 #if DEBUG
 // Macros:

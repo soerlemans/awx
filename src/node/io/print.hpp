@@ -18,7 +18,7 @@ class Print : public NodeInterface {
 
   virtual auto params() -> NodeListPtr&;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Print() override = default;
 };

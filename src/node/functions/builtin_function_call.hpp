@@ -20,7 +20,7 @@ class BuiltinFunctionCall : public NodeInterface {
   auto name() const -> std::string_view;
   auto args() -> NodeListPtr&;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~BuiltinFunctionCall() override = default;
 };

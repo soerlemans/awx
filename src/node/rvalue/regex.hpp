@@ -9,7 +9,7 @@ class Regex : public Literal<std::string> {
   public:
   Regex(std::string&& t_value);
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Regex() override = default;
 };

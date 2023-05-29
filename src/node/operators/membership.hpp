@@ -14,7 +14,7 @@ class Membership : public UnaryOperator {
   Membership(NodePtr&& t_lhs, std::string&& t_name);
 
   auto name() const -> std::string_view;
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Membership() override = default;
 };

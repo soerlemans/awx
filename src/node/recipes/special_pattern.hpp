@@ -21,7 +21,7 @@ class SpecialPattern : public NodeInterface {
 
   auto op() const -> SpecialPatternOp;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~SpecialPattern() override = default;
 };

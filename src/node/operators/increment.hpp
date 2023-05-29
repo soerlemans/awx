@@ -15,7 +15,7 @@ class Increment : public UnaryOperator {
 
   auto prefix() const -> bool;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Increment() override = default;
 };

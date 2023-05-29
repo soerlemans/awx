@@ -16,7 +16,7 @@ class ForIn : public NodeInterface {
   public:
   ForIn(NodePtr&& t_identifier, NodePtr&& t_array, NodeListPtr&& t_body);
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~ForIn() override = default;
 };

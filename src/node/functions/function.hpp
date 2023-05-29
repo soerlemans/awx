@@ -20,7 +20,7 @@ class Function : public NodeInterface {
   auto params() -> NodeListPtr&;
   auto body() -> NodeListPtr&;
 
-  auto accept(visitor::NodeVisitor* t_visitor) -> void override;
+  MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Function() override = default;
 };
