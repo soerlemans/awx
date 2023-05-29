@@ -346,6 +346,7 @@ auto TreeWalk::visit(FieldReference* t_fr) -> void
   auto& context{walk(t_fr->expr())};
 
   // Resolve field reference
+	// FIXME: This value this returns is ridiculous
   std::visit(
     [this](auto&& t_index) {
       m_context.m_result = m_fields.get(convert(t_index));
@@ -393,7 +394,6 @@ auto TreeWalk::visit(Regex* t_regex) -> void
   if(m_resolve) {
     std::regex re{str, std::regex::extended};
 
-    // Pay attention we use a ternary expression
     result = (double)std::regex_search(m_fields.get(), re);
   } else {
     result = str;

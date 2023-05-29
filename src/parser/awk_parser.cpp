@@ -1497,7 +1497,7 @@ auto AwkParser::normal_pattern() -> NodeListPtr
 
     if(next_if(TokenType::COMMA)) {
       newline_opt();
-      nodes->push_back(std::move(expr()));
+      nodes->push_back(expr());
     }
   }
 
@@ -1509,9 +1509,9 @@ auto AwkParser::pattern() -> NodePtr
   DBG_TRACE(VERBOSE, "PATTERN");
   NodePtr node;
 
-  if(auto ptr{normal_pattern()}; ptr) {
+  if(auto ptr{special_pattern()}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{special_pattern()}; ptr) {
+  } else if(auto ptr{normal_pattern()}; ptr) {
     node = std::move(ptr);
   }
 
