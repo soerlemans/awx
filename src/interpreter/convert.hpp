@@ -56,6 +56,11 @@ auto convert(const std::string& t_str) -> double
   return 0;
 }
 
+auto convert(const double t_val) -> double
+{
+  return t_val;
+}
+
 // TODO: Make this variadic
 //! Overload for the greedy template down below
 template<typename T>

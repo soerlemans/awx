@@ -34,6 +34,9 @@ using namespace node::recipes;
 using namespace node::rvalue;
 
 // Public Methods:
+TreeWalk::TreeWalk(): m_resolve{false}
+{}
+
 auto TreeWalk::walk(NodePtr t_node) -> Context&
 {
   t_node->accept(this);
@@ -80,8 +83,7 @@ auto TreeWalk::clear_context() -> void
   m_context.m_result = 0.0;
 }
 
-auto TreeWalk::set_variable(const std::string t_name, const Any t_variable)
-  -> void
+auto TreeWalk::set(const std::string t_name, const Any t_variable) -> void
 {
   m_context.m_name = t_name;
 
@@ -93,7 +95,7 @@ auto TreeWalk::set_variable(const std::string t_name, const Any t_variable)
   }
 }
 
-auto TreeWalk::get_variable(const std::string t_name) -> Any&
+auto TreeWalk::get(const std::string t_name) -> Any&
 {
   m_context.m_name = t_name;
 
@@ -250,6 +252,7 @@ auto TreeWalk::visit(FunctionCall* t_fn_call) -> void
 
 auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
 {
+  m_resolve = false;
   // TODO: Convert each of these to a case and call
   // DEFINE_RESERVED(g_atan2,    "atan2",    BUILTIN_FUNCTION);
   // DEFINE_RESERVED(g_close,    "close",    BUILTIN_FUNCTION);
@@ -272,6 +275,8 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
   // DEFINE_RESERVED(g_system,   "system",   BUILTIN_FUNCTION);
   // DEFINE_RESERVED(g_tolower,  "tolower",  BUILTIN_FUNCTION);
   // DEFINE_RESERVED(g_toupper,  "toupper",  BUILTIN_FUNCTION);
+
+  m_resolve = true;
 }
 
 auto TreeWalk::visit(SpecialPattern* t_pattern) -> void
@@ -323,7 +328,7 @@ auto TreeWalk::visit(Getline* t_getline) -> void
   std::string input;
   std::cin >> input;
 
-  set_variable(name, input);
+  set(name, input);
 }
 
 auto TreeWalk::visit(Redirection* t_redirection) -> void
@@ -333,17 +338,26 @@ auto TreeWalk::visit(Array* t_array) -> void
 {
   auto& result = m_context.m_result;
 
-  result = get_variable(t_array->name());
+  result = get(t_array->name());
 }
 
 auto TreeWalk::visit(FieldReference* t_fr) -> void
-{}
+{
+  auto& context{walk(t_fr->expr())};
+
+  // Resolve field reference
+  std::visit(
+    [this](auto&& t_index) {
+      m_context.m_result = m_fields.get(convert(t_index));
+    },
+    context.m_result);
+}
 
 auto TreeWalk::visit(Variable* t_var) -> void
 {
   auto& result = m_context.m_result;
 
-  result = get_variable(t_var->name());
+  result = get(t_var->name());
 }
 
 auto TreeWalk::visit(Float* t_float) -> void
@@ -372,7 +386,18 @@ auto TreeWalk::visit(Regex* t_regex) -> void
 {
   auto& result{m_context.m_result};
 
-  result = t_regex->get();
+  const auto str{t_regex->get()};
+
+  // In certain contexts we do not resolve Regex expressions (Match and builtin
+  // function arguments)
+  if(m_resolve) {
+    std::regex re{str, std::regex::extended};
+
+    // Pay attention we use a ternary expression
+    result = (double)std::regex_search(m_fields.get(), re);
+  } else {
+    result = str;
+  }
 }
 
 auto TreeWalk::visit(Arithmetic* t_arithmetic) -> void
@@ -383,17 +408,11 @@ auto TreeWalk::visit(Arithmetic* t_arithmetic) -> void
   auto rhs{walk(t_arithmetic->right())};
 
   auto lambda{[&](auto t_func) {
-    std::visit(Overload{[&](std::string& t_lhs, std::string& t_rhs) {
-                          // One argument must be converted to a double as the
-                          // convert function for binary operations will use the
-                          // same operation on strings as doubles
-                          m_context.m_result =
-                            (double)t_func(convert(t_lhs), t_rhs);
-                        },
-                        [&](auto&& t_lhs, auto&& t_rhs) {
-                          m_context.m_result = (double)t_func(t_lhs, t_rhs);
-                        }},
-               lhs.m_result, rhs.m_result);
+    std::visit(
+      [&](auto&& t_lhs, auto&& t_rhs) {
+        m_context.m_result = (double)t_func(convert(t_lhs), t_rhs);
+      },
+      lhs.m_result, rhs.m_result);
   }};
 
   switch(const auto op{t_arithmetic->op()}; op) {
@@ -454,11 +473,10 @@ auto TreeWalk::visit(Assignment* t_assignment) -> void
 
   auto lambda{[&](auto t_func) {
     std::visit(Overload{[&](std::string& t_lhs, std::string& t_rhs) {
-                          set_variable(lhs.m_name,
-                                       t_func(convert(t_lhs), t_rhs));
+                          set(lhs.m_name, t_func(convert(t_lhs), t_rhs));
                         },
                         [&](auto&& t_lhs, auto&& t_rhs) {
-                          set_variable(lhs.m_name, t_func(t_lhs, t_rhs));
+                          set(lhs.m_name, t_func(t_lhs, t_rhs));
                         }},
                lhs.m_result, rhs.m_result);
   }};
@@ -507,7 +525,7 @@ auto TreeWalk::visit(Assignment* t_assignment) -> void
     }
 
     case AssignmentOp::REGULAR: {
-      set_variable(lhs.m_name, rhs.m_result);
+      set(lhs.m_name, rhs.m_result);
       break;
     }
 
@@ -606,7 +624,11 @@ auto TreeWalk::visit(Delete* t_delete) -> void
 {}
 
 auto TreeWalk::visit(Match* t_match) -> void
-{}
+{
+  m_resolve = false;
+
+  m_resolve = true;
+}
 
 auto TreeWalk::visit(Not* t_not) -> void
 {
@@ -705,26 +727,27 @@ auto TreeWalk::run(NodePtr& t_ast, const FileBuffer& t_input) -> void
   m_ast = t_ast;
 
   // TODO: Clean this up
-  set_variable("FNR", (double)m_input->size());
-  // set_variable("CONVFMT", "%.6g");
-  // set_variable("OFMT", "%.6g");
-  set_variable("FILENAME", m_input->path().string());
+  set("FNR", (double)m_input->size());
+  // set("CONVFMT", "%.6g");
+  // set("OFMT", "%.6g");
+  set("FILENAME", m_input->path().string());
 
-  set_variable("FS", " ");
-  set_variable("OFS", " ");
+  set("FS", " ");
+  set("OFS", " ");
 
-  set_variable("SUBSEP", "\034");
+  set("SUBSEP", "\034");
 
-  set_variable("$0", "\034");
-
-  set_variable("RS", "\n");
-  set_variable("ORS", "\n");
+  set("RS", "\n");
+  set("ORS", "\n");
 
   // TODO: Implement these special variables
-  // set_variable("NF", " ");
+  // set("NF", " ");
 
   for(std::size_t nr{1}; !m_input->eof(); m_input->next()) {
-    set_variable("NR", (double)nr);
+    set("NR", (double)nr);
+
+    // FIXME: For now we always use space as field separator
+    m_fields.set(" ", m_input->line());
     try {
       m_ast->accept(this);
     } catch(NextExcept& except) {

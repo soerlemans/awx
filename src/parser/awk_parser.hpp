@@ -13,9 +13,6 @@ namespace parser {
 // Individually extended and changed as of now its all put together into the
 // Same file
 
-// Forward declarations:
-class AwkParser;
-
 // Aliases:
 //! Used for functions that need to have different parsing rules dependent on
 //! Context

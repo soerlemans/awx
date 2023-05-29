@@ -10,6 +10,7 @@
 #include "../../file_buffer.hpp"
 #include "../../visitor/node_visitor.hpp"
 #include "../context.hpp"
+#include "../field_store.hpp"
 
 // Local Includes:
 #include "control.hpp"
@@ -35,11 +36,17 @@ class TreeWalk : public visitor::NodeVisitor {
   std::stack<Store<Any>> m_scope;
   Store<node::functions::NodeFuncPtr> m_functions;
 
-  //! Context gets set when an expression is evaluated
+  // Context gets set when an expression is evaluated
   Context m_context;
 
+  // In certain contexts extended regular expression literal should not be
+  // resolved
+  bool m_resolve;
+
+  FieldStore m_fields;
+
   public:
-  TreeWalk() = default;
+  TreeWalk();
 
   //! Walk returns the updated context
   auto walk(node::NodePtr t_node) -> Context&;
@@ -48,8 +55,8 @@ class TreeWalk : public visitor::NodeVisitor {
 
   auto clear_context() -> void;
 
-  auto set_variable(std::string t_name, Any t_variable) -> void;
-  auto get_variable(const std::string t_name) -> Any&;
+  auto set(std::string t_name, Any t_variable) -> void;
+  auto get(const std::string t_name) -> Any&;
 
   // Visit Methods:
   auto visit(node::control::If* t_if) -> void override;
