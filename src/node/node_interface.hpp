@@ -8,6 +8,7 @@
 // Includes:
 #include "../types.hpp"
 #include "../visitor/node_visitor.hpp"
+#include "../visitor/visitable.hpp"
 
 // Local Includes:
 #include "node.hpp"
@@ -19,7 +20,7 @@ namespace node {
 /*! Abstract Base Node class:
  * A node could either be a literal or some form of expression
  */
-class NodeInterface {
+class NodeInterface : public visitor::Visitable<visitor::NodeVisitor> {
   public:
   virtual auto accept(visitor::NodeVisitor* t_visitor) -> void = 0;
 

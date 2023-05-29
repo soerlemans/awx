@@ -39,6 +39,9 @@ format:
 lint:
 	find src/ -iname "*.[ch]pp" -exec clang-tidy {} -- -DDEVELOPMENT \;
 
+header_guard:
+	find src/ -iname "*.hpp" -exec ./tools/header_guard.awk {} \;
+
 # Documentation rules:
 docs:
 	doxygen docs/Doxyfile
