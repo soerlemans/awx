@@ -340,6 +340,7 @@ auto PrintVisitor::visit(Grouping* t_grouping) -> void
   Printer printer{m_counter};
 
   printer.print("GROUPING");
+  printer.print(" | TODO: Implement");
 }
 
 auto PrintVisitor::visit(Ternary* t_ternary) -> void

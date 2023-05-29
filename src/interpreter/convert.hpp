@@ -45,7 +45,7 @@ double > || std::same_as<std::remove_cvref_t<T>, std::string>;
 /*! In some cases a unary operation will need to be converted to a double only
  * if the string starts with a number in its string
  */
-auto convert(const std::string& t_str) -> double
+inline auto convert(const std::string& t_str) -> double
 {
   if(!t_str.empty()) {
     if(std::isdigit(t_str.front())) {
@@ -56,7 +56,9 @@ auto convert(const std::string& t_str) -> double
   return 0;
 }
 
-auto convert(const double t_val) -> double
+// TODO: Explain
+//!
+inline auto convert(const double t_val) -> double
 {
   return t_val;
 }

@@ -19,9 +19,8 @@ class FieldStore {
   public:
   FieldStore() = default;
 
-  auto set(const std::string& t_fs, const std::string& t_str) -> void;
-  auto get() -> std::string;
-  auto get(std::size_t t_index) -> std::string;
+  auto set(const std::string& t_fs, std::string t_record) -> void;
+  auto get(std::size_t t_index = 0) -> std::string;
 
   virtual ~FieldStore() = default;
 };
