@@ -815,6 +815,7 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 }
 
 
+// TODO: This does not work with the precedence rules
 auto AwkParser::non_unary_print_expr() -> NodePtr
 {
   DBG_TRACE(VERBOSE, "NON UNARY PRINT EXPR");
@@ -861,6 +862,7 @@ auto AwkParser::non_unary_print_expr() -> NodePtr
   return node;
 }
 
+// TODO: These precedence rules are wrong
 auto AwkParser::unary_print_expr() -> NodePtr
 {
   DBG_TRACE(VERBOSE, "UNARY PRINT EXPR");
@@ -942,6 +944,50 @@ auto AwkParser::print_expr_list_opt() -> NodeListPtr
   return print_expr_list();
 }
 
+// TODO: This does not work with the precedence rules
+// non_unary_expr   : '(' expr ')'
+//                  | '!' expr
+//                  | non_unary_expr '^'      expr
+//                  | non_unary_expr '*'      expr
+//                  | non_unary_expr '/'      expr
+//                  | non_unary_expr '%'      expr
+//                  | non_unary_expr '+'      expr
+//                  | non_unary_expr '-'      expr
+//                  | non_unary_expr          non_unary_expr
+//                  | non_unary_expr '<'      expr
+//                  | non_unary_expr LE       expr
+//                  | non_unary_expr NE       expr
+//                  | non_unary_expr EQ       expr
+//                  | non_unary_expr '>'      expr
+//                  | non_unary_expr GE       expr
+//                  | non_unary_expr '˜'      expr
+//                  | non_unary_expr NO_MATCH expr
+//                  | non_unary_expr In NAME
+//                  | '(' multiple_expr_list ')' In NAME
+//                  | non_unary_expr AND newline_opt expr
+//                  | non_unary_expr OR  newline_opt expr
+//                  | non_unary_expr '?' expr ':' expr
+//                  | NUMBER
+//                  | STRING
+//                  | lvalue
+//                  | ERE
+//                  | lvalue INCR
+//                  | lvalue DECR
+//                  | INCR lvalue
+//                  | DECR lvalue
+//                  | lvalue POW_ASSIGN expr
+//                  | lvalue MOD_ASSIGN expr
+//                  | lvalue MUL_ASSIGN expr
+//                  | lvalue DIV_ASSIGN expr
+//                  | lvalue ADD_ASSIGN expr
+//                  | lvalue SUB_ASSIGN expr
+//                  | lvalue '=' expr
+//                  | FUNC_NAME '(' expr_list_opt ')'
+//                       /* no white space allowed before '(' */
+//                  | BUILTIN_FUNC_NAME '(' expr_list_opt ')'
+//                  | BUILTIN_FUNC_NAME
+//                  | non_unary_input_function
+//                  ;
 auto AwkParser::non_unary_expr() -> NodePtr
 {
   DBG_TRACE(VERBOSE, "NON UNARY EXPR");
@@ -989,6 +1035,7 @@ auto AwkParser::non_unary_expr() -> NodePtr
   return node;
 }
 
+// TODO: This does not work with the precedence rules
 auto AwkParser::unary_expr() -> NodePtr
 {
   DBG_TRACE(VERBOSE, "UNARY EXPR");

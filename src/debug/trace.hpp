@@ -1,8 +1,10 @@
 #ifndef AWX_DEBUG_TRACE_HPP
 #define AWX_DEBUG_TRACE_HPP
 
+// STL Includes:
 #include <string>
 
+// Local Includes:
 #include "log.hpp"
 
 
@@ -31,7 +33,7 @@
 // Trace class used for figuring out
 class Trace {
   private:
-  // Counter that denotes the indent level
+  // Counter that denotes the indentation level
   static int m_counter;
 
   // Denotes if the message should be printed?
