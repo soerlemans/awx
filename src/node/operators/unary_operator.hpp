@@ -1,17 +1,20 @@
 #ifndef AWX_NODE_OPERATORS_UNARY_OPERATOR_HPP
 #define AWX_NODE_OPERATORS_UNARY_OPERATOR_HPP
 
-#include "../expression.hpp"
+// Includes:
+#include "../node_interface.hpp"
 
+// Local Includes:
 #include "operators.hpp"
 
+
 namespace node {
-class operators::UnaryOperator : public Expression {
-  protected:
+class operators::UnaryOperator : public NodeInterface {
+  private:
   NodePtr m_left;
 
   public:
-  explicit UnaryOperator(Precedence t_precedence, NodePtr&& t_left);
+  explicit UnaryOperator(NodePtr&& t_left);
 
   auto left() -> NodePtr&;
 

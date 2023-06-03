@@ -12,6 +12,8 @@ class Grouping : public UnaryOperator {
   public:
   Grouping(NodePtr&& t_expr);
 
+	auto expr() -> NodePtr;
+
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Grouping() override = default;

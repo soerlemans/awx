@@ -1,7 +1,6 @@
 # Add source files
 target_sources(${PROJECT_NAME} PRIVATE
 	list.cpp
-	expression.cpp
 )
 
 # Add subdirectories

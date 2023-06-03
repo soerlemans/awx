@@ -6,8 +6,6 @@ using namespace node::operators;
 using namespace visitor;
 
 StringConcatenation::StringConcatenation(NodePtr&& t_left, NodePtr&& t_right)
-  : BinaryOperator{Precedence::STRING_CONCAT, Associativity::LEFT,
-                   std::forward<NodePtr>(t_left),
+  : BinaryOperator{std::forward<NodePtr>(t_left),
                    std::forward<NodePtr>(t_right)}
 {}
-

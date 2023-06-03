@@ -536,11 +536,23 @@ auto AwkParser::universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
 {
   NodePtr node;
 
-  if(auto ptr{universal_print_expr(t_lhs, t_rhs)}; ptr) {
+  if(auto ptr{arithmetic(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{comparison(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
+  } else if(auto ptr{match(t_lhs, t_rhs)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{membership(t_lhs)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{logical(t_lhs, t_rhs)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{ternary(t_lhs, t_rhs)}; ptr) {
+    node = std::move(ptr);
   }
+
+  // if(auto ptr{universal_print_expr(t_lhs, t_rhs)}; ptr) {
+  //   node = std::move(ptr);
+  // }
 
   return node;
 }

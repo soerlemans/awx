@@ -32,13 +32,12 @@ constexpr auto tokentype2op(const TokenType t_tokentype) -> UnaryPrefixOp
 } // namespace
 
 UnaryPrefix::UnaryPrefix(UnaryPrefixOp t_op, NodePtr&& t_left)
-  : UnaryOperator{Precedence::UNARY_PREFIX, std::forward<NodePtr>(t_left)},
-    m_op{t_op}
+  : UnaryOperator{std::forward<NodePtr>(t_left)}, m_op{t_op}
 {}
 
 
 UnaryPrefix::UnaryPrefix(TokenType t_tokentype, NodePtr&& t_left)
-  : UnaryOperator{Precedence::UNARY_PREFIX, std::forward<NodePtr>(t_left)},
+  : UnaryOperator{std::forward<NodePtr>(t_left)},
     m_op{tokentype2op(t_tokentype)}
 {}
 
@@ -46,4 +45,3 @@ auto UnaryPrefix::op() const -> UnaryPrefixOp
 {
   return m_op;
 }
-
