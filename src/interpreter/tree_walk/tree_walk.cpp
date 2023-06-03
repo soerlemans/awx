@@ -679,7 +679,9 @@ auto TreeWalk::visit(StringConcatenation* t_conc) -> void
 }
 
 auto TreeWalk::visit(Grouping* t_grouping) -> void
-{}
+{
+  walk(t_grouping->left());
+}
 
 auto TreeWalk::visit(Ternary* t_ternary) -> void
 {}

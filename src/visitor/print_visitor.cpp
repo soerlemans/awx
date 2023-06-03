@@ -348,7 +348,10 @@ auto PrintVisitor::visit(Grouping* t_grouping) -> void
   Printer printer{m_counter};
 
   printer.print("GROUPING");
-  printer.print(" | TODO: Implement");
+  if(auto& expr{t_grouping->left()}; expr) {
+    printer.print("| EXPR");
+    expr->accept(this);
+  }
 }
 
 auto PrintVisitor::visit(Ternary* t_ternary) -> void
