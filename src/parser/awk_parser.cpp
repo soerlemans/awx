@@ -1078,9 +1078,9 @@ auto AwkParser::expr() -> NodePtr
   DBG_TRACE(VERBOSE, "EXPR");
   NodePtr node;
 
-  if(auto ptr{non_unary_expr()}; ptr) {
+  if(auto ptr{unary_expr()}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{unary_expr()}; ptr) {
+  } else if(auto ptr{non_unary_expr()}; ptr) {
     node = std::move(ptr);
   } else {
     // TODO: Error handling

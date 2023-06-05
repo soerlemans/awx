@@ -51,7 +51,6 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
 
   // Remaining positional arguments are filepaths preceding -- is optional
   t_app.add_option("{}", t_config.m_filepaths, "Postional arguments")
-    ->required() // Temporary required, remove when as input works
     ->check(CLI::ExistingFile);
 
   // Parse CLI args
@@ -60,13 +59,20 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
 // NOLINTEND
 auto run(Config& t_config) -> void
 {
+  std::vector<FileBuffer> input_vec;
+  for(auto& filepath : t_config.m_filepaths) {
+    input_vec.emplace_back(filepath);
+  }
+
   // TODO: Have the program also work if no files are given (read from STDIN in
   // this case)
+  if(input_vec.empty()) {
+    input_vec.emplace_back();
+  }
+
   for(auto& script : t_config.m_scripts) {
-    // For now always expect a filepath
-    for(auto& filepath : t_config.m_filepaths) {
+    for(auto& input : input_vec) {
       FileBuffer program{script};
-      FileBuffer input{filepath};
 
       lexer::Lexer lexer{program};
       token::TokenStream tokenstream{lexer.tokenize()};
@@ -75,7 +81,7 @@ auto run(Config& t_config) -> void
       node::NodePtr ast{parser.parse()};
 
 #if DEBUG
-      // Pretty print ast
+      // Pretty print AST
       visitor::PrintVisitor pretty_printer;
       ast->accept(&pretty_printer);
 #endif // DEBUG

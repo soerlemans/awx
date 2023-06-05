@@ -24,7 +24,7 @@ class FileBuffer {
   mutable std::size_t m_lineno, m_columnno;
 
   public:
-  FileBuffer() = delete;
+  FileBuffer();
   FileBuffer(fs::path&& t_path);
 
   auto load() -> void;

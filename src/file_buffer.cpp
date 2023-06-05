@@ -7,6 +7,12 @@
 
 
 // Constructors:
+
+FileBuffer::FileBuffer()
+{
+  m_filebuffer.emplace_back("");
+}
+
 FileBuffer::FileBuffer(fs::path&& t_path)
   : m_path{std::move(t_path)}, m_lineno{0}, m_columnno{0}
 {

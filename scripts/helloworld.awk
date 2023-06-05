@@ -5,3 +5,7 @@ NR <= 2 && /^#(define|ifndef).+_HPP$/ {
 		i = NR >= 2
 		print $0, NR
 }
+
+{
+		print 10 + 10
+}
