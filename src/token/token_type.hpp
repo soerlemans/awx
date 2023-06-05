@@ -67,9 +67,6 @@ enum class TokenType {
   BRACE_OPEN,
   BRACE_CLOSE,
 
-  // Assignment:
-  ASSIGNMENT,
-
   // Numeric Tokens:
   INCREMENT,
   DECREMENT,
@@ -82,6 +79,7 @@ enum class TokenType {
   SLASH,
   PERCENT_SIGN,
 
+  // Assignment:
   POWER_ASSIGNMENT,
 
   MULTIPLY_ASSIGNMENT,
@@ -90,6 +88,8 @@ enum class TokenType {
 
   ADD_ASSIGNMENT,
   SUBTRACT_ASSIGNMENT,
+
+  ASSIGNMENT,
 
   // REGEX Tokens:
   ERE_MATCH,

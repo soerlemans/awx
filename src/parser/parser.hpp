@@ -34,7 +34,6 @@ class Parser {
   // have different dialects of AWX
   virtual auto parse() -> node::NodePtr = 0;
 
-  // Destructor:
   virtual ~Parser() = default;
 };
 } // namespace parser
