@@ -25,7 +25,7 @@ class PrattParser : public Parser {
   PrattParser(token::TokenStream&& t_tokenstream);
 
   //! Expression that uses binding power
-  virtual auto expr_bp() -> node::NodePtr;
+  virtual auto expr() -> node::NodePtr;
 
   virtual ~PrattParser() = default;
 };

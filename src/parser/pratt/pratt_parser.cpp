@@ -14,5 +14,16 @@ PrattParser::PrattParser(token::TokenStream&& t_tokenstream)
 {}
 
 
-auto PrattParser::expr_bp() -> node::NodePtr
-{}
+auto PrattParser::expr() -> node::NodePtr
+{
+  using namespace node;
+
+  node::NodePtr node;
+
+  // Expression parse loop
+  while(!eos()) {
+    const auto token{next()};
+  }
+
+  return node;
+}

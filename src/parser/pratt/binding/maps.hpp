@@ -6,6 +6,7 @@
 
 
 namespace parser::pratt::binding {
+	// TODO: Figure out how to deal with parenthesis
 // BINDING_POWER(GROUPING, 25, 25);
 
 // Classes:
