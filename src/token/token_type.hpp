@@ -114,7 +114,7 @@ enum class TokenType {
   // Control flow Tokens:
   COMMA,
   DOT,
-  QUESTIONMARK,
+  QUESTION_MARK,
   COLON,
   SEMICOLON,
 

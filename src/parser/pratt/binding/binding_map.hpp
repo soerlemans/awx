@@ -13,7 +13,7 @@ namespace parser::pratt::binding {
 // Macros:
 //! Convenience macro so we can omit the TokenType prefix
 #define INSERT_BINDING(t_type, t_lbp, t_rbp) \
-  insert_binding(TokenType::t_type, t_lbp, t_rbp);
+  insert_binding(token::TokenType::t_type, t_lbp, t_rbp);
 
 // Aliases:
 //! Two integers are used to indicate the binding power

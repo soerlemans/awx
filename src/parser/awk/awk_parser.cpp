@@ -481,7 +481,7 @@ auto AwkParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 
   // FIXME: simple_print_statement has a rule that conflicts and does not make
   // It possible to detect if it is a print() or print () ? : ;
-  if(next_if(TokenType{g_questionmark})) {
+  if(next_if(TokenType{g_question_mark})) {
     DBG_TRACE(VERBOSE, "Found TERNARY");
     NodePtr then_ptr{t_rhs()};
     if(!then_ptr) {
