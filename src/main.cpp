@@ -14,7 +14,7 @@
 #include "debug/log.hpp"
 #include "file_buffer.hpp"
 #include "interpreter/tree_walk/tree_walk.hpp"
-#include "parser/awk_parser.hpp"
+#include "parser/awk/awk_parser.hpp"
 #include "visitor/print_visitor.hpp"
 
 // Local Includes:
@@ -77,7 +77,7 @@ auto run(Config& t_config) -> void
       lexer::Lexer lexer{program};
       token::TokenStream tokenstream{lexer.tokenize()};
 
-      parser::AwkParser parser{tokenstream};
+      parser::awk::AwkParser parser{tokenstream};
       node::NodePtr ast{parser.parse()};
 
 #if DEBUG

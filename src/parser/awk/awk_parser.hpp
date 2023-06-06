@@ -1,14 +1,14 @@
-#ifndef AWX_PARSER_AWK_PARSER_HPP
-#define AWX_PARSER_AWK_PARSER_HPP
+#ifndef AWX_PARSER_AWK_AWK_PARSER_HPP
+#define AWX_PARSER_AWK_AWK_PARSER_HPP
 
 // STL Includes:
 #include <functional>
 
 // Local Includes:
-#include "parser.hpp"
+#include "../parser.hpp"
 
 
-namespace parser {
+namespace parser::awk {
 // TODO: Some day split the Parser into different components that can be
 // Individually extended and changed as of now its all put together into the
 // Same file
@@ -133,6 +133,6 @@ class AwkParser : public Parser {
   // Desstructors:
   ~AwkParser() override = default;
 };
-} // namespace parser
+} // namespace parser::awk
 
-#endif // AWX_PARSER_AWK_PARSER_HPP
+#endif // AWX_PARSER_AWK_AWK_PARSER_HPP

@@ -1,9 +1,8 @@
 # Add source files
 target_sources(${PROJECT_NAME}
 	PRIVATE
-	parser.cpp
+	awk_parser.cpp
 )
 
 # Add subdirectories
-add_subdirectory(pratt)
-add_subdirectory(awk)
+#add_subdirectory(binding)

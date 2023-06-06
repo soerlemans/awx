@@ -5,16 +5,16 @@
 #include <stdexcept>
 
 // Includes:
-#include "../debug/log.hpp"
-#include "../debug/trace.hpp"
-#include "../enum.hpp"
-#include "../node/include.hpp"
-#include "../token/token_type.hpp"
-#include "../token/token_type_helpers.hpp"
+#include "../../debug/log.hpp"
+#include "../../debug/trace.hpp"
+#include "../../enum.hpp"
+#include "../../node/include.hpp"
+#include "../../token/token_type.hpp"
+#include "../../token/token_type_helpers.hpp"
 
 
 // Using statements;
-using namespace parser;
+using namespace parser::awk;
 
 using namespace token;
 using namespace reserved::symbols;
