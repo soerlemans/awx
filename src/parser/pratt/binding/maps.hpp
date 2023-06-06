@@ -14,10 +14,19 @@ class PrefixMap : BindingMap {
   public:
   PrefixMap()
   {
+    using namespace token;
 
-    // BINDING_POWER(FIELD_REFERENCE, 24, 24);
-    // BINDING_POWER(PRE_CREMENT, 22, 22);
-    // BINDING_POWER(UNARY_OP, 19, 19);
+    // Field reference:
+    INSERT_BINDING(DOLLAR_SIGN, 24, 24);
+
+    // Precrement
+    INSERT_BINDING(INCREMENT, 22, 22);
+    INSERT_BINDING(DECREMENT, 22, 22);
+
+    // Unary operators
+    INSERT_BINDING(NOT, 19, 19);
+    INSERT_BINDING(PLUS, 19, 19);
+    INSERT_BINDING(MINUS, 19, 19);
   }
 };
 

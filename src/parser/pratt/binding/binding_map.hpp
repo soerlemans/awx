@@ -11,8 +11,9 @@
 
 namespace parser::pratt::binding {
 // Macros:
-#define BINDING_MAP_BIND(t_op, t_lbp, t_rbp) \
-  this->insert({t_op, BindingPower{t_lbp, t_rbp}});
+//! Convenience macro so we can omit the TokenType prefix
+#define INSERT_BINDING(t_type, t_lbp, t_rbp) \
+  insert_binding(TokenType::t_type, t_lbp, t_rbp);
 
 // Aliases:
 //! Two integers are used to indicate the binding power
@@ -22,8 +23,10 @@ using BindingPower = std::pair<int, int>;
 //! Binding map contains the precedence bindings
 class BindingMap : public std::unordered_map<token::TokenType, BindingPower> {
   protected:
-	//! Constructor is protected, to disallow direct usage
+  //! Constructor is protected, to disallow direct usage
   BindingMap() = default;
+
+  auto insert_binding(token::TokenType t_type, int t_lbp, int t_rbp) -> void;
 
   public:
   auto rbp(token::TokenType t_type) const -> int;
