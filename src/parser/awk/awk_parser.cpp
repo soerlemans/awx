@@ -13,7 +13,7 @@
 #include "../../token/token_type_helpers.hpp"
 
 
-// Using statements;
+// Using statements:
 using namespace parser::awk;
 
 using namespace token;

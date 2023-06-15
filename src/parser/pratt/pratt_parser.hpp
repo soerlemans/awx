@@ -6,6 +6,7 @@
 #include <utility>
 
 // Includes:
+#include "../../types.hpp"
 #include "../parser.hpp"
 #include "binding/maps.hpp"
 
@@ -19,12 +20,17 @@ class PrattParser : public Parser {
   binding::InfixMap m_infix;
   binding::PostfixMap m_postfix;
 
-  int m_min_bp;
-
   public:
   PrattParser(token::TokenStream&& t_tokenstream);
 
-  //! Expression that uses binding power
+  // Print expressions:
+  virtual auto non_unary_print_expr() -> node::NodePtr;
+  virtual auto unary_print_expr(int t_min_bp = 0) -> node::NodePtr;
+  virtual auto print_expr(int t_min_bp = 0) -> node::NodePtr;
+
+  // Regular expressions:
+  virtual auto non_unary_expr() -> node::NodePtr;
+  virtual auto unary_expr() -> node::NodePtr;
   virtual auto expr() -> node::NodePtr;
 
   virtual ~PrattParser() = default;

@@ -1,6 +1,7 @@
 #include "print_visitor.hpp"
 
 
+// Using statements:
 using namespace visitor;
 using namespace node;
 using namespace node::control;
@@ -244,6 +245,9 @@ auto PrintVisitor::visit(Arithmetic* t_arithmetic) -> void
   Printer printer{m_counter};
 
   printer.print("ARITHMETIC");
+  printer.print("| OP: TODO!");
+  printer.print_if(t_arithmetic->left(), this, "| LEFT");
+  printer.print_if(t_arithmetic->right(), this, "| RIGHT");
 }
 
 auto PrintVisitor::visit(Assignment* t_assignment) -> void

@@ -6,12 +6,12 @@
 
 
 namespace parser::pratt::binding {
-	// TODO: Figure out how to deal with parenthesis
+// TODO: Figure out how to deal with parenthesis
 // BINDING_POWER(GROUPING, 25, 25);
 
 // Classes:
 //! This class is a map of prefix operator binding powers
-class PrefixMap : BindingMap {
+class PrefixMap : public BindingMap {
   public:
   PrefixMap()
   {
@@ -32,7 +32,7 @@ class PrefixMap : BindingMap {
 };
 
 //! This class is a map of prefix operator binding powers
-class InfixMap : BindingMap {
+class InfixMap : public BindingMap {
   public:
   InfixMap()
   {
@@ -86,7 +86,7 @@ class InfixMap : BindingMap {
 };
 
 //! This class is a map of prefix operator binding powers
-class PostfixMap : BindingMap {
+class PostfixMap : public BindingMap {
   public:
   PostfixMap()
   {
