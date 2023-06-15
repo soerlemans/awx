@@ -246,6 +246,7 @@ auto PrintVisitor::visit(Arithmetic* t_arithmetic) -> void
 
   printer.print("ARITHMETIC");
   printer.print("| OP: TODO!");
+
   printer.print_if(t_arithmetic->left(), this, "| LEFT");
   printer.print_if(t_arithmetic->right(), this, "| RIGHT");
 }

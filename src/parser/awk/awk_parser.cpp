@@ -36,7 +36,7 @@ using namespace node::rvalue;
 
 // Constructors:
 AwkParser::AwkParser(TokenStream t_tokenstream)
-  : Parser{std::move(t_tokenstream)}
+  : PrattParser{std::move(t_tokenstream)}
 {}
 
 // Parsing rule/grammar rules:
@@ -828,90 +828,91 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 
 
 // TODO: This does not work with the precedence rules
-auto AwkParser::non_unary_print_expr() -> NodePtr
-{
-  DBG_TRACE(VERBOSE, "NON UNARY PRINT EXPR");
-  NodePtr node;
-  NodePtr nupe;
+// auto AwkParser::non_unary_print_expr() -> NodePtr
+// {
+//   DBG_TRACE(VERBOSE, "NON UNARY PRINT EXPR");
+//   NodePtr node;
+//   NodePtr nupe;
 
-  const auto lambda = [&]() {
-    return this->print_expr();
-  };
+//   const auto lambda = [&]() {
+//     return this->print_expr();
+//   };
 
-  if(auto ptr{grouping()}; ptr) {
-    nupe = std::move(ptr);
-  } else if(auto ptr{negation(lambda)}; ptr) {
-    nupe = std::move(ptr);
-  } else if(auto ptr{literal()}; ptr) {
-    nupe = std::move(ptr);
-  } else if(auto ptr{prefix_operator()}; ptr) {
-    nupe = std::move(ptr);
-  } else if(auto ptr{function_call()}; ptr) {
-    nupe = std::move(ptr);
-  } else if(auto ptr{lvalue()}; ptr) {
-    if(auto ulval{universal_lvalue(ptr, lambda)}; ulval) {
-      nupe = std::move(ulval);
-    } else {
-      nupe = std::move(ptr);
-    }
-  }
+//   if(auto ptr{grouping()}; ptr) {
+//     nupe = std::move(ptr);
+//   } else if(auto ptr{negation(lambda)}; ptr) {
+//     nupe = std::move(ptr);
+//   } else if(auto ptr{literal()}; ptr) {
+//     nupe = std::move(ptr);
+//   } else if(auto ptr{prefix_operator()}; ptr) {
+//     nupe = std::move(ptr);
+//   } else if(auto ptr{function_call()}; ptr) {
+//     nupe = std::move(ptr);
+//   } else if(auto ptr{lvalue()}; ptr) {
+//     if(auto ulval{universal_lvalue(ptr, lambda)}; ulval) {
+//       nupe = std::move(ulval);
+//     } else {
+//       nupe = std::move(ptr);
+//     }
+//   }
 
-  // If it is indeed a non unary expression than check if is a string
-  // Concatenation or a binary operator
-  if(nupe) {
-    if(auto rhs{non_unary_print_expr()}; rhs) {
-      DBG_TRACE_PRINT(INFO, "Found STRING CONCAT");
-      node =
-        std::make_shared<StringConcatenation>(std::move(nupe), std::move(rhs));
-    } else if(auto ptr{universal_print_expr(nupe, lambda)}; ptr) {
-      node = std::move(ptr);
-    } else {
-      // If we cant find a bigger nupe expression just return the nupe
-      node = std::move(nupe);
-    }
-  }
+//   // If it is indeed a non unary expression than check if is a string
+//   // Concatenation or a binary operator
+//   if(nupe) {
+//     if(auto rhs{non_unary_print_expr()}; rhs) {
+//       DBG_TRACE_PRINT(INFO, "Found STRING CONCAT");
+//       node =
+//         std::make_shared<StringConcatenation>(std::move(nupe),
+//         std::move(rhs));
+//     } else if(auto ptr{universal_print_expr(nupe, lambda)}; ptr) {
+//       node = std::move(ptr);
+//     } else {
+//       // If we cant find a bigger nupe expression just return the nupe
+//       node = std::move(nupe);
+//     }
+//   }
 
-  return node;
-}
+//   return node;
+// }
 
 // TODO: These precedence rules are wrong
-auto AwkParser::unary_print_expr() -> NodePtr
-{
-  DBG_TRACE(VERBOSE, "UNARY PRINT EXPR");
-  NodePtr node;
+// auto AwkParser::unary_print_expr() -> NodePtr
+// {
+//   DBG_TRACE(VERBOSE, "UNARY PRINT EXPR");
+//   NodePtr node;
 
-  const auto lambda = [&]() -> NodePtr {
-    return this->expr();
-  };
+//   const auto lambda = [&]() -> NodePtr {
+//     return this->expr();
+//   };
 
-  if(auto lhs{unary_prefix(lambda)}; lhs) {
-    const auto print_lambda = [&]() -> NodePtr {
-      return this->print_expr();
-    };
+//   if(auto lhs{unary_prefix(lambda)}; lhs) {
+//     const auto print_lambda = [&]() -> NodePtr {
+//       return this->print_expr();
+//     };
 
-    if(auto ptr{universal_print_expr(lhs, print_lambda)}; ptr) {
-      node = std::move(ptr);
-    } else {
-      node = std::move(lhs);
-    }
-  }
+//     if(auto ptr{universal_print_expr(lhs, print_lambda)}; ptr) {
+//       node = std::move(ptr);
+//     } else {
+//       node = std::move(lhs);
+//     }
+//   }
 
-  return node;
-}
+//   return node;
+// }
 
-auto AwkParser::print_expr() -> NodePtr
-{
-  DBG_TRACE(VERBOSE, "PRINT EXPR");
-  NodePtr node;
+// auto AwkParser::print_expr() -> NodePtr
+// {
+//   DBG_TRACE(VERBOSE, "PRINT EXPR");
+//   NodePtr node;
 
-  if(auto ptr{unary_print_expr()}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{non_unary_print_expr()}; ptr) {
-    node = std::move(ptr);
-  }
+//   if(auto ptr{unary_print_expr()}; ptr) {
+//     node = std::move(ptr);
+//   } else if(auto ptr{non_unary_print_expr()}; ptr) {
+//     node = std::move(ptr);
+//   }
 
-  return node;
-}
+//   return node;
+// }
 
 // TODO: multiple_expr_list is very similar create a helper function that both
 // Can use

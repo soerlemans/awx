@@ -24,7 +24,7 @@ class PrattParser : public Parser {
   PrattParser(token::TokenStream&& t_tokenstream);
 
   // Print expressions:
-  virtual auto non_unary_print_expr() -> node::NodePtr;
+  virtual auto non_unary_print_expr(int t_min_bp = 0) -> node::NodePtr;
   virtual auto unary_print_expr(int t_min_bp = 0) -> node::NodePtr;
   virtual auto print_expr(int t_min_bp = 0) -> node::NodePtr;
 

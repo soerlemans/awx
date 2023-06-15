@@ -6,6 +6,7 @@
 
 // Local Includes:
 #include "../parser.hpp"
+#include "../pratt/pratt_parser.hpp"
 
 
 namespace parser::awk {
@@ -20,7 +21,7 @@ using ParserFunc = std::function<node::NodePtr()>;
 
 // Classes:
 //! Top down parser for POSIX AWK. Grammar can be found in awk.yy file.
-class AwkParser : public Parser {
+class AwkParser : public pratt::PrattParser {
   public:
   // Constructors:
   AwkParser(token::TokenStream t_tokenstream);
@@ -78,16 +79,16 @@ class AwkParser : public Parser {
   virtual auto loop(const ParserFunc& t_body) -> node::NodePtr;
 
   // Print rules:
-  virtual auto non_unary_print_expr() -> node::NodePtr;
-  virtual auto unary_print_expr() -> node::NodePtr;
-  virtual auto print_expr() -> node::NodePtr;
+  // virtual auto non_unary_print_expr() -> node::NodePtr;
+  // virtual auto unary_print_expr() -> node::NodePtr;
+  // virtual auto print_expr() -> node::NodePtr;
+
   virtual auto print_expr_list() -> node::NodeListPtr;
   virtual auto print_expr_list_opt() -> node::NodeListPtr;
 
   // Expression rules:
   virtual auto non_unary_expr() -> node::NodePtr;
   virtual auto unary_expr() -> node::NodePtr;
-
   virtual auto expr() -> node::NodePtr;
   virtual auto expr_opt() -> node::NodePtr;
 
