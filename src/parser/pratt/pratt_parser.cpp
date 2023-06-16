@@ -24,24 +24,106 @@ PrattParser::PrattParser(token::TokenStream&& t_tokenstream)
   : Parser{std::move(t_tokenstream)}
 {}
 
+// TODO: Have this also handle multidimensional 'in' statements?
+// TODO: Create a function that extracts expressions from in between '(', ')'
+auto PrattParser::grouping() -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "GROUPING");
+  NodePtr node;
+
+  if(next_if(TokenType::PAREN_OPEN)) {
+    DBG_TRACE_PRINT(VERBOSE, "Found GROUPING");
+
+    node = std::make_shared<Grouping>(expr());
+    expect(TokenType::PAREN_CLOSE, ")");
+  }
+
+  return node;
+}
+
+// negation == not, !
+auto PrattParser::negation(const ParserFunc& t_expr) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "NEGATION");
+  NodePtr node;
+
+  if(next_if(TokenType::NOT)) {
+    DBG_TRACE_PRINT(INFO, "Found NOT");
+    if(NodePtr expr_ptr{t_expr()}; expr_ptr) {
+      node = std::make_shared<Not>(std::move(expr_ptr));
+    } else {
+      // TODO: Error handling
+    }
+  }
+
+  return node;
+}
+
+// TODO: Implement match
+// This method parses literals
+auto PrattParser::literal() -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "LITERAL");
+  NodePtr node;
+
+  switch(const auto token{next()}; token.type()) {
+    // TODO: Token in the grammar calls for NUMBER? These are not treated
+    // differently?
+    case TokenType::FLOAT:
+      DBG_TRACE_PRINT(INFO, "Found FLOAT literal");
+      node = std::make_shared<Float>(token.value<double>());
+      break;
+
+    case TokenType::HEX:
+      [[fallthrough]];
+    case TokenType::INTEGER:
+      DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ");
+      node = std::make_shared<Integer>(token.value<int>());
+      break;
+
+    case TokenType::STRING:
+      DBG_TRACE_PRINT(INFO,
+                      "Found STRING literal: ", token.value<std::string>());
+      node = std::make_shared<String>(token.value<std::string>());
+      break;
+
+    // TODO: match
+    case TokenType::REGEX:
+      DBG_TRACE_PRINT(INFO,
+                      "Found REGEX literal: ", token.value<std::string>());
+      node = std::make_shared<Regex>(token.value<std::string>());
+      break;
+
+    default:
+      prev();
+      break;
+  }
+
+  return node;
+}
+
 auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "NON UNARY PRINT EXPR");
   NodePtr lhs;
 
   // Literals
-  switch(const auto token{next()}; token.type()) {
-    case TokenType::HEX:
-      [[fallthrough]];
-    case TokenType::INTEGER: {
-      DBG_TRACE_PRINT(INFO, "Found INTEGER literal: ");
-      lhs = std::make_shared<Integer>(token.value<int>());
-      break;
-    }
+  if(auto ptr{literal()}; ptr) {
+    lhs = std::move(ptr);
+  } else {
+    switch(const auto tokentype{next().type()}; tokentype) {
+      case TokenType::NOT: {
+        DBG_TRACE(VERBOSE, "Found NOT");
 
-    default:
-      prev();
-      break;
+        const auto [lbp, rbp] = m_prefix.at(tokentype);
+        lhs = std::make_shared<UnaryPrefix>(tokentype, print_expr(rbp));
+        break;
+      }
+
+      default:
+        prev();
+        break;
+    }
   }
 
   // while(true) {
@@ -78,7 +160,7 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
 
     // FIXME: filter using switch, this is temporary code
     if(!m_infix.count(token.type())) {
-			prev();
+      prev();
       break;
     }
 

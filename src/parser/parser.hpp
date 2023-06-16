@@ -1,12 +1,21 @@
 #ifndef AWX_PARSER_PARSER_HPP
 #define AWX_PARSER_PARSER_HPP
 
+// STL Includes:
+#include <functional>
+
 // Includes:
 #include "../lexer/lexer.hpp"
 #include "../node/node.hpp"
 
 
 namespace parser {
+// Aliases:
+//! Used for functions that need to have different parsing rules dependent on
+//! Context
+using ParserFunc = std::function<node::NodePtr()>;
+
+// Classes:
 /*! Abstract parser class provides utilities that a parser would need to
  * implement
  */

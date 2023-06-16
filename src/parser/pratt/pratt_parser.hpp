@@ -12,6 +12,7 @@
 
 
 namespace parser::pratt {
+
 // Classes:
 class PrattParser : public Parser {
   private:
@@ -22,6 +23,12 @@ class PrattParser : public Parser {
 
   public:
   PrattParser(token::TokenStream&& t_tokenstream);
+
+  // Helper methods:
+  virtual auto grouping() -> node::NodePtr;
+  virtual auto negation(const ParserFunc& t_expr)
+    -> node::NodePtr; // negation == not, !
+  virtual auto literal() -> node::NodePtr;
 
   // Print expressions:
   virtual auto non_unary_print_expr(int t_min_bp = 0) -> node::NodePtr;

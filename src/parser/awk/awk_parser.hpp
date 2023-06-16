@@ -1,9 +1,6 @@
 #ifndef AWX_PARSER_AWK_AWK_PARSER_HPP
 #define AWX_PARSER_AWK_AWK_PARSER_HPP
 
-// STL Includes:
-#include <functional>
-
 // Local Includes:
 #include "../parser.hpp"
 #include "../pratt/pratt_parser.hpp"
@@ -13,11 +10,6 @@ namespace parser::awk {
 // TODO: Some day split the Parser into different components that can be
 // Individually extended and changed as of now its all put together into the
 // Same file
-
-// Aliases:
-//! Used for functions that need to have different parsing rules dependent on
-//! Context
-using ParserFunc = std::function<node::NodePtr()>;
 
 // Classes:
 //! Top down parser for POSIX AWK. Grammar can be found in awk.yy file.
@@ -64,10 +56,10 @@ class AwkParser : public pratt::PrattParser {
     -> node::NodePtr;
 
   // Non unary helper rules:
-  virtual auto grouping() -> node::NodePtr;
-  virtual auto negation(const ParserFunc& t_expr)
-    -> node::NodePtr; // negation == not, !
-  virtual auto literal() -> node::NodePtr;
+  // virtual auto grouping() -> node::NodePtr;
+  // virtual auto negation(const ParserFunc& t_expr)
+  //   -> node::NodePtr; // negation == not, !
+  // virtual auto literal() -> node::NodePtr;
   virtual auto prefix_operator() -> node::NodePtr;
   virtual auto universal_lvalue(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> node::NodePtr;
