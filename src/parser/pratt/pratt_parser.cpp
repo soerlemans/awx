@@ -73,11 +73,12 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
   }
 
   // Binary expressions:
-  while(true) {
+  while(!eos()) {
     const auto token{next()};
 
-    // FIXME: filter using switch
+    // FIXME: filter using switch, this is temporary code
     if(!m_infix.count(token.type())) {
+			prev();
       break;
     }
 

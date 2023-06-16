@@ -406,6 +406,7 @@ auto Lexer::tokenize() -> TokenStream
         // '#' are used for comments.
         // If we just skip to the next line we ignore the \n at the end, so we
         // Must add a NEWLINE explicitly!
+				// FIXME: Inserting NEWLINE is not needed?
         DBG_LOG(INFO, "INSERTING NEWLINE");
         m_ts.push_back(create_token(TokenType::NEWLINE));
 
