@@ -348,7 +348,7 @@ auto TreeWalk::visit(FieldReference* t_fr) -> void
   // Resolve field reference
   std::visit(
     [this](auto&& t_index) {
-      m_context.m_result = m_fields.get(convert(t_index));
+      m_context.m_result = m_fields.get(cast(t_index));
     },
     context.m_result);
 }
@@ -408,7 +408,7 @@ auto TreeWalk::visit(Arithmetic* t_arithmetic) -> void
   auto lambda{[&](auto t_func) {
     std::visit(
       [&](auto&& t_lhs, auto&& t_rhs) {
-        m_context.m_result = (double)t_func(convert(t_lhs), t_rhs);
+        m_context.m_result = (double)t_func(cast(t_lhs), t_rhs);
       },
       lhs.m_result, rhs.m_result);
   }};
@@ -471,7 +471,7 @@ auto TreeWalk::visit(Assignment* t_assignment) -> void
 
   auto lambda{[&](auto t_func) {
     std::visit(Overload{[&](std::string& t_lhs, std::string& t_rhs) {
-                          set(lhs.m_name, t_func(convert(t_lhs), t_rhs));
+                          set(lhs.m_name, t_func(cast(t_lhs), t_rhs));
                         },
                         [&](auto&& t_lhs, auto&& t_rhs) {
                           set(lhs.m_name, t_func(t_lhs, t_rhs));
@@ -598,7 +598,7 @@ auto TreeWalk::visit(Increment* t_increment) -> void
                         t_left++;
                       },
                       [&](const std::string& t_left) {
-                        var = convert(t_left) + 1.0;
+                        var = cast(t_left) + 1.0;
                       }},
              var);
 }
@@ -613,7 +613,7 @@ auto TreeWalk::visit(Decrement* t_decrement) -> void
                         t_left--;
                       },
                       [&](const std::string& t_left) {
-                        var = convert(t_left) - 1.0;
+                        var = cast(t_left) - 1.0;
                       }},
              var);
 }

@@ -1,7 +1,7 @@
-#ifndef AWX_INTERPRETER_CONVERT_HPP
-#define AWX_INTERPRETER_CONVERT_HPP
+#ifndef AWX_INTERPRETER_CAST_HPP
+#define AWX_INTERPRETER_CAST_HPP
 
-/*! In AWK string's are often converted to doubles for a lot of operations.
+/*! In AWK string's are often casted to doubles for a lot of operations.
  * This gets tricky to define manually for binary operations as the down cast to
  * a double only happens when on of the arguments is a double and the other a
  * string. This file defines a template function called convert that does this.
@@ -10,11 +10,11 @@
 namespace interpreter {
 // Macros:
 //! Following macro converts a parameter if it is a string to a double
-#define INTERPRETER_CONVERT_IF_STR(type, dst, src)       \
+#define INTERPRETER_CAST_IF_STR(type, dst, src)          \
   do {                                                   \
     if constexpr(std::is_same<std::remove_cvref_t<type>, \
                               std::string>::value) {     \
-      dst = convert(src);                                \
+      dst = cast(src);                                   \
     } else {                                             \
       dst = src;                                         \
     }                                                    \
@@ -32,7 +32,7 @@ namespace interpreter {
       return t_lhs op t_rhs;                                     \
     }};                                                          \
                                                                  \
-    return convert(lambda, t_lhs, t_rhs);                        \
+    return cast(lambda, t_lhs, t_rhs);                           \
   }
 
 // Concepts:
@@ -45,7 +45,7 @@ double > || std::same_as<std::remove_cvref_t<T>, std::string>;
 /*! In some cases a unary operation will need to be converted to a double only
  * if the string starts with a number in its string
  */
-inline auto convert(const std::string& t_str) -> double
+inline auto cast(const std::string& t_str) -> double
 {
   if(!t_str.empty()) {
     if(std::isdigit(t_str.front())) {
@@ -58,7 +58,7 @@ inline auto convert(const std::string& t_str) -> double
 
 // TODO: Explain
 //!
-inline auto convert(const double t_val) -> double
+inline auto cast(const double t_val) -> double
 {
   return t_val;
 }
@@ -66,7 +66,7 @@ inline auto convert(const double t_val) -> double
 // TODO: Make this variadic
 //! Overload for the greedy template down below
 template<typename T>
-auto convert(T t_func, const std::string& t_lhs, const std::string& t_rhs)
+auto cast(T t_func, const std::string& t_lhs, const std::string& t_rhs)
 {
   return t_func(t_lhs, t_rhs);
 }
@@ -74,15 +74,15 @@ auto convert(T t_func, const std::string& t_lhs, const std::string& t_rhs)
 //!
 template<typename T, typename L, typename R>
 requires VariableLike<L> && VariableLike<R>
-auto convert(T t_func, L t_lhs, R t_rhs)
+auto cast(T t_func, L t_lhs, R t_rhs)
 {
   double lhs, rhs;
 
-  INTERPRETER_CONVERT_IF_STR(L, lhs, t_lhs);
-  INTERPRETER_CONVERT_IF_STR(R, rhs, t_rhs);
+  INTERPRETER_CAST_IF_STR(L, lhs, t_lhs);
+  INTERPRETER_CAST_IF_STR(R, rhs, t_rhs);
 
   return t_func(lhs, rhs);
 }
 } // namespace interpreter
 
-#endif // AWX_INTERPRETER_CONVERT_HPP
+#endif // AWX_INTERPRETER_CAST_HPP

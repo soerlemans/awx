@@ -8,7 +8,7 @@
 #include <type_traits>
 
 // Includes:
-#include "../convert.hpp"
+#include "../cast.hpp"
 
 
 namespace interpreter::builtin {
@@ -25,7 +25,7 @@ auto power(L t_lhs, R t_rhs)
     return std::pow(t_lhs, t_rhs);
   }};
 
-  return convert(lambda, t_lhs, t_rhs);
+  return cast(lambda, t_lhs, t_rhs);
 }
 
 INTERPRETER_DEFINE_BINOP_FUNCTION(*, multiply)

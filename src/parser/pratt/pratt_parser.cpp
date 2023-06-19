@@ -108,7 +108,9 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
   NodePtr lhs;
 
   // Literals
-  if(auto ptr{literal()}; ptr) {
+  if(auto ptr{grouping()}; ptr) {
+    lhs = std::move(ptr);
+  } else if(auto ptr{literal()}; ptr) {
     lhs = std::move(ptr);
   } else {
     switch(const auto tokentype{next().type()}; tokentype) {
