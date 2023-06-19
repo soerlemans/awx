@@ -40,14 +40,14 @@ AwkParser::AwkParser(TokenStream t_tokenstream)
 {}
 
 // Parsing rule/grammar rules:
-auto AwkParser::newline_opt() -> void
-{
-  DBG_TRACE(VERBOSE, "NEWLINE OPT");
+// auto AwkParser::newline_opt() -> void
+// {
+//   DBG_TRACE(VERBOSE, "NEWLINE OPT");
 
-  while(!eos() && next_if(TokenType::NEWLINE)) {
-    DBG_TRACE_PRINT(INFO, "Found NEWLINE");
-  }
-}
+//   while(!eos() && next_if(TokenType::NEWLINE)) {
+//     DBG_TRACE_PRINT(INFO, "Found NEWLINE");
+//   }
+// }
 
 auto AwkParser::simple_get() -> NodePtr
 {
@@ -107,41 +107,41 @@ auto AwkParser::non_unary_input_function() -> NodePtr
   return node;
 }
 
-auto AwkParser::lvalue() -> NodePtr
-{
-  DBG_TRACE(VERBOSE, "LVALUE");
-  NodePtr node;
+// auto AwkParser::lvalue() -> NodePtr
+// {
+//   DBG_TRACE(VERBOSE, "LVALUE");
+//   NodePtr node;
 
-  const auto token{next()};
-  switch(token.type()) {
-    case TokenType::IDENTIFIER: {
-      const auto name{token.value<std::string>()};
-      // We really dont expect these next_tokens to fail
-      if(next_if(TokenType::BRACE_OPEN)) {
-        DBG_TRACE_PRINT(INFO, "Found ARRAY SUBSCRIPT");
-        node = std::make_shared<Array>(name, expr_list());
+//   const auto token{next()};
+//   switch(token.type()) {
+//     case TokenType::IDENTIFIER: {
+//       const auto name{token.value<std::string>()};
+//       // We really dont expect these next_tokens to fail
+//       if(next_if(TokenType::BRACE_OPEN)) {
+//         DBG_TRACE_PRINT(INFO, "Found ARRAY SUBSCRIPT");
+//         node = std::make_shared<Array>(name, expr_list());
 
-        expect(TokenType::BRACE_CLOSE, "]");
-      } else {
-        DBG_TRACE_PRINT(INFO, "Found VARIABLE: ", name);
-        node = std::make_shared<Variable>(name);
-      }
-      break;
-    }
+//         expect(TokenType::BRACE_CLOSE, "]");
+//       } else {
+//         DBG_TRACE_PRINT(INFO, "Found VARIABLE: ", name);
+//         node = std::make_shared<Variable>(name);
+//       }
+//       break;
+//     }
 
-    case TokenType::DOLLAR_SIGN: {
-      DBG_TRACE_PRINT(INFO, "Found FIELD REFERENCE");
-      node = std::make_shared<FieldReference>(expr());
-      break;
-    }
+//     case TokenType::DOLLAR_SIGN: {
+//       DBG_TRACE_PRINT(INFO, "Found FIELD REFERENCE");
+//       node = std::make_shared<FieldReference>(expr());
+//       break;
+//     }
 
-    default:
-      prev();
-      break;
-  }
+//     default:
+//       prev();
+//       break;
+//   }
 
-  return node;
-}
+//   return node;
+// }
 
 auto AwkParser::function() -> NodePtr
 {
@@ -1097,55 +1097,55 @@ auto AwkParser::expr_opt() -> NodePtr
   return expr();
 }
 
-auto AwkParser::multiple_expr_list() -> NodeListPtr
-{
-  DBG_TRACE(VERBOSE, "MULTIPLE EXPR LIST");
-  NodeListPtr nodes{std::make_shared<List>()};
+// auto AwkParser::multiple_expr_list() -> NodeListPtr
+// {
+//   DBG_TRACE(VERBOSE, "MULTIPLE EXPR LIST");
+//   NodeListPtr nodes{std::make_shared<List>()};
 
-  if(auto ptr{expr()}; ptr) {
-    DBG_TRACE_PRINT(INFO, "Found EXPR");
+//   if(auto ptr{expr()}; ptr) {
+//     DBG_TRACE_PRINT(INFO, "Found EXPR");
 
-    nodes->push_back(std::move(ptr));
-  }
+//     nodes->push_back(std::move(ptr));
+//   }
 
-  while(!eos()) {
-    if(next_if(TokenType::COMMA)) {
-      newline_opt();
-      if(auto ptr{expr()}; ptr) {
-        DBG_TRACE_PRINT(INFO, "Found ',' EXPR");
+//   while(!eos()) {
+//     if(next_if(TokenType::COMMA)) {
+//       newline_opt();
+//       if(auto ptr{expr()}; ptr) {
+//         DBG_TRACE_PRINT(INFO, "Found ',' EXPR");
 
-        nodes->push_back(std::move(ptr));
-      } else {
-        // TODO: Error handling
-      }
-    } else {
-      break;
-    }
-  }
+//         nodes->push_back(std::move(ptr));
+//       } else {
+//         // TODO: Error handling
+//       }
+//     } else {
+//       break;
+//     }
+//   }
 
-  if(nodes->empty()) {
-    // throw std::runtime_error{"expected atleast on expr in expr_list"};
-  }
+//   if(nodes->empty()) {
+//     // throw std::runtime_error{"expected atleast on expr in expr_list"};
+//   }
 
-  // TODO: If we only have one node in the list flatten it to a single NodePtr
+//   // TODO: If we only have one node in the list flatten it to a single NodePtr
 
-  return nodes;
-}
+//   return nodes;
+// }
 
-auto AwkParser::expr_list() -> NodeListPtr
-{
-  DBG_TRACE(VERBOSE, "EXPR LIST");
-  NodeListPtr nodes;
+// auto AwkParser::expr_list() -> NodeListPtr
+// {
+//   DBG_TRACE(VERBOSE, "EXPR LIST");
+//   NodeListPtr nodes;
 
-  // multiple_expr_list allows one or multiple expr
-  if(auto ptr{multiple_expr_list()}; ptr) {
-    nodes = std::move(ptr);
-  } else {
-    // TODO: Error handling
-  }
+//   // multiple_expr_list allows one or multiple expr
+//   if(auto ptr{multiple_expr_list()}; ptr) {
+//     nodes = std::move(ptr);
+//   } else {
+//     // TODO: Error handling
+//   }
 
-  return nodes;
-}
+//   return nodes;
+// }
 
 auto AwkParser::expr_list_opt() -> NodeListPtr
 {

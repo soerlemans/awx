@@ -12,7 +12,6 @@
 
 
 namespace parser::pratt {
-
 // Classes:
 class PrattParser : public Parser {
   private:
@@ -23,6 +22,10 @@ class PrattParser : public Parser {
 
   public:
   PrattParser(token::TokenStream&& t_tokenstream);
+
+  virtual auto newline_opt() -> void;
+
+  virtual auto lvalue() -> node::NodePtr;
 
   // Helper methods:
   virtual auto grouping() -> node::NodePtr;
@@ -35,10 +38,13 @@ class PrattParser : public Parser {
   virtual auto unary_print_expr(int t_min_bp = 0) -> node::NodePtr;
   virtual auto print_expr(int t_min_bp = 0) -> node::NodePtr;
 
-  // Regular expressions:
+  // Expressions:
   virtual auto non_unary_expr() -> node::NodePtr;
   virtual auto unary_expr() -> node::NodePtr;
   virtual auto expr() -> node::NodePtr;
+
+  virtual auto multiple_expr_list() -> node::NodeListPtr;
+  virtual auto expr_list() -> node::NodeListPtr;
 
   virtual ~PrattParser() = default;
 };

@@ -18,11 +18,77 @@ using namespace token;
 using namespace node;
 using namespace node::operators;
 using namespace node::rvalue;
+using namespace node::lvalue;
 
 // Methods:
 PrattParser::PrattParser(token::TokenStream&& t_tokenstream)
   : Parser{std::move(t_tokenstream)}
 {}
+
+auto PrattParser::newline_opt() -> void
+{
+  DBG_TRACE(VERBOSE, "NEWLINE OPT");
+
+  while(!eos() && next_if(TokenType::NEWLINE)) {
+    DBG_TRACE_PRINT(INFO, "Found NEWLINE");
+  }
+}
+
+auto PrattParser::lvalue() -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "LVALUE");
+  NodePtr node;
+
+  const auto token{next()};
+  switch(token.type()) {
+    case TokenType::IDENTIFIER: {
+      const auto name{token.value<std::string>()};
+      // We really dont expect these next_tokens to fail
+      if(next_if(TokenType::BRACE_OPEN)) {
+        DBG_TRACE_PRINT(INFO, "Found ARRAY SUBSCRIPT");
+        node = std::make_shared<Array>(name, expr_list());
+
+        expect(TokenType::BRACE_CLOSE, "]");
+      } else {
+        DBG_TRACE_PRINT(INFO, "Found VARIABLE: ", name);
+        node = std::make_shared<Variable>(name);
+      }
+      break;
+    }
+
+    case TokenType::DOLLAR_SIGN: {
+      DBG_TRACE_PRINT(INFO, "Found FIELD REFERENCE");
+      node = std::make_shared<FieldReference>(expr());
+      break;
+    }
+
+    default:
+      prev();
+      break;
+  }
+
+  return node;
+}
+
+// ;; Unary diff
+// ;; Unary expr has these extra's
+//   unary_expr '<'      expr
+//   unary_expr LE       expr
+//   unary_expr NE       expr
+//   unary_expr EQ       expr
+//   unary_expr '>'      expr
+//   unary_expr GE       expr
+//   unary_input_function
+
+// ;; Non unary diff
+// ;; Non unary expr has these extra's
+//   non_unary_expr '<'      expr
+//   non_unary_expr LE       expr
+//   non_unary_expr NE       expr
+//   non_unary_expr EQ       expr
+//   non_unary_expr '>'      expr
+//   non_unary_expr GE       expr
+//   non_unary_input_function
 
 // TODO: Have this also handle multidimensional 'in' statements?
 // TODO: Create a function that extracts expressions from in between '(', ')'
@@ -112,6 +178,13 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
     lhs = std::move(ptr);
   } else if(auto ptr{literal()}; ptr) {
     lhs = std::move(ptr);
+  } else if(auto ptr{lvalue()}; ptr) {
+    lhs = std::move(ptr);
+    if(next_if(TokenType::INCREMENT)) {
+      // TODO:
+    } else if(next_if(TokenType::DECREMENT)) {
+      // TODO:
+    }
   } else {
     switch(const auto tokentype{next().type()}; tokentype) {
       case TokenType::NOT: {
@@ -128,8 +201,29 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
     }
   }
 
-  // while(true) {
-  // }
+  // Binary expressions:
+  while(!eos()) {
+    const auto token{next()};
+
+    // FIXME: filter using switch, this is temporary code
+    if(!m_infix.count(token.type())) {
+      prev();
+      break;
+    }
+
+    const auto [lbp, rbp] = m_infix.at(token.type());
+    if(lbp < t_min_bp) {
+      prev();
+      break;
+    }
+
+    // FIXME: Segfaults, rhs nullptr?
+    NodePtr rhs = unary_print_expr(rbp);
+    if(rhs) {
+      lhs = std::make_shared<Arithmetic>(ArithmeticOp::ADD, std::move(lhs),
+                                         std::move(rhs));
+    }
+  }
 
   return lhs;
 }
@@ -227,4 +321,54 @@ auto PrattParser::expr() -> NodePtr
   }
 
   return node;
+}
+
+auto PrattParser::multiple_expr_list() -> NodeListPtr
+{
+  DBG_TRACE(VERBOSE, "MULTIPLE EXPR LIST");
+  NodeListPtr nodes{std::make_shared<List>()};
+
+  if(auto ptr{expr()}; ptr) {
+    DBG_TRACE_PRINT(INFO, "Found EXPR");
+
+    nodes->push_back(std::move(ptr));
+  }
+
+  while(!eos()) {
+    if(next_if(TokenType::COMMA)) {
+      newline_opt();
+      if(auto ptr{expr()}; ptr) {
+        DBG_TRACE_PRINT(INFO, "Found ',' EXPR");
+
+        nodes->push_back(std::move(ptr));
+      } else {
+        // TODO: Error handling
+      }
+    } else {
+      break;
+    }
+  }
+
+  if(nodes->empty()) {
+    // throw std::runtime_error{"expected atleast on expr in expr_list"};
+  }
+
+  // TODO: If we only have one node in the list flatten it to a single NodePtr
+
+  return nodes;
+}
+
+auto PrattParser::expr_list() -> NodeListPtr
+{
+  DBG_TRACE(VERBOSE, "EXPR LIST");
+  NodeListPtr nodes;
+
+  // multiple_expr_list allows one or multiple expr
+  if(auto ptr{multiple_expr_list()}; ptr) {
+    nodes = std::move(ptr);
+  } else {
+    // TODO: Error handling
+  }
+
+  return nodes;
 }
