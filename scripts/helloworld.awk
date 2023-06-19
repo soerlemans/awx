@@ -7,8 +7,5 @@
 # }
 
 {
-  lhs = 10
-  rhs = 20
-
-	print lhs + rhs
+	print 30 + 20
 }

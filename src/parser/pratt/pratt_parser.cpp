@@ -218,7 +218,7 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
     }
 
     // FIXME: Segfaults, rhs nullptr?
-    NodePtr rhs = unary_print_expr(rbp);
+    NodePtr rhs = print_expr(rbp);
     if(rhs) {
       lhs = std::make_shared<Arithmetic>(ArithmeticOp::ADD, std::move(lhs),
                                          std::move(rhs));
@@ -267,7 +267,7 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
     }
 
     // FIXME: Segfaults, rhs nullptr?
-    NodePtr rhs = unary_print_expr(rbp);
+    NodePtr rhs = print_expr(rbp);
     if(rhs) {
       lhs = std::make_shared<Arithmetic>(ArithmeticOp::ADD, std::move(lhs),
                                          std::move(rhs));
