@@ -26,15 +26,6 @@ PrattParser::PrattParser(token::TokenStream&& t_tokenstream)
   : Parser{std::move(t_tokenstream)}
 {}
 
-auto PrattParser::newline_opt() -> void
-{
-  DBG_TRACE(VERBOSE, "NEWLINE OPT");
-
-  while(!eos() && next_if(TokenType::NEWLINE)) {
-    DBG_TRACE_PRINT(INFO, "Found NEWLINE");
-  }
-}
-
 // Expression terminals:
 //! Parses unary prefixes like having a + or - before an expression
 auto PrattParser::unary_prefix(const PrattFunc& t_fn) -> NodePtr
@@ -64,26 +55,6 @@ auto PrattParser::unary_prefix(const PrattFunc& t_fn) -> NodePtr
 
   return node;
 }
-
-// ;; Unary diff
-// ;; Unary expr has these extra's
-//   unary_expr '<'      expr
-//   unary_expr LE       expr
-//   unary_expr NE       expr
-//   unary_expr EQ       expr
-//   unary_expr '>'      expr
-//   unary_expr GE       expr
-//   unary_input_function
-
-// ;; Non unary diff
-// ;; Non unary expr has these extra's
-//   non_unary_expr '<'      expr
-//   non_unary_expr LE       expr
-//   non_unary_expr NE       expr
-//   non_unary_expr EQ       expr
-//   non_unary_expr '>'      expr
-//   non_unary_expr GE       expr
-//   non_unary_input_function
 
 // TODO: Have this also handle multidimensional 'in' statements?
 // TODO: Create a function that extracts expressions from in between '(', ')'
@@ -427,7 +398,6 @@ auto PrattParser::membership(NodePtr& t_lhs) -> NodePtr
   return node;
 }
 
-// FIXME: Always returns
 auto PrattParser::logical(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "LOGICAL");
@@ -579,6 +549,7 @@ auto PrattParser::universal_infix(NodePtr& t_lhs, const PrattFunc& t_fn)
   DBG_TRACE(VERBOSE, "UNIVERSAL EXPR");
   NodePtr node;
 
+  // TODO: Add StringConcatenation, membership and ternary
   if(auto ptr{arithmetic(t_lhs, t_fn)}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{match(t_lhs, t_fn)}; ptr) {
@@ -590,78 +561,15 @@ auto PrattParser::universal_infix(NodePtr& t_lhs, const PrattFunc& t_fn)
   return node;
 }
 
-// Old AwkParser implementation
-// auto AwkParser::non_unary_print_expr() -> NodePtr
-// {
-//   DBG_TRACE(VERBOSE, "NON UNARY PRINT EXPR");
-//   NodePtr node;
-//   NodePtr nupe;
+// Grammar:
+auto PrattParser::newline_opt() -> void
+{
+  DBG_TRACE(VERBOSE, "NEWLINE OPT");
 
-//   const auto lambda = [&]() {
-//     return this->print_expr();
-//   };
-
-//   if(auto ptr{grouping()}; ptr) {
-//     nupe = std::move(ptr);
-//   } else if(auto ptr{negation(lambda)}; ptr) {
-//     nupe = std::move(ptr);
-//   } else if(auto ptr{literal()}; ptr) {
-//     nupe = std::move(ptr);
-//   } else if(auto ptr{prefix_operator()}; ptr) {
-//     nupe = std::move(ptr);
-//   } else if(auto ptr{function_call()}; ptr) {
-//     nupe = std::move(ptr);
-//   } else if(auto ptr{lvalue()}; ptr) {
-//     if(auto ulval{universal_lvalue(ptr, lambda)}; ulval) {
-//       nupe = std::move(ulval);
-//     } else {
-//       nupe = std::move(ptr);
-//     }
-//   }
-
-//   // If it is indeed a non unary expression than check if is a string
-//   // Concatenation or a binary operator
-//   if(nupe) {
-//     if(auto rhs{non_unary_print_expr()}; rhs) {
-//       DBG_TRACE_PRINT(INFO, "Found STRING CONCAT");
-//       node =
-//         std::make_shared<StringConcatenation>(std::move(nupe),
-//         std::move(rhs));
-//     } else if(auto ptr{universal_print_expr(nupe, lambda)}; ptr) {
-//       node = std::move(ptr);
-//     } else {
-//       // If we cant find a bigger nupe expression just return the nupe
-//       node = std::move(nupe);
-//     }
-//   }
-
-//   return node;
-// }
-
-// TODO: These precedence rules are wrong
-// auto AwkParser::unary_print_expr() -> NodePtr
-// {
-//   DBG_TRACE(VERBOSE, "UNARY PRINT EXPR");
-//   NodePtr node;
-
-//   const auto lambda = [&]() -> NodePtr {
-//     return this->expr();
-//   };
-
-//   if(auto lhs{unary_prefix(lambda)}; lhs) {
-//     const auto print_lambda = [&]() -> NodePtr {
-//       return this->print_expr();
-//     };
-
-//     if(auto ptr{universal_print_expr(lhs, print_lambda)}; ptr) {
-//       node = std::move(ptr);
-//     } else {
-//       node = std::move(lhs);
-//     }
-//   }
-
-//   return node;
-// }
+  while(!eos() && next_if(TokenType::NEWLINE)) {
+    DBG_TRACE_PRINT(INFO, "Found NEWLINE");
+  }
+}
 
 auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
 {
@@ -730,19 +638,19 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
   NodePtr lhs;
 
   // Unary expressions:
-  const auto lambda{[this](TokenType t_type) {
+  const auto prefix{[this](TokenType t_type) {
     const auto [lbp, rbp] = m_prefix.at(t_type);
 
     return print_expr(rbp);
   }};
 
-  if(auto ptr{unary_prefix(lambda)}; ptr) {
+  if(auto ptr{unary_prefix(prefix)}; ptr) {
     lhs = std::move(ptr);
   }
 
   // Binary expressions:
   while(!eos()) {
-    const auto lambda{[&](TokenType t_type) {
+    const auto infix{[&](TokenType t_type) {
       NodePtr rhs;
 
       const auto [lbp, rbp] = m_infix.at(t_type);
@@ -759,9 +667,8 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
       return rhs;
     }};
 
-    // TODO: Implement StringConcatenation, membership and ternary
-    // If we do not find the expression quit
-    if(auto ptr{universal_infix(lhs, lambda)}; ptr) {
+    // If we do not find an infix expression quit
+    if(auto ptr{universal_infix(lhs, infix)}; ptr) {
       lhs = std::move(ptr);
     } else {
       break;
@@ -785,30 +692,149 @@ auto PrattParser::print_expr(const int t_min_bp) -> NodePtr
   return node;
 }
 
-auto PrattParser::non_unary_expr() -> NodePtr
+// ;; Non unary diff
+// ;; Non unary expr has these extra's
+//   non_unary_expr '<'      expr
+//   non_unary_expr LE       expr
+//   non_unary_expr NE       expr
+//   non_unary_expr EQ       expr
+//   non_unary_expr '>'      expr
+//   non_unary_expr GE       expr
+//   non_unary_input_function
+
+// FIXME: For now this is just a copy of the code for non_unary_print_expr().
+// This code should not be repeated like this
+auto PrattParser::non_unary_expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "NON UNARY EXPR");
-  NodePtr node, nue;
+  NodePtr lhs;
 
-  return node;
+  // Prefix:
+  const auto prefix{[this](TokenType t_type) {
+    const auto [lbp, rbp] = m_prefix.at(t_type);
+
+    return expr(rbp);
+  }};
+
+  if(auto ptr{grouping()}; ptr) {
+    lhs = std::move(ptr);
+  } else if(auto ptr{negation(prefix)}; ptr) {
+    lhs = std::move(ptr);
+  } else if(auto ptr{literal()}; ptr) {
+    lhs = std::move(ptr);
+  } else if(auto ptr{lvalue()}; ptr) {
+    lhs = std::move(ptr);
+    if(ptr = postcrement(lhs)) {
+      lhs = std::move(ptr);
+    }
+  } else if(auto ptr{precrement()}; ptr) {
+    lhs = std::move(ptr);
+  } else if(auto ptr{function_call()}; ptr) {
+    lhs = std::move(ptr);
+  }
+
+  // Infix:
+  while(!eos()) {
+    const auto infix{[&](TokenType t_type) {
+      NodePtr rhs;
+
+      const auto [lbp, rbp] = m_infix.at(t_type);
+      if(lbp < t_min_bp) {
+        prev();
+      } else {
+        rhs = expr(rbp);
+        if(!rhs) {
+          throw std::runtime_error{
+            "Binary operation requires second parameter"};
+        }
+      }
+
+      return rhs;
+    }};
+
+    // If we do not find the expression quit
+    if(auto ptr{universal_infix(lhs, infix)}; ptr) {
+      lhs = std::move(ptr);
+    } else if(auto ptr{comparison(lhs, infix)}; ptr) {
+      lhs = std::move(ptr);
+    } else if(auto ptr{assignment(lhs, infix)}; ptr) {
+      lhs = std::move(ptr);
+    } else {
+      break;
+    }
+  }
+
+  return lhs;
 }
 
-auto PrattParser::unary_expr() -> NodePtr
+// ;; Unary diff
+// ;; Unary expr has these extra's
+//   unary_expr '<'      expr
+//   unary_expr LE       expr
+//   unary_expr NE       expr
+//   unary_expr EQ       expr
+//   unary_expr '>'      expr
+//   unary_expr GE       expr
+//   unary_input_function
+
+// FIXME: For now this is just a copy of the code for non_unary_print_expr().
+// This code should not be repeated like this
+auto PrattParser::unary_expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "UNARY EXPR");
-  NodePtr node;
+  NodePtr lhs;
 
-  return node;
+  // Prefix:
+  const auto lambda{[this](TokenType t_type) {
+    const auto [lbp, rbp] = m_prefix.at(t_type);
+
+    return expr(rbp);
+  }};
+
+  if(auto ptr{unary_prefix(lambda)}; ptr) {
+    lhs = std::move(ptr);
+  }
+
+  // Infix:
+  while(!eos()) {
+    const auto infix{[&](TokenType t_type) {
+      NodePtr rhs;
+
+      const auto [lbp, rbp] = m_infix.at(t_type);
+      if(lbp < t_min_bp) {
+        prev();
+      } else {
+        rhs = expr(rbp);
+        if(!rhs) {
+          throw std::runtime_error{
+            "Binary operation requires second parameter"};
+        }
+      }
+
+      return rhs;
+    }};
+
+    // If we do not find an infix expression quit
+    if(auto ptr{universal_infix(lhs, infix)}; ptr) {
+      lhs = std::move(ptr);
+    } else if(auto ptr{comparison(lhs, infix)}; ptr) {
+      lhs = std::move(ptr);
+    } else {
+      break;
+    }
+  }
+
+  return lhs;
 }
 
-auto PrattParser::expr() -> NodePtr
+auto PrattParser::expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "EXPR");
   NodePtr node;
 
-  if(auto ptr{unary_expr()}; ptr) {
+  if(auto ptr{unary_expr(t_min_bp)}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{non_unary_expr()}; ptr) {
+  } else if(auto ptr{non_unary_expr(t_min_bp)}; ptr) {
     node = std::move(ptr);
   } else {
     // TODO: Error handling

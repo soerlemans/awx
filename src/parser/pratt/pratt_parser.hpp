@@ -13,7 +13,6 @@
 
 namespace parser::pratt {
 // Aliases:
-//! Pratt parsers use precedence climbing, so we must pass an int parameter
 using PrattFunc = std::function<node::NodePtr(token::TokenType)>;
 
 // Classes:
@@ -26,8 +25,6 @@ class PrattParser : public Parser {
 
   public:
   PrattParser(token::TokenStream&& t_tokenstream);
-
-  virtual auto newline_opt() -> void;
 
   // Expression terminals:
   // clang-format off
@@ -54,15 +51,18 @@ class PrattParser : public Parser {
   virtual auto universal_infix(node::NodePtr& t_lhs, const PrattFunc& t_fn) -> node::NodePtr;
   // clang-format on
 
+  // Grammar:
+  virtual auto newline_opt() -> void;
+
   // Print expressions:
   virtual auto non_unary_print_expr(int t_min_bp = 0) -> node::NodePtr;
   virtual auto unary_print_expr(int t_min_bp = 0) -> node::NodePtr;
   virtual auto print_expr(int t_min_bp = 0) -> node::NodePtr;
 
-  // Expressions:
-  virtual auto non_unary_expr() -> node::NodePtr;
-  virtual auto unary_expr() -> node::NodePtr;
-  virtual auto expr() -> node::NodePtr;
+	// Expressions:
+  virtual auto non_unary_expr(int t_min_bp = 0) -> node::NodePtr;
+  virtual auto unary_expr(int t_min_bp = 0) -> node::NodePtr;
+  virtual auto expr(int t_min_bp = 0) -> node::NodePtr;
 
   virtual auto multiple_expr_list() -> node::NodeListPtr;
   virtual auto expr_list() -> node::NodeListPtr;
