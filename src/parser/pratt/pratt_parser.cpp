@@ -153,7 +153,6 @@ auto PrattParser::literal() -> NodePtr
       node = std::make_shared<String>(token.value<std::string>());
       break;
 
-    // TODO: match
     case TokenType::REGEX:
       DBG_TRACE_PRINT(INFO,
                       "Found REGEX literal: ", token.value<std::string>());
@@ -338,6 +337,59 @@ auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
     case TokenType::ASSIGNMENT:
       DBG_TRACE_PRINT(INFO, "Found '='");
       lambda(AssignmentOp::REGULAR);
+      break;
+
+    default:
+      prev();
+      break;
+  }
+
+  return node;
+}
+
+auto PrattParser::comparison(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "COMPARISON");
+  NodePtr node;
+
+  const auto token{next()};
+  const auto lambda{[&](ComparisonOp t_op) {
+    auto rhs{t_fn(token.type())};
+    if(rhs) {
+      node =
+        std::make_shared<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
+    }
+  }};
+
+  switch(token.type()) {
+	case TokenType::LESS_THAN:
+      DBG_TRACE_PRINT(INFO, "Found '<'");
+      lambda(ComparisonOp::LESS_THAN);
+      break;
+
+	case TokenType::LESS_THAN_EQUAL:
+      DBG_TRACE_PRINT(INFO, "Found '<='");
+      lambda(ComparisonOp::LESS_THAN_EQUAL);
+      break;
+
+	case TokenType::EQUAL:
+      DBG_TRACE_PRINT(INFO, "Found '=='");
+      lambda(ComparisonOp::EQUAL);
+      break;
+
+	case TokenType::NOT_EQUAL:
+      DBG_TRACE_PRINT(INFO, "Found '!='");
+      lambda(ComparisonOp::NOT_EQUAL);
+      break;
+
+	case TokenType::GREATER_THAN:
+      DBG_TRACE_PRINT(INFO, "Found '>'");
+      lambda(ComparisonOp::GREATER_THAN);
+      break;
+
+	case TokenType::GREATER_THAN_EQUAL:
+      DBG_TRACE_PRINT(INFO, "Found '>='");
+      lambda(ComparisonOp::GREATER_THAN_EQUAL);
       break;
 
     default:

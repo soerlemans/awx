@@ -218,57 +218,6 @@ auto AwkParser::function_call() -> NodePtr
   return node;
 }
 
-auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
-{
-  DBG_TRACE(VERBOSE, "COMPARISON");
-  NodePtr node;
-
-  const auto lambda = [&](ComparisonOp t_op) -> NodePtr {
-    auto rhs{t_rhs()};
-    if(!rhs)
-      throw std::runtime_error{"Expected Expression after COMPARISON"};
-
-    return std::make_shared<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
-  };
-
-  switch(next().type()) {
-    case TokenType{g_less_than}:
-      DBG_TRACE_PRINT(INFO, "Found '<'");
-      node = lambda(ComparisonOp::LESS_THAN);
-      break;
-
-    case TokenType{g_less_than_equal}:
-      DBG_TRACE_PRINT(INFO, "Found '<='");
-      node = lambda(ComparisonOp::LESS_THAN_EQUAL);
-      break;
-
-    case TokenType{g_equal}:
-      DBG_TRACE_PRINT(INFO, "Found '=='");
-      node = lambda(ComparisonOp::EQUAL);
-      break;
-
-    case TokenType{g_not_equal}:
-      DBG_TRACE_PRINT(INFO, "Found '!='");
-      node = lambda(ComparisonOp::NOT_EQUAL);
-      break;
-
-    case TokenType{g_greater_than}:
-      DBG_TRACE_PRINT(INFO, "Found '>'");
-      node = lambda(ComparisonOp::GREATER_THAN);
-      break;
-
-    case TokenType{g_greater_than_equal}:
-      DBG_TRACE_PRINT(INFO, "Found '>='");
-      node = lambda(ComparisonOp::GREATER_THAN_EQUAL);
-      break;
-
-    default:
-      prev();
-      break;
-  }
-
-  return node;
-}
 
 auto AwkParser::membership(NodePtr& t_lhs) -> NodePtr
 {
@@ -342,9 +291,7 @@ auto AwkParser::universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
 {
   NodePtr node;
 
-  if(auto ptr{comparison(t_lhs, t_rhs)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{membership(t_lhs)}; ptr) {
+  if(auto ptr{membership(t_lhs)}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{ternary(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
