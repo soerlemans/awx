@@ -19,5 +19,5 @@
 	print var++
 	print var++
 	print ++var
-	print ++var
+	print (10
 }

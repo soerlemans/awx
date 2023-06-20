@@ -41,7 +41,7 @@ auto PrattParser::unary_prefix(const PrattFunc& t_fn) -> NodePtr
 
       NodePtr rhs{t_fn(token.type())};
       if(!rhs) {
-        throw std::runtime_error{"Expected an expression after + or -"};
+        syntax_error("Expected an expression after + or -");
       }
 
       node = std::make_shared<UnaryPrefix>(token.type(), std::move(rhs));
@@ -83,8 +83,7 @@ auto PrattParser::negation(const PrattFunc& t_expr) -> NodePtr
     if(auto ptr{t_expr(TokenType::NOT)}; ptr) {
       node = std::make_shared<Not>(std::move(ptr));
     } else {
-      throw std::runtime_error{
-        "After a negation (!) an expression must follow"};
+      syntax_error("After a negation (!) an expression must follow");
     }
   }
 
@@ -611,8 +610,7 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
       } else {
         rhs = print_expr(rbp);
         if(!rhs) {
-          throw std::runtime_error{
-            "Binary operation requires second parameter"};
+          syntax_error("Infix operations require a right hand side");
         }
       }
 
@@ -637,7 +635,7 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
   DBG_TRACE(VERBOSE, "UNARY PRINT EXPR");
   NodePtr lhs;
 
-  // Unary expressions:
+  // Prefix:
   const auto prefix{[this](TokenType t_type) {
     const auto [lbp, rbp] = m_prefix.at(t_type);
 
@@ -648,7 +646,7 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
     lhs = std::move(ptr);
   }
 
-  // Binary expressions:
+  // Infix:
   while(!eos()) {
     const auto infix{[&](TokenType t_type) {
       NodePtr rhs;
@@ -659,8 +657,7 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
       } else {
         rhs = print_expr(rbp);
         if(!rhs) {
-          throw std::runtime_error{
-            "Binary operation requires second parameter"};
+          syntax_error("Infix operations require a right hand side");
         }
       }
 
@@ -744,8 +741,7 @@ auto PrattParser::non_unary_expr(const int t_min_bp) -> NodePtr
       } else {
         rhs = expr(rbp);
         if(!rhs) {
-          throw std::runtime_error{
-            "Binary operation requires second parameter"};
+          syntax_error("Infix operations require a right hand side");
         }
       }
 
@@ -806,8 +802,7 @@ auto PrattParser::unary_expr(const int t_min_bp) -> NodePtr
       } else {
         rhs = expr(rbp);
         if(!rhs) {
-          throw std::runtime_error{
-            "Binary operation requires second parameter"};
+          syntax_error("Infix operations require a right hand side");
         }
       }
 
@@ -870,7 +865,7 @@ auto PrattParser::multiple_expr_list() -> NodeListPtr
   }
 
   if(nodes->empty()) {
-    // throw std::runtime_error{"expected atleast on expr in expr_list"};
+    // syntax_error("Expected atleast one expression");
   }
 
   // TODO: If we only have one node in the list flatten it to a single
