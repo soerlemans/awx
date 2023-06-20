@@ -36,7 +36,10 @@ class PrattParser : public Parser {
   virtual auto negation(const ParserFunc& t_expr) -> node::NodePtr;
   virtual auto literal() -> node::NodePtr;
 
-  virtual auto arithmetic(node::NodePtr& t_lhs, const PrattFunc& t_rhs)
+  // Expression helpers:
+  virtual auto arithmetic(node::NodePtr& t_lhs, const PrattFunc& t_fn)
+    -> node::NodePtr;
+  virtual auto logical(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
 
   virtual auto universal_expr(node::NodePtr& t_lhs, const PrattFunc& t_fn)

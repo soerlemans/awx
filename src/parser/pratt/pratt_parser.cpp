@@ -168,7 +168,7 @@ auto PrattParser::literal() -> NodePtr
   return node;
 }
 
-auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_rhs) -> NodePtr
+auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "ARITHMETIC");
   NodePtr node;
@@ -178,9 +178,7 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_rhs) -> NodePtr
   // Little helper function to cut down on the bloat
   const auto lambda{[&](ArithmeticOp t_op) -> NodePtr {
     NodePtr node;
-    auto rhs{t_rhs(token.type())};
-
-    if(rhs) {
+    if(auto rhs{t_fn(token.type())}; rhs) {
       node =
         std::make_shared<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs));
     }
@@ -188,6 +186,7 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_rhs) -> NodePtr
     return node;
   }};
 
+  // TODO: Maybe define a macro to do this cleanly?
   switch(token.type()) {
     case TokenType::CARET:
       DBG_TRACE_PRINT(INFO, "Found 'POWER'");
@@ -227,6 +226,42 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_rhs) -> NodePtr
   return node;
 }
 
+// FIXME: Always returns
+auto PrattParser::logical(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "LOGICAL");
+  NodePtr node;
+
+  const auto token{next()};
+  auto lambda{[&]<typename T>() {
+    newline_opt();
+    if(auto rhs{t_fn(token.type())}; rhs) {
+      node = std::make_shared<T>(std::move(t_lhs), std::move(rhs));
+    }
+
+    return node;
+  }};
+
+  switch(token.type()) {
+    case TokenType::AND:
+      DBG_TRACE_PRINT(INFO, "Found '&&'");
+      lambda.template operator()<And>();
+      break;
+
+    case TokenType::OR:
+      DBG_TRACE_PRINT(INFO, "Found '||'");
+      lambda.template operator()<Or>();
+      break;
+
+    default:
+      prev();
+      break;
+  }
+
+  return node;
+}
+
+
 auto PrattParser::universal_expr(NodePtr& t_lhs, const PrattFunc& t_fn)
   -> node::NodePtr
 {
@@ -234,6 +269,8 @@ auto PrattParser::universal_expr(NodePtr& t_lhs, const PrattFunc& t_fn)
   NodePtr node;
 
   if(auto ptr{arithmetic(t_lhs, t_fn)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{logical(t_lhs, t_fn)}; ptr) {
     node = std::move(ptr);
   }
 

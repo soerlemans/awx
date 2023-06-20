@@ -254,60 +254,6 @@ auto AwkParser::match(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   return node;
 }
 
-// auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
-// {
-//   DBG_TRACE(VERBOSE, "ARITHMETIC");
-//   NodePtr node;
-
-//   // Little helper function to cut down on the bloat
-//   const auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
-//     auto ptr{t_rhs()};
-//     if(!ptr)
-//       throw std::runtime_error{"Expected Expression after ARITHMETIC"};
-
-//     return NodePtr{
-//       std::make_shared<Arithmetic>(t_op, std::move(t_lhs), std::move(ptr))};
-//   };
-
-//   switch(next().type()) {
-//     case TokenType{g_caret}:
-//       DBG_TRACE_PRINT(INFO, "Found '^'");
-//       node = lambda(ArithmeticOp::POWER);
-//       break;
-
-//     case TokenType{g_asterisk}:
-//       DBG_TRACE_PRINT(INFO, "Found '*'");
-//       node = lambda(ArithmeticOp::MULTIPLY);
-//       break;
-
-//     case TokenType{g_slash}:
-//       DBG_TRACE_PRINT(INFO, "Found '/'");
-//       node = lambda(ArithmeticOp::DIVIDE);
-//       break;
-
-//     case TokenType{g_percent_sign}:
-//       DBG_TRACE_PRINT(INFO, "Found '%'");
-//       node = lambda(ArithmeticOp::MODULO);
-//       break;
-
-//     case TokenType{g_plus}:
-//       DBG_TRACE_PRINT(INFO, "Found '+'");
-//       node = lambda(ArithmeticOp::ADD);
-//       break;
-
-//     case TokenType{g_minus}:
-//       DBG_TRACE_PRINT(INFO, "Found '-'");
-//       node = lambda(ArithmeticOp::SUBTRACT);
-//       break;
-
-//     default:
-//       prev();
-//       break;
-//   }
-
-//   return node;
-// }
-
 auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "ASSIGNMENT");
@@ -435,44 +381,6 @@ auto AwkParser::membership(NodePtr& t_lhs) -> NodePtr
   return node;
 }
 
-auto AwkParser::logical(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
-{
-  DBG_TRACE(VERBOSE, "LOGICAL");
-  NodePtr node;
-
-  switch(next().type()) {
-    case TokenType{g_and}: {
-      DBG_TRACE_PRINT(INFO, "Found '&&'");
-      // Optional newlines are allowed after &&
-      newline_opt();
-      if(auto rhs{t_rhs()}; rhs) {
-        node = std::make_shared<And>(std::move(t_lhs), std::move(rhs));
-      } else {
-        // TODO: Error handling empty rhs expression is not allowed
-      }
-      break;
-    }
-
-    case TokenType{g_or}: {
-      DBG_TRACE_PRINT(INFO, "Found '||'");
-      // Optional newlines are allowed after ||
-      newline_opt();
-      if(auto rhs{t_rhs()}; rhs) {
-        node = std::make_shared<Or>(std::move(t_lhs), std::move(rhs));
-      } else {
-        // TODO: Error handling empty rhs expression is not allowed
-      }
-      break;
-    }
-
-    default:
-      prev();
-      break;
-  }
-
-  return node;
-}
-
 // TODO: Add extra parameter for ternary expression
 auto AwkParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
@@ -522,8 +430,6 @@ auto AwkParser::universal_print_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
     node = std::move(ptr);
   } else if(auto ptr{membership(t_lhs)}; ptr) {
     node = std::move(ptr);
-  } else if(auto ptr{logical(t_lhs, t_rhs)}; ptr) {
-    node = std::move(ptr);
   } else if(auto ptr{ternary(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
   }
@@ -545,8 +451,6 @@ auto AwkParser::universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   } else if(auto ptr{match(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{membership(t_lhs)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{logical(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{ternary(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);

@@ -37,15 +37,11 @@ class AwkParser : public pratt::PrattParser {
   // TODO: Implement shunting yard algorithm for binary_operators
   virtual auto match(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> node::NodePtr;
-  // virtual auto arithmetic(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
-    // -> node::NodePtr;
   virtual auto assignment(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> node::NodePtr;
   virtual auto comparison(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> node::NodePtr;
   virtual auto membership(node::NodePtr& t_lhs) -> node::NodePtr;
-  virtual auto logical(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
-    -> node::NodePtr;
   virtual auto ternary(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> node::NodePtr;
 
