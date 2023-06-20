@@ -273,7 +273,6 @@ auto PrattParser::postcrement(NodePtr& t_lhs) -> NodePtr
   return node;
 }
 
-
 // This function parses function calls, it parses builtin functions as well as
 // User defined
 auto PrattParser::function_call() -> NodePtr

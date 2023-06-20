@@ -13,4 +13,6 @@
 
 	print var = 10
 	print var * 2
+
+	print +20 && -20
 }
