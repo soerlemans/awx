@@ -27,34 +27,13 @@ class AwkParser : public pratt::PrattParser {
   // Function expression handlers:
   virtual auto function() -> node::NodePtr;
 
-  // Common expressions:
-  virtual auto ternary(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
-    -> node::NodePtr;
-
-  // Universal expressions are common expressions shared by other rules
-
-  // Non unary helper rules:
-	// TODO: Sort these out
-  virtual auto prefix_operator() -> node::NodePtr;
-  virtual auto universal_lvalue(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
-    -> node::NodePtr;
-
-  // Unary helper rules:
-  virtual auto unary_prefix(const ParserFunc& t_rhs) -> node::NodePtr;
-
   // TODO: Add Control statement helper function
   virtual auto loop(const ParserFunc& t_body) -> node::NodePtr;
 
-  // Print rules:
+  // Expression rules:
   virtual auto print_expr_list() -> node::NodeListPtr;
   virtual auto print_expr_list_opt() -> node::NodeListPtr;
-
-  // Expression rules:
-  // virtual auto non_unary_expr() -> node::NodePtr;
-  // virtual auto unary_expr() -> node::NodePtr;
-  virtual auto expr() -> node::NodePtr;
   virtual auto expr_opt() -> node::NodePtr;
-
 
   // IO rules:
   virtual auto output_redirection(node::NodePtr& t_lhs) -> node::NodePtr;

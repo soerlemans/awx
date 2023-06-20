@@ -29,16 +29,20 @@ class PrattParser : public Parser {
 
   virtual auto newline_opt() -> void;
 
+  virtual auto unary_prefix(const PrattFunc& t_rhs) -> node::NodePtr;
   virtual auto lvalue() -> node::NodePtr;
-
-  // Helper methods:
   virtual auto grouping() -> node::NodePtr;
-  virtual auto negation(const ParserFunc& t_expr) -> node::NodePtr;
+  virtual auto negation(const PrattFunc& t_expr) -> node::NodePtr;
   virtual auto literal() -> node::NodePtr;
-
+  virtual auto precrement() -> node::NodePtr;
+  virtual auto postcrement(node::NodePtr& t_lhs) -> node::NodePtr;
   virtual auto function_call() -> node::NodePtr;
+  virtual auto ternary(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
+    -> node::NodePtr;
 
-  // Expression helpers:
+  virtual auto universal_prefix(const PrattFunc& t_fn) -> node::NodePtr;
+
+  // Infix parsing:
   // clang-format off
   virtual auto arithmetic(node::NodePtr& t_lhs, const PrattFunc& t_fn) -> node::NodePtr;
   virtual auto match(node::NodePtr& t_lhs, const PrattFunc& t_fn) -> node::NodePtr;
@@ -47,7 +51,7 @@ class PrattParser : public Parser {
   virtual auto assignment(node::NodePtr& t_lhs, const PrattFunc& t_fn) -> node::NodePtr;
   virtual auto comparison(node::NodePtr& t_lhs, const PrattFunc& t_fn) -> node::NodePtr;
 
-  virtual auto universal_expr(node::NodePtr& t_lhs, const PrattFunc& t_fn) -> node::NodePtr;
+  virtual auto universal_infix(node::NodePtr& t_lhs, const PrattFunc& t_fn) -> node::NodePtr;
   // clang-format on
 
   // Print expressions:

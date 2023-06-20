@@ -35,6 +35,51 @@ auto PrattParser::newline_opt() -> void
   }
 }
 
+// Parses unary prefixes like having a + or - before an expression
+auto PrattParser::unary_prefix(const PrattFunc& t_fn) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "UNARY PREFIX");
+  NodePtr node;
+
+  switch(const auto token{next()}; token.type()) {
+    case TokenType::PLUS:
+      [[fallthrough]];
+    case TokenType::MINUS: {
+      DBG_TRACE(VERBOSE, "Found UNARY PREFIX");
+
+      NodePtr rhs{t_fn(token.type())};
+      if(!rhs) {
+        throw std::runtime_error{"Expected an expression after + or -"};
+      }
+
+      node = std::make_shared<UnaryPrefix>(token.type(), std::move(rhs));
+      break;
+    }
+
+    default:
+      prev();
+      break;
+  }
+
+  // switch(const auto tokentype{next().type()}; tokentype) {
+  //   case TokenType::PLUS:
+  //     [[fallthrough]];
+  //   case TokenType::MINUS: {
+  //     DBG_TRACE(VERBOSE, "Found UNARY PREFIX");
+
+  //     const auto [lbp, rbp] = m_prefix.at(tokentype);
+  //     lhs = std::make_shared<UnaryPrefix>(tokentype, print_expr(rbp));
+  //     break;
+  //   }
+
+  //   default:
+  //     prev();
+  //     break;
+  // }
+
+  return node;
+}
+
 auto PrattParser::lvalue() -> NodePtr
 {
   DBG_TRACE(VERBOSE, "LVALUE");
@@ -108,18 +153,18 @@ auto PrattParser::grouping() -> NodePtr
   return node;
 }
 
-// negation == not, !
-auto PrattParser::negation(const ParserFunc& t_expr) -> NodePtr
+auto PrattParser::negation(const PrattFunc& t_expr) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "NEGATION");
   NodePtr node;
 
   if(next_if(TokenType::NOT)) {
-    DBG_TRACE_PRINT(INFO, "Found NOT");
-    if(NodePtr expr_ptr{t_expr()}; expr_ptr) {
-      node = std::make_shared<Not>(std::move(expr_ptr));
+    DBG_TRACE_PRINT(INFO, "Found '!'");
+    if(auto ptr{t_expr(TokenType::NOT)}; ptr) {
+      node = std::make_shared<Not>(std::move(ptr));
     } else {
-      // TODO: Error handling
+      throw std::runtime_error{
+        "After a negation (!) an expression must follow"};
     }
   }
 
@@ -168,6 +213,67 @@ auto PrattParser::literal() -> NodePtr
   return node;
 }
 
+// Prefix operator parses prefix increment and decrement
+auto PrattParser::precrement() -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "PREFIX OPERATOR");
+  NodePtr node;
+
+  // TODO: Find a way to shorten or macro this?
+  switch(next().type()) {
+    case TokenType::INCREMENT: {
+      DBG_TRACE_PRINT(INFO, "Found ++INCREMENT");
+      if(auto ptr{lvalue()}; ptr) {
+        node = std::make_shared<Increment>(std::move(ptr), true);
+      } else {
+        // TODO: Error handling
+      }
+      break;
+    }
+
+    case TokenType::DECREMENT: {
+      DBG_TRACE_PRINT(INFO, "Found --DECREMENT");
+      if(auto ptr{lvalue()}; ptr) {
+        node = std::make_shared<Decrement>(std::move(ptr), true);
+      } else {
+        // TODO: Error handling
+      }
+      break;
+    }
+
+    default:
+      prev();
+      break;
+  }
+
+  return node;
+}
+
+auto PrattParser::postcrement(NodePtr& t_lhs) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "POSTCREMENT");
+  NodePtr node;
+
+  switch(next().type()) {
+    case TokenType::INCREMENT:
+      DBG_TRACE_PRINT(INFO, "Found INCREMENT++");
+      node = std::make_shared<Increment>(std::move(t_lhs), false);
+      break;
+
+    case TokenType::DECREMENT:
+      DBG_TRACE_PRINT(INFO, "Found DECREMENT--");
+      node = std::make_shared<Decrement>(std::move(t_lhs), false);
+      break;
+
+    default:
+      prev();
+      break;
+  }
+
+  return node;
+}
+
+
 // This function parses function calls, it parses builtin functions as well as
 // User defined
 auto PrattParser::function_call() -> NodePtr
@@ -205,6 +311,43 @@ auto PrattParser::function_call() -> NodePtr
       prev();
       break;
   }
+
+  return node;
+}
+
+// TODO: Add extra parameter for ternary expression
+auto PrattParser::ternary(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "TERNARY");
+  NodePtr node;
+
+  // FIXME: simple_print_statement has a rule that conflicts and does not make
+  // It possible to detect if it is a print() or print () ? : ;
+  if(next_if(TokenType::QUESTION_MARK)) {
+    DBG_TRACE(VERBOSE, "Found TERNARY");
+    NodePtr then_ptr{t_rhs()};
+    if(!then_ptr) {
+      // TODO: Error handling
+    }
+
+    expect(TokenType::COLON, ":");
+    NodePtr else_ptr{t_rhs()};
+    if(!else_ptr) {
+      // TODO: Error handling
+    }
+
+    node = std::make_shared<Ternary>(std::move(t_lhs), std::move(then_ptr),
+                                     std::move(else_ptr));
+  }
+
+  return node;
+}
+
+
+auto PrattParser::universal_prefix(const PrattFunc& t_fn) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "UNIVERSAL PREFIX");
+  NodePtr node;
 
   return node;
 }
@@ -457,8 +600,8 @@ auto PrattParser::comparison(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   return node;
 }
 
-auto PrattParser::universal_expr(NodePtr& t_lhs, const PrattFunc& t_fn)
-  -> node::NodePtr
+auto PrattParser::universal_infix(NodePtr& t_lhs, const PrattFunc& t_fn)
+  -> NodePtr
 {
   DBG_TRACE(VERBOSE, "UNIVERSAL EXPR");
   NodePtr node;
@@ -553,7 +696,15 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
   NodePtr lhs;
 
   // Literals
+  const auto unary_lambda{[this](TokenType t_type) {
+    const auto [lbp, rbp] = m_prefix.at(t_type);
+
+    return print_expr(rbp);
+  }};
+
   if(auto ptr{grouping()}; ptr) {
+    lhs = std::move(ptr);
+  } else if(auto ptr{negation(unary_lambda)}; ptr) {
     lhs = std::move(ptr);
   } else if(auto ptr{literal()}; ptr) {
     lhs = std::move(ptr);
@@ -600,7 +751,7 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
     }};
 
     // If we do not find the expression quit
-    if(auto ptr{universal_expr(lhs, lambda)}; ptr) {
+    if(auto ptr{universal_infix(lhs, lambda)}; ptr) {
       lhs = std::move(ptr);
     } else if(auto ptr{assignment(lhs, lambda)}; ptr) {
       lhs = std::move(ptr);
@@ -618,20 +769,14 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
   NodePtr lhs;
 
   // Unary expressions:
-  switch(const auto tokentype{next().type()}; tokentype) {
-    case TokenType::PLUS:
-      [[fallthrough]];
-    case TokenType::MINUS: {
-      DBG_TRACE(VERBOSE, "Found UNARY PREFIX");
+  const auto lambda{[this](TokenType t_type) {
+    const auto [lbp, rbp] = m_prefix.at(t_type);
 
-      const auto [lbp, rbp] = m_prefix.at(tokentype);
-      lhs = std::make_shared<UnaryPrefix>(tokentype, print_expr(rbp));
-      break;
-    }
+    return print_expr(rbp);
+  }};
 
-    default:
-      prev();
-      break;
+  if(auto ptr{unary_prefix(lambda)}; ptr) {
+    lhs = std::move(ptr);
   }
 
   // Binary expressions:
@@ -655,7 +800,7 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
 
     // TODO: Implement StringConcatenation, membership and ternary
     // If we do not find the expression quit
-    if(auto ptr{universal_expr(lhs, lambda)}; ptr) {
+    if(auto ptr{universal_infix(lhs, lambda)}; ptr) {
       lhs = std::move(ptr);
     } else {
       break;
