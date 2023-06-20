@@ -19,37 +19,22 @@ class AwkParser : public pratt::PrattParser {
   AwkParser(token::TokenStream t_tokenstream);
 
   // Parsing grammar/rule methods:
-  // virtual auto newline_opt() -> void;
-
   // Input rules:
   virtual auto simple_get() -> node::NodePtr;
   virtual auto unary_input_function() -> node::NodePtr;
   virtual auto non_unary_input_function() -> node::NodePtr;
 
-  // virtual auto lvalue() -> node::NodePtr;
-
   // Function expression handlers:
   virtual auto function() -> node::NodePtr;
-  virtual auto function_call() -> node::NodePtr;
 
   // Common expressions:
-  // TODO: Maybe replace the switch cases in these functions with macros?
-  // TODO: Implement shunting yard algorithm for binary_operators
-  virtual auto membership(node::NodePtr& t_lhs) -> node::NodePtr;
   virtual auto ternary(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> node::NodePtr;
 
   // Universal expressions are common expressions shared by other rules
-  virtual auto universal_print_expr(node::NodePtr& t_lhs,
-                                    const ParserFunc& t_rhs) -> node::NodePtr;
-  virtual auto universal_expr(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
-    -> node::NodePtr;
 
   // Non unary helper rules:
-  // virtual auto grouping() -> node::NodePtr;
-  // virtual auto negation(const ParserFunc& t_expr)
-  //   -> node::NodePtr; // negation == not, !
-  // virtual auto literal() -> node::NodePtr;
+	// TODO: Sort these out
   virtual auto prefix_operator() -> node::NodePtr;
   virtual auto universal_lvalue(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> node::NodePtr;
@@ -61,22 +46,15 @@ class AwkParser : public pratt::PrattParser {
   virtual auto loop(const ParserFunc& t_body) -> node::NodePtr;
 
   // Print rules:
-  // virtual auto non_unary_print_expr() -> node::NodePtr;
-  // virtual auto unary_print_expr() -> node::NodePtr;
-  // virtual auto print_expr() -> node::NodePtr;
-
   virtual auto print_expr_list() -> node::NodeListPtr;
   virtual auto print_expr_list_opt() -> node::NodeListPtr;
 
   // Expression rules:
-  virtual auto non_unary_expr() -> node::NodePtr;
-  virtual auto unary_expr() -> node::NodePtr;
+  // virtual auto non_unary_expr() -> node::NodePtr;
+  // virtual auto unary_expr() -> node::NodePtr;
   virtual auto expr() -> node::NodePtr;
   virtual auto expr_opt() -> node::NodePtr;
 
-  // virtual auto multiple_expr_list() -> node::NodeListPtr;
-  // virtual auto expr_list() -> node::NodeListPtr;
-  virtual auto expr_list_opt() -> node::NodeListPtr;
 
   // IO rules:
   virtual auto output_redirection(node::NodePtr& t_lhs) -> node::NodePtr;

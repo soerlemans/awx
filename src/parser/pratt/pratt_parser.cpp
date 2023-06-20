@@ -19,6 +19,7 @@ using namespace node;
 using namespace node::operators;
 using namespace node::rvalue;
 using namespace node::lvalue;
+using namespace node::functions;
 
 // Methods:
 PrattParser::PrattParser(token::TokenStream&& t_tokenstream)
@@ -167,6 +168,47 @@ auto PrattParser::literal() -> NodePtr
   return node;
 }
 
+// This function parses function calls, it parses builtin functions as well as
+// User defined
+auto PrattParser::function_call() -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "FUNCTION CALL");
+  NodePtr node;
+
+  switch(const auto token{next()}; token.type()) {
+    case TokenType::BUILTIN_FUNCTION: {
+      expect(TokenType::PAREN_OPEN, "(");
+      NodeListPtr args{expr_list_opt()};
+      expect(TokenType::PAREN_CLOSE, ")");
+
+      auto name{token.value<std::string>()};
+      DBG_TRACE_PRINT(INFO, "Found a BUILTIN FUNCTION CALL: ", name);
+
+      node =
+        std::make_shared<BuiltinFunctionCall>(std::move(name), std::move(args));
+      break;
+    }
+
+    case TokenType::FUNCTION_IDENTIFIER: {
+      expect(TokenType::PAREN_OPEN, "(");
+      NodeListPtr args{expr_list_opt()};
+      expect(TokenType::PAREN_CLOSE, ")");
+
+      auto name{token.value<std::string>()};
+      DBG_TRACE_PRINT(INFO, "Found a FUNCTION CALL: ", name);
+
+      node = std::make_shared<FunctionCall>(std::move(name), std::move(args));
+      break;
+    }
+
+    default:
+      prev();
+      break;
+  }
+
+  return node;
+}
+
 auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "ARITHMETIC");
@@ -249,6 +291,21 @@ auto PrattParser::match(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
     default:
       prev();
       break;
+  }
+
+  return node;
+}
+
+auto PrattParser::membership(NodePtr& t_lhs) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "MEMBERSHIP");
+  NodePtr node;
+
+  if(next_if(TokenType::IN)) {
+    DBG_TRACE_PRINT(VERBOSE, "Found MEMBERSHIP");
+    const auto name{expect(TokenType::IDENTIFIER, "NAME")};
+    node =
+      std::make_shared<Membership>(std::move(t_lhs), name.value<std::string>());
   }
 
   return node;
@@ -362,32 +419,32 @@ auto PrattParser::comparison(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   }};
 
   switch(token.type()) {
-	case TokenType::LESS_THAN:
+    case TokenType::LESS_THAN:
       DBG_TRACE_PRINT(INFO, "Found '<'");
       lambda(ComparisonOp::LESS_THAN);
       break;
 
-	case TokenType::LESS_THAN_EQUAL:
+    case TokenType::LESS_THAN_EQUAL:
       DBG_TRACE_PRINT(INFO, "Found '<='");
       lambda(ComparisonOp::LESS_THAN_EQUAL);
       break;
 
-	case TokenType::EQUAL:
+    case TokenType::EQUAL:
       DBG_TRACE_PRINT(INFO, "Found '=='");
       lambda(ComparisonOp::EQUAL);
       break;
 
-	case TokenType::NOT_EQUAL:
+    case TokenType::NOT_EQUAL:
       DBG_TRACE_PRINT(INFO, "Found '!='");
       lambda(ComparisonOp::NOT_EQUAL);
       break;
 
-	case TokenType::GREATER_THAN:
+    case TokenType::GREATER_THAN:
       DBG_TRACE_PRINT(INFO, "Found '>'");
       lambda(ComparisonOp::GREATER_THAN);
       break;
 
-	case TokenType::GREATER_THAN_EQUAL:
+    case TokenType::GREATER_THAN_EQUAL:
       DBG_TRACE_PRINT(INFO, "Found '>='");
       lambda(ComparisonOp::GREATER_THAN_EQUAL);
       break;
@@ -416,6 +473,79 @@ auto PrattParser::universal_expr(NodePtr& t_lhs, const PrattFunc& t_fn)
 
   return node;
 }
+
+// Old AwkParser implementation
+// auto AwkParser::non_unary_print_expr() -> NodePtr
+// {
+//   DBG_TRACE(VERBOSE, "NON UNARY PRINT EXPR");
+//   NodePtr node;
+//   NodePtr nupe;
+
+//   const auto lambda = [&]() {
+//     return this->print_expr();
+//   };
+
+//   if(auto ptr{grouping()}; ptr) {
+//     nupe = std::move(ptr);
+//   } else if(auto ptr{negation(lambda)}; ptr) {
+//     nupe = std::move(ptr);
+//   } else if(auto ptr{literal()}; ptr) {
+//     nupe = std::move(ptr);
+//   } else if(auto ptr{prefix_operator()}; ptr) {
+//     nupe = std::move(ptr);
+//   } else if(auto ptr{function_call()}; ptr) {
+//     nupe = std::move(ptr);
+//   } else if(auto ptr{lvalue()}; ptr) {
+//     if(auto ulval{universal_lvalue(ptr, lambda)}; ulval) {
+//       nupe = std::move(ulval);
+//     } else {
+//       nupe = std::move(ptr);
+//     }
+//   }
+
+//   // If it is indeed a non unary expression than check if is a string
+//   // Concatenation or a binary operator
+//   if(nupe) {
+//     if(auto rhs{non_unary_print_expr()}; rhs) {
+//       DBG_TRACE_PRINT(INFO, "Found STRING CONCAT");
+//       node =
+//         std::make_shared<StringConcatenation>(std::move(nupe),
+//         std::move(rhs));
+//     } else if(auto ptr{universal_print_expr(nupe, lambda)}; ptr) {
+//       node = std::move(ptr);
+//     } else {
+//       // If we cant find a bigger nupe expression just return the nupe
+//       node = std::move(nupe);
+//     }
+//   }
+
+//   return node;
+// }
+
+// TODO: These precedence rules are wrong
+// auto AwkParser::unary_print_expr() -> NodePtr
+// {
+//   DBG_TRACE(VERBOSE, "UNARY PRINT EXPR");
+//   NodePtr node;
+
+//   const auto lambda = [&]() -> NodePtr {
+//     return this->expr();
+//   };
+
+//   if(auto lhs{unary_prefix(lambda)}; lhs) {
+//     const auto print_lambda = [&]() -> NodePtr {
+//       return this->print_expr();
+//     };
+
+//     if(auto ptr{universal_print_expr(lhs, print_lambda)}; ptr) {
+//       node = std::move(ptr);
+//     } else {
+//       node = std::move(lhs);
+//     }
+//   }
+
+//   return node;
+// }
 
 auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
 {
@@ -630,4 +760,11 @@ auto PrattParser::expr_list() -> NodeListPtr
   }
 
   return nodes;
+}
+
+auto PrattParser::expr_list_opt() -> NodeListPtr
+{
+  DBG_TRACE(VERBOSE, "EXPR LIST OPT");
+
+  return expr_list();
 }

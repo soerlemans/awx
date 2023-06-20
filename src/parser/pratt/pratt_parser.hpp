@@ -36,20 +36,19 @@ class PrattParser : public Parser {
   virtual auto negation(const ParserFunc& t_expr) -> node::NodePtr;
   virtual auto literal() -> node::NodePtr;
 
-  // Expression helpers:
-  virtual auto arithmetic(node::NodePtr& t_lhs, const PrattFunc& t_fn)
-    -> node::NodePtr;
-  virtual auto match(node::NodePtr& t_lhs, const PrattFunc& t_fn)
-    -> node::NodePtr;
-  virtual auto logical(node::NodePtr& t_lhs, const PrattFunc& t_fn)
-    -> node::NodePtr;
-  virtual auto assignment(node::NodePtr& t_lhs, const PrattFunc& t_fn)
-    -> node::NodePtr;
-  virtual auto comparison(node::NodePtr& t_lhs, const PrattFunc& t_fn)
-    -> node::NodePtr;
+  virtual auto function_call() -> node::NodePtr;
 
-  virtual auto universal_expr(node::NodePtr& t_lhs, const PrattFunc& t_fn)
-    -> node::NodePtr;
+  // Expression helpers:
+  // clang-format off
+  virtual auto arithmetic(node::NodePtr& t_lhs, const PrattFunc& t_fn) -> node::NodePtr;
+  virtual auto match(node::NodePtr& t_lhs, const PrattFunc& t_fn) -> node::NodePtr;
+  virtual auto membership(node::NodePtr& t_lhs) -> node::NodePtr;
+  virtual auto logical(node::NodePtr& t_lhs, const PrattFunc& t_fn) -> node::NodePtr;
+  virtual auto assignment(node::NodePtr& t_lhs, const PrattFunc& t_fn) -> node::NodePtr;
+  virtual auto comparison(node::NodePtr& t_lhs, const PrattFunc& t_fn) -> node::NodePtr;
+
+  virtual auto universal_expr(node::NodePtr& t_lhs, const PrattFunc& t_fn) -> node::NodePtr;
+  // clang-format on
 
   // Print expressions:
   virtual auto non_unary_print_expr(int t_min_bp = 0) -> node::NodePtr;
@@ -63,6 +62,7 @@ class PrattParser : public Parser {
 
   virtual auto multiple_expr_list() -> node::NodeListPtr;
   virtual auto expr_list() -> node::NodeListPtr;
+  virtual auto expr_list_opt() -> node::NodeListPtr;
 
   virtual ~PrattParser() = default;
 };
