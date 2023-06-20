@@ -35,10 +35,6 @@ class AwkParser : public pratt::PrattParser {
   // Common expressions:
   // TODO: Maybe replace the switch cases in these functions with macros?
   // TODO: Implement shunting yard algorithm for binary_operators
-  virtual auto match(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
-    -> node::NodePtr;
-  virtual auto assignment(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
-    -> node::NodePtr;
   virtual auto comparison(node::NodePtr& t_lhs, const ParserFunc& t_rhs)
     -> node::NodePtr;
   virtual auto membership(node::NodePtr& t_lhs) -> node::NodePtr;

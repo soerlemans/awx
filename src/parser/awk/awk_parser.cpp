@@ -218,102 +218,6 @@ auto AwkParser::function_call() -> NodePtr
   return node;
 }
 
-auto AwkParser::match(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
-{
-  using namespace node;
-
-  DBG_TRACE(VERBOSE, "MATCH");
-  NodePtr node;
-
-  // Little helper function to cut down on the bloat
-  const auto lambda{[&](MatchOp t_op) -> NodePtr {
-    auto rhs{t_rhs()};
-    if(!rhs)
-      throw std::runtime_error{"Expected Expression after (NO)MATCH"};
-
-    return NodePtr{
-      std::make_shared<Match>(t_op, std::move(t_lhs), std::move(rhs))};
-  }};
-
-  switch(next().type()) {
-    case TokenType{g_ere_match}:
-      DBG_TRACE_PRINT(INFO, "Found '~'");
-      node = lambda(MatchOp::MATCH);
-      break;
-
-    case TokenType{g_ere_no_match}:
-      DBG_TRACE_PRINT(INFO, "Found '!~'");
-      node = lambda(MatchOp::NO_MATCH);
-      break;
-
-    default:
-      prev();
-      break;
-  }
-
-  return node;
-}
-
-auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
-{
-  DBG_TRACE(VERBOSE, "ASSIGNMENT");
-  NodePtr node;
-
-  // TODO: Create an actual function for this that we can call instead of
-  // Defining a separate lambda in each function
-  const auto lambda = [&](AssignmentOp t_op) -> NodePtr {
-    auto rhs{t_rhs()};
-    if(!rhs)
-      throw std::runtime_error{"Expected Expression after ASSIGNMENT"};
-
-    return NodePtr{
-      std::make_shared<Assignment>(t_op, std::move(t_lhs), std::move(rhs))};
-  };
-
-  switch(next().type()) {
-    case TokenType{g_power_assignment}:
-      DBG_TRACE_PRINT(INFO, "Found '^='");
-      node = lambda(AssignmentOp::POWER);
-      break;
-
-    case TokenType{g_multiply_assignment}:
-      DBG_TRACE_PRINT(INFO, "Found '*='");
-      node = lambda(AssignmentOp::MULTIPLY);
-      break;
-
-    case TokenType{g_divide_assignment}:
-      DBG_TRACE_PRINT(INFO, "Found '/='");
-      node = lambda(AssignmentOp::DIVIDE);
-      break;
-
-    case TokenType{g_modulo_assignment}:
-      DBG_TRACE_PRINT(INFO, "Found '%='");
-      node = lambda(AssignmentOp::MODULO);
-      break;
-
-    case TokenType{g_add_assignment}:
-      DBG_TRACE_PRINT(INFO, "Found '+='");
-      node = lambda(AssignmentOp::ADD);
-      break;
-
-    case TokenType{g_subtract_assignment}:
-      DBG_TRACE_PRINT(INFO, "Found '-='");
-      node = lambda(AssignmentOp::SUBTRACT);
-      break;
-
-    case TokenType{g_assignment}:
-      DBG_TRACE_PRINT(INFO, "Found '='");
-      node = lambda(AssignmentOp::REGULAR);
-      break;
-
-    default:
-      prev();
-      break;
-  }
-
-  return node;
-}
-
 auto AwkParser::comparison(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "COMPARISON");
@@ -423,12 +327,7 @@ auto AwkParser::universal_print_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   //     std::make_shared<StringConcatenation>(std::move(node), std::move(rhs));
   // } else
 
-  // if(auto ptr{arithmetic(t_lhs, t_rhs)}; ptr) {
-  //   node = std::move(ptr);
-  // } else
-		if(auto ptr{match(t_lhs, t_rhs)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{membership(t_lhs)}; ptr) {
+  if(auto ptr{membership(t_lhs)}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{ternary(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
@@ -443,12 +342,7 @@ auto AwkParser::universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
 {
   NodePtr node;
 
-  // if(auto ptr{arithmetic(t_lhs, t_rhs)}; ptr) {
-  //   node = std::move(ptr);
-  // } else
-		if(auto ptr{comparison(t_lhs, t_rhs)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{match(t_lhs, t_rhs)}; ptr) {
+  if(auto ptr{comparison(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{membership(t_lhs)}; ptr) {
     node = std::move(ptr);
@@ -584,9 +478,9 @@ auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
   DBG_TRACE(VERBOSE, "UNIVERSAL LVALUE");
   NodePtr node;
 
-  if(auto ptr{assignment(t_lhs, t_rhs)}; ptr) {
-    node = std::move(ptr);
-  } else {
+  // if(auto ptr{assignment(t_lhs, t_rhs)}; ptr) {
+  //   node = std::move(ptr);
+  // } else {
     switch(next().type()) {
       case TokenType::INCREMENT:
         DBG_TRACE_PRINT(INFO, "Found INCREMENT++");
@@ -602,7 +496,7 @@ auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
         prev();
         break;
     }
-  }
+  // }
 
   return node;
 }
@@ -1033,7 +927,8 @@ auto AwkParser::expr_opt() -> NodePtr
 //     // throw std::runtime_error{"expected atleast on expr in expr_list"};
 //   }
 
-//   // TODO: If we only have one node in the list flatten it to a single NodePtr
+//   // TODO: If we only have one node in the list flatten it to a single
+//   NodePtr
 
 //   return nodes;
 // }

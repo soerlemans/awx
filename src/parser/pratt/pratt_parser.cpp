@@ -174,8 +174,6 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   NodePtr node;
 
   const auto token{next()};
-
-  // Little helper function to cut down on the bloat
   const auto lambda{[&](ArithmeticOp t_op) {
     if(auto rhs{t_fn(token.type())}; rhs) {
       node =
@@ -213,6 +211,40 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
     case TokenType::MINUS:
       DBG_TRACE_PRINT(INFO, "Found 'SUBTRACTION'");
       lambda(ArithmeticOp::SUBTRACT);
+      break;
+
+    default:
+      prev();
+      break;
+  }
+
+  return node;
+}
+
+auto PrattParser::match(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
+{
+  using namespace node;
+
+  DBG_TRACE(VERBOSE, "MATCH");
+  NodePtr node;
+
+  const auto token{next()};
+  const auto lambda{[&](MatchOp t_op) {
+    auto rhs{t_fn(token.type())};
+    if(rhs) {
+      node = std::make_shared<Match>(t_op, std::move(t_lhs), std::move(rhs));
+    }
+  }};
+
+  switch(token.type()) {
+    case TokenType::ERE_MATCH:
+      DBG_TRACE_PRINT(INFO, "Found '~'");
+      lambda(MatchOp::MATCH);
+      break;
+
+    case TokenType::ERE_NO_MATCH:
+      DBG_TRACE_PRINT(INFO, "Found '!~'");
+      lambda(MatchOp::NO_MATCH);
       break;
 
     default:
@@ -264,6 +296,8 @@ auto PrattParser::universal_expr(NodePtr& t_lhs, const PrattFunc& t_fn)
   NodePtr node;
 
   if(auto ptr{arithmetic(t_lhs, t_fn)}; ptr) {
+    node = std::move(ptr);
+  } else if(auto ptr{match(t_lhs, t_fn)}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{logical(t_lhs, t_fn)}; ptr) {
     node = std::move(ptr);

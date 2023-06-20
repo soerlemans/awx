@@ -39,6 +39,8 @@ class PrattParser : public Parser {
   // Expression helpers:
   virtual auto arithmetic(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
+  virtual auto match(node::NodePtr& t_lhs, const PrattFunc& t_fn)
+    -> node::NodePtr;
   virtual auto logical(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
 
