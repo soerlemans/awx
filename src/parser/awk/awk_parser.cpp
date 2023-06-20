@@ -804,11 +804,7 @@ auto AwkParser::program() -> NodeListPtr
 
 auto AwkParser::parse() -> NodePtr
 {
-  DBG_PRINTLN("=== PARSING ===");
-
   NodePtr ast{program()};
-
-  DBG_PRINTLN();
 
   return ast;
 }

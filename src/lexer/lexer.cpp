@@ -379,8 +379,6 @@ auto Lexer::tokenize() -> TokenStream
 {
   using namespace reserved::symbols;
 
-  DBG_PRINTLN("=== LEXING ===");
-
   constexpr char double_quote{none::g_double_quote.identifier()};
   constexpr char slash{g_slash.identifier()};
 
@@ -425,8 +423,6 @@ auto Lexer::tokenize() -> TokenStream
       }
     }
   }
-
-  DBG_PRINTLN();
 
   return m_ts;
 }

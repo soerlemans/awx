@@ -74,16 +74,23 @@ auto run(Config& t_config) -> void
     for(auto& input : input_vec) {
       FileBuffer program{script};
 
+
+      DBG_PRINTLN("=== LEXING ===");
       lexer::Lexer lexer{program};
       token::TokenStream tokenstream{lexer.tokenize()};
+      DBG_PRINTLN();
 
+      DBG_PRINTLN("=== PARSING ===");
       parser::awk::AwkParser parser{tokenstream};
       node::NodePtr ast{parser.parse()};
+      DBG_PRINTLN();
 
 #if DEBUG
+      DBG_PRINTLN("=== PRETTY PRINT AST ===");
       // Pretty print AST
       visitor::PrintVisitor pretty_printer;
       ast->accept(&pretty_printer);
+      DBG_PRINTLN();
 #endif // DEBUG
 
       // Execute program via tree walk interpreter
@@ -108,8 +115,6 @@ auto main(int t_argc, char* t_argv[]) -> int
 
   // Set loglevel for now for debugging purposes
   DBG_SET_LOGLEVEL(VERBOSE);
-  DBG_PRINTLN("#== BEGIN ==#");
-
   try {
     run(config);
   } catch(std::exception& e) {
@@ -117,8 +122,6 @@ auto main(int t_argc, char* t_argv[]) -> int
 
     return ExitCode::EXCEPTION;
   }
-
-  DBG_PRINTLN("#== END ==#");
 
   return ExitCode::OK;
 }
