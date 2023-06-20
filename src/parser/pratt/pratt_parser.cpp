@@ -176,46 +176,43 @@ auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   const auto token{next()};
 
   // Little helper function to cut down on the bloat
-  const auto lambda{[&](ArithmeticOp t_op) -> NodePtr {
-    NodePtr node;
+  const auto lambda{[&](ArithmeticOp t_op) {
     if(auto rhs{t_fn(token.type())}; rhs) {
       node =
         std::make_shared<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs));
     }
-
-    return node;
   }};
 
   // TODO: Maybe define a macro to do this cleanly?
   switch(token.type()) {
     case TokenType::CARET:
       DBG_TRACE_PRINT(INFO, "Found 'POWER'");
-      node = lambda(ArithmeticOp::POWER);
+      lambda(ArithmeticOp::POWER);
       break;
 
     case TokenType::ASTERISK:
       DBG_TRACE_PRINT(INFO, "Found 'MULTIPLICATION'");
-      node = lambda(ArithmeticOp::MULTIPLY);
+      lambda(ArithmeticOp::MULTIPLY);
       break;
 
     case TokenType::SLASH:
       DBG_TRACE_PRINT(INFO, "Found 'DIVISION'");
-      node = lambda(ArithmeticOp::DIVIDE);
+      lambda(ArithmeticOp::DIVIDE);
       break;
 
     case TokenType::PERCENT_SIGN:
       DBG_TRACE_PRINT(INFO, "Found 'MODULO'");
-      node = lambda(ArithmeticOp::MODULO);
+      lambda(ArithmeticOp::MODULO);
       break;
 
     case TokenType::PLUS:
       DBG_TRACE_PRINT(INFO, "Found 'ADDITION'");
-      node = lambda(ArithmeticOp::ADD);
+      lambda(ArithmeticOp::ADD);
       break;
 
     case TokenType::MINUS:
       DBG_TRACE_PRINT(INFO, "Found 'SUBTRACTION'");
-      node = lambda(ArithmeticOp::SUBTRACT);
+      lambda(ArithmeticOp::SUBTRACT);
       break;
 
     default:
@@ -238,8 +235,6 @@ auto PrattParser::logical(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
     if(auto rhs{t_fn(token.type())}; rhs) {
       node = std::make_shared<T>(std::move(t_lhs), std::move(rhs));
     }
-
-    return node;
   }};
 
   switch(token.type()) {
