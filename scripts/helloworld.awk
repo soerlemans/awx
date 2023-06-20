@@ -10,4 +10,7 @@
 	print 20 - 30 * 20
 	print 4 - 4 && 1
 	print 2 - 2 || 1 - 1
+
+	print var = 10
+	print var * 2
 }

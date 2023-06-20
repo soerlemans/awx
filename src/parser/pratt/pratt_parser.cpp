@@ -288,6 +288,65 @@ auto PrattParser::logical(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   return node;
 }
 
+auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "ASSIGNMENT");
+  NodePtr node;
+
+  // TODO: Create an actual function for this that we can call instead of
+  // Defining a separate lambda in each function
+  const auto token{next()};
+  const auto lambda{[&](AssignmentOp t_op) {
+    auto rhs{t_fn(token.type())};
+    if(rhs) {
+      node =
+        std::make_shared<Assignment>(t_op, std::move(t_lhs), std::move(rhs));
+    }
+  }};
+
+  switch(token.type()) {
+    case TokenType::POWER_ASSIGNMENT:
+      DBG_TRACE_PRINT(INFO, "Found '^='");
+      lambda(AssignmentOp::POWER);
+      break;
+
+    case TokenType::MULTIPLY_ASSIGNMENT:
+      DBG_TRACE_PRINT(INFO, "Found '*='");
+      lambda(AssignmentOp::MULTIPLY);
+      break;
+
+    case TokenType::DIVIDE_ASSIGNMENT:
+      DBG_TRACE_PRINT(INFO, "Found '/='");
+      lambda(AssignmentOp::DIVIDE);
+      break;
+
+    case TokenType::MODULO_ASSIGNMENT:
+      DBG_TRACE_PRINT(INFO, "Found '%='");
+      lambda(AssignmentOp::MODULO);
+      break;
+
+    case TokenType::ADD_ASSIGNMENT:
+      DBG_TRACE_PRINT(INFO, "Found '+='");
+      lambda(AssignmentOp::ADD);
+      break;
+
+    case TokenType::SUBTRACT_ASSIGNMENT:
+      DBG_TRACE_PRINT(INFO, "Found '-='");
+      lambda(AssignmentOp::SUBTRACT);
+      break;
+
+    case TokenType::ASSIGNMENT:
+      DBG_TRACE_PRINT(INFO, "Found '='");
+      lambda(AssignmentOp::REGULAR);
+      break;
+
+    default:
+      prev();
+      break;
+  }
+
+  return node;
+}
 
 auto PrattParser::universal_expr(NodePtr& t_lhs, const PrattFunc& t_fn)
   -> node::NodePtr
@@ -361,6 +420,8 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
     // If we do not find the expression quit
     if(auto ptr{universal_expr(lhs, lambda)}; ptr) {
       lhs = std::move(ptr);
+    } else if(auto ptr{assignment(lhs, lambda)}; ptr) {
+      lhs = std::move(ptr);
     } else {
       break;
     }
@@ -410,6 +471,7 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
       return rhs;
     }};
 
+    // TODO: Implement StringConcatenation, membership and ternary
     // If we do not find the expression quit
     if(auto ptr{universal_expr(lhs, lambda)}; ptr) {
       lhs = std::move(ptr);
@@ -497,7 +559,8 @@ auto PrattParser::multiple_expr_list() -> NodeListPtr
     // throw std::runtime_error{"expected atleast on expr in expr_list"};
   }
 
-  // TODO: If we only have one node in the list flatten it to a single NodePtr
+  // TODO: If we only have one node in the list flatten it to a single
+  // NodePtr
 
   return nodes;
 }

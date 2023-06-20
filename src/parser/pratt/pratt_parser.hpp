@@ -44,6 +44,9 @@ class PrattParser : public Parser {
   virtual auto logical(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
 
+  virtual auto assignment(node::NodePtr& t_lhs, const PrattFunc& t_fn)
+    -> node::NodePtr;
+
   virtual auto universal_expr(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
 

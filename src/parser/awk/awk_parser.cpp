@@ -478,24 +478,21 @@ auto AwkParser::universal_lvalue(NodePtr& t_lhs, const ParserFunc& t_rhs)
   DBG_TRACE(VERBOSE, "UNIVERSAL LVALUE");
   NodePtr node;
 
-  // if(auto ptr{assignment(t_lhs, t_rhs)}; ptr) {
-  //   node = std::move(ptr);
-  // } else {
-    switch(next().type()) {
-      case TokenType::INCREMENT:
-        DBG_TRACE_PRINT(INFO, "Found INCREMENT++");
-        node = std::make_shared<Increment>(std::move(t_lhs), false);
-        break;
+  switch(next().type()) {
+    case TokenType::INCREMENT:
+      DBG_TRACE_PRINT(INFO, "Found INCREMENT++");
+      node = std::make_shared<Increment>(std::move(t_lhs), false);
+      break;
 
-      case TokenType::DECREMENT:
-        DBG_TRACE_PRINT(INFO, "Found DECREMENT--");
-        node = std::make_shared<Decrement>(std::move(t_lhs), false);
-        break;
+    case TokenType::DECREMENT:
+      DBG_TRACE_PRINT(INFO, "Found DECREMENT--");
+      node = std::make_shared<Decrement>(std::move(t_lhs), false);
+      break;
 
-      default:
-        prev();
-        break;
-    }
+    default:
+      prev();
+      break;
+  }
   // }
 
   return node;
