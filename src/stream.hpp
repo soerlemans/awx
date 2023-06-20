@@ -44,7 +44,7 @@ class Stream : public T {
     return *iter;
   }
 
-  virtual auto current() -> Value&
+  virtual auto current() const -> Value&
   {
     return *m_iter;
   }

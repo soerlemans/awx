@@ -118,7 +118,7 @@ auto main(int t_argc, char* t_argv[]) -> int
   try {
     run(config);
   } catch(std::exception& e) {
-    std::cerr << '\n' << "EXCEPTION OCCURED - \n" << e.what() << '\n';
+    std::cerr << '\n' << "EXCEPTION - \n" << e.what() << '\n';
 
     return ExitCode::EXCEPTION;
   }

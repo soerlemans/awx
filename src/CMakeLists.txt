@@ -2,7 +2,6 @@
 target_sources(${PROJECT_NAME} PRIVATE
 	main.cpp
   file_position.cpp
-	file_stream.cpp
 	file_buffer.cpp
 )
 

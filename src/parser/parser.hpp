@@ -24,9 +24,11 @@ class Parser {
   token::TokenStream m_tokenstream;
 
   protected:
-  // These are m_tokenstream helper methods:
-  auto eos() -> bool;
-  auto error(std::string_view t_msg) -> void;
+  // m_tokenstream helper methods:
+  auto syntax_error(std::string_view t_msg) const -> void;
+  auto eos_error(std::string_view t_msg) const -> void;
+
+  auto eos() const -> bool;
 
   auto check(token::TokenType t_tokentype) -> bool;
   auto next() -> token::Token&;
@@ -34,7 +36,7 @@ class Parser {
   auto prev() -> token::Token&;
   auto expect(token::TokenType t_tokentype, std::string_view t_msg)
     -> token::Token&;
-  auto get_token() -> token::Token;
+  auto get_token() const -> token::Token;
 
   public:
   Parser(token::TokenStream&& t_tokenstream);

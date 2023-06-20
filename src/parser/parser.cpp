@@ -1,5 +1,8 @@
 #include "parser.hpp"
 
+// Includes:
+#include "../exception/syntax_error.hpp"
+
 
 using namespace parser;
 using namespace token;
@@ -10,14 +13,15 @@ Parser::Parser(TokenStream&& t_tokenstream)
 {}
 
 // Methods:
-auto Parser::eos() -> bool
+auto Parser::syntax_error(std::string_view t_msg) const -> void
 {
-  return m_tokenstream.eos();
+  const auto token{get_token()};
+
+  throw SyntaxError{std::string{t_msg}, token.file_position()};
 }
 
-// TODO: Change this to also print automatically using TRACE_PRINT
-// TODO: Rename this to eos_error or similar
-auto Parser::error(const std::string_view t_msg) -> void
+// FIXME: This function should be replaced with the printing of a stacktrace
+auto Parser::eos_error(const std::string_view t_msg) const -> void
 {
   if(eos()) {
     // TODO: Make a function for this
@@ -30,9 +34,15 @@ auto Parser::error(const std::string_view t_msg) -> void
   }
 }
 
+auto Parser::eos() const -> bool
+{
+  return m_tokenstream.eos();
+}
+
+
 auto Parser::check(const TokenType t_tokentype) -> bool
 {
-  error("Tried to check for token at EOS!");
+  eos_error("Tried to check for token at EOS!");
 
   const auto token{m_tokenstream.current()};
 
@@ -41,14 +51,15 @@ auto Parser::check(const TokenType t_tokentype) -> bool
 
 auto Parser::next() -> Token&
 {
-  error("Tried to move to next Token at EOS!");
+  eos_error("Tried to move to next Token at EOS!");
 
   return m_tokenstream.next();
 }
 
 auto Parser::next_if(const TokenType t_tokentype) -> bool
 {
-  error("Tried to move to next if Token is equal to expected token at EOS!");
+  eos_error(
+    "Tried to move to next if Token is equal to expected token at EOS!");
 
   // Only go to next token if we find the token we expect
   bool advance{check(t_tokentype)};
@@ -63,9 +74,9 @@ auto Parser::prev() -> Token&
   return m_tokenstream.prev();
 }
 
-auto Parser::get_token() -> Token
+auto Parser::get_token() const -> Token
 {
-  error("Tried to return get token at EOS!");
+  eos_error("Tried to return get token at EOS!");
 
   return m_tokenstream.current();
 }
