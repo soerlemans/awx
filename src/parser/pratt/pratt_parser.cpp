@@ -275,27 +275,29 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
 
   // Binary expressions:
   while(!eos()) {
-    const auto token{next()};
+    const auto lambda{[&](TokenType t_type) {
+      NodePtr rhs;
 
-    // FIXME: filter using switch, this is temporary code
-    if(!m_infix.count(token.type())) {
-      prev();
+      const auto [lbp, rbp] = m_infix.at(t_type);
+      if(lbp < t_min_bp) {
+        prev();
+      } else {
+        rhs = print_expr(rbp);
+        if(!rhs) {
+          throw std::runtime_error{
+            "Binary operation requires second parameter"};
+        }
+      }
+
+      return rhs;
+    }};
+
+    // If we do not find the expression quit
+    if(auto ptr{universal_expr(lhs, lambda)}; ptr) {
+      lhs = std::move(ptr);
+    } else {
       break;
     }
-
-    const auto [lbp, rbp] = m_infix.at(token.type());
-    if(lbp < t_min_bp) {
-      prev();
-      break;
-    }
-
-    NodePtr rhs = print_expr(rbp);
-    if(!rhs) {
-      throw std::runtime_error{"Binary operation requires second parameter"};
-    }
-
-    lhs = std::make_shared<Arithmetic>(ArithmeticOp::ADD, std::move(lhs),
-                                       std::move(rhs));
   }
 
   return lhs;
