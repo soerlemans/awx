@@ -296,8 +296,9 @@ auto AwkParser::output_redirection(NodePtr& t_lhs) -> NodePtr
   // RedirectionOp
   const auto lambda{[&](RedirectionOp t_op) {
     auto rhs{expr()};
-    if(!rhs)
-      throw std::runtime_error{"Expected Expression after REDIRECTION"};
+    if(!rhs) {
+      syntax_error("Expected expression after output redirection");
+    }
 
     return std::make_shared<Redirection>(t_op, std::move(t_lhs),
                                          std::move(rhs));
@@ -358,8 +359,9 @@ auto AwkParser::simple_print_statement() -> NodePtr
 
     auto params{lambda()};
     // TODO: Improve error handling:
-    if(params->size() < 1)
-      throw std::runtime_error{"printf needs atleast one argument"};
+    if(params->size() < 1) {
+      syntax_error("printf needs atleast one argument");
+    }
 
     auto format{params->front()};
     params->pop_front();
@@ -554,8 +556,7 @@ auto AwkParser::terminated_statement() -> NodePtr
     if(tokentype::is_terminator(get_token().type())) {
       next();
     } else {
-      DBG_TRACE(VERBOSE, "Expected a terminator!");
-      throw std::runtime_error{"Expected a terminator!"};
+      syntax_error("Expected a terminator");
     }
     newline_opt();
 
@@ -616,7 +617,7 @@ auto AwkParser::terminator() -> void
 
   const auto token{next()};
   if(!tokentype::is_terminator(token.type())) {
-    throw std::runtime_error{"Expected either a NEWLINE or SEMICOLON"};
+    syntax_error("Expected a terminator");
   }
 
   newline_opt();
@@ -752,7 +753,7 @@ auto AwkParser::item() -> NodePtr
         std::make_shared<Recipe>(std::move(pattern_ptr), std::move(action_ptr));
     } else {
       // TODO: Properly throw later
-      throw std::runtime_error{"Expected an ITEM"};
+      syntax_error("Expected body after a toplevel rule");
     }
 
     // Resolve this?
