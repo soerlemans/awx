@@ -15,4 +15,9 @@
 	print var * 2
 
 	print +20 && -20
+
+	print var++
+	print var++
+	print ++var
+	print ++var
 }
