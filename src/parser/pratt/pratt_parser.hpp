@@ -12,6 +12,10 @@
 
 
 namespace parser::pratt {
+// Aliases:
+//! Pratt parsers use precedence climbing, so we must pass an int parameter
+using PrattFunc = std::function<node::NodePtr(token::TokenType)>;
+
 // Classes:
 class PrattParser : public Parser {
   private:
@@ -29,9 +33,14 @@ class PrattParser : public Parser {
 
   // Helper methods:
   virtual auto grouping() -> node::NodePtr;
-  virtual auto negation(const ParserFunc& t_expr)
-    -> node::NodePtr; // negation == not, !
+  virtual auto negation(const ParserFunc& t_expr) -> node::NodePtr;
   virtual auto literal() -> node::NodePtr;
+
+  virtual auto arithmetic(node::NodePtr& t_lhs, const PrattFunc& t_rhs)
+    -> node::NodePtr;
+
+  virtual auto universal_expr(node::NodePtr& t_lhs, const PrattFunc& t_fn)
+    -> node::NodePtr;
 
   // Print expressions:
   virtual auto non_unary_print_expr(int t_min_bp = 0) -> node::NodePtr;

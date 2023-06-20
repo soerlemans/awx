@@ -254,59 +254,59 @@ auto AwkParser::match(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
   return node;
 }
 
-auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
-{
-  DBG_TRACE(VERBOSE, "ARITHMETIC");
-  NodePtr node;
+// auto AwkParser::arithmetic(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
+// {
+//   DBG_TRACE(VERBOSE, "ARITHMETIC");
+//   NodePtr node;
 
-  // Little helper function to cut down on the bloat
-  const auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
-    auto ptr{t_rhs()};
-    if(!ptr)
-      throw std::runtime_error{"Expected Expression after ARITHMETIC"};
+//   // Little helper function to cut down on the bloat
+//   const auto lambda = [&](ArithmeticOp t_op) -> NodePtr {
+//     auto ptr{t_rhs()};
+//     if(!ptr)
+//       throw std::runtime_error{"Expected Expression after ARITHMETIC"};
 
-    return NodePtr{
-      std::make_shared<Arithmetic>(t_op, std::move(t_lhs), std::move(ptr))};
-  };
+//     return NodePtr{
+//       std::make_shared<Arithmetic>(t_op, std::move(t_lhs), std::move(ptr))};
+//   };
 
-  switch(next().type()) {
-    case TokenType{g_caret}:
-      DBG_TRACE_PRINT(INFO, "Found '^'");
-      node = lambda(ArithmeticOp::POWER);
-      break;
+//   switch(next().type()) {
+//     case TokenType{g_caret}:
+//       DBG_TRACE_PRINT(INFO, "Found '^'");
+//       node = lambda(ArithmeticOp::POWER);
+//       break;
 
-    case TokenType{g_asterisk}:
-      DBG_TRACE_PRINT(INFO, "Found '*'");
-      node = lambda(ArithmeticOp::MULTIPLY);
-      break;
+//     case TokenType{g_asterisk}:
+//       DBG_TRACE_PRINT(INFO, "Found '*'");
+//       node = lambda(ArithmeticOp::MULTIPLY);
+//       break;
 
-    case TokenType{g_slash}:
-      DBG_TRACE_PRINT(INFO, "Found '/'");
-      node = lambda(ArithmeticOp::DIVIDE);
-      break;
+//     case TokenType{g_slash}:
+//       DBG_TRACE_PRINT(INFO, "Found '/'");
+//       node = lambda(ArithmeticOp::DIVIDE);
+//       break;
 
-    case TokenType{g_percent_sign}:
-      DBG_TRACE_PRINT(INFO, "Found '%'");
-      node = lambda(ArithmeticOp::MODULO);
-      break;
+//     case TokenType{g_percent_sign}:
+//       DBG_TRACE_PRINT(INFO, "Found '%'");
+//       node = lambda(ArithmeticOp::MODULO);
+//       break;
 
-    case TokenType{g_plus}:
-      DBG_TRACE_PRINT(INFO, "Found '+'");
-      node = lambda(ArithmeticOp::ADD);
-      break;
+//     case TokenType{g_plus}:
+//       DBG_TRACE_PRINT(INFO, "Found '+'");
+//       node = lambda(ArithmeticOp::ADD);
+//       break;
 
-    case TokenType{g_minus}:
-      DBG_TRACE_PRINT(INFO, "Found '-'");
-      node = lambda(ArithmeticOp::SUBTRACT);
-      break;
+//     case TokenType{g_minus}:
+//       DBG_TRACE_PRINT(INFO, "Found '-'");
+//       node = lambda(ArithmeticOp::SUBTRACT);
+//       break;
 
-    default:
-      prev();
-      break;
-  }
+//     default:
+//       prev();
+//       break;
+//   }
 
-  return node;
-}
+//   return node;
+// }
 
 auto AwkParser::assignment(NodePtr& t_lhs, const ParserFunc& t_rhs) -> NodePtr
 {
@@ -515,9 +515,10 @@ auto AwkParser::universal_print_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
   //     std::make_shared<StringConcatenation>(std::move(node), std::move(rhs));
   // } else
 
-  if(auto ptr{arithmetic(t_lhs, t_rhs)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{match(t_lhs, t_rhs)}; ptr) {
+  // if(auto ptr{arithmetic(t_lhs, t_rhs)}; ptr) {
+  //   node = std::move(ptr);
+  // } else
+		if(auto ptr{match(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{membership(t_lhs)}; ptr) {
     node = std::move(ptr);
@@ -536,9 +537,10 @@ auto AwkParser::universal_expr(NodePtr& t_lhs, const ParserFunc& t_rhs)
 {
   NodePtr node;
 
-  if(auto ptr{arithmetic(t_lhs, t_rhs)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{comparison(t_lhs, t_rhs)}; ptr) {
+  // if(auto ptr{arithmetic(t_lhs, t_rhs)}; ptr) {
+  //   node = std::move(ptr);
+  // } else
+		if(auto ptr{comparison(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{match(t_lhs, t_rhs)}; ptr) {
     node = std::move(ptr);

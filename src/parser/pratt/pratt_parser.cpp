@@ -168,6 +168,78 @@ auto PrattParser::literal() -> NodePtr
   return node;
 }
 
+auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_rhs) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "ARITHMETIC");
+  NodePtr node;
+
+  const auto token{next()};
+
+  // Little helper function to cut down on the bloat
+  const auto lambda{[&](ArithmeticOp t_op) -> NodePtr {
+    NodePtr node;
+    auto rhs{t_rhs(token.type())};
+
+    if(rhs) {
+      node =
+        std::make_shared<Arithmetic>(t_op, std::move(t_lhs), std::move(rhs));
+    }
+
+    return node;
+  }};
+
+  switch(token.type()) {
+    case TokenType::CARET:
+      DBG_TRACE_PRINT(INFO, "Found 'POWER'");
+      node = lambda(ArithmeticOp::POWER);
+      break;
+
+    case TokenType::ASTERISK:
+      DBG_TRACE_PRINT(INFO, "Found 'MULTIPLICATION'");
+      node = lambda(ArithmeticOp::MULTIPLY);
+      break;
+
+    case TokenType::SLASH:
+      DBG_TRACE_PRINT(INFO, "Found 'DIVISION'");
+      node = lambda(ArithmeticOp::DIVIDE);
+      break;
+
+    case TokenType::PERCENT_SIGN:
+      DBG_TRACE_PRINT(INFO, "Found 'MODULO'");
+      node = lambda(ArithmeticOp::MODULO);
+      break;
+
+    case TokenType::PLUS:
+      DBG_TRACE_PRINT(INFO, "Found 'ADDITION'");
+      node = lambda(ArithmeticOp::ADD);
+      break;
+
+    case TokenType::MINUS:
+      DBG_TRACE_PRINT(INFO, "Found 'SUBTRACTION'");
+      node = lambda(ArithmeticOp::SUBTRACT);
+      break;
+
+    default:
+      prev();
+      break;
+  }
+
+  return node;
+}
+
+auto PrattParser::universal_expr(NodePtr& t_lhs, const PrattFunc& t_fn)
+  -> node::NodePtr
+{
+  DBG_TRACE(VERBOSE, "UNIVERSAL EXPR");
+  NodePtr node;
+
+  if(auto ptr{arithmetic(t_lhs, t_fn)}; ptr) {
+    node = std::move(ptr);
+  }
+
+  return node;
+}
+
 auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "NON UNARY PRINT EXPR");
@@ -217,12 +289,13 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
       break;
     }
 
-    // FIXME: Segfaults, rhs nullptr?
     NodePtr rhs = print_expr(rbp);
-    if(rhs) {
-      lhs = std::make_shared<Arithmetic>(ArithmeticOp::ADD, std::move(lhs),
-                                         std::move(rhs));
+    if(!rhs) {
+      throw std::runtime_error{"Binary operation requires second parameter"};
     }
+
+    lhs = std::make_shared<Arithmetic>(ArithmeticOp::ADD, std::move(lhs),
+                                       std::move(rhs));
   }
 
   return lhs;
@@ -252,25 +325,28 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
 
   // Binary expressions:
   while(!eos()) {
-    const auto token{next()};
+    const auto lambda{[&](TokenType t_type) {
+      NodePtr rhs;
 
-    // FIXME: filter using switch, this is temporary code
-    if(!m_infix.count(token.type())) {
-      prev();
+      const auto [lbp, rbp] = m_infix.at(t_type);
+      if(lbp < t_min_bp) {
+        prev();
+      } else {
+        rhs = print_expr(rbp);
+        if(!rhs) {
+          throw std::runtime_error{
+            "Binary operation requires second parameter"};
+        }
+      }
+
+      return rhs;
+    }};
+
+    // If we do not find the expression quit
+    if(auto ptr{universal_expr(lhs, lambda)}; ptr) {
+      lhs = std::move(ptr);
+    } else {
       break;
-    }
-
-    const auto [lbp, rbp] = m_infix.at(token.type());
-    if(lbp < t_min_bp) {
-      prev();
-      break;
-    }
-
-    // FIXME: Segfaults, rhs nullptr?
-    NodePtr rhs = print_expr(rbp);
-    if(rhs) {
-      lhs = std::make_shared<Arithmetic>(ArithmeticOp::ADD, std::move(lhs),
-                                         std::move(rhs));
     }
   }
 
