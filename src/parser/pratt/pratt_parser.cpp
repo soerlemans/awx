@@ -692,7 +692,7 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
   }};
 
   const auto infix_fn{[this]([[maybe_unused]] NodePtr& t_lhs,
-                               [[maybe_unused]] const PrattFunc& t_fn) {
+                             [[maybe_unused]] const PrattFunc& t_fn) {
     return NodePtr{};
   }};
 
@@ -708,7 +708,7 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
   }};
 
   const auto infix_fn{[this]([[maybe_unused]] NodePtr& t_lhs,
-                               [[maybe_unused]] const PrattFunc& t_fn) {
+                             [[maybe_unused]] const PrattFunc& t_fn) {
     return NodePtr{};
   }};
 

@@ -19,4 +19,7 @@
 	print var++
 	print var++
 	print ++var
+
+	new_var = 10 == 11
+	print new_var
 }
