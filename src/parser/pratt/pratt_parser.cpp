@@ -561,30 +561,17 @@ auto PrattParser::universal_infix(NodePtr& t_lhs, const PrattFunc& t_fn)
   return node;
 }
 
-// Grammar:
-auto PrattParser::newline_opt() -> void
+auto PrattParser::universal_non_unary_expr(const BpFunc& t_expr_fn,
+                                           const InfixFunc& t_infix_fn,
+                                           const int t_min_bp) -> NodePtr
 {
-  DBG_TRACE(VERBOSE, "NEWLINE OPT");
-
-  while(!eos() && next_if(TokenType::NEWLINE)) {
-    DBG_TRACE_PRINT(INFO, "Found NEWLINE");
-  }
-}
-
-auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
-{
-  DBG_TRACE(VERBOSE, "NON UNARY PRINT EXPR");
+  DBG_TRACE(VERBOSE, "UNIVERSAL NON UNARY EXPR");
   NodePtr lhs;
 
-  const auto fn{[this](const int t_rbp) {
-    return print_expr(t_rbp);
-  }};
-
-  // Prefix:
   const auto prefix{[&](TokenType t_type) {
     const auto [lbp, rbp] = m_prefix.at(t_type);
 
-    return fn(rbp);
+    return t_expr_fn(rbp);
   }};
 
   if(auto ptr{grouping()}; ptr) {
@@ -613,7 +600,7 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
       if(lbp < t_min_bp) {
         prev();
       } else {
-        rhs = print_expr(rbp);
+        rhs = t_expr_fn(rbp);
         if(!rhs) {
           syntax_error("Infix operations require a right hand side");
         }
@@ -627,6 +614,8 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
       lhs = std::move(ptr);
     } else if(auto ptr{assignment(lhs, infix)}; ptr) {
       lhs = std::move(ptr);
+    } else if(auto ptr{t_infix_fn(lhs, infix)}; ptr) {
+      lhs = std::move(ptr);
     } else {
       break;
     }
@@ -635,20 +624,18 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
   return lhs;
 }
 
-auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
+auto PrattParser::universal_unary_expr(const BpFunc& t_expr_fn,
+                                       const InfixFunc& t_infix_fn,
+                                       int t_min_bp) -> node::NodePtr
 {
-  DBG_TRACE(VERBOSE, "UNARY PRINT EXPR");
+  DBG_TRACE(VERBOSE, "UNIVERSAL UNARY EXPR");
   NodePtr lhs;
-
-  const auto fn{[this](const int t_rbp) {
-    return print_expr(t_rbp);
-  }};
 
   // Prefix:
   const auto prefix{[&](TokenType t_type) {
     const auto [lbp, rbp] = m_prefix.at(t_type);
 
-    return fn(rbp);
+    return t_expr_fn(rbp);
   }};
 
   if(auto ptr{unary_prefix(prefix)}; ptr) {
@@ -664,7 +651,7 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
       if(lbp < t_min_bp) {
         prev();
       } else {
-        rhs = fn(rbp);
+        rhs = t_expr_fn(rbp);
         if(!rhs) {
           syntax_error("Infix operations require a right hand side");
         }
@@ -676,12 +663,56 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
     // If we do not find an infix expression quit
     if(auto ptr{universal_infix(lhs, infix)}; ptr) {
       lhs = std::move(ptr);
+    } else if(auto ptr{t_infix_fn(lhs, infix)}; ptr) {
+      lhs = std::move(ptr);
     } else {
       break;
     }
   }
 
   return lhs;
+}
+
+// Grammar:
+auto PrattParser::newline_opt() -> void
+{
+  DBG_TRACE(VERBOSE, "NEWLINE OPT");
+
+  while(!eos() && next_if(TokenType::NEWLINE)) {
+    DBG_TRACE_PRINT(INFO, "Found NEWLINE");
+  }
+}
+
+auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "NON UNARY PRINT EXPR");
+
+  const auto expr_fn{[this](const int t_rbp) {
+    return print_expr(t_rbp);
+  }};
+
+  const auto infix_fn{[this]([[maybe_unused]] NodePtr& t_lhs,
+                               [[maybe_unused]] const PrattFunc& t_fn) {
+    return NodePtr{};
+  }};
+
+  return universal_non_unary_expr(expr_fn, infix_fn, t_min_bp);
+}
+
+auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "UNARY PRINT EXPR");
+
+  const auto expr_fn{[this](const int t_rbp) {
+    return print_expr(t_rbp);
+  }};
+
+  const auto infix_fn{[this]([[maybe_unused]] NodePtr& t_lhs,
+                               [[maybe_unused]] const PrattFunc& t_fn) {
+    return NodePtr{};
+  }};
+
+  return universal_unary_expr(expr_fn, infix_fn, t_min_bp);
 }
 
 auto PrattParser::print_expr(const int t_min_bp) -> NodePtr
@@ -713,67 +744,22 @@ auto PrattParser::print_expr(const int t_min_bp) -> NodePtr
 auto PrattParser::non_unary_expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "NON UNARY EXPR");
-  NodePtr lhs;
 
-  const auto fn{[this](const int t_rbp) {
+  const auto expr_fn{[this](const int t_rbp) {
     return expr(t_rbp);
   }};
 
-  // Prefix:
-  const auto prefix{[&](TokenType t_type) {
-    const auto [lbp, rbp] = m_prefix.at(t_type);
+  const auto infix_fn{[this](NodePtr& t_lhs, const PrattFunc& t_fn) {
+    NodePtr node;
 
-    return fn(rbp);
+    if(auto ptr{comparison(t_lhs, t_fn)}; ptr) {
+      node = std::move(ptr);
+    }
+
+    return node;
   }};
 
-  if(auto ptr{grouping()}; ptr) {
-    lhs = std::move(ptr);
-  } else if(auto ptr{negation(prefix)}; ptr) {
-    lhs = std::move(ptr);
-  } else if(auto ptr{literal()}; ptr) {
-    lhs = std::move(ptr);
-  } else if(auto ptr{lvalue()}; ptr) {
-    lhs = std::move(ptr);
-    if(ptr = postcrement(lhs)) {
-      lhs = std::move(ptr);
-    }
-  } else if(auto ptr{precrement()}; ptr) {
-    lhs = std::move(ptr);
-  } else if(auto ptr{function_call()}; ptr) {
-    lhs = std::move(ptr);
-  }
-
-  // Infix:
-  while(!eos()) {
-    const auto infix{[&](TokenType t_type) {
-      NodePtr rhs;
-
-      const auto [lbp, rbp] = m_infix.at(t_type);
-      if(lbp < t_min_bp) {
-        prev();
-      } else {
-        rhs = fn(rbp);
-        if(!rhs) {
-          syntax_error("Infix operations require a right hand side");
-        }
-      }
-
-      return rhs;
-    }};
-
-    // If we do not find the expression quit
-    if(auto ptr{universal_infix(lhs, infix)}; ptr) {
-      lhs = std::move(ptr);
-    } else if(auto ptr{comparison(lhs, infix)}; ptr) {
-      lhs = std::move(ptr);
-    } else if(auto ptr{assignment(lhs, infix)}; ptr) {
-      lhs = std::move(ptr);
-    } else {
-      break;
-    }
-  }
-
-  return lhs;
+  return universal_non_unary_expr(expr_fn, infix_fn, t_min_bp);
 }
 
 // ;; Unary diff
@@ -791,48 +777,22 @@ auto PrattParser::non_unary_expr(const int t_min_bp) -> NodePtr
 auto PrattParser::unary_expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "UNARY EXPR");
-  NodePtr lhs;
 
-  // Prefix:
-  const auto lambda{[this](TokenType t_type) {
-    const auto [lbp, rbp] = m_prefix.at(t_type);
-
-    return expr(rbp);
+  const auto expr_fn{[this](const int t_rbp) {
+    return expr(t_rbp);
   }};
 
-  if(auto ptr{unary_prefix(lambda)}; ptr) {
-    lhs = std::move(ptr);
-  }
+  const auto infix_fn{[this](NodePtr& t_lhs, const PrattFunc& t_fn) {
+    NodePtr node;
 
-  // Infix:
-  while(!eos()) {
-    const auto infix{[&](TokenType t_type) {
-      NodePtr rhs;
-
-      const auto [lbp, rbp] = m_infix.at(t_type);
-      if(lbp < t_min_bp) {
-        prev();
-      } else {
-        rhs = expr(rbp);
-        if(!rhs) {
-          syntax_error("Infix operations require a right hand side");
-        }
-      }
-
-      return rhs;
-    }};
-
-    // If we do not find an infix expression quit
-    if(auto ptr{universal_infix(lhs, infix)}; ptr) {
-      lhs = std::move(ptr);
-    } else if(auto ptr{comparison(lhs, infix)}; ptr) {
-      lhs = std::move(ptr);
-    } else {
-      break;
+    if(auto ptr{comparison(t_lhs, t_fn)}; ptr) {
+      node = std::move(ptr);
     }
-  }
 
-  return lhs;
+    return node;
+  }};
+
+  return universal_unary_expr(expr_fn, infix_fn, t_min_bp);
 }
 
 auto PrattParser::expr(const int t_min_bp) -> NodePtr
@@ -880,9 +840,6 @@ auto PrattParser::multiple_expr_list() -> NodeListPtr
   if(nodes->empty()) {
     // syntax_error("Expected atleast one expression");
   }
-
-  // TODO: If we only have one node in the list flatten it to a single
-  // NodePtr
 
   return nodes;
 }
