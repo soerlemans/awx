@@ -59,7 +59,7 @@ class PrattParser : public Parser {
   virtual auto comparison(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
   virtual auto string_concat(node::NodePtr& t_lhs, const BpFunc& t_rhs,
-                             int t_min_bp = 0) -> node::NodePtr;
+                             int t_min_bp) -> node::NodePtr;
 
   virtual auto universal_infix(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;

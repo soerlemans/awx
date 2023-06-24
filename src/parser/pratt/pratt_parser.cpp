@@ -551,8 +551,9 @@ auto PrattParser::string_concat(NodePtr& t_lhs, const BpFunc& t_rhs,
 
   // No infix token means that we are dealing with string concatenation
   const auto [lbp, rbp] = m_infix.at(TokenType::NONE);
-  // if(lbp >= t_min_bp) {
-  // if(lbp >= t_min_bp && rbp != t_min_bp) {
+
+  // We must check if the right binding power is unequal to the minimum binding
+  // power or else we will recurse endlessly
   if(lbp >= t_min_bp && rbp != t_min_bp) {
     if(auto rhs{t_rhs(rbp)}; rhs) {
       DBG_TRACE(INFO, "Found 'string concatenation'!");
@@ -713,13 +714,13 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
   }};
 
   const auto infix_fn{
-    [this](NodePtr& t_lhs, [[maybe_unused]] const PrattFunc& t_fn) {
+    [&](NodePtr& t_lhs, [[maybe_unused]] const PrattFunc& t_fn) {
       NodePtr node;
       const auto rhs_fn{[this](const int t_min_bp) {
         return non_unary_print_expr(t_min_bp);
       }};
 
-      if(auto ptr{string_concat(t_lhs, rhs_fn)}; ptr) {
+      if(auto ptr{string_concat(t_lhs, rhs_fn, t_min_bp)}; ptr) {
         node = std::move(ptr);
       }
 
@@ -737,14 +738,14 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
     return print_expr(t_rbp);
   }};
 
-  const auto infix_fn{[this]([[maybe_unused]] NodePtr& t_lhs,
-                             [[maybe_unused]] const PrattFunc& t_fn) {
+  const auto infix_fn{[&]([[maybe_unused]] NodePtr& t_lhs,
+                          [[maybe_unused]] const PrattFunc& t_fn) {
     NodePtr node;
     const auto rhs_fn{[this](const int t_min_bp) {
       return non_unary_print_expr(t_min_bp);
     }};
 
-    if(auto ptr{string_concat(t_lhs, rhs_fn)}; ptr) {
+    if(auto ptr{string_concat(t_lhs, rhs_fn, t_min_bp)}; ptr) {
       node = std::move(ptr);
     }
 
@@ -782,7 +783,7 @@ auto PrattParser::non_unary_expr(const int t_min_bp) -> NodePtr
     return expr(t_rbp);
   }};
 
-  const auto infix_fn{[this](NodePtr& t_lhs, const PrattFunc& t_fn) {
+  const auto infix_fn{[&](NodePtr& t_lhs, const PrattFunc& t_fn) {
     NodePtr node;
 
     const auto rhs_fn{[this](const int t_min_bp) {
@@ -791,7 +792,7 @@ auto PrattParser::non_unary_expr(const int t_min_bp) -> NodePtr
 
     if(auto ptr{comparison(t_lhs, t_fn)}; ptr) {
       node = std::move(ptr);
-    } else if(auto ptr{string_concat(t_lhs, rhs_fn)}; ptr) {
+    } else if(auto ptr{string_concat(t_lhs, rhs_fn, t_min_bp)}; ptr) {
       node = std::move(ptr);
     }
 
@@ -815,7 +816,7 @@ auto PrattParser::unary_expr(const int t_min_bp) -> NodePtr
     return expr(t_rbp);
   }};
 
-  const auto infix_fn{[this](NodePtr& t_lhs, const PrattFunc& t_fn) {
+  const auto infix_fn{[&](NodePtr& t_lhs, const PrattFunc& t_fn) {
     NodePtr node;
     const auto rhs_fn{[this](const int t_min_bp) {
       return non_unary_expr(t_min_bp);
@@ -823,7 +824,7 @@ auto PrattParser::unary_expr(const int t_min_bp) -> NodePtr
 
     if(auto ptr{comparison(t_lhs, t_fn)}; ptr) {
       node = std::move(ptr);
-    } else if(auto ptr{string_concat(t_lhs, rhs_fn)}; ptr) {
+    } else if(auto ptr{string_concat(t_lhs, rhs_fn, t_min_bp)}; ptr) {
       node = std::move(ptr);
     }
 
