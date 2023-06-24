@@ -554,13 +554,13 @@ auto PrattParser::string_concat(NodePtr& t_lhs, const BpFunc& t_rhs,
 
   // We must check if the right binding power is unequal to the minimum binding
   // power or else we will recurse endlessly
-  if(lbp >= t_min_bp && rbp != t_min_bp) {
-    if(auto rhs{t_rhs(rbp)}; rhs) {
-      DBG_TRACE(INFO, "Found 'string concatenation'!");
-      node =
-        std::make_shared<StringConcatenation>(std::move(t_lhs), std::move(rhs));
-    }
-  }
+  // if(lbp >= t_min_bp && rbp != t_min_bp) {
+  //   if(auto rhs{t_rhs(rbp)}; rhs) {
+  //     DBG_TRACE(INFO, "Found 'string concatenation'!");
+  //     node =
+  //       std::make_shared<StringConcatenation>(std::move(t_lhs), std::move(rhs));
+  //   }
+  // }
 
   return node;
 }
@@ -635,6 +635,7 @@ auto PrattParser::universal_non_unary_expr(const BpFunc& t_expr_fn,
     if(auto ptr{universal_infix(lhs, infix)}; ptr) {
       lhs = std::move(ptr);
     } else if(auto ptr{assignment(lhs, infix)}; ptr) {
+      DBG_LOG(VERBOSE, "TF?");
       lhs = std::move(ptr);
     } else if(auto ptr{t_infix_fn(lhs, infix)}; ptr) {
       lhs = std::move(ptr);
