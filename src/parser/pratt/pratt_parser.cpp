@@ -166,6 +166,7 @@ auto PrattParser::lvalue() -> NodePtr
   return node;
 }
 
+// TODO: Figure out if we should use PrefixMap or leave as is?
 auto PrattParser::postcrement(NodePtr& t_lhs) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "POSTCREMENT");
@@ -575,11 +576,15 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
   DBG_TRACE(VERBOSE, "NON UNARY PRINT EXPR");
   NodePtr lhs;
 
+  const auto fn{[this](const int t_rbp) {
+    return print_expr(t_rbp);
+  }};
+
   // Prefix:
-  const auto prefix{[this](TokenType t_type) {
+  const auto prefix{[&](TokenType t_type) {
     const auto [lbp, rbp] = m_prefix.at(t_type);
 
-    return print_expr(rbp);
+    return fn(rbp);
   }};
 
   if(auto ptr{grouping()}; ptr) {
@@ -635,11 +640,15 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
   DBG_TRACE(VERBOSE, "UNARY PRINT EXPR");
   NodePtr lhs;
 
+  const auto fn{[this](const int t_rbp) {
+    return print_expr(t_rbp);
+  }};
+
   // Prefix:
-  const auto prefix{[this](TokenType t_type) {
+  const auto prefix{[&](TokenType t_type) {
     const auto [lbp, rbp] = m_prefix.at(t_type);
 
-    return print_expr(rbp);
+    return fn(rbp);
   }};
 
   if(auto ptr{unary_prefix(prefix)}; ptr) {
@@ -655,7 +664,7 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
       if(lbp < t_min_bp) {
         prev();
       } else {
-        rhs = print_expr(rbp);
+        rhs = fn(rbp);
         if(!rhs) {
           syntax_error("Infix operations require a right hand side");
         }
@@ -706,11 +715,15 @@ auto PrattParser::non_unary_expr(const int t_min_bp) -> NodePtr
   DBG_TRACE(VERBOSE, "NON UNARY EXPR");
   NodePtr lhs;
 
+  const auto fn{[this](const int t_rbp) {
+    return expr(t_rbp);
+  }};
+
   // Prefix:
-  const auto prefix{[this](TokenType t_type) {
+  const auto prefix{[&](TokenType t_type) {
     const auto [lbp, rbp] = m_prefix.at(t_type);
 
-    return expr(rbp);
+    return fn(rbp);
   }};
 
   if(auto ptr{grouping()}; ptr) {
@@ -739,7 +752,7 @@ auto PrattParser::non_unary_expr(const int t_min_bp) -> NodePtr
       if(lbp < t_min_bp) {
         prev();
       } else {
-        rhs = expr(rbp);
+        rhs = fn(rbp);
         if(!rhs) {
           syntax_error("Infix operations require a right hand side");
         }

@@ -26,6 +26,11 @@ class PrattParser : public Parser {
   public:
   PrattParser(token::TokenStream&& t_tokenstream);
 
+	// Precedence climbing:
+	// virtual auto prefix(ParserFunc& t_fn) -> node::NodePtr;
+	// virtual auto infix(ParserFunc& t_fn) -> node::NodePtr;
+	// virtual auto postfix(ParserFunc& t_fn) -> node::NodePtr;
+
   // Expression terminals:
   // clang-format off
   virtual auto unary_prefix(const PrattFunc& t_fn) -> node::NodePtr;
