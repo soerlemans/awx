@@ -20,6 +20,6 @@
 	print var++
 	print ++var
 
-	new_var = 10 == 11
+	new_var = 10 * 10 == 10
 	print new_var
 }

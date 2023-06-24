@@ -543,13 +543,31 @@ auto PrattParser::comparison(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   return node;
 }
 
+auto PrattParser::string_concat(NodePtr& t_lhs, const BpFunc& t_rhs,
+                                const int t_min_bp) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "STRING CONCATENATION");
+  NodePtr node;
+
+  // No infix token means that we are dealing with string concatenation
+  const auto [lbp, rbp] = m_infix.at(TokenType::NONE);
+  if(lbp >= t_min_bp) {
+    if(auto rhs{t_rhs(rbp)}; rhs) {
+      node =
+        std::make_shared<StringConcatenation>(std::move(t_lhs), std::move(rhs));
+    }
+  }
+
+  return node;
+}
+
 auto PrattParser::universal_infix(NodePtr& t_lhs, const PrattFunc& t_fn)
   -> NodePtr
 {
   DBG_TRACE(VERBOSE, "UNIVERSAL EXPR");
   NodePtr node;
 
-  // TODO: Add StringConcatenation, membership and ternary
+  // TODO: Add membership and ternary
   if(auto ptr{arithmetic(t_lhs, t_fn)}; ptr) {
     node = std::move(ptr);
   } else if(auto ptr{match(t_lhs, t_fn)}; ptr) {
@@ -691,10 +709,19 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
     return print_expr(t_rbp);
   }};
 
-  const auto infix_fn{[this]([[maybe_unused]] NodePtr& t_lhs,
-                             [[maybe_unused]] const PrattFunc& t_fn) {
-    return NodePtr{};
-  }};
+  const auto infix_fn{
+    [this](NodePtr& t_lhs, [[maybe_unused]] const PrattFunc& t_fn) {
+      NodePtr node;
+      const auto rhs_fn{[this](const int t_min_bp) {
+        return non_unary_print_expr(t_min_bp);
+      }};
+
+      if(auto ptr{string_concat(t_lhs, rhs_fn)}; ptr) {
+        node = std::move(ptr);
+      }
+
+      return node;
+    }};
 
   return universal_non_unary_expr(expr_fn, infix_fn, t_min_bp);
 }
@@ -709,7 +736,16 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
 
   const auto infix_fn{[this]([[maybe_unused]] NodePtr& t_lhs,
                              [[maybe_unused]] const PrattFunc& t_fn) {
-    return NodePtr{};
+    NodePtr node;
+    const auto rhs_fn{[this](const int t_min_bp) {
+      return non_unary_print_expr(t_min_bp);
+    }};
+
+    if(auto ptr{string_concat(t_lhs, rhs_fn)}; ptr) {
+      node = std::move(ptr);
+    }
+
+    return node;
   }};
 
   return universal_unary_expr(expr_fn, infix_fn, t_min_bp);
@@ -731,12 +767,6 @@ auto PrattParser::print_expr(const int t_min_bp) -> NodePtr
 
 // ;; Non unary diff
 // ;; Non unary expr has these extra's
-//   non_unary_expr '<'      expr
-//   non_unary_expr LE       expr
-//   non_unary_expr NE       expr
-//   non_unary_expr EQ       expr
-//   non_unary_expr '>'      expr
-//   non_unary_expr GE       expr
 //   non_unary_input_function
 
 // FIXME: For now this is just a copy of the code for non_unary_print_expr().
@@ -752,7 +782,13 @@ auto PrattParser::non_unary_expr(const int t_min_bp) -> NodePtr
   const auto infix_fn{[this](NodePtr& t_lhs, const PrattFunc& t_fn) {
     NodePtr node;
 
+    const auto rhs_fn{[this](const int t_min_bp) {
+      return non_unary_expr(t_min_bp);
+    }};
+
     if(auto ptr{comparison(t_lhs, t_fn)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{string_concat(t_lhs, rhs_fn)}; ptr) {
       node = std::move(ptr);
     }
 
@@ -764,12 +800,6 @@ auto PrattParser::non_unary_expr(const int t_min_bp) -> NodePtr
 
 // ;; Unary diff
 // ;; Unary expr has these extra's
-//   unary_expr '<'      expr
-//   unary_expr LE       expr
-//   unary_expr NE       expr
-//   unary_expr EQ       expr
-//   unary_expr '>'      expr
-//   unary_expr GE       expr
 //   unary_input_function
 
 // FIXME: For now this is just a copy of the code for non_unary_print_expr().
@@ -784,8 +814,13 @@ auto PrattParser::unary_expr(const int t_min_bp) -> NodePtr
 
   const auto infix_fn{[this](NodePtr& t_lhs, const PrattFunc& t_fn) {
     NodePtr node;
+    const auto rhs_fn{[this](const int t_min_bp) {
+      return non_unary_expr(t_min_bp);
+    }};
 
     if(auto ptr{comparison(t_lhs, t_fn)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{string_concat(t_lhs, rhs_fn)}; ptr) {
       node = std::move(ptr);
     }
 

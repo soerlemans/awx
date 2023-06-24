@@ -15,7 +15,7 @@ namespace parser::pratt {
 // Aliases:
 //! This type is used to get the right hand side of a binary expressions
 using PrattFunc = std::function<node::NodePtr(token::TokenType)>;
-//! This type is used to forward the binding power
+//! This type takes the binding power
 using BpFunc = std::function<node::NodePtr(int)>;
 //! This type is used to parse extra infix operations of a universal method
 using InfixFunc =
@@ -58,6 +58,8 @@ class PrattParser : public Parser {
     -> node::NodePtr;
   virtual auto comparison(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
+  virtual auto string_concat(node::NodePtr& t_lhs, const BpFunc& t_rhs,
+                             int t_min_bp = 0) -> node::NodePtr;
 
   virtual auto universal_infix(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
