@@ -40,6 +40,16 @@ AwkParser::AwkParser(TokenStream t_tokenstream)
 {}
 
 // Parsing rule/grammar rules:
+auto AwkParser::newline_opt() -> void
+{
+  DBG_TRACE(VERBOSE, "NEWLINE OPT");
+
+  while(!eos() && next_if(TokenType::NEWLINE)) {
+    DBG_TRACE_PRINT(INFO, "Found NEWLINE");
+  }
+}
+
+
 auto AwkParser::simple_get() -> NodePtr
 {
   DBG_TRACE(VERBOSE, "SIMPLE GET");
@@ -97,6 +107,7 @@ auto AwkParser::non_unary_input_function() -> NodePtr
 
   return node;
 }
+
 
 auto AwkParser::function() -> NodePtr
 {
@@ -273,6 +284,61 @@ auto AwkParser::print_expr_list_opt() -> NodeListPtr
   DBG_TRACE(VERBOSE, "PRINT EXPR LIST OPT");
 
   return print_expr_list();
+}
+
+auto AwkParser::multiple_expr_list() -> NodeListPtr
+{
+  DBG_TRACE(VERBOSE, "MULTIPLE EXPR LIST");
+  NodeListPtr nodes{std::make_shared<List>()};
+
+  if(auto ptr{expr()}; ptr) {
+    DBG_TRACE_PRINT(INFO, "Found EXPR");
+
+    nodes->push_back(std::move(ptr));
+  }
+
+  while(!eos()) {
+    if(next_if(TokenType::COMMA)) {
+      newline_opt();
+      if(auto ptr{expr()}; ptr) {
+        DBG_TRACE_PRINT(INFO, "Found ',' EXPR");
+
+        nodes->push_back(std::move(ptr));
+      } else {
+        // TODO: Error handling
+      }
+    } else {
+      break;
+    }
+  }
+
+  if(nodes->empty()) {
+    // syntax_error("Expected atleast one expression");
+  }
+
+  return nodes;
+}
+
+auto AwkParser::expr_list() -> NodeListPtr
+{
+  DBG_TRACE(VERBOSE, "EXPR LIST");
+  NodeListPtr nodes;
+
+  // multiple_expr_list allows one or multiple expr
+  if(auto ptr{multiple_expr_list()}; ptr) {
+    nodes = std::move(ptr);
+  } else {
+    // TODO: Error handling
+  }
+
+  return nodes;
+}
+
+auto AwkParser::expr_list_opt() -> NodeListPtr
+{
+  DBG_TRACE(VERBOSE, "EXPR LIST OPT");
+
+  return expr_list();
 }
 
 auto AwkParser::expr_opt() -> NodePtr

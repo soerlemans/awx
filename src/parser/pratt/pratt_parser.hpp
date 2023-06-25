@@ -43,8 +43,6 @@ class PrattParser : public Parser {
   virtual auto precrement() -> node::NodePtr;
 
   virtual auto function_call() -> node::NodePtr;
-  virtual auto ternary(node::NodePtr& t_lhs, const PrattFunc& t_fn)
-    -> node::NodePtr;
 
   // Infix parsing:
   virtual auto arithmetic(node::NodePtr& t_lhs, const PrattFunc& t_fn)
@@ -55,6 +53,8 @@ class PrattParser : public Parser {
   virtual auto logical(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
   virtual auto assignment(node::NodePtr& t_lhs, const PrattFunc& t_fn)
+    -> node::NodePtr;
+  virtual auto ternary(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
   virtual auto comparison(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
@@ -73,7 +73,9 @@ class PrattParser : public Parser {
                                     int t_min_bp = 0) -> node::NodePtr;
 
   // Grammar:
-  virtual auto newline_opt() -> void;
+  virtual auto newline_opt() -> void = 0;
+
+  virtual auto non_unary_input_function() -> node::NodePtr = 0;
 
   // Print expressions:
   virtual auto non_unary_print_expr(int t_min_bp = 0) -> node::NodePtr;
@@ -85,9 +87,9 @@ class PrattParser : public Parser {
   virtual auto unary_expr(int t_min_bp = 0) -> node::NodePtr;
   virtual auto expr(int t_min_bp = 0) -> node::NodePtr;
 
-  virtual auto multiple_expr_list() -> node::NodeListPtr;
-  virtual auto expr_list() -> node::NodeListPtr;
-  virtual auto expr_list_opt() -> node::NodeListPtr;
+  virtual auto multiple_expr_list() -> node::NodeListPtr = 0;
+  virtual auto expr_list() -> node::NodeListPtr = 0;
+  virtual auto expr_list_opt() -> node::NodeListPtr = 0;
 
   virtual ~PrattParser() = default;
 };

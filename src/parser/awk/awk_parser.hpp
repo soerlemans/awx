@@ -19,10 +19,12 @@ class AwkParser : public pratt::PrattParser {
   AwkParser(token::TokenStream t_tokenstream);
 
   // Parsing grammar/rule methods:
+  auto newline_opt() -> void override;
+
   // Input rules:
   virtual auto simple_get() -> node::NodePtr;
   virtual auto unary_input_function() -> node::NodePtr;
-  virtual auto non_unary_input_function() -> node::NodePtr;
+  auto non_unary_input_function() -> node::NodePtr override;
 
   // Function expression handlers:
   virtual auto function() -> node::NodePtr;
@@ -33,6 +35,11 @@ class AwkParser : public pratt::PrattParser {
   // Expression rules:
   virtual auto print_expr_list() -> node::NodeListPtr;
   virtual auto print_expr_list_opt() -> node::NodeListPtr;
+
+  auto multiple_expr_list() -> node::NodeListPtr override;
+  auto expr_list() -> node::NodeListPtr override;
+  auto expr_list_opt() -> node::NodeListPtr override;
+
   virtual auto expr_opt() -> node::NodePtr;
 
   // IO rules:

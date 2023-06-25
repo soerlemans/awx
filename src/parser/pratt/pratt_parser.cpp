@@ -268,34 +268,6 @@ auto PrattParser::function_call() -> NodePtr
   return node;
 }
 
-// TODO: Add extra parameter for ternary expression
-auto PrattParser::ternary(NodePtr& t_lhs, const PrattFunc& t_rhs) -> NodePtr
-{
-  DBG_TRACE(VERBOSE, "TERNARY");
-  NodePtr node;
-
-  // FIXME: simple_print_statement has a rule that conflicts and does not make
-  // It possible to detect if it is a print() or print () ? : ;
-  if(next_if(TokenType::QUESTION_MARK)) {
-    DBG_TRACE(VERBOSE, "Found TERNARY");
-    // NodePtr then_ptr{t_rhs()};
-    // if(!then_ptr) {
-    //   // TODO: Error handling
-    // }
-
-    // expect(TokenType::COLON, ":");
-    // NodePtr else_ptr{t_rhs()};
-    // if(!else_ptr) {
-    //   // TODO: Error handling
-    // }
-
-    // node = std::make_shared<Ternary>(std::move(t_lhs), std::move(then_ptr),
-    //                                  std::move(else_ptr));
-  }
-
-  return node;
-}
-
 auto PrattParser::arithmetic(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "ARITHMETIC");
@@ -485,6 +457,34 @@ auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
     default:
       prev();
       break;
+  }
+
+  return node;
+}
+
+// TODO: Add extra parameter for ternary expression
+auto PrattParser::ternary(NodePtr& t_lhs, const PrattFunc& t_rhs) -> NodePtr
+{
+  DBG_TRACE(VERBOSE, "TERNARY");
+  NodePtr node;
+
+  // FIXME: simple_print_statement has a rule that conflicts and does not make
+  // It possible to detect if it is a print() or print () ? : ;
+  if(next_if(TokenType::QUESTION_MARK)) {
+    DBG_TRACE(VERBOSE, "Found TERNARY");
+    // NodePtr then_ptr{t_rhs()};
+    // if(!then_ptr) {
+    //   // TODO: Error handling
+    // }
+
+    // expect(TokenType::COLON, ":");
+    // NodePtr else_ptr{t_rhs()};
+    // if(!else_ptr) {
+    //   // TODO: Error handling
+    // }
+
+    // node = std::make_shared<Ternary>(std::move(t_lhs), std::move(then_ptr),
+    //                                  std::move(else_ptr));
   }
 
   return node;
@@ -695,15 +695,6 @@ auto PrattParser::universal_unary_expr(const BpFunc& t_expr_fn,
 }
 
 // Grammar:
-auto PrattParser::newline_opt() -> void
-{
-  DBG_TRACE(VERBOSE, "NEWLINE OPT");
-
-  while(!eos() && next_if(TokenType::NEWLINE)) {
-    DBG_TRACE_PRINT(INFO, "Found NEWLINE");
-  }
-}
-
 auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "NON UNARY PRINT EXPR");
@@ -847,59 +838,4 @@ auto PrattParser::expr(const int t_min_bp) -> NodePtr
   }
 
   return node;
-}
-
-auto PrattParser::multiple_expr_list() -> NodeListPtr
-{
-  DBG_TRACE(VERBOSE, "MULTIPLE EXPR LIST");
-  NodeListPtr nodes{std::make_shared<List>()};
-
-  if(auto ptr{expr()}; ptr) {
-    DBG_TRACE_PRINT(INFO, "Found EXPR");
-
-    nodes->push_back(std::move(ptr));
-  }
-
-  while(!eos()) {
-    if(next_if(TokenType::COMMA)) {
-      newline_opt();
-      if(auto ptr{expr()}; ptr) {
-        DBG_TRACE_PRINT(INFO, "Found ',' EXPR");
-
-        nodes->push_back(std::move(ptr));
-      } else {
-        // TODO: Error handling
-      }
-    } else {
-      break;
-    }
-  }
-
-  if(nodes->empty()) {
-    // syntax_error("Expected atleast one expression");
-  }
-
-  return nodes;
-}
-
-auto PrattParser::expr_list() -> NodeListPtr
-{
-  DBG_TRACE(VERBOSE, "EXPR LIST");
-  NodeListPtr nodes;
-
-  // multiple_expr_list allows one or multiple expr
-  if(auto ptr{multiple_expr_list()}; ptr) {
-    nodes = std::move(ptr);
-  } else {
-    // TODO: Error handling
-  }
-
-  return nodes;
-}
-
-auto PrattParser::expr_list_opt() -> NodeListPtr
-{
-  DBG_TRACE(VERBOSE, "EXPR LIST OPT");
-
-  return expr_list();
 }

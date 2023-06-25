@@ -1,6 +1,6 @@
 #!/usr/bin/env -S awk -f
 
-# Need to fix left associativity for this to work
+
 {
 	print 20 - 30 * 20
 	print 4 - 4 && 1
@@ -19,4 +19,6 @@
 	print new_var
 
 	print newvar var
+
+	print (10, 20) in var
 }
