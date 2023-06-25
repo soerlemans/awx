@@ -83,7 +83,7 @@ auto AwkParser::unary_input_function() -> NodePtr
 //                  | simple_get '<' expr
 //                  | non_unary_expr '|' simple_get
 //                  ;
-auto AwkParser::non_unary_input_function() -> NodePtr
+auto AwkParser::non_unary_input_function(NodePtr& t_lhs) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "NON UNARY INPUT FUNCTION");
   NodePtr node;

@@ -75,7 +75,7 @@ class PrattParser : public Parser {
   // Grammar:
   virtual auto newline_opt() -> void = 0;
 
-  virtual auto non_unary_input_function() -> node::NodePtr = 0;
+  virtual auto non_unary_input_function(node::NodePtr& t_lhs) -> node::NodePtr = 0;
 
   // Print expressions:
   virtual auto non_unary_print_expr(int t_min_bp = 0) -> node::NodePtr;

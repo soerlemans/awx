@@ -24,7 +24,7 @@ class AwkParser : public pratt::PrattParser {
   // Input rules:
   virtual auto simple_get() -> node::NodePtr;
   virtual auto unary_input_function() -> node::NodePtr;
-  auto non_unary_input_function() -> node::NodePtr override;
+  auto non_unary_input_function(node::NodePtr& t_lhs) -> node::NodePtr override;
 
   // Function expression handlers:
   virtual auto function() -> node::NodePtr;
