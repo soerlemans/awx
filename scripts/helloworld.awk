@@ -22,4 +22,6 @@
 
 	new_var = 10 * 10 == 10
 	print new_var
+
+	print newvar var
 }
