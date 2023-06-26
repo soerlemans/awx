@@ -13,13 +13,16 @@
 
 
 namespace lexer {
+using namespace container;
+
+// Classes:
 class Lexer {
   private:
-  FileBuffer& m_fb;
+  container::FileBuffer& m_fb;
   token::TokenStream m_ts;
 
   // Token stream handling:
-  // Create a token with its file_position
+  //! Create a token with a fileposition
   template<typename... Args>
   auto create_token(Args&&... t_args) -> token::Token
   {
@@ -30,7 +33,7 @@ class Lexer {
   auto syntax_error(std::string_view t_msg) const -> void;
 
   public:
-  Lexer(FileBuffer& t_fb);
+  Lexer(container::FileBuffer& t_fb);
 
   // Name lexing:
   static auto is_keyword(std::string_view t_identifier) -> token::TokenType;

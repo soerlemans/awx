@@ -20,5 +20,5 @@
 
 	print newvar var
 
-	print (10, 20) in var
+#	print (10, 20) in var
 }

@@ -11,8 +11,8 @@
 
 // Includes:
 #include "config/config.hpp"
-#include "debug/log.hpp"
 #include "container/file_buffer.hpp"
+#include "debug/log.hpp"
 #include "interpreter/tree_walk/tree_walk.hpp"
 #include "parser/awk/awk_parser.hpp"
 #include "visitor/print_visitor.hpp"
@@ -58,6 +58,8 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
 // NOLINTEND
 auto run(Config& t_config) -> void
 {
+  using namespace container;
+
   std::vector<FileBuffer> input_vec;
   for(auto& filepath : t_config.m_filepaths) {
     input_vec.emplace_back(filepath);

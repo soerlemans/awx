@@ -28,7 +28,7 @@ class TreeWalk : public visitor::NodeVisitor {
   using Store = std::map<std::string, T>;
 
   // Members:
-  const FileBuffer* m_input;
+  const container::FileBuffer* m_input;
   node::NodePtr m_ast;
 
   // Runtime environment variables:
@@ -114,7 +114,7 @@ class TreeWalk : public visitor::NodeVisitor {
   auto visit(node::List* t_list) -> void override;
   auto visit(node::Nil* t_nil) -> void override;
 
-  auto run(node::NodePtr& t_ast, const FileBuffer& t_input) -> void;
+  auto run(node::NodePtr& t_ast, const container::FileBuffer& t_input) -> void;
 
   ~TreeWalk() override = default;
 };

@@ -24,6 +24,8 @@
 // Using statements:
 using namespace interpreter::tree_walk;
 
+using namespace container;
+
 using namespace node;
 using namespace node::control;
 using namespace node::functions;

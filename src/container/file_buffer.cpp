@@ -1,27 +1,21 @@
 #include "file_buffer.hpp"
+#include "text_buffer.hpp"
 
+// STL Includes:
 #include <exception>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 
 
-// Constructors:
+using namespace container;
 
-FileBuffer::FileBuffer()
+// Methods:
+FileBuffer::FileBuffer(fs::path&& t_path): m_path{std::move(t_path)}
 {
-  m_filebuffer.emplace_back("");
-}
-
-FileBuffer::FileBuffer(fs::path&& t_path)
-  : m_path{std::move(t_path)}, m_lineno{0}, m_columnno{0}
-{
-  m_filebuffer.reserve(256);
-
   load();
 }
 
-// Methods:
 auto FileBuffer::load() -> void
 {
   if(!fs::exists(m_path)) {
@@ -40,76 +34,14 @@ auto FileBuffer::load() -> void
     // Dont discard newlines
     line += '\n';
 
-    m_filebuffer.push_back(line);
+    add_line(line);
   }
-}
-
-auto FileBuffer::next() const -> std::string
-{
-  // Changing lines resets the column number
-  m_columnno = 0;
-
-  return m_filebuffer[m_lineno++];
-}
-
-auto FileBuffer::prev() const -> std::string
-{
-  std::string result{m_filebuffer[m_lineno]};
-
-  // Changing lines resets the column number
-  m_columnno = 0;
-
-  // Logically you can go past a stream but not in front of a stream
-  if(m_lineno)
-    m_lineno--;
-
-  return result;
-}
-
-auto FileBuffer::forward() const -> char
-{
-  return m_filebuffer[m_lineno][m_columnno++];
-}
-
-auto FileBuffer::backward() const -> char
-{
-  const char character{m_filebuffer[m_lineno][m_columnno]};
-
-  if(m_columnno)
-    m_columnno--;
-
-  return character;
-}
-
-auto FileBuffer::line() const -> std::string
-{
-  return m_filebuffer[m_lineno];
-}
-
-auto FileBuffer::character() const -> char
-{
-  return m_filebuffer[m_lineno][m_columnno];
 }
 
 auto FileBuffer::file_position() const -> FilePosition
 {
   // Return the current position in the filebuffer as a FilePosition struct
-  return {m_path.string(), m_filebuffer[m_lineno], m_lineno, m_columnno};
-}
-
-auto FileBuffer::size() const -> std::size_t
-{
-  return m_filebuffer.size();
-}
-
-auto FileBuffer::eol() const -> bool
-{
-  return m_columnno >= line().size();
-}
-
-auto FileBuffer::eof() const -> bool
-{
-  return m_lineno >= size();
+  return {m_path.string(), line(), m_lineno, m_columnno};
 }
 
 auto FileBuffer::path() const -> fs::path
@@ -117,12 +49,12 @@ auto FileBuffer::path() const -> fs::path
   return m_path;
 }
 
-// Operators:
+namespace container {
 auto operator<<(std::ostream& t_os, const FileBuffer& t_fb) -> std::ostream&
 {
-  for(auto& line : t_fb.m_filebuffer) {
-    t_os << line;
-  }
+  t_os << t_fb.path() << '\n';
+  t_os << (const TextBuffer&)t_fb;
 
   return t_os;
 }
+} // namespace container

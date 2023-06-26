@@ -1,5 +1,5 @@
-#ifndef AWX_FILE_POSITION_HPP
-#define AWX_FILE_POSITION_HPP
+#ifndef AWX_CONTAINER_FILE_POSITION_HPP
+#define AWX_CONTAINER_FILE_POSITION_HPP
 
 // STL Includes:
 #include <string>
@@ -24,4 +24,4 @@ struct FilePosition {
   virtual ~FilePosition() = default;
 };
 
-#endif // AWX_FILE_POSITION_HPP
+#endif // AWX_CONTAINER_FILE_POSITION_HPP
