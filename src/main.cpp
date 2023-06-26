@@ -124,7 +124,6 @@ auto run(Config& t_config) -> void
       script->add_line(args.front());
       scripts.push_back(std::move(script));
 
-
       args.pop_front();
     } else {
       // TODO: Print manual

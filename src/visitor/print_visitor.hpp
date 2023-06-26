@@ -28,12 +28,11 @@ class PrintVisitor : public NodeVisitor {
       m_counter++;
     }
 
-    template<typename... Args>
-    auto print_if(node::NodePtr& t_ptr, PrintVisitor* t_this, Args&&... t_args)
-      -> void
+    auto print_if(node::NodePtr t_ptr, PrintVisitor* t_this,
+                  std::string_view t_str_vw) -> void
     {
       if(t_ptr) {
-        print(std::forward<Args>(t_args)...);
+        print(t_str_vw);
         t_ptr->accept(t_this);
       }
     }

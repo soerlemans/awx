@@ -630,7 +630,17 @@ auto TreeWalk::visit(Delete* t_delete) -> void
 
 auto TreeWalk::visit(Match* t_match) -> void
 {
+  const auto op{t_match->op()};
+
   m_resolve = false;
+
+  if(op == MatchOp::MATCH) {
+		const auto& string{walk(t_match->left())};
+		const auto& pattern{walk(t_match->right())};
+
+    if(op != MatchOp::NO_MATCH) {
+    }
+  }
 
   m_resolve = true;
 }

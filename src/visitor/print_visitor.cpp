@@ -1,5 +1,17 @@
 #include "print_visitor.hpp"
 
+// Macros:
+#define PPRINT_INIT() \
+  Printer printer     \
+  {                   \
+    m_counter         \
+  }
+
+#define PPRINT(...) printer.print(__VA_ARGS__)
+
+//! Pretty print if a member is not a nullptr
+#define PPRINT_IF(t_str, t_ptr) printer.print_if(t_ptr, this, "| " t_str)
+
 
 // Using statements:
 using namespace visitor;
@@ -14,20 +26,20 @@ using namespace node::rvalue;
 
 auto PrintVisitor::visit(If* t_if) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
-  printer.print("If");
-
-  printer.print_if(t_if->then(), this, "| THEN");
+  PPRINT("If");
+  PPRINT_IF("Then", t_if->then());
+  PPRINT_IF("Alt", t_if->alt());
 }
 
 auto PrintVisitor::visit(While* t_while) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
-  printer.print("While");
-  printer.print_if(t_while->condition(), this, "| Condition");
-  // printer.print_if(t_while->body(), this, "| Body");
+  PPRINT("While");
+  PPRINT_IF("Condition", t_while->condition());
+  PPRINT_IF("Body", t_while->body());
 }
 
 auto PrintVisitor::visit(DoWhile* t_do_while) -> void
@@ -35,58 +47,60 @@ auto PrintVisitor::visit(DoWhile* t_do_while) -> void
 
 auto PrintVisitor::visit(For* t_for) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
-  printer.print("For");
-  // printer.print_if(t_while->condition(), this, "| Condition");
-  // printer.print_if(t_while->body(), this, "| Body");
+  PPRINT("For");
+  PPRINT_IF("Init", t_for->init());
+  PPRINT_IF("Condition", t_for->condition());
+  PPRINT_IF("Expr", t_for->expr());
+  PPRINT_IF("Body", t_for->body());
 }
 
 auto PrintVisitor::visit(ForIn* t_for_in) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("FOR IN");
 }
 
 auto PrintVisitor::visit(Continue* t_continue) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("CONTINUE");
 }
 
 auto PrintVisitor::visit(Break* t_break) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("BREAK");
 }
 
 auto PrintVisitor::visit(Next* t_next) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("NEXT");
 }
 
 auto PrintVisitor::visit(Exit* t_exit) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("EXIT");
 }
 
 auto PrintVisitor::visit(Return* t_return) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("RETURN");
 }
 
 auto PrintVisitor::visit(Function* t_fn) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("FUNCTION");
   printer.print("| NAME: ", t_fn->name());
@@ -105,7 +119,7 @@ auto PrintVisitor::visit(Function* t_fn) -> void
 
 auto PrintVisitor::visit(FunctionCall* t_fn_call) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("FUNCTION CALL");
   printer.print("| NAME: ", t_fn_call->name());
@@ -118,14 +132,14 @@ auto PrintVisitor::visit(FunctionCall* t_fn_call) -> void
 
 auto PrintVisitor::visit(BuiltinFunctionCall* t_fn) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("BUILTIN FUNCTION CALL");
 }
 
 auto PrintVisitor::visit(SpecialPattern* t_pattern) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("SPECIAL PATTERN");
 
@@ -134,7 +148,7 @@ auto PrintVisitor::visit(SpecialPattern* t_pattern) -> void
 
 auto PrintVisitor::visit(Recipe* t_recipe) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("RECIPE");
   // TODO: Macro or lambda this??
@@ -151,7 +165,7 @@ auto PrintVisitor::visit(Recipe* t_recipe) -> void
 
 auto PrintVisitor::visit(Print* t_print) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("PRINT");
   printer.print("| PARAMS:");
@@ -161,7 +175,7 @@ auto PrintVisitor::visit(Print* t_print) -> void
 
 auto PrintVisitor::visit(Printf* t_printf) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("PRINTF");
 
@@ -171,7 +185,7 @@ auto PrintVisitor::visit(Printf* t_printf) -> void
 
 auto PrintVisitor::visit(Getline* t_getline) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("GETLINE");
   if(NodePtr & var{t_getline->var()}; var) {
@@ -182,21 +196,21 @@ auto PrintVisitor::visit(Getline* t_getline) -> void
 
 auto PrintVisitor::visit(Redirection* t_redirection) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("REDIRECTION");
 }
 
 auto PrintVisitor::visit(Array* t_array) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("ARRAY");
 }
 
 auto PrintVisitor::visit(FieldReference* t_fr) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("FIELD REFERENCE");
   printer.print("| EXPR");
@@ -206,7 +220,7 @@ auto PrintVisitor::visit(FieldReference* t_fr) -> void
 
 auto PrintVisitor::visit(Variable* t_var) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("VARIABLE");
   printer.print("| NAME: ", t_var->name());
@@ -214,35 +228,35 @@ auto PrintVisitor::visit(Variable* t_var) -> void
 
 auto PrintVisitor::visit(Float* t_float) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("FLOAT: ", t_float->get());
 }
 
 auto PrintVisitor::visit(Integer* t_int) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("INTEGER: ", t_int->get());
 }
 
 auto PrintVisitor::visit(String* t_str) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("STRING: ", t_str->get());
 }
 
 auto PrintVisitor::visit(Regex* t_regex) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("REGEX: ", t_regex->get());
 }
 
 auto PrintVisitor::visit(Arithmetic* t_arithmetic) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("ARITHMETIC");
   printer.print("| OP: TODO!");
@@ -253,14 +267,14 @@ auto PrintVisitor::visit(Arithmetic* t_arithmetic) -> void
 
 auto PrintVisitor::visit(Assignment* t_assignment) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("ASSIGNMENT");
 }
 
 auto PrintVisitor::visit(Comparison* t_comparison) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("COMPARISON");
 
@@ -275,35 +289,38 @@ auto PrintVisitor::visit(Comparison* t_comparison) -> void
 
 auto PrintVisitor::visit(Increment* t_increment) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("INCREMENT");
 }
 
 auto PrintVisitor::visit(Decrement* t_decrement) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("DECREMENT");
 }
 
 auto PrintVisitor::visit(Delete* t_delete) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("DELETE");
 }
 
 auto PrintVisitor::visit(Match* t_match) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("MATCH");
+
+  PPRINT_IF("STRING", t_match->left());
+  PPRINT_IF("PATTERN", t_match->right());
 }
 
 auto PrintVisitor::visit(Not* t_not) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("NOT");
   printer.print("| LEFT");
@@ -312,7 +329,7 @@ auto PrintVisitor::visit(Not* t_not) -> void
 
 auto PrintVisitor::visit(And* t_and) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("AND");
   printer.print("| LEFT");
@@ -324,7 +341,7 @@ auto PrintVisitor::visit(And* t_and) -> void
 
 auto PrintVisitor::visit(Or* t_or) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("OR");
 
@@ -337,7 +354,7 @@ auto PrintVisitor::visit(Or* t_or) -> void
 
 auto PrintVisitor::visit(StringConcatenation* t_conc) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("STRING CONCATENATION");
 
@@ -350,7 +367,7 @@ auto PrintVisitor::visit(StringConcatenation* t_conc) -> void
 
 auto PrintVisitor::visit(Grouping* t_grouping) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("GROUPING");
   if(auto& expr{t_grouping->left()}; expr) {
@@ -361,7 +378,7 @@ auto PrintVisitor::visit(Grouping* t_grouping) -> void
 
 auto PrintVisitor::visit(Ternary* t_ternary) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("TERNARY");
 
@@ -383,7 +400,7 @@ auto PrintVisitor::visit(Ternary* t_ternary) -> void
 
 auto PrintVisitor::visit(UnaryPrefix* t_unary_prefix) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("UNARY PREFIX");
   // printer.print("| OP: ");
@@ -396,7 +413,7 @@ auto PrintVisitor::visit(UnaryPrefix* t_unary_prefix) -> void
 
 auto PrintVisitor::visit(List* t_list) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("LIST");
 
@@ -406,7 +423,7 @@ auto PrintVisitor::visit(List* t_list) -> void
 
 auto PrintVisitor::visit([[maybe_unused]] Nil* t_nil) -> void
 {
-  Printer printer{m_counter};
+  PPRINT_INIT();
 
   printer.print("NIL");
 }

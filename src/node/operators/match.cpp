@@ -10,3 +10,8 @@ Match::Match(MatchOp t_op, NodePtr&& t_string, NodePtr&& t_pattern)
                    std::forward<NodePtr>(t_pattern)},
     m_op{t_op}
 {}
+
+auto Match::op() const -> MatchOp
+{
+  return m_op;
+}
