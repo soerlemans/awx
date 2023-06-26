@@ -1,6 +1,5 @@
 #!/usr/bin/env -S awk -f
 
-
 {
 	print 20 - 30 * 20
 	print 4 - 4 && 1

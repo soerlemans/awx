@@ -389,9 +389,12 @@ auto Lexer::tokenize() -> TokenStream
 
       // TODO: This should have its own function
       const auto lambda{[&]() -> bool {
+        if(m_ts.empty()) {
+          return false;
+        }
+
         const auto last_tokentype{m_ts.back().type()};
-        return character == slash && !m_ts.empty()
-               && !tokentype::is_int(last_tokentype)
+        return character == slash && !tokentype::is_int(last_tokentype)
                && last_tokentype != TokenType::IDENTIFIER;
       }};
 

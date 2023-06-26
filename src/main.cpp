@@ -34,8 +34,8 @@ enum ExitCode {
 
 // Functions:
 // NOLINTBEGIN
-// Parse command line arguments and store them in a configuration class
-// Warning: This is friend of the ConfigStore class
+/*! Parse command line arguments and store them in a configuration class
+ */
 auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
                 char* t_argv[]) -> void
 {
@@ -115,7 +115,7 @@ auto run(Config& t_config) -> void
   if(!t_config.m_scripts.empty()) {
     for(auto& script : t_config.m_scripts) {
       auto buffer{std::make_shared<FileBuffer>(script)};
-			scripts.push_back(std::move(buffer));
+      scripts.push_back(std::move(buffer));
     }
   } else {
     if(!args.empty()) {
