@@ -15,11 +15,11 @@ class If : public NodeInterface {
 
   public:
   If(NodePtr&& t_condition, NodePtr&& t_then);
-  If(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else);
+  If(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_alt);
 
   auto condition() -> NodePtr&;
   auto then() -> NodePtr&;
-  auto alt() -> NodePtr&; // Alternative is a synonym for else
+  auto alt() -> NodePtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

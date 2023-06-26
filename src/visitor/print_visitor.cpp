@@ -365,19 +365,19 @@ auto PrintVisitor::visit(Ternary* t_ternary) -> void
 
   printer.print("TERNARY");
 
-  if(NodePtr & condition{t_ternary->left()}; condition) {
+  if(NodePtr & condition{t_ternary->condition()}; condition) {
     printer.print("| CONDITION");
     condition->accept(this);
   }
 
-  if(NodePtr & then{t_ternary->right()}; then) {
+  if(NodePtr & then{t_ternary->then()}; then) {
     printer.print("| THEN");
     then->accept(this);
   }
 
-  if(NodePtr & third{t_ternary->third()}; third) {
+  if(NodePtr & alt{t_ternary->alt()}; alt) {
     printer.print("| ELSE");
-    third->accept(this);
+    alt->accept(this);
   }
 }
 

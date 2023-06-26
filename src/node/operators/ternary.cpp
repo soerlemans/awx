@@ -8,14 +8,23 @@ using namespace node::operators;
 
 using namespace visitor;
 
-// TODO: Error throw when a nullptr is given as agrg
-Ternary::Ternary(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_else)
-  : BinaryOperator{std::forward<NodePtr>(t_condition),
-                   std::forward<NodePtr>(t_then)},
-    m_else{std::forward<NodePtr>(t_else)}
+Ternary::Ternary(NodePtr&& t_condition, NodePtr&& t_then, NodePtr&& t_alt)
+  : m_condition{std::move(t_condition)},
+    m_then{std::move(t_then)},
+    m_alt{std::move(t_alt)}
 {}
 
-auto Ternary::third() -> NodePtr&
+auto Ternary::condition() -> NodePtr&
 {
-  return m_else;
+  return m_condition;
+}
+
+auto Ternary::then() -> NodePtr&
+{
+  return m_then;
+}
+
+auto Ternary::alt() -> NodePtr&
+{
+  return m_alt;
 }

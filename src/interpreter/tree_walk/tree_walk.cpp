@@ -691,7 +691,13 @@ auto TreeWalk::visit(Grouping* t_grouping) -> void
 }
 
 auto TreeWalk::visit(Ternary* t_ternary) -> void
-{}
+{
+  if(eval_bool(t_ternary->condition())) {
+    walk(t_ternary->then());
+  } else {
+    walk(t_ternary->alt());
+  }
+}
 
 auto TreeWalk::visit(UnaryPrefix* t_unary_prefix) -> void
 {
