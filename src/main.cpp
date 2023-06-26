@@ -53,8 +53,8 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
   t_app.set_version_flag("-V,--version", ss.str(), "Displays the AWX version.");
 
   // Remaining positional arguments are filepaths preceding -- is optional
-  t_app.add_option("{}", t_config.m_filepaths, "Postional arguments")
-    ->check(CLI::ExistingFile);
+  t_app.add_option("{}", t_config.m_args, "Postional arguments");
+  // ->check(CLI::ExistingFile);
 
   // Parse CLI args
   t_app.parse(t_argc, t_argv);
@@ -70,7 +70,7 @@ auto lex(TextBufferPtr t_program) -> token::TokenStream
 
   DBG_PRINTLN();
 
-	return tokenstream;
+  return tokenstream;
 }
 
 auto parse(const token::TokenStream& t_ts) -> node::NodePtr
@@ -108,24 +108,42 @@ auto execute(node::NodePtr& t_ast, const TextBufferPtr t_input) -> void
 
 auto run(Config& t_config) -> void
 {
+  auto& args{t_config.m_args};
   std::vector<TextBufferPtr> input_vec;
-  for(auto& filepath : t_config.m_filepaths) {
+  std::vector<TextBufferPtr> scripts;
+
+  if(!t_config.m_scripts.empty()) {
+    // TODO: Load programs
+  } else {
+    if(!args.empty()) {
+      auto script{std::make_shared<TextBuffer>()};
+
+      script->add_line(args.front() + "\n");
+      scripts.push_back(std::move(script));
+
+			args.pop_front();
+    } else {
+      // TODO: Print manual
+    }
+  }
+
+  for(auto& filepath : args) {
     input_vec.push_back(std::make_shared<FileBuffer>(filepath));
   }
 
   // TODO: Have the program also work if no files are given (read from STDIN in
   // this case)
   if(input_vec.empty()) {
-    TextBufferPtr buffer{std::make_shared<TextBuffer>()};
+    auto buffer{std::make_shared<TextBuffer>()};
     buffer->add_line("");
     input_vec.push_back(std::move(buffer));
   }
 
-  for(auto& script : t_config.m_scripts) {
+  for(auto& script : scripts) {
     for(auto& input : input_vec) {
-      FileBufferPtr program{std::make_shared<FileBuffer>(script)};
+      // auto program{std::make_shared<FileBuffer>(script)};
 
-			auto tokenstream{lex(program)};
+      auto tokenstream{lex(script)};
       auto ast{parse(tokenstream)};
 
       execute(ast, input);

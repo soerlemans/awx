@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <list>
 
 // Includes:
 #include "../container/file_buffer.hpp"
@@ -29,7 +30,7 @@ struct Config {
   AwxMode m_awx_mode;
 
   std::vector<std::string> m_scripts;
-  std::vector<std::string> m_filepaths;
+  std::list<std::string> m_args;
 
   Config(AwxMode t_awx_mode);
 };
