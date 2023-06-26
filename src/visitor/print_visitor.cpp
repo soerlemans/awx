@@ -1,5 +1,6 @@
 #include "print_visitor.hpp"
 
+
 // Macros:
 #define PPRINT_INIT() \
   Printer printer     \
@@ -12,6 +13,14 @@
 //! Pretty print if a member is not a nullptr
 #define PPRINT_IF(t_str, t_ptr) printer.print_if(t_ptr, this, "| " t_str)
 
+#define PPRINT_UNOP(t_str, t_ptr) \
+  PPRINT(t_str);                  \
+  PPRINT_IF("Left", t_ptr->left());
+
+#define PPRINT_BINOP(t_str, t_ptr)  \
+  PPRINT(t_str);                    \
+  PPRINT_IF("Left", t_ptr->left()); \
+  PPRINT_IF("Right", t_ptr->right());
 
 // Using statements:
 using namespace visitor;
@@ -150,48 +159,34 @@ auto PrintVisitor::visit(Recipe* t_recipe) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("RECIPE");
-  // TODO: Macro or lambda this??
-  if(NodePtr & pattern{t_recipe->pattern()}; pattern) {
-    PPRINT("| PATTERN");
-    pattern->accept(this);
-  }
-
-  if(NodePtr & body{t_recipe->body()}; body) {
-    PPRINT("| BODY");
-    body->accept(this);
-  }
+  PPRINT("Recipe");
+  PPRINT_IF("Pattern", t_recipe->pattern());
+  PPRINT_IF("Body", t_recipe->body());
 }
 
 auto PrintVisitor::visit(Print* t_print) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("PRINT");
-  PPRINT("| PARAMS:");
-
-  visit(t_print->params().get());
+  PPRINT("Print");
+  PPRINT_IF("Params:", t_print->params());
 }
 
 auto PrintVisitor::visit(Printf* t_printf) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("PRINTF");
-
-  PPRINT("| FORMAT:");
-  PPRINT("| PARAMS:");
+  PPRINT("Printf");
+  // PPRINT_IF("Format:", t_printf->params());
+  PPRINT_IF("Params:", t_printf->params());
 }
 
 auto PrintVisitor::visit(Getline* t_getline) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("GETLINE");
-  if(NodePtr & var{t_getline->var()}; var) {
-    PPRINT("| VAR");
-    var->accept(this);
-  }
+  PPRINT("Getline");
+  PPRINT_IF("Var:", t_getline->var());
 }
 
 auto PrintVisitor::visit(Redirection* t_redirection) -> void
@@ -212,57 +207,51 @@ auto PrintVisitor::visit(FieldReference* t_fr) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("FIELD REFERENCE");
-  PPRINT("| EXPR");
-
-  t_fr->expr()->accept(this);
+  PPRINT("Field reference");
+  PPRINT_IF("Expr", t_fr->expr());
 }
 
 auto PrintVisitor::visit(Variable* t_var) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("VARIABLE");
-  PPRINT("| NAME: ");
+  PPRINT("Variable", t_var->name());
 }
 
 auto PrintVisitor::visit(Float* t_float) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("FLOAT: ");
+  PPRINT("Float: ", t_float->get());
 }
 
 auto PrintVisitor::visit(Integer* t_int) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("INTEGER: ");
+  PPRINT("Integer: ", t_int->get());
 }
 
 auto PrintVisitor::visit(String* t_str) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("STRING: ");
+  PPRINT("String: ", t_str->get());
 }
 
 auto PrintVisitor::visit(Regex* t_regex) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("REGEX: ");
+  PPRINT("Regex: ", t_regex->get());
 }
 
 auto PrintVisitor::visit(Arithmetic* t_arithmetic) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("ARITHMETIC");
+  PPRINT_BINOP("ARITHMETIC", t_arithmetic)
   PPRINT("| OP: TODO!");
-
-  PPRINT("| LEFT");
-  PPRINT("| RIGHT");
 }
 
 auto PrintVisitor::visit(Assignment* t_assignment) -> void
@@ -331,94 +320,57 @@ auto PrintVisitor::visit(And* t_and) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("AND");
-  PPRINT("| LEFT");
-  t_and->left()->accept(this);
-
-  PPRINT("| RIGHT");
-  t_and->right()->accept(this);
+  PPRINT_BINOP("And", t_and);
 }
 
 auto PrintVisitor::visit(Or* t_or) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("OR");
-
-  PPRINT("| LEFT");
-  t_or->left()->accept(this);
-
-  PPRINT("| right");
-  t_or->right()->accept(this);
+  PPRINT_BINOP("Or", t_or);
 }
 
 auto PrintVisitor::visit(StringConcatenation* t_conc) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("STRING CONCATENATION");
-
-  PPRINT("| LEFT");
-  t_conc->left()->accept(this);
-
-  PPRINT("| RIGHT");
-  t_conc->right()->accept(this);
+  PPRINT_BINOP("StringConcatenation", t_conc);
 }
 
 auto PrintVisitor::visit(Grouping* t_grouping) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("GROUPING");
-  if(auto& expr{t_grouping->left()}; expr) {
-    PPRINT("| EXPR");
-    expr->accept(this);
-  }
+  PPRINT_UNOP("Grouping", t_grouping)
 }
 
 auto PrintVisitor::visit(Ternary* t_ternary) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("TERNARY");
-
-  if(NodePtr & condition{t_ternary->condition()}; condition) {
-    PPRINT("| CONDITION");
-    condition->accept(this);
-  }
-
-  if(NodePtr & then{t_ternary->then()}; then) {
-    PPRINT("| THEN");
-    then->accept(this);
-  }
-
-  if(NodePtr & alt{t_ternary->alt()}; alt) {
-    PPRINT("| ELSE");
-    alt->accept(this);
-  }
+  PPRINT("Ternary");
+  PPRINT_IF("Condition", t_ternary->condition());
+  PPRINT_IF("Then", t_ternary->then());
+  PPRINT_IF("Alt", t_ternary->alt());
 }
 
 auto PrintVisitor::visit(UnaryPrefix* t_unary_prefix) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("UNARY PREFIX");
-  PPRINT("| OP: ");
-
-  // TODO: Implement plus or minus printing
-
-  // Visit the unary expression
-  t_unary_prefix->left()->accept(this);
+  PPRINT("Unary prefix");
+  PPRINT_UNOP("Unary prefix", t_unary_prefix)
+  PPRINT("| OP: TODO");
 }
 
 auto PrintVisitor::visit(List* t_list) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("LIST");
-
-  for(NodePtr& node : *t_list)
+  PPRINT("List");
+  for(NodePtr& node : *t_list) {
     node->accept(this);
+  }
 }
 
 auto PrintVisitor::visit([[maybe_unused]] Nil* t_nil) -> void
