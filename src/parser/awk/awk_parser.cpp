@@ -698,9 +698,10 @@ auto AwkParser::action() -> NodeListPtr
 
     newline_opt();
 
-    if(auto ptr{terminated_statement_list()}; ptr) {
+		// First check for unterminated statements
+    if(auto ptr{unterminated_statement_list()}; ptr) {
       node = std::move(ptr);
-    } else if(auto ptr{unterminated_statement_list()}; ptr) {
+    } else if(auto ptr{terminated_statement_list()}; ptr) {
       node = std::move(ptr);
     } else {
       // node = std::make_shared<List>();
