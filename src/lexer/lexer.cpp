@@ -389,13 +389,17 @@ auto Lexer::tokenize() -> TokenStream
 
       // TODO: This should have its own function
       const auto is_regex{[&]() -> bool {
-        if(m_ts.empty()) {
-          return true;
+        if(character == slash) {
+          if(m_ts.empty()) {
+            return true;
+          }
+
+          const auto last_tokentype{m_ts.back().type()};
+          return !tokentype::is_literal(last_tokentype)
+                 && last_tokentype != TokenType::IDENTIFIER;
         }
 
-        const auto last_tokentype{m_ts.back().type()};
-        return character == slash && !tokentype::is_int(last_tokentype)
-               && last_tokentype != TokenType::IDENTIFIER;
+        return false;
       }};
 
       if(std::isspace(character)) {
