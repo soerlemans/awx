@@ -186,8 +186,13 @@ auto TreeWalk::visit(Next* t_next) -> void
 
 auto TreeWalk::visit(Exit* t_exit) -> void
 {
-  // walk(t_exit->ex)
-  // throw ExitExcept{};
+  if(auto ptr{t_exit->expr()}; ptr) {
+    walk(ptr);
+  } else {
+    clear_context();
+  }
+
+  throw ExitExcept{};
 }
 
 auto TreeWalk::visit(Return* t_return) -> void
@@ -754,6 +759,12 @@ auto TreeWalk::run(NodePtr& t_ast, const TextBufferPtr t_input) -> void
       m_ast->accept(this);
     } catch(NextExcept& except) {
     } catch(ExitExcept& except) {
+      // TODO: Implement this more completely and elegantly
+      std::visit(
+        [](auto&& t_exit) {
+          std::exit(cast(t_exit));
+        },
+        m_context.m_result);
       break; // Return the expressions value somehow?
     }
 

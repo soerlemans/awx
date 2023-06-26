@@ -13,6 +13,8 @@ class Exit : public NodeInterface {
   public:
   Exit(NodePtr&& t_expr);
 
+  auto expr() -> NodePtr&;
+
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   virtual ~Exit() = default;

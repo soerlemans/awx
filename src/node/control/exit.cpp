@@ -8,3 +8,7 @@ using namespace visitor;
 Exit::Exit(NodePtr&& t_expr): m_expr{std::forward<NodePtr>(t_expr)}
 {}
 
+auto Exit::expr() -> NodePtr&
+{
+  return m_expr;
+}

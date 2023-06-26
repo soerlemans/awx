@@ -17,9 +17,7 @@
 
 
 namespace interpreter::tree_walk {
-/*! Evaluates each node and returns a result
- * TODO: Have NodeVisitor be a template class and have each Node accept a
- * pointer to NodeVisitor<T> this way we can
+/*! Evaluates each node using the visitor pattern.
  */
 class TreeWalk : public visitor::NodeVisitor {
   private:
