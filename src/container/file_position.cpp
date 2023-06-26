@@ -4,6 +4,8 @@
 #include <sstream>
 
 
+using namespace container;
+
 FilePosition::FilePosition(): m_path{""}, m_line{""}, m_lineno{0}, m_columno{0}
 {}
 
@@ -16,7 +18,7 @@ FilePosition::FilePosition(std::string t_path, std::string t_line,
     m_columno{t_columnno}
 {}
 
-// Friend function:
+namespace container {
 auto operator<<(std::ostream& t_os, const FilePosition& t_fp) -> std::ostream&
 {
   std::stringstream ss;
@@ -31,3 +33,4 @@ auto operator<<(std::ostream& t_os, const FilePosition& t_fp) -> std::ostream&
 
   return t_os;
 }
+} // namespace container

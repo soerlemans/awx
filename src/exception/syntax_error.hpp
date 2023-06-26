@@ -14,10 +14,11 @@
 class SyntaxError : public std::exception {
   protected:
   std::string m_error;
-  FilePosition m_file_pos;
+  container::FilePosition m_file_pos;
 
   public:
-  SyntaxError(std::string_view t_msg, const FilePosition& t_file_pos);
+  SyntaxError(std::string_view t_msg,
+              const container::FilePosition& t_file_pos);
 
   auto what() const noexcept -> const char* override;
 };

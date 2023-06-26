@@ -5,6 +5,7 @@
 #include <string>
 
 
+namespace container {
 struct FilePosition {
   // Members:
   std::string m_path;
@@ -23,5 +24,6 @@ struct FilePosition {
 
   virtual ~FilePosition() = default;
 };
+} // namespace container
 
 #endif // AWX_CONTAINER_FILE_POSITION_HPP

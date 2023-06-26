@@ -7,7 +7,7 @@
 // The following members m_lineno and m_columno are zero indexed so they need to
 // Have + 1 counted for them to line up properly
 SyntaxError::SyntaxError(const std::string_view t_msg,
-                         const FilePosition& t_file_pos)
+                         const container::FilePosition& t_file_pos)
   : m_file_pos(t_file_pos)
 {
   std::stringstream ss;

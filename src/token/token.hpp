@@ -33,15 +33,15 @@ class Token {
   TokenValue m_value;
 
   // Records position in a file, useful for indicating errors
-  FilePosition m_file_pos;
+  container::FilePosition m_file_pos;
 
   public:
   Token() = default;
   Token(const Token& t_token) = default;
 
-  explicit Token(TokenType t_type, const FilePosition& t_file_pos);
+  explicit Token(TokenType t_type, const container::FilePosition& t_file_pos);
   explicit Token(TokenType t_type, TokenValue t_value,
-                 const FilePosition& t_file_pos);
+                 const container::FilePosition& t_file_pos);
 
   auto type() const -> TokenType;
 
@@ -53,7 +53,7 @@ class Token {
     return std::get<T>(m_value);
   }
 
-  auto file_position() const -> const FilePosition&;
+  auto file_position() const -> const container::FilePosition&;
 
   // Operators
   auto operator=(const Token& t_token) -> Token& = default;
