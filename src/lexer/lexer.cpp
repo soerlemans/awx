@@ -390,7 +390,7 @@ auto Lexer::tokenize() -> TokenStream
       // TODO: This should have its own function
       const auto lambda{[&]() -> bool {
         if(m_ts.empty()) {
-          return false;
+          return true;
         }
 
         const auto last_tokentype{m_ts.back().type()};
