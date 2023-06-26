@@ -698,10 +698,11 @@ auto AwkParser::action() -> NodeListPtr
 
     newline_opt();
 
-		// First check for unterminated statements
-    if(auto ptr{unterminated_statement_list()}; ptr) {
+    // Have a way to restore the position of the tokenstream when an expression
+    // is unterminated, after parsing it to the end
+    if(auto ptr{terminated_statement_list()}; ptr) {
       node = std::move(ptr);
-    } else if(auto ptr{terminated_statement_list()}; ptr) {
+    } else if(auto ptr{unterminated_statement_list()}; ptr) {
       node = std::move(ptr);
     } else {
       // node = std::make_shared<List>();

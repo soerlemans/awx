@@ -258,62 +258,51 @@ auto PrintVisitor::visit(Assignment* t_assignment) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("ASSIGNMENT");
+  PPRINT_BINOP("Assignment", t_assignment);
 }
 
 auto PrintVisitor::visit(Comparison* t_comparison) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("COMPARISON");
-
-  // TODO: Add print statement for comparison operator
-
-  PPRINT("| LEFT");
-  t_comparison->left()->accept(this);
-
-  PPRINT("| RIGHT");
-  t_comparison->right()->accept(this);
+  PPRINT_BINOP("Comparison", t_comparison);
 }
 
 auto PrintVisitor::visit(Increment* t_increment) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("INCREMENT");
+  PPRINT("Increment");
 }
 
 auto PrintVisitor::visit(Decrement* t_decrement) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("DECREMENT");
+  PPRINT("Decrement");
 }
 
 auto PrintVisitor::visit(Delete* t_delete) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("DELETE");
+  PPRINT("Delete");
 }
 
 auto PrintVisitor::visit(Match* t_match) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("MATCH");
-
-  PPRINT_IF("STRING", t_match->left());
-  PPRINT_IF("PATTERN", t_match->right());
+  PPRINT("Match");
+  PPRINT_IF("String", t_match->left());
+  PPRINT_IF("Pattern", t_match->right());
 }
 
 auto PrintVisitor::visit(Not* t_not) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("NOT");
-  PPRINT("| LEFT");
-  t_not->left()->accept(this);
+  PPRINT_UNOP("Not", t_not);
 }
 
 auto PrintVisitor::visit(And* t_and) -> void

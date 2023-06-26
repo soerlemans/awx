@@ -637,7 +637,6 @@ auto PrattParser::universal_non_unary_expr(const BpFunc& t_expr_fn,
     if(auto ptr{universal_infix(lhs, infix)}; ptr) {
       lhs = std::move(ptr);
     } else if(auto ptr{assignment(lhs, infix)}; ptr) {
-      DBG_LOG(VERBOSE, "TF?");
       lhs = std::move(ptr);
     } else if(auto ptr{t_infix_fn(lhs, infix)}; ptr) {
       lhs = std::move(ptr);
