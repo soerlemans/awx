@@ -1,10 +1,12 @@
 #ifndef AWX_EXCEPTION_SYNTAX_ERROR_HPP
 #define AWX_EXCEPTION_SYNTAX_ERROR_HPP
 
+// STL Includes:
 #include <filesystem>
 #include <stdexcept>
 
-#include "../file_position.hpp"
+// Includes:
+#include "../container/file_position.hpp"
 
 
 // Error classes intended for being thrown as exceptions

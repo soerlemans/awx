@@ -7,7 +7,6 @@
 // Includes:
 #include "../../debug/log.hpp"
 #include "../../debug/trace.hpp"
-#include "../../enum.hpp"
 #include "../../node/include.hpp"
 #include "../../token/token_type.hpp"
 #include "../../token/token_type_helpers.hpp"

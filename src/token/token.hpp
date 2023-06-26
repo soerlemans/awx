@@ -10,8 +10,8 @@
 #include <vector>
 
 // Includes:
-#include "../file_position.hpp"
-#include "../stream.hpp"
+#include "../container/file_position.hpp"
+#include "../container/stream.hpp"
 
 // Local Includes:
 #include "token_type.hpp"

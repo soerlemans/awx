@@ -7,9 +7,11 @@
 #include <string_view>
 #include <vector>
 
+// Includes:
+#include "../types.hpp"
+
 // Local Includes:
 #include "file_position.hpp"
-#include "types.hpp"
 
 
 // Forward Declarations:
@@ -17,9 +19,6 @@ class FileBuffer;
 
 // Aliases:
 namespace fs = std::filesystem;
-
-// Functions:
-auto load(fs::path t_path) -> FileBuffer;
 
 // Classes:
 class FileBuffer {

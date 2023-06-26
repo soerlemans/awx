@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <string>
 #include <string_view>
+#include <type_traits>
 
 
 // Aliases:
@@ -21,5 +22,13 @@ using i8 = std::int8_t;
 using i16 = std::int16_t;
 using i32 = std::int32_t;
 using i64 = std::int64_t;
+
+
+// Functions
+template<typename T>
+constexpr auto enum2int(const T t_value) -> std::underlying_type_t<T>
+{
+  return static_cast<std::underlying_type_t<T>>(t_value);
+}
 
 #endif // AWX_TYPES_HPP

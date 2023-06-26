@@ -1,7 +1,5 @@
 #include "log.hpp"
 
-#include "../enum.hpp"
-
 
 using namespace debug;
 
