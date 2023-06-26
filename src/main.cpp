@@ -61,8 +61,17 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
 }
 // NOLINTEND
 
-auto lex() -> token::TokenStream
-{}
+auto lex(TextBufferPtr t_program) -> token::TokenStream
+{
+  DBG_PRINTLN("=== LEXING ===");
+
+  lexer::Lexer lexer{t_program};
+  token::TokenStream tokenstream{lexer.tokenize()};
+
+  DBG_PRINTLN();
+
+	return tokenstream;
+}
 
 auto parse(const token::TokenStream& t_ts) -> node::NodePtr
 {
@@ -71,17 +80,17 @@ auto parse(const token::TokenStream& t_ts) -> node::NodePtr
   parser::awk::AwkParser parser{t_ts};
   node::NodePtr ast{parser.parse()};
 
-  DBG_PRINTLN();
-
 #if DEBUG
+  DBG_PRINTLN();
   DBG_PRINTLN("=== PRETTY PRINT AST ===");
 
   // Pretty print AST
   visitor::PrintVisitor pretty_printer;
   ast->accept(&pretty_printer);
 
-  DBG_PRINTLN();
 #endif // DEBUG
+
+  DBG_PRINTLN();
 
   return ast;
 }
@@ -107,19 +116,16 @@ auto run(Config& t_config) -> void
   // TODO: Have the program also work if no files are given (read from STDIN in
   // this case)
   if(input_vec.empty()) {
-    input_vec.emplace_back();
+    TextBufferPtr buffer{std::make_shared<TextBuffer>()};
+    buffer->add_line("");
+    input_vec.push_back(std::move(buffer));
   }
 
   for(auto& script : t_config.m_scripts) {
     for(auto& input : input_vec) {
       FileBufferPtr program{std::make_shared<FileBuffer>(script)};
 
-
-      DBG_PRINTLN("=== LEXING ===");
-      lexer::Lexer lexer{program};
-      token::TokenStream tokenstream{lexer.tokenize()};
-      DBG_PRINTLN();
-
+			auto tokenstream{lex(program)};
       auto ast{parse(tokenstream)};
 
       execute(ast, input);
@@ -129,7 +135,7 @@ auto run(Config& t_config) -> void
 
 auto main(int t_argc, char* t_argv[]) -> int
 {
-  CLI::App app{"AWX stands for AWK With Extensions."};
+  CLI::App app{"AWX (AWK With Extensions)"};
   Config config{AwxMode::POSIX_AWK};
 
   // Parse command line arguments
