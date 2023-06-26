@@ -462,29 +462,33 @@ auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   return node;
 }
 
-// TODO: Add extra parameter for ternary expression
-auto PrattParser::ternary(NodePtr& t_lhs, const PrattFunc& t_rhs) -> NodePtr
+// FIXME: simple_print_statement has a rule that conflicts and does not make
+// It possible to detect if it is a print() or print () ? : ;
+auto PrattParser::ternary(NodePtr& t_lhs, const BpFunc& t_fn,
+                          const int t_min_bp) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "TERNARY");
   NodePtr node;
 
-  // FIXME: simple_print_statement has a rule that conflicts and does not make
-  // It possible to detect if it is a print() or print () ? : ;
-  if(next_if(TokenType::QUESTION_MARK)) {
-    DBG_TRACE(VERBOSE, "Found TERNARY");
-    // NodePtr then_ptr{t_rhs()};
-    // if(!then_ptr) {
-    //   // TODO: Error handling
-    // }
+  const auto [lbp, rbp] = m_infix.at(TokenType::QUESTION_MARK);
 
-    // expect(TokenType::COLON, ":");
-    // NodePtr else_ptr{t_rhs()};
-    // if(!else_ptr) {
-    //   // TODO: Error handling
-    // }
+  if(lbp >= t_min_bp) {
+    if(next_if(TokenType::QUESTION_MARK)) {
+      DBG_TRACE(VERBOSE, "Found TERNARY");
+      NodePtr then_ptr{t_fn(t_min_bp)};
+      if(!then_ptr) {
+        syntax_error("Expected expression after '?' in ternary");
+      }
 
-    // node = std::make_shared<Ternary>(std::move(t_lhs), std::move(then_ptr),
-    //                                  std::move(else_ptr));
+      expect(TokenType::COLON, ":");
+      NodePtr else_ptr{t_fn(t_min_bp)};
+      if(!else_ptr) {
+        syntax_error("Expected expression after ':' in ternary");
+      }
+
+      node = std::make_shared<Ternary>(std::move(t_lhs), std::move(then_ptr),
+                                       std::move(else_ptr));
+    }
   }
 
   return node;
@@ -712,6 +716,8 @@ auto PrattParser::non_unary_print_expr(const int t_min_bp) -> NodePtr
 
       if(auto ptr{string_concat(t_lhs, rhs_fn, t_min_bp)}; ptr) {
         node = std::move(ptr);
+      } else if(auto ptr{ternary(t_lhs, expr_fn, t_min_bp)}; ptr) {
+        node = std::move(ptr);
       }
 
       return node;
@@ -736,6 +742,8 @@ auto PrattParser::unary_print_expr(const int t_min_bp) -> NodePtr
     }};
 
     if(auto ptr{string_concat(t_lhs, rhs_fn, t_min_bp)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{ternary(t_lhs, expr_fn, t_min_bp)}; ptr) {
       node = std::move(ptr);
     }
 
@@ -784,6 +792,8 @@ auto PrattParser::non_unary_expr(const int t_min_bp) -> NodePtr
       node = std::move(ptr);
     } else if(auto ptr{string_concat(t_lhs, rhs_fn, t_min_bp)}; ptr) {
       node = std::move(ptr);
+    } else if(auto ptr{ternary(t_lhs, expr_fn, t_min_bp)}; ptr) {
+      node = std::move(ptr);
     }
 
     return node;
@@ -815,6 +825,8 @@ auto PrattParser::unary_expr(const int t_min_bp) -> NodePtr
     if(auto ptr{comparison(t_lhs, t_fn)}; ptr) {
       node = std::move(ptr);
     } else if(auto ptr{string_concat(t_lhs, rhs_fn, t_min_bp)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{ternary(t_lhs, expr_fn, t_min_bp)}; ptr) {
       node = std::move(ptr);
     }
 
