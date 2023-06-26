@@ -388,7 +388,7 @@ auto Lexer::tokenize() -> TokenStream
       const char character{m_tb->character()};
 
       // TODO: This should have its own function
-      const auto lambda{[&]() -> bool {
+      const auto is_regex{[&]() -> bool {
         if(m_ts.empty()) {
           return true;
         }
@@ -420,7 +420,7 @@ auto Lexer::tokenize() -> TokenStream
         m_ts.push_back(literal_numeric());
       } else if(character == double_quote) {
         m_ts.push_back(literal_string());
-      } else if(lambda()) {
+      } else if(is_regex()) {
         m_ts.push_back(literal_regex());
       } else {
         m_ts.push_back(symbol());
