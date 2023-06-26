@@ -11,6 +11,11 @@ TextBuffer::TextBuffer(): m_lineno{0}, m_columnno{0}
 
 auto TextBuffer::add_line(std::string t_line) -> void
 {
+	// Warning: We disregard carriage return's
+  if(t_line.back() != '\n') {
+    t_line += '\n';
+  }
+
   m_buffer.push_back(std::move(t_line));
 }
 

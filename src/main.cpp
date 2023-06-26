@@ -113,15 +113,19 @@ auto run(Config& t_config) -> void
   std::vector<TextBufferPtr> scripts;
 
   if(!t_config.m_scripts.empty()) {
-    // TODO: Load programs
+    for(auto& script : t_config.m_scripts) {
+      auto buffer{std::make_shared<FileBuffer>(script)};
+			scripts.push_back(std::move(buffer));
+    }
   } else {
     if(!args.empty()) {
       auto script{std::make_shared<TextBuffer>()};
 
-      script->add_line(args.front() + "\n");
+      script->add_line(args.front());
       scripts.push_back(std::move(script));
 
-			args.pop_front();
+
+      args.pop_front();
     } else {
       // TODO: Print manual
     }
