@@ -12,8 +12,16 @@
 #include "types.hpp"
 
 
+// Forward Declarations:
+class FileBuffer;
+
+// Aliases:
 namespace fs = std::filesystem;
 
+// Functions:
+auto load(fs::path t_path) -> FileBuffer;
+
+// Classes:
 class FileBuffer {
   private:
   // Private variables:

@@ -1,9 +1,9 @@
 // STL Includes:
-#include <CLI/App.hpp>
 #include <functional>
 #include <iostream>
 
 // Library Includes:
+#include <CLI/App.hpp>
 #include <CLI/CLI.hpp>
 #include <CLI/Validators.hpp>
 #include <sstream>
@@ -20,6 +20,7 @@
 // Local Includes:
 #include "enum.hpp"
 #include "version.hpp"
+
 
 // Enums:
 enum ExitCode {
@@ -41,7 +42,6 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
   t_app
     .add_option("-f,--file", t_config.m_scripts,
                 "AWX program that needs to be executed")
-    ->required()
     ->check(CLI::ExistingFile);
 
   // Version flag
