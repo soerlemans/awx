@@ -38,15 +38,15 @@ auto FileBuffer::load() -> void
   }
 }
 
+auto FileBuffer::path() const -> fs::path
+{
+  return m_path;
+}
+
 auto FileBuffer::file_position() const -> FilePosition
 {
   // Return the current position in the filebuffer as a FilePosition struct
   return {m_path.string(), line(), m_lineno, m_columnno};
-}
-
-auto FileBuffer::path() const -> fs::path
-{
-  return m_path;
 }
 
 namespace container {

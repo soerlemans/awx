@@ -723,16 +723,16 @@ auto TreeWalk::visit(List* t_list) -> void
 auto TreeWalk::visit([[maybe_unused]] Nil* t_nil) -> void
 {}
 
-auto TreeWalk::run(NodePtr& t_ast, const FileBuffer& t_input) -> void
+auto TreeWalk::run(NodePtr& t_ast, const TextBufferPtr t_input) -> void
 {
-  m_input = &t_input;
+  m_input = t_input;
   m_ast = t_ast;
 
   // TODO: Clean this up
   set("FNR", (double)m_input->size());
   // set("CONVFMT", "%.6g");
   // set("OFMT", "%.6g");
-  set("FILENAME", m_input->path().string());
+  // set("FILENAME", m_input->path().string());
 
   set("FS", " ");
   set("OFS", " ");

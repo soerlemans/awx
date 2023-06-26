@@ -2,11 +2,24 @@
 #define AWX_CONTAINER_TEXT_BUFFER_HPP
 
 // STL Includes:
+#include <filesystem>
+#include <memory>
 #include <string>
 #include <vector>
 
+// Local Includes:
+#include "file_position.hpp"
+
 
 namespace container {
+// Forward Declarations:
+class TextBuffer;
+
+// Aliases:
+namespace fs = std::filesystem;
+using TextBufferPtr = std::shared_ptr<TextBuffer>;
+
+// Classes:
 class TextBuffer {
   protected:
   std::vector<std::string> m_buffer;
@@ -34,6 +47,9 @@ class TextBuffer {
 
   auto eol() const -> bool;
   auto eof() const -> bool;
+
+  virtual auto path() const -> fs::path;
+  virtual auto file_position() const -> FilePosition;
 
   friend auto operator<<(std::ostream& t_os, const TextBuffer& t_tb)
     -> std::ostream&;

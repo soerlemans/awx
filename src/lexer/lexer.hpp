@@ -18,7 +18,7 @@ using namespace container;
 // Classes:
 class Lexer {
   private:
-  container::FileBuffer& m_fb;
+  container::TextBufferPtr m_tb;
   token::TokenStream m_ts;
 
   // Token stream handling:
@@ -26,14 +26,14 @@ class Lexer {
   template<typename... Args>
   auto create_token(Args&&... t_args) -> token::Token
   {
-    return token::Token{std::forward<Args>(t_args)..., m_fb.file_position()};
+    return token::Token{std::forward<Args>(t_args)..., m_tb->file_position()};
   }
 
   // Error handling:
   auto syntax_error(std::string_view t_msg) const -> void;
 
   public:
-  Lexer(container::FileBuffer& t_fb);
+  Lexer(container::TextBufferPtr t_fb);
 
   // Name lexing:
   static auto is_keyword(std::string_view t_identifier) -> token::TokenType;

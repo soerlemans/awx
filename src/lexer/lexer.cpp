@@ -16,6 +16,7 @@
 
 using namespace lexer;
 using namespace token;
+using namespace container;
 
 // Error handling:
 auto Lexer::syntax_error(std::string_view t_msg) const -> void
@@ -24,11 +25,11 @@ auto Lexer::syntax_error(std::string_view t_msg) const -> void
   // properly adjusted
 
   // Throws a SyntaxError with a message
-  throw SyntaxError{std::string{t_msg}, m_fb.file_position()};
+  throw SyntaxError{std::string{t_msg}, m_tb->file_position()};
 }
 
 // Public constructors:
-Lexer::Lexer(FileBuffer& t_fb): m_fb{t_fb}
+Lexer::Lexer(TextBufferPtr t_tb): m_tb{t_tb}
 {}
 
 // Public methods:
@@ -71,16 +72,16 @@ auto Lexer::identifier() -> Token
     return std::isalnum(t_char) || t_char == '_';
   };
 
-  while(lambda(m_fb.character()) && !m_fb.eol())
-    ss << m_fb.forward();
+  while(lambda(m_tb->character()) && !m_tb->eol())
+    ss << m_tb->forward();
 
   // Function names are instantly followed by a '('
   // TODO: Throw an error if we find a space and then '('
-  const bool is_fn_id = m_fb.character() == g_paren_open.identifier();
+  const bool is_fn_id = m_tb->character() == g_paren_open.identifier();
 
   // We go back one since we add till we find a character that does not
   // Match so we have to unget it
-  m_fb.backward();
+  m_tb->backward();
 
   // Verify if it is a keyword or not
   if(const auto tokentype{is_keyword(ss.str())}; tokentype != TokenType::NONE) {
@@ -113,13 +114,13 @@ auto Lexer::is_hex_literal() -> bool
 
   // Octal literals are not specified in the POSIX AWK standard
   // So just treat leading zeroes as as normal
-  if(m_fb.forward() == '0' && m_fb.character() == 'x') {
-    m_fb.forward(); // Discard 'x'
+  if(m_tb->forward() == '0' && m_tb->character() == 'x') {
+    m_tb->forward(); // Discard 'x'
 
     is_hex = true;
   } else {
     // If we just have a zero we should go back to not discard the zero
-    m_fb.backward();
+    m_tb->backward();
   }
 
   return is_hex;
@@ -129,13 +130,13 @@ auto Lexer::handle_hex() -> Token
 {
   std::stringstream ss;
 
-  while(!m_fb.eol()) {
-    const char character{m_fb.character()};
+  while(!m_tb->eol()) {
+    const char character{m_tb->character()};
 
     if(std::isxdigit(character)) {
-      ss << m_fb.forward();
+      ss << m_tb->forward();
     } else {
-      m_fb.backward();
+      m_tb->backward();
       break;
     }
   }
@@ -158,13 +159,13 @@ auto Lexer::handle_float(std::string_view t_str, bool t_dot) -> Token
   ss << t_str;
 
   if(t_dot)
-    m_fb.forward();
+    m_tb->forward();
 
-  while(!m_fb.eol()) {
-    const char character{m_fb.character()};
+  while(!m_tb->eol()) {
+    const char character{m_tb->character()};
 
     if(std::isdigit(character)) {
-      ss << m_fb.forward();
+      ss << m_tb->forward();
     } else if(character == g_dot.identifier()) {
       if(t_dot) {
         syntax_error("Cant have a second '.' in a float literal.");
@@ -172,7 +173,7 @@ auto Lexer::handle_float(std::string_view t_str, bool t_dot) -> Token
         t_dot = true;
       }
     } else {
-      m_fb.backward();
+      m_tb->backward();
       break;
     }
   }
@@ -187,18 +188,18 @@ auto Lexer::handle_integer() -> Token
 
   std::stringstream ss;
 
-  while(!m_fb.eol()) {
-    const char character{m_fb.character()};
+  while(!m_tb->eol()) {
+    const char character{m_tb->character()};
 
     if(std::isdigit(character)) {
-      ss << m_fb.forward();
+      ss << m_tb->forward();
     } else if(character == g_dot.identifier()) {
-      ss << m_fb.character();
+      ss << m_tb->character();
 
       // Handle float as a float
       return handle_float(ss.str(), true);
     } else {
-      m_fb.backward();
+      m_tb->backward();
       break;
     }
   }
@@ -229,11 +230,11 @@ auto Lexer::literal_string() -> Token
   std::stringstream ss;
 
   // Discard starting " character
-  m_fb.forward();
+  m_tb->forward();
 
   bool quit{false};
-  while(!quit && !m_fb.eol()) {
-    const char character{m_fb.character()};
+  while(!quit && !m_tb->eol()) {
+    const char character{m_tb->character()};
 
     switch(character) {
       case g_double_quote.identifier():
@@ -241,11 +242,11 @@ auto Lexer::literal_string() -> Token
         break;
 
       case g_backslash.identifier():
-        ss << m_fb.forward();
+        ss << m_tb->forward();
         [[fallthrough]];
 
       default:
-        ss << m_fb.forward();
+        ss << m_tb->forward();
         break;
     }
   }
@@ -261,15 +262,15 @@ auto Lexer::literal_regex() -> Token
   std::stringstream ss;
 
   // Discard starting / character
-  m_fb.forward();
+  m_tb->forward();
 
   // TODO: As of now regex literals perform no checks if the identifier in
   // front of the literal has an integer type or not, as of now we just assume
   // it is a regex expression we should also throw an error or assume a
   // division if we do not find a corresponding / before the EOL.
   bool quit{false};
-  while(!quit && !m_fb.eol()) {
-    const char character{m_fb.character()};
+  while(!quit && !m_tb->eol()) {
+    const char character{m_tb->character()};
 
     switch(character) {
       case g_newline.identifier():
@@ -284,11 +285,11 @@ auto Lexer::literal_regex() -> Token
 
         // TODO: Take care of handling octal escape codes and other
       case none::g_backslash.identifier():
-        ss << m_fb.forward();
+        ss << m_tb->forward();
         [[fallthrough]];
 
       default:
-        ss << m_fb.forward();
+        ss << m_tb->forward();
         break;
     }
   }
@@ -303,7 +304,7 @@ auto Lexer::is_multi_symbol() -> TokenType
 
   std::stringstream ss;
   TokenType tokentype{TokenType::NONE};
-  const char character{m_fb.character()};
+  const char character{m_tb->character()};
 
   ss << character;
 
@@ -311,10 +312,10 @@ auto Lexer::is_multi_symbol() -> TokenType
   // Refactor someday
   for(const auto multi : g_multi_symbols)
     if(character == multi.identifier().front()) {
-      m_fb.forward();
-      ss << m_fb.character();
+      m_tb->forward();
+      ss << m_tb->character();
 
-      if(!m_fb.eol())
+      if(!m_tb->eol())
         for(const auto multi : g_multi_symbols)
           if(ss.str() == multi.identifier()) {
             tokentype = TokenType{multi};
@@ -326,7 +327,7 @@ auto Lexer::is_multi_symbol() -> TokenType
       // If the next character is not part of
       // A multi symbol just undo the forward
       if(tokentype == TokenType::NONE)
-        m_fb.backward();
+        m_tb->backward();
 
       // We compare against all reserverd multi symbols in the second loop
       // So there is no need to iterate againt after we found our first match
@@ -340,7 +341,7 @@ auto Lexer::is_single_symbol() -> TokenType
 {
   using namespace reserved::symbols;
 
-  const char character{m_fb.character()};
+  const char character{m_tb->character()};
   TokenType tokentype{TokenType::NONE};
 
   for(const auto single : g_single_symbols)
@@ -366,7 +367,7 @@ auto Lexer::symbol() -> Token
 
   // Throw if it is neither
   if(tokentype == TokenType::NONE) {
-    std::cout << "Token Error: " << m_fb.character() << '\n';
+    std::cout << "Token Error: " << m_tb->character() << '\n';
     syntax_error("Character encountered is not valid AWX!");
   }
 
@@ -382,9 +383,9 @@ auto Lexer::tokenize() -> TokenStream
   constexpr char double_quote{none::g_double_quote.identifier()};
   constexpr char slash{g_slash.identifier()};
 
-  for(; !m_fb.eof(); m_fb.next()) {
-    for(; !m_fb.eol(); m_fb.forward()) {
-      const char character{m_fb.character()};
+  for(; !m_tb->eof(); m_tb->next()) {
+    for(; !m_tb->eol(); m_tb->forward()) {
+      const char character{m_tb->character()};
 
       // TODO: This should have its own function
       const auto lambda{[&]() -> bool {
@@ -404,7 +405,7 @@ auto Lexer::tokenize() -> TokenStream
         // '#' are used for comments.
         // If we just skip to the next line we ignore the \n at the end, so we
         // Must add a NEWLINE explicitly!
-				// FIXME: Inserting NEWLINE is not needed?
+        // FIXME: Inserting NEWLINE is not needed?
         DBG_LOG(INFO, "INSERTING NEWLINE");
         m_ts.push_back(create_token(TokenType::NEWLINE));
 

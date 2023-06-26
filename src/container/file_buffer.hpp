@@ -1,17 +1,10 @@
 #ifndef AWX_CONTAINER_FILE_BUFFER_HPP
 #define AWX_CONTAINER_FILE_BUFFER_HPP
 
-// STL Includes:
-#include <filesystem>
-#include <string>
-#include <string_view>
-#include <vector>
-
 // Includes:
 #include "../types.hpp"
 
 // Local Includes:
-#include "file_position.hpp"
 #include "text_buffer.hpp"
 
 
@@ -20,7 +13,7 @@ namespace container {
 class FileBuffer;
 
 // Aliases:
-namespace fs = std::filesystem;
+using FileBufferPtr = std::shared_ptr<FileBuffer>;
 
 // Classes:
 class FileBuffer : public TextBuffer {
@@ -32,8 +25,8 @@ class FileBuffer : public TextBuffer {
   FileBuffer(fs::path&& t_path);
 
   auto load() -> void;
-  auto file_position() const -> FilePosition;
-  auto path() const -> fs::path;
+  auto path() const -> fs::path override;
+  auto file_position() const -> FilePosition override;
 
   // Operators:
   friend auto operator<<(std::ostream& t_os, const FileBuffer& t_fb)

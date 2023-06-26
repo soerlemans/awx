@@ -12,6 +12,7 @@
 // Includes:
 #include "config/config.hpp"
 #include "container/file_buffer.hpp"
+#include "container/text_buffer.hpp"
 #include "debug/log.hpp"
 #include "interpreter/tree_walk/tree_walk.hpp"
 #include "parser/awk/awk_parser.hpp"
@@ -20,6 +21,9 @@
 // Local Includes:
 #include "version.hpp"
 
+
+// Using statements:
+using namespace container;
 
 // Enums:
 enum ExitCode {
@@ -56,13 +60,48 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
   t_app.parse(t_argc, t_argv);
 }
 // NOLINTEND
+
+auto lex() -> token::TokenStream
+{}
+
+auto parse(const token::TokenStream& t_ts) -> node::NodePtr
+{
+  DBG_PRINTLN("=== PARSING ===");
+
+  parser::awk::AwkParser parser{t_ts};
+  node::NodePtr ast{parser.parse()};
+
+  DBG_PRINTLN();
+
+#if DEBUG
+  DBG_PRINTLN("=== PRETTY PRINT AST ===");
+
+  // Pretty print AST
+  visitor::PrintVisitor pretty_printer;
+  ast->accept(&pretty_printer);
+
+  DBG_PRINTLN();
+#endif // DEBUG
+
+  return ast;
+}
+
+auto execute(node::NodePtr& t_ast, const TextBufferPtr t_input) -> void
+{
+  // Execute program via tree walk interpreter
+  DBG_PRINTLN("#== EXECUTING ==#");
+
+  interpreter::tree_walk::TreeWalk interpreter;
+  interpreter.run(t_ast, t_input);
+
+  DBG_PRINTLN("#== END ==#");
+}
+
 auto run(Config& t_config) -> void
 {
-  using namespace container;
-
-  std::vector<FileBuffer> input_vec;
+  std::vector<TextBufferPtr> input_vec;
   for(auto& filepath : t_config.m_filepaths) {
-    input_vec.emplace_back(filepath);
+    input_vec.push_back(std::make_shared<FileBuffer>(filepath));
   }
 
   // TODO: Have the program also work if no files are given (read from STDIN in
@@ -73,7 +112,7 @@ auto run(Config& t_config) -> void
 
   for(auto& script : t_config.m_scripts) {
     for(auto& input : input_vec) {
-      FileBuffer program{script};
+      FileBufferPtr program{std::make_shared<FileBuffer>(script)};
 
 
       DBG_PRINTLN("=== LEXING ===");
@@ -81,23 +120,9 @@ auto run(Config& t_config) -> void
       token::TokenStream tokenstream{lexer.tokenize()};
       DBG_PRINTLN();
 
-      DBG_PRINTLN("=== PARSING ===");
-      parser::awk::AwkParser parser{tokenstream};
-      node::NodePtr ast{parser.parse()};
-      DBG_PRINTLN();
+      auto ast{parse(tokenstream)};
 
-#if DEBUG
-      DBG_PRINTLN("=== PRETTY PRINT AST ===");
-      // Pretty print AST
-      visitor::PrintVisitor pretty_printer;
-      ast->accept(&pretty_printer);
-      DBG_PRINTLN();
-#endif // DEBUG
-
-      // Execute program via tree walk interpreter
-      DBG_PRINTLN("#== EXECUTING ==#");
-      interpreter::tree_walk::TreeWalk interpreter;
-      interpreter.run(ast, input);
+      execute(ast, input);
     }
   }
 }

@@ -78,6 +78,18 @@ auto TextBuffer::eof() const -> bool
   return m_lineno >= size();
 }
 
+auto TextBuffer::path() const -> fs::path
+{
+  return fs::path{""};
+}
+
+//! This method is required for token creating in the Lexer, think about how to
+//! make this more elegant
+auto TextBuffer::file_position() const -> FilePosition
+{
+  return {"", line(), m_lineno, m_columnno};
+}
+
 namespace container {
 auto operator<<(std::ostream& t_os, const TextBuffer& t_tb) -> std::ostream&
 {
