@@ -6,23 +6,23 @@
 
 
 namespace container {
-struct FilePosition {
+struct TextPosition {
   // Members:
-  std::string m_path;
+  std::string m_source;
   std::string m_line;
 
   std::size_t m_lineno;
   std::size_t m_columno;
 
   // Methods:
-  FilePosition();
-  FilePosition(std::string t_path, std::string t_line, std::size_t t_lineno,
+  TextPosition();
+  TextPosition(std::string t_source, std::string t_line, std::size_t t_lineno,
                std::size_t t_columnno);
 
-  friend auto operator<<(std::ostream& t_os, const FilePosition& t_fp)
+  friend auto operator<<(std::ostream& t_os, const TextPosition& t_fp)
     -> std::ostream&;
 
-  virtual ~FilePosition() = default;
+  virtual ~TextPosition() = default;
 };
 } // namespace container
 

@@ -17,7 +17,7 @@ auto Parser::syntax_error(std::string_view t_msg) const -> void
 {
   const auto token{get_token()};
 
-  throw SyntaxError{std::string{t_msg}, token.file_position()};
+  throw SyntaxError{std::string{t_msg}, token.position()};
 }
 
 // FIXME: This function should be replaced with the printing of a stacktrace

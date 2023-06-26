@@ -25,7 +25,7 @@ auto Lexer::syntax_error(std::string_view t_msg) const -> void
   // properly adjusted
 
   // Throws a SyntaxError with a message
-  throw SyntaxError{std::string{t_msg}, m_tb->file_position()};
+  throw SyntaxError{std::string{t_msg}, m_tb->position()};
 }
 
 // Public constructors:

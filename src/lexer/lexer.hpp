@@ -26,7 +26,7 @@ class Lexer {
   template<typename... Args>
   auto create_token(Args&&... t_args) -> token::Token
   {
-    return token::Token{std::forward<Args>(t_args)..., m_tb->file_position()};
+    return token::Token{std::forward<Args>(t_args)..., m_tb->position()};
   }
 
   // Error handling:

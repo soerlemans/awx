@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 // Includes:
-#include "../container/file_position.hpp"
+#include "../container/text_position.hpp"
 
 
 // Error classes intended for being thrown as exceptions
@@ -14,11 +14,11 @@
 class SyntaxError : public std::exception {
   protected:
   std::string m_error;
-  container::FilePosition m_file_pos;
+  container::TextPosition m_pos;
 
   public:
   SyntaxError(std::string_view t_msg,
-              const container::FilePosition& t_file_pos);
+              const container::TextPosition& t_pos);
 
   auto what() const noexcept -> const char* override;
 };

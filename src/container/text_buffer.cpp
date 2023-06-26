@@ -85,7 +85,7 @@ auto TextBuffer::path() const -> fs::path
 
 //! This method is required for token creating in the Lexer, think about how to
 //! make this more elegant
-auto TextBuffer::file_position() const -> FilePosition
+auto TextBuffer::position() const -> TextPosition
 {
   return {"", line(), m_lineno, m_columnno};
 }

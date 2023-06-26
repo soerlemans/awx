@@ -7,13 +7,13 @@
 // The following members m_lineno and m_columno are zero indexed so they need to
 // Have + 1 counted for them to line up properly
 SyntaxError::SyntaxError(const std::string_view t_msg,
-                         const container::FilePosition& t_file_pos)
-  : m_file_pos(t_file_pos)
+                         const container::TextPosition& t_pos)
+  : m_pos(t_pos)
 {
   std::stringstream ss;
   std::stringstream lineno_ss;
 
-  auto [path, line, lineno, columnno] = m_file_pos;
+  auto [path, line, lineno, columnno] = m_pos;
 
   lineno_ss << " - Line(";
   lineno_ss << lineno;

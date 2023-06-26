@@ -8,7 +8,7 @@
 #include <vector>
 
 // Local Includes:
-#include "file_position.hpp"
+#include "text_position.hpp"
 
 
 namespace container {
@@ -49,7 +49,7 @@ class TextBuffer {
   auto eof() const -> bool;
 
   virtual auto path() const -> fs::path;
-  virtual auto file_position() const -> FilePosition;
+  virtual auto position() const -> TextPosition;
 
   friend auto operator<<(std::ostream& t_os, const TextBuffer& t_tb)
     -> std::ostream&;

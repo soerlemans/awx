@@ -4,13 +4,13 @@
 using namespace token;
 using namespace container;
 
-Token::Token(const TokenType t_type, const FilePosition& t_file_pos)
-  : m_type{t_type}, m_file_pos{t_file_pos}
+Token::Token(const TokenType t_type, const TextPosition& t_pos)
+  : m_type{t_type}, m_pos{t_pos}
 {}
 
 Token::Token(const TokenType t_type, const TokenValue t_value,
-             const FilePosition& t_file_pos)
-  : m_type{t_type}, m_value{t_value}, m_file_pos{t_file_pos}
+             const TextPosition& t_pos)
+  : m_type{t_type}, m_value{t_value}, m_pos{t_pos}
 {}
 
 auto Token::type() const -> TokenType
@@ -23,7 +23,7 @@ auto Token::value() const -> TokenValue
   return m_value;
 }
 
-auto Token::file_position() const -> const FilePosition&
+auto Token::position() const -> const TextPosition&
 {
-  return m_file_pos;
+  return m_pos;
 }

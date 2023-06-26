@@ -26,7 +26,7 @@ class FileBuffer : public TextBuffer {
 
   auto load() -> void;
   auto path() const -> fs::path override;
-  auto file_position() const -> FilePosition override;
+  auto position() const -> TextPosition override;
 
   // Operators:
   friend auto operator<<(std::ostream& t_os, const FileBuffer& t_fb)

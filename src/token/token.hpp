@@ -10,7 +10,7 @@
 #include <vector>
 
 // Includes:
-#include "../container/file_position.hpp"
+#include "../container/text_position.hpp"
 #include "../container/stream.hpp"
 
 // Local Includes:
@@ -33,15 +33,15 @@ class Token {
   TokenValue m_value;
 
   // Records position in a file, useful for indicating errors
-  container::FilePosition m_file_pos;
+  container::TextPosition m_pos;
 
   public:
   Token() = default;
   Token(const Token& t_token) = default;
 
-  explicit Token(TokenType t_type, const container::FilePosition& t_file_pos);
+  explicit Token(TokenType t_type, const container::TextPosition& t_pos);
   explicit Token(TokenType t_type, TokenValue t_value,
-                 const container::FilePosition& t_file_pos);
+                 const container::TextPosition& t_pos);
 
   auto type() const -> TokenType;
 
@@ -53,7 +53,7 @@ class Token {
     return std::get<T>(m_value);
   }
 
-  auto file_position() const -> const container::FilePosition&;
+  auto position() const -> const container::TextPosition&;
 
   // Operators
   auto operator=(const Token& t_token) -> Token& = default;
