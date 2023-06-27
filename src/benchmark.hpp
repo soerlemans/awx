@@ -7,8 +7,11 @@
 // Includes:
 #include "debug/log.hpp"
 
+// TODO: Move benchmark to debug????????
+
 
 // Aliases:
+// TODO: Make this a tuple and add more columns?
 using TimingPair = std::pair<std::string_view, int>;
 
 // Functions:
@@ -51,6 +54,11 @@ auto benchmark(Args&&... t_args) -> void
 
   // Add rows
   unpack(timing, std::forward<Args>(t_args)...);
+
+	// TODO: Add correct size
+  // for(size_t index = 1; index < 3; ++index) {
+  //   timing[0][index].format().font_align({FontAlign::right});
+  // }
 
   DBG_PRINTLN(timing);
 }

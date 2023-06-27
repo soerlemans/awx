@@ -210,7 +210,7 @@ auto run(Config& t_config) -> void
   auto scripts{init_scripts(t_config)};
   auto sources{init_sources(t_config)};
   PolicyFunc policy{source_policy(sources)};
-  auto runtime{steady_clock::now()};
+  auto startup{steady_clock::now()};
 
   for(auto& script : scripts) {
     auto tokenstream{lex(script)};
@@ -222,11 +222,15 @@ auto run(Config& t_config) -> void
     execute(policy, ast);
     auto execution{steady_clock::now()};
 
-		// Display results of execution
-    benchmark(TimingPair{"Runtime", count(start, runtime)},
-              TimingPair{"Lexing", count(runtime, lexing)},
-              TimingPair{"Parsing", count(lexing, parsing)},
-              TimingPair{"Execution", count(parsing, execution)});
+    // Display results of execution
+    benchmark(
+      TimingPair{"Startup", count(start, startup)},
+      TimingPair{"Lexing", count(startup, lexing)},
+      TimingPair{"Parsing", count(lexing, parsing)},
+      TimingPair{"Execution", count(parsing, execution)},
+      TimingPair{"=== Separator ===", 0}, // FIXME: Remove separator in due time
+      TimingPair{"Runtime", count(startup, execution)},
+      TimingPair{"Total", count(start, execution)});
   }
 }
 
