@@ -36,8 +36,11 @@ using namespace node::recipes;
 using namespace node::rvalue;
 
 // Public Methods:
-TreeWalk::TreeWalk(): m_resolve{true}
-{}
+TreeWalk::TreeWalk(NodePtr t_ast, const TextBufferPtr& t_input)
+  : m_ast{std::move(t_ast)}, m_nr{1}, m_resolve{true}
+{
+  init(t_input);
+}
 
 auto TreeWalk::walk(NodePtr t_node) -> Context&
 {
@@ -635,8 +638,8 @@ auto TreeWalk::visit(Match* t_match) -> void
   m_resolve = false;
 
   if(op == MatchOp::MATCH) {
-		const auto& string{walk(t_match->left())};
-		const auto& pattern{walk(t_match->right())};
+    const auto& string{walk(t_match->left())};
+    const auto& pattern{walk(t_match->right())};
 
     if(op != MatchOp::NO_MATCH) {
     }
@@ -744,16 +747,14 @@ auto TreeWalk::visit(List* t_list) -> void
 auto TreeWalk::visit([[maybe_unused]] Nil* t_nil) -> void
 {}
 
-auto TreeWalk::run(NodePtr& t_ast, const TextBufferPtr t_input) -> void
+// Runtime methods:
+//! Set all of the defaults
+auto TreeWalk::init(const container::TextBufferPtr& t_input) -> void
 {
-  m_input = t_input;
-  m_ast = t_ast;
-
   // TODO: Clean this up
-  set("FNR", (double)m_input->size());
   // set("CONVFMT", "%.6g");
   // set("OFMT", "%.6g");
-  // set("FILENAME", m_input->path().string());
+  set("FILENAME", t_input->path().string());
 
   set("FS", " ");
   set("OFS", " ");
@@ -766,24 +767,32 @@ auto TreeWalk::run(NodePtr& t_ast, const TextBufferPtr t_input) -> void
   // TODO: Implement these special variables
   // set("NF", " ");
 
-  for(std::size_t nr{1}; !m_input->eof(); m_input->next()) {
-    set("NR", (double)nr);
+  update(t_input);
+}
 
-    // FIXME: For now we always use space as field separator
-    m_fields.set(" ", m_input->line());
-    try {
-      m_ast->accept(this);
-    } catch(NextExcept& except) {
-    } catch(ExitExcept& except) {
-      // TODO: Implement this more completely and elegantly
-      std::visit(
-        [](auto&& t_exit) {
-          std::exit(cast(t_exit));
-        },
-        m_context.m_result);
-      break; // Return the expressions value somehow?
-    }
+auto TreeWalk::update(const container::TextBufferPtr& t_input) -> void
+{
+  set("NR", (double)m_nr);
+  set("FNR", (double)t_input->size());
+}
 
-    nr++;
+auto TreeWalk::run(const TextBufferPtr& t_input) -> void
+{
+  update(t_input);
+
+  // FIXME: For now we always use space as field separator
+  m_fields.set(" ", t_input->line());
+  try {
+    m_ast->accept(this);
+  } catch(NextExcept& except) {
+  } catch(ExitExcept& except) {
+    // TODO: Implement this more completely and elegantly
+    std::visit(
+      [](auto&& t_exit) {
+        std::exit(cast(t_exit));
+      },
+      m_context.m_result);
   }
+
+  m_nr++;
 }

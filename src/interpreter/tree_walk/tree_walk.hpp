@@ -26,8 +26,8 @@ class TreeWalk : public visitor::NodeVisitor {
   using Store = std::map<std::string, T>;
 
   // Members:
-  container::TextBufferPtr m_input;
   node::NodePtr m_ast;
+  std::size_t m_nr;
 
   // Runtime environment variables:
   Store<Any> m_globals;
@@ -44,7 +44,7 @@ class TreeWalk : public visitor::NodeVisitor {
   FieldStore m_fields;
 
   public:
-  TreeWalk();
+  TreeWalk(node::NodePtr t_ast, const container::TextBufferPtr& t_input);
 
   //! Walk returns the updated context
   auto walk(node::NodePtr t_node) -> Context&;
@@ -112,8 +112,10 @@ class TreeWalk : public visitor::NodeVisitor {
   auto visit(node::List* t_list) -> void override;
   auto visit(node::Nil* t_nil) -> void override;
 
-  auto run(node::NodePtr& t_ast, const container::TextBufferPtr t_input)
-    -> void;
+  // Runtime methods:
+  auto init(const container::TextBufferPtr& t_input) -> void;
+  auto update(const container::TextBufferPtr& t_input) -> void;
+  auto run(const container::TextBufferPtr& t_input) -> void;
 
   ~TreeWalk() override = default;
 };

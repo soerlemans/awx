@@ -100,8 +100,8 @@ auto execute(node::NodePtr& t_ast, const TextBufferPtr t_input) -> void
   // Execute program via tree walk interpreter
   DBG_PRINTLN("#== EXECUTING ==#");
 
-  interpreter::tree_walk::TreeWalk interpreter;
-  interpreter.run(t_ast, t_input);
+  interpreter::tree_walk::TreeWalk interpreter{t_ast, t_input};
+  interpreter.run(t_input);
 
   DBG_PRINTLN("#== END ==#");
 }
