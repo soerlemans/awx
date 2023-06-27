@@ -202,7 +202,7 @@ auto run(Config& t_config) -> void
   using namespace std::chrono;
 
   const auto count{[](auto&& start, auto&& end) -> int {
-    return duration_cast<nanoseconds>(end - start).count();
+    return duration_cast<nanosecond>(end - start).count();
   }};
 
   auto start{steady_clock::now()};

@@ -36,7 +36,7 @@ auto benchmark(Args&&... t_args) -> void
   using namespace tabulate;
 
   Table timing;
-  timing.add_row({"Phase", "Time (in ms)"});
+  timing.add_row({"Phase", "Time (in ns)"});
 
   // Heading styling
   timing[0]
