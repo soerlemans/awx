@@ -24,6 +24,11 @@
 
 // Using statements:
 using namespace container;
+using namespace node;
+
+// Aliases:
+using TextVec = std::vector<TextBufferPtr>;
+using PolicyFunc = std::function<void(NodePtr&)>;
 
 // Enums:
 enum ExitCode {
@@ -61,57 +66,12 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
 }
 // NOLINTEND
 
-auto lex(TextBufferPtr t_program) -> token::TokenStream
-{
-  DBG_PRINTLN("=== LEXING ===");
-
-  lexer::Lexer lexer{t_program};
-  token::TokenStream tokenstream{lexer.tokenize()};
-
-  DBG_PRINTLN();
-
-  return tokenstream;
-}
-
-auto parse(const token::TokenStream& t_ts) -> node::NodePtr
-{
-  DBG_PRINTLN("=== PARSING ===");
-
-  parser::awk::AwkParser parser{t_ts};
-  node::NodePtr ast{parser.parse()};
-
-#if DEBUG
-  DBG_PRINTLN();
-  DBG_PRINTLN("=== PRETTY PRINT AST ===");
-
-  // Pretty print AST
-  visitor::PrintVisitor pretty_printer;
-  ast->accept(&pretty_printer);
-
-#endif // DEBUG
-
-  DBG_PRINTLN();
-
-  return ast;
-}
-
-auto execute(node::NodePtr& t_ast, const TextBufferPtr t_input) -> void
-{
-  // Execute program via tree walk interpreter
-  DBG_PRINTLN("#== EXECUTING ==#");
-
-  interpreter::tree_walk::TreeWalk interpreter{t_ast, t_input};
-  interpreter.run(t_input);
-
-  DBG_PRINTLN("#== END ==#");
-}
-
-auto run(Config& t_config) -> void
+auto init_scripts(Config& t_config) -> TextVec
 {
   auto& args{t_config.m_args};
-  std::vector<TextBufferPtr> input_vec;
-  std::vector<TextBufferPtr> scripts;
+  TextVec scripts;
 
+  // If no scrips were passed with -f use the first positional argument
   if(!t_config.m_scripts.empty()) {
     for(auto& script : t_config.m_scripts) {
       auto buffer{std::make_shared<FileBuffer>(script)};
@@ -130,27 +90,121 @@ auto run(Config& t_config) -> void
     }
   }
 
+  return scripts;
+}
+
+auto init_sources(Config& t_config) -> TextVec
+{
+  auto& args{t_config.m_args};
+  TextVec sources;
+
   for(auto& filepath : args) {
-    input_vec.push_back(std::make_shared<FileBuffer>(filepath));
+    sources.push_back(std::make_shared<FileBuffer>(filepath));
   }
 
-  // TODO: Have the program also work if no files are given (read from STDIN in
-  // this case)
-  if(input_vec.empty()) {
-    auto buffer{std::make_shared<TextBuffer>()};
-    buffer->add_line("");
-    input_vec.push_back(std::move(buffer));
+  return sources;
+}
+
+auto source_policy(TextVec& t_sources) -> PolicyFunc
+{
+  using namespace interpreter::tree_walk;
+
+  PolicyFunc policy;
+  if(t_sources.empty()) {
+    policy = [&](NodePtr& t_ast) {
+      auto source{std::make_shared<TextBuffer>()};
+      TreeWalk interpreter{t_ast, source};
+
+      while(true) {
+        std::string line;
+        std::getline(std::cin, line);
+
+        source->add_line(line);
+
+        interpreter.run(source);
+      }
+    };
+  } else {
+    policy = [&](NodePtr& t_ast) {
+      for(auto& source : t_sources) {
+        TreeWalk interpreter{t_ast, source};
+
+        for(; !source->eof(); source->next()) {
+          interpreter.run(source);
+        }
+      }
+    };
   }
+
+  return policy;
+}
+
+auto lex(TextBufferPtr t_program) -> token::TokenStream
+{
+  using namespace lexer;
+  using namespace token;
+
+  DBG_PRINTLN("=== LEXING ===");
+
+  Lexer lexer{t_program};
+  TokenStream tokenstream{lexer.tokenize()};
+
+  DBG_PRINTLN();
+
+  return tokenstream;
+}
+
+auto parse(const token::TokenStream& t_ts) -> node::NodePtr
+{
+  using namespace parser::awk;
+  using namespace node;
+  using namespace visitor;
+
+  DBG_PRINTLN("=== PARSING ===");
+
+  AwkParser parser{t_ts};
+  NodePtr ast{parser.parse()};
+
+#if DEBUG
+  DBG_PRINTLN();
+  DBG_PRINTLN("=== PRETTY PRINT AST ===");
+
+  // Pretty print AST
+  PrintVisitor pretty_printer;
+  ast->accept(&pretty_printer);
+
+#endif // DEBUG
+
+  DBG_PRINTLN();
+
+  return ast;
+}
+
+// TODO: Figure out how to get this to read from stdin when no filepaths are
+// given
+auto execute(const PolicyFunc t_lambda, NodePtr& t_ast) -> void
+{
+  using namespace interpreter::tree_walk;
+
+  // Execute program via tree walk interpreter
+  DBG_PRINTLN("#== EXECUTING ==#");
+
+  t_lambda(t_ast);
+
+  DBG_PRINTLN("#== END ==#");
+}
+
+auto run(Config& t_config) -> void
+{
+  auto scripts = init_scripts(t_config);
+  auto sources = init_sources(t_config);
+  PolicyFunc policy{source_policy(sources)};
 
   for(auto& script : scripts) {
-    for(auto& input : input_vec) {
-      // auto program{std::make_shared<FileBuffer>(script)};
+    auto tokenstream{lex(script)};
+    auto ast{parse(tokenstream)};
 
-      auto tokenstream{lex(script)};
-      auto ast{parse(tokenstream)};
-
-      execute(ast, input);
-    }
+    execute(policy, ast);
   }
 }
 
