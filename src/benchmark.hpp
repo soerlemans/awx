@@ -29,6 +29,7 @@ auto unpack(tabulate::Table& t_table, TimingPair t_pair, Args&&... t_args)
   unpack(t_table, std::forward<Args>(t_args)...);
 }
 
+// TODO: Add alternating colors for the first column?
 template<typename... Args>
 auto benchmark(Args&&... t_args) -> void
 {
@@ -41,11 +42,12 @@ auto benchmark(Args&&... t_args) -> void
   timing[0]
     .format()
     .font_align(FontAlign::center)
-    .font_style({FontStyle::bold})
+    .font_style({FontStyle::underline, FontStyle::bold})
     .font_background_color(Color::red);
 
+  // TODO: Does not work?
   // Column styling
-  timing.column(0).format().font_style({FontStyle::underline});
+  // timing.column(0).format().font_style({FontStyle::bold});
 
   // Add rows
   unpack(timing, std::forward<Args>(t_args)...);
