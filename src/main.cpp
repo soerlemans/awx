@@ -1,13 +1,14 @@
 // STL Includes:
+#include <chrono>
 #include <functional>
 #include <iostream>
+#include <sstream>
+#include <string>
 
 // Library Includes:
 #include <CLI/App.hpp>
 #include <CLI/CLI.hpp>
 #include <CLI/Validators.hpp>
-#include <sstream>
-#include <string>
 
 // Includes:
 #include "config/config.hpp"
@@ -19,6 +20,7 @@
 #include "visitor/print_visitor.hpp"
 
 // Local Includes:
+#include "benchmark.hpp"
 #include "version.hpp"
 
 
@@ -194,17 +196,36 @@ auto execute(const PolicyFunc t_lambda, NodePtr& t_ast) -> void
   DBG_PRINTLN("#== END ==#");
 }
 
+// FIXME: Benchmarking this way looks ugly
 auto run(Config& t_config) -> void
 {
-  auto scripts = init_scripts(t_config);
-  auto sources = init_sources(t_config);
+  using namespace std::chrono;
+
+  const auto count{[](auto&& start, auto&& end) -> int {
+    return duration_cast<milliseconds>(end - start).count();
+  }};
+
+  auto start{steady_clock::now()};
+
+  auto scripts{init_scripts(t_config)};
+  auto sources{init_sources(t_config)};
   PolicyFunc policy{source_policy(sources)};
+  auto runtime{steady_clock::now()};
 
   for(auto& script : scripts) {
     auto tokenstream{lex(script)};
+    auto lexing{steady_clock::now()};
+
     auto ast{parse(tokenstream)};
+    auto parsing{steady_clock::now()};
 
     execute(policy, ast);
+    auto execution{steady_clock::now()};
+
+    benchmark(TimingPair{"Runtime", count(start, runtime)},
+              TimingPair{"Lexing", count(runtime, lexing)},
+              TimingPair{"Parsing", count(lexing, parsing)},
+              TimingPair{"Execution", count(parsing, execution)});
   }
 }
 
