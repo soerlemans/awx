@@ -580,7 +580,9 @@ auto PrattParser::universal_infix(NodePtr& t_lhs, const PrattFunc& t_fn)
     node = std::move(ptr);
   } else if(auto ptr{logical(t_lhs, t_fn)}; ptr) {
     node = std::move(ptr);
-  }
+  } else if(auto ptr{membership(t_lhs)}; ptr) {
+    node = std::move(ptr);
+	}
 
   return node;
 }

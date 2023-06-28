@@ -223,14 +223,13 @@ auto run(Config& t_config) -> void
     auto execution{steady_clock::now()};
 
     // Display results of execution
-    benchmark(
-      TimingPair{"Startup", count(start, startup)},
-      TimingPair{"Lexing", count(startup, lexing)},
-      TimingPair{"Parsing", count(lexing, parsing)},
-      TimingPair{"Execution", count(parsing, execution)},
-      TimingPair{"=== Separator ===", 0}, // FIXME: Remove separator in due time
-      TimingPair{"Runtime", count(startup, execution)},
-      TimingPair{"Total", count(start, execution)});
+    benchmark(TimingPair{"Startup", count(start, startup)},
+              TimingPair{"Lexing", count(startup, lexing)},
+              TimingPair{"Parsing", count(lexing, parsing)},
+              TimingPair{"Execution", count(parsing, execution)},
+              TimingPair{"=========", 0}, // FIXME: Remove separator in due time
+              TimingPair{"Runtime", count(startup, execution)},
+              TimingPair{"Total", count(start, execution)});
   }
 }
 
