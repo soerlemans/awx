@@ -48,20 +48,15 @@ auto benchmark(Args&&... t_args) -> void
     .font_style({FontStyle::underline, FontStyle::bold})
     .font_background_color(Color::red);
 
-  // TODO: Does not work?
-  // Column styling
-  // timing.column(0).format().font_style({FontStyle::bold});
-
   // Add rows
   unpack(timing, std::forward<Args>(t_args)...);
 
-	// TODO: Add correct size
-  // for(size_t index = 1; index < 3; ++index) {
-  //   timing[0][index].format().font_align({FontAlign::right});
-  // }
+  // Column styling
+  for(size_t index = 1; index < timing.size(); ++index) {
+    timing[index][1].format().font_align({FontAlign::right});
+  }
 
   DBG_PRINTLN(timing);
 }
-
 
 #endif // BENCHMARK_HPP
