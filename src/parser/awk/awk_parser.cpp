@@ -95,14 +95,12 @@ auto AwkParser::non_unary_input_function(NodePtr& t_lhs) -> NodePtr
     } else {
       node = std::move(lhs);
     }
-    // TODO: Fix recursion
-  }
-  // else if(auto lhs{non_unary_expr()}; lhs) {
-  //   expect(TokenType::PIPE, "|");
+  } else if(t_lhs && next_if(TokenType::PIPE)) {
+    DBG_TRACE(VERBOSE, "Found 'PIPE' redirection");
 
-  //   node = std::make_shared<Redirection>(RedirectionOp::PIPE, std::move(lhs),
-  //                                        simple_get());
-  // }
+    node = std::make_shared<Redirection>(RedirectionOp::PIPE, std::move(t_lhs),
+                                         simple_get());
+  }
 
   return node;
 }

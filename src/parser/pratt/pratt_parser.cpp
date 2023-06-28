@@ -407,56 +407,58 @@ auto PrattParser::assignment(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   DBG_TRACE(VERBOSE, "ASSIGNMENT");
   NodePtr node;
 
-  // TODO: Create an actual function for this that we can call instead of
-  // Defining a separate lambda in each function
-  const auto token{next()};
-  const auto lambda{[&](AssignmentOp t_op) {
-    auto rhs{t_fn(token.type())};
-    if(rhs) {
-      node =
-        std::make_shared<Assignment>(t_op, std::move(t_lhs), std::move(rhs));
+  if(t_lhs) {
+    // TODO: Create an actual function for this that we can call instead of
+    // Defining a separate lambda in each function
+    const auto token{next()};
+    const auto lambda{[&](AssignmentOp t_op) {
+      auto rhs{t_fn(token.type())};
+      if(rhs) {
+        node =
+          std::make_shared<Assignment>(t_op, std::move(t_lhs), std::move(rhs));
+      }
+    }};
+
+    switch(token.type()) {
+      case TokenType::POWER_ASSIGNMENT:
+        DBG_TRACE_PRINT(INFO, "Found '^='");
+        lambda(AssignmentOp::POWER);
+        break;
+
+      case TokenType::MULTIPLY_ASSIGNMENT:
+        DBG_TRACE_PRINT(INFO, "Found '*='");
+        lambda(AssignmentOp::MULTIPLY);
+        break;
+
+      case TokenType::DIVIDE_ASSIGNMENT:
+        DBG_TRACE_PRINT(INFO, "Found '/='");
+        lambda(AssignmentOp::DIVIDE);
+        break;
+
+      case TokenType::MODULO_ASSIGNMENT:
+        DBG_TRACE_PRINT(INFO, "Found '%='");
+        lambda(AssignmentOp::MODULO);
+        break;
+
+      case TokenType::ADD_ASSIGNMENT:
+        DBG_TRACE_PRINT(INFO, "Found '+='");
+        lambda(AssignmentOp::ADD);
+        break;
+
+      case TokenType::SUBTRACT_ASSIGNMENT:
+        DBG_TRACE_PRINT(INFO, "Found '-='");
+        lambda(AssignmentOp::SUBTRACT);
+        break;
+
+      case TokenType::ASSIGNMENT:
+        DBG_TRACE_PRINT(INFO, "Found '='");
+        lambda(AssignmentOp::REGULAR);
+        break;
+
+      default:
+        prev();
+        break;
     }
-  }};
-
-  switch(token.type()) {
-    case TokenType::POWER_ASSIGNMENT:
-      DBG_TRACE_PRINT(INFO, "Found '^='");
-      lambda(AssignmentOp::POWER);
-      break;
-
-    case TokenType::MULTIPLY_ASSIGNMENT:
-      DBG_TRACE_PRINT(INFO, "Found '*='");
-      lambda(AssignmentOp::MULTIPLY);
-      break;
-
-    case TokenType::DIVIDE_ASSIGNMENT:
-      DBG_TRACE_PRINT(INFO, "Found '/='");
-      lambda(AssignmentOp::DIVIDE);
-      break;
-
-    case TokenType::MODULO_ASSIGNMENT:
-      DBG_TRACE_PRINT(INFO, "Found '%='");
-      lambda(AssignmentOp::MODULO);
-      break;
-
-    case TokenType::ADD_ASSIGNMENT:
-      DBG_TRACE_PRINT(INFO, "Found '+='");
-      lambda(AssignmentOp::ADD);
-      break;
-
-    case TokenType::SUBTRACT_ASSIGNMENT:
-      DBG_TRACE_PRINT(INFO, "Found '-='");
-      lambda(AssignmentOp::SUBTRACT);
-      break;
-
-    case TokenType::ASSIGNMENT:
-      DBG_TRACE_PRINT(INFO, "Found '='");
-      lambda(AssignmentOp::REGULAR);
-      break;
-
-    default:
-      prev();
-      break;
   }
 
   return node;
@@ -470,24 +472,26 @@ auto PrattParser::ternary(NodePtr& t_lhs, const BpFunc& t_fn,
   DBG_TRACE(VERBOSE, "TERNARY");
   NodePtr node;
 
-  const auto [lbp, rbp] = m_infix.at(TokenType::QUESTION_MARK);
+  if(t_lhs) {
+    const auto [lbp, rbp] = m_infix.at(TokenType::QUESTION_MARK);
 
-  if(lbp >= t_min_bp) {
-    if(next_if(TokenType::QUESTION_MARK)) {
-      DBG_TRACE(VERBOSE, "Found TERNARY");
-      NodePtr then_ptr{t_fn(t_min_bp)};
-      if(!then_ptr) {
-        syntax_error("Expected expression after '?' in ternary");
+    if(lbp >= t_min_bp) {
+      if(next_if(TokenType::QUESTION_MARK)) {
+        DBG_TRACE(VERBOSE, "Found TERNARY");
+        NodePtr then_ptr{t_fn(t_min_bp)};
+        if(!then_ptr) {
+          syntax_error("Expected expression after '?' in ternary");
+        }
+
+        expect(TokenType::COLON, ":");
+        NodePtr else_ptr{t_fn(t_min_bp)};
+        if(!else_ptr) {
+          syntax_error("Expected expression after ':' in ternary");
+        }
+
+        node = std::make_shared<Ternary>(std::move(t_lhs), std::move(then_ptr),
+                                         std::move(else_ptr));
       }
-
-      expect(TokenType::COLON, ":");
-      NodePtr else_ptr{t_fn(t_min_bp)};
-      if(!else_ptr) {
-        syntax_error("Expected expression after ':' in ternary");
-      }
-
-      node = std::make_shared<Ternary>(std::move(t_lhs), std::move(then_ptr),
-                                       std::move(else_ptr));
     }
   }
 
@@ -499,49 +503,51 @@ auto PrattParser::comparison(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   DBG_TRACE(VERBOSE, "COMPARISON");
   NodePtr node;
 
-  const auto token{next()};
-  const auto lambda{[&](ComparisonOp t_op) {
-    auto rhs{t_fn(token.type())};
-    if(rhs) {
-      node =
-        std::make_shared<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
+  if(t_lhs) {
+    const auto token{next()};
+    const auto lambda{[&](ComparisonOp t_op) {
+      auto rhs{t_fn(token.type())};
+      if(rhs) {
+        node =
+          std::make_shared<Comparison>(t_op, std::move(t_lhs), std::move(rhs));
+      }
+    }};
+
+    switch(token.type()) {
+      case TokenType::LESS_THAN:
+        DBG_TRACE_PRINT(INFO, "Found '<'");
+        lambda(ComparisonOp::LESS_THAN);
+        break;
+
+      case TokenType::LESS_THAN_EQUAL:
+        DBG_TRACE_PRINT(INFO, "Found '<='");
+        lambda(ComparisonOp::LESS_THAN_EQUAL);
+        break;
+
+      case TokenType::EQUAL:
+        DBG_TRACE_PRINT(INFO, "Found '=='");
+        lambda(ComparisonOp::EQUAL);
+        break;
+
+      case TokenType::NOT_EQUAL:
+        DBG_TRACE_PRINT(INFO, "Found '!='");
+        lambda(ComparisonOp::NOT_EQUAL);
+        break;
+
+      case TokenType::GREATER_THAN:
+        DBG_TRACE_PRINT(INFO, "Found '>'");
+        lambda(ComparisonOp::GREATER_THAN);
+        break;
+
+      case TokenType::GREATER_THAN_EQUAL:
+        DBG_TRACE_PRINT(INFO, "Found '>='");
+        lambda(ComparisonOp::GREATER_THAN_EQUAL);
+        break;
+
+      default:
+        prev();
+        break;
     }
-  }};
-
-  switch(token.type()) {
-    case TokenType::LESS_THAN:
-      DBG_TRACE_PRINT(INFO, "Found '<'");
-      lambda(ComparisonOp::LESS_THAN);
-      break;
-
-    case TokenType::LESS_THAN_EQUAL:
-      DBG_TRACE_PRINT(INFO, "Found '<='");
-      lambda(ComparisonOp::LESS_THAN_EQUAL);
-      break;
-
-    case TokenType::EQUAL:
-      DBG_TRACE_PRINT(INFO, "Found '=='");
-      lambda(ComparisonOp::EQUAL);
-      break;
-
-    case TokenType::NOT_EQUAL:
-      DBG_TRACE_PRINT(INFO, "Found '!='");
-      lambda(ComparisonOp::NOT_EQUAL);
-      break;
-
-    case TokenType::GREATER_THAN:
-      DBG_TRACE_PRINT(INFO, "Found '>'");
-      lambda(ComparisonOp::GREATER_THAN);
-      break;
-
-    case TokenType::GREATER_THAN_EQUAL:
-      DBG_TRACE_PRINT(INFO, "Found '>='");
-      lambda(ComparisonOp::GREATER_THAN_EQUAL);
-      break;
-
-    default:
-      prev();
-      break;
   }
 
   return node;
@@ -553,14 +559,16 @@ auto PrattParser::string_concat(NodePtr& t_lhs, const BpFunc& t_rhs,
   DBG_TRACE(VERBOSE, "STRING CONCATENATION");
   NodePtr node;
 
-  // No infix token means that we are dealing with string concatenation
-  const auto [lbp, rbp] = m_infix.at(TokenType::NONE);
+  if(t_lhs) {
+    // No infix token means that we are dealing with string concatenation
+    const auto [lbp, rbp] = m_infix.at(TokenType::NONE);
 
-  if(lbp >= t_min_bp) {
-    if(auto rhs{t_rhs(rbp)}; rhs) {
-      DBG_TRACE(INFO, "Found 'string concatenation'!");
-      node =
-        std::make_shared<StringConcatenation>(std::move(t_lhs), std::move(rhs));
+    if(lbp >= t_min_bp) {
+      if(auto rhs{t_rhs(rbp)}; rhs) {
+        DBG_TRACE(INFO, "Found 'string concatenation'!");
+        node = std::make_shared<StringConcatenation>(std::move(t_lhs),
+                                                     std::move(rhs));
+      }
     }
   }
 
@@ -573,16 +581,18 @@ auto PrattParser::universal_infix(NodePtr& t_lhs, const PrattFunc& t_fn)
   DBG_TRACE(VERBOSE, "UNIVERSAL EXPR");
   NodePtr node;
 
-  // TODO: Add membership and ternary
-  if(auto ptr{arithmetic(t_lhs, t_fn)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{match(t_lhs, t_fn)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{logical(t_lhs, t_fn)}; ptr) {
-    node = std::move(ptr);
-  } else if(auto ptr{membership(t_lhs)}; ptr) {
-    node = std::move(ptr);
-	}
+  if(t_lhs) {
+    // TODO: Add membership and ternary
+    if(auto ptr{arithmetic(t_lhs, t_fn)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{match(t_lhs, t_fn)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{logical(t_lhs, t_fn)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{membership(t_lhs)}; ptr) {
+      node = std::move(ptr);
+    }
+  }
 
   return node;
 }
@@ -618,7 +628,7 @@ auto PrattParser::universal_non_unary_expr(const BpFunc& t_expr_fn,
   }
 
   // Infix:
-  while(!eos() && lhs) {
+  while(!eos()) {
     const auto infix{[&](TokenType t_type) {
       NodePtr rhs;
 
@@ -669,7 +679,7 @@ auto PrattParser::universal_unary_expr(const BpFunc& t_expr_fn,
   }
 
   // Infix:
-  while(!eos() && lhs) {
+  while(!eos()) {
     const auto infix{[&](TokenType t_type) {
       NodePtr rhs;
 
@@ -795,6 +805,8 @@ auto PrattParser::non_unary_expr(const int t_min_bp) -> NodePtr
       node = std::move(ptr);
     } else if(auto ptr{ternary(t_lhs, expr_fn, t_min_bp)}; ptr) {
       node = std::move(ptr);
+    } else if(auto ptr{non_unary_input_function(t_lhs)}; ptr) {
+      node = std::move(ptr);
     }
 
     return node;
@@ -828,6 +840,8 @@ auto PrattParser::unary_expr(const int t_min_bp) -> NodePtr
     } else if(auto ptr{string_concat(t_lhs, rhs_fn, t_min_bp)}; ptr) {
       node = std::move(ptr);
     } else if(auto ptr{ternary(t_lhs, expr_fn, t_min_bp)}; ptr) {
+      node = std::move(ptr);
+    } else if(auto ptr{non_unary_input_function(t_lhs)}; ptr) {
       node = std::move(ptr);
     }
 
