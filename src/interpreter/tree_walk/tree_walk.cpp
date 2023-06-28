@@ -680,15 +680,11 @@ auto TreeWalk::visit(Or* t_or) -> void
 
 auto TreeWalk::visit(StringConcatenation* t_conc) -> void
 {
-  Any left{walk(t_conc->left()).m_result};
-  Any right{walk(t_conc->right()).m_result};
+  const auto lhs{walk(t_conc->left())};
+  const auto rhs{walk(t_conc->right())};
 
   std::stringstream ss;
-  std::visit(
-    [&](auto&& t_left, auto&& t_right) {
-      ss << t_left << t_right;
-    },
-    left, right);
+  ss << stringify(lhs.m_result) << stringify(rhs.m_result);
 
   m_context.m_result = ss.str();
 }

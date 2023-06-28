@@ -6,8 +6,6 @@
 #include <sstream>
 
 
-using namespace interpreter;
-
 auto interpreter::stringify(const Any& t_any) -> std::string
 {
   std::stringstream ss;
