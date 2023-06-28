@@ -6,7 +6,6 @@
 
 // Includes:
 #include "../../debug/log.hpp"
-#include "../../debug/trace.hpp"
 #include "../../node/include.hpp"
 #include "../../token/token_type.hpp"
 #include "../../token/token_type_helpers.hpp"
@@ -44,7 +43,7 @@ auto AwkParser::newline_opt() -> void
   DBG_TRACE(VERBOSE, "NEWLINE OPT");
 
   while(!eos() && next_if(TokenType::NEWLINE)) {
-    DBG_TRACE_PRINT(INFO, "Found NEWLINE");
+    DBG_TRACE_PRINT(INFO, "Found 'NEWLINE'");
   }
 }
 
@@ -78,22 +77,17 @@ auto AwkParser::unary_input_function() -> NodePtr
   return node;
 }
 
-// non_unary_input_function : simple_get
-//                  | simple_get '<' expr
-//                  | non_unary_expr '|' simple_get
-//                  ;
 auto AwkParser::non_unary_input_function(NodePtr& t_lhs) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "NON UNARY INPUT FUNCTION");
   NodePtr node;
 
-  // Recursive causes endless loop
-  if(auto lhs{simple_get()}; lhs) {
+  if(auto ptr{simple_get()}; ptr) {
     if(next_if(TokenType::LESS_THAN)) {
-      node = std::make_shared<Redirection>(RedirectionOp::READ, std::move(lhs),
+      node = std::make_shared<Redirection>(RedirectionOp::READ, std::move(ptr),
                                            expr());
     } else {
-      node = std::move(lhs);
+      node = std::move(ptr);
     }
   } else if(t_lhs && next_if(TokenType::PIPE)) {
     DBG_TRACE(VERBOSE, "Found 'PIPE' redirection");

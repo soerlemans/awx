@@ -124,6 +124,7 @@ auto source_policy(TextVec& t_sources) -> PolicyFunc
         source->add_line(line);
 
         interpreter.run(source);
+				source->next();
       }
     };
   } else {

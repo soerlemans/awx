@@ -636,15 +636,16 @@ auto TreeWalk::visit(Match* t_match) -> void
   const auto op{t_match->op()};
 
   m_resolve = false;
-
   if(op == MatchOp::MATCH) {
     const auto& string{walk(t_match->left())};
     const auto& pattern{walk(t_match->right())};
 
+    // std::regex re{str, std::regex::extended};
+    // result = (double)std::regex_search(m_fields.get(), re);
+
     if(op != MatchOp::NO_MATCH) {
     }
   }
-
   m_resolve = true;
 }
 
@@ -780,7 +781,6 @@ auto TreeWalk::run(const TextBufferPtr& t_input) -> void
 {
   update(t_input);
 
-  // FIXME: For now we always use space as field separator
   m_fields.set(" ", t_input->line());
   try {
     m_ast->accept(this);

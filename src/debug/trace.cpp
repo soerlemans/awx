@@ -1,16 +1,13 @@
 #include "trace.hpp"
-#include "log.hpp"
 
+// STL Includes:
 #include <cstddef>
 #include <iomanip>
 #include <sstream>
 
 
-// Only facilitate Trace if we are on DEBUG build
+// Only facilitate Trace if we are on the DEBUG build
 #if DEBUG
-
-// Static variables:
-int Trace::m_counter{0};
 
 // Methods:
 auto Trace::indent_text() -> std::string

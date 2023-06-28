@@ -1,8 +1,7 @@
 #ifndef AWX_PARSER_AWK_AWK_PARSER_HPP
 #define AWX_PARSER_AWK_AWK_PARSER_HPP
 
-// Local Includes:
-#include "../parser.hpp"
+// Includes:
 #include "../pratt/pratt_parser.hpp"
 
 

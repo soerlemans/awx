@@ -5,6 +5,7 @@
 #include <functional>
 
 // Includes:
+#include "../debug/trace.hpp"
 #include "../lexer/lexer.hpp"
 #include "../node/node.hpp"
 
@@ -24,6 +25,8 @@ class Parser {
   token::TokenStream m_tokenstream;
 
   protected:
+  DBG_TRACE_INIT()
+
   // m_tokenstream helper methods:
   auto syntax_error(std::string_view t_msg) const -> void;
   auto eos_error(std::string_view t_msg) const -> void;
