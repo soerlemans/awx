@@ -158,7 +158,9 @@ auto TreeWalk::visit(For* t_for) -> void
 }
 
 auto TreeWalk::visit(ForIn* t_for_in) -> void
-{}
+{
+	// TODO: Implement
+}
 
 auto TreeWalk::visit(Continue* t_continue) -> void
 {
@@ -730,6 +732,7 @@ auto TreeWalk::visit(UnaryPrefix* t_unary_prefix) -> void
 
 auto TreeWalk::visit(List* t_list) -> void
 {
+	// Evaluate every item in the list
   for(const auto& element : *t_list) {
     element->accept(this);
   }
