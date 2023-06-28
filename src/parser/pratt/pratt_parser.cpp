@@ -355,6 +355,7 @@ auto PrattParser::match(NodePtr& t_lhs, const PrattFunc& t_fn) -> NodePtr
   return node;
 }
 
+// TODO: Add precedence climbing to membership
 auto PrattParser::membership(NodePtr& t_lhs) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "MEMBERSHIP");

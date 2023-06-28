@@ -49,12 +49,14 @@ class PrattParser : public Parser {
     -> node::NodePtr;
   virtual auto match(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
+  // TODO: Add precedence climbing
   virtual auto membership(node::NodePtr& t_lhs) -> node::NodePtr;
   virtual auto logical(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
   virtual auto assignment(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
-  virtual auto ternary(node::NodePtr& t_lhs, const BpFunc& t_fn, int t_min_bp) -> node::NodePtr;
+  virtual auto ternary(node::NodePtr& t_lhs, const BpFunc& t_fn, int t_min_bp)
+    -> node::NodePtr;
   virtual auto comparison(node::NodePtr& t_lhs, const PrattFunc& t_fn)
     -> node::NodePtr;
   virtual auto string_concat(node::NodePtr& t_lhs, const BpFunc& t_rhs,
