@@ -4,7 +4,6 @@
 // STL Includes:
 #include <map>
 #include <stack>
-#include <variant>
 
 // Includes:
 #include "../../container/file_buffer.hpp"
@@ -49,7 +48,6 @@ class TreeWalk : public visitor::NodeVisitor {
   //! Walk returns the updated context
   auto walk(node::NodePtr t_node) -> Context&;
   auto eval_bool(node::NodePtr t_node) -> bool;
-  auto double2str(double t_number) -> std::string;
 
   auto clear_context() -> void;
 

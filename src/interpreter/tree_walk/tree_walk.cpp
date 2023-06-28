@@ -3,9 +3,6 @@
 // STL Includes:
 #include <cstdio>
 #include <functional>
-#include <iomanip>
-#include <iostream>
-#include <limits>
 #include <regex>
 #include <sstream>
 #include <stdexcept>
@@ -16,6 +13,7 @@
 #include "../../node/include.hpp"
 #include "../builtin/operators.hpp"
 #include "../overload.hpp"
+#include "../stringify.hpp"
 
 // Local Includes:
 #include "control.hpp"
@@ -70,16 +68,6 @@ auto TreeWalk::eval_bool(NodePtr t_node) -> bool
   std::visit(Overload{lambda_double, lambda_str}, context.m_result);
 
   return is_true;
-}
-
-auto TreeWalk::double2str(const double t_number) -> std::string
-{
-  std::stringstream ss;
-
-  const auto precision{std::numeric_limits<decltype(t_number)>::digits10};
-  ss << std::setprecision(precision) << t_number;
-
-  return ss.str();
 }
 
 auto TreeWalk::clear_context() -> void
@@ -394,17 +382,15 @@ auto TreeWalk::visit(String* t_str) -> void
 auto TreeWalk::visit(Regex* t_regex) -> void
 {
   auto& result{m_context.m_result};
-
-  const auto str{t_regex->get()};
+  const auto pattern{t_regex->get()};
 
   // In certain contexts we do not resolve Regex expressions (Match and builtin
   // function arguments)
   if(m_resolve) {
-    std::regex re{str, std::regex::extended};
-
+    std::regex re{pattern, std::regex::extended};
     result = (double)std::regex_search(m_fields.get(), re);
   } else {
-    result = str;
+    result = pattern;
   }
 }
 
@@ -633,20 +619,28 @@ auto TreeWalk::visit(Delete* t_delete) -> void
 
 auto TreeWalk::visit(Match* t_match) -> void
 {
+  double result{0.0};
   const auto op{t_match->op()};
 
   m_resolve = false;
-  if(op == MatchOp::MATCH) {
-    const auto& string{walk(t_match->left())};
-    const auto& pattern{walk(t_match->right())};
 
-    // std::regex re{str, std::regex::extended};
-    // result = (double)std::regex_search(m_fields.get(), re);
+  if(op == MatchOp::MATCH) {
+    const auto& lhs{walk(t_match->left())};
+    const auto& rhs{walk(t_match->right())};
+
+    const auto string{stringify(lhs.m_result)};
+    const auto pattern{stringify(rhs.m_result)};
+
+    std::regex re{pattern, std::regex::extended};
+    result = (double)std::regex_search(string, re);
 
     if(op != MatchOp::NO_MATCH) {
+      result = result ? 0.0 : 1.0;
     }
   }
+
   m_resolve = true;
+  m_context.m_result = result;
 }
 
 auto TreeWalk::visit(Not* t_not) -> void

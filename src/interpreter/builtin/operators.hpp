@@ -32,7 +32,18 @@ INTERPRETER_DEFINE_BINOP_FUNCTION(*, multiply)
 INTERPRETER_DEFINE_BINOP_FUNCTION(/, divide)
 
 // Modulo can not use this macro either
-// INTERPRETER_DEFINE_BINOP_FUNCTION(%, modulo)
+// FIXME: std::fmod not working?
+template<typename L, typename R>
+requires VariableLike<L> && VariableLike<R>
+auto modulo(L t_lhs, R t_rhs)
+{
+  const auto lambda{[](const auto& t_lhs, const auto& t_rhs) {
+    return std::fmod(t_lhs, t_rhs);
+  }};
+
+  return cast(lambda, t_lhs, t_rhs);
+}
+
 
 INTERPRETER_DEFINE_BINOP_FUNCTION(+, add)
 INTERPRETER_DEFINE_BINOP_FUNCTION(-, subtract)

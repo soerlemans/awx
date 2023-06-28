@@ -7,6 +7,7 @@
  * string. This file defines a template function called convert that does this.
  */
 
+
 namespace interpreter {
 // Macros:
 //! Following macro converts a parameter if it is a string to a double
@@ -40,10 +41,9 @@ template<typename T>
 concept VariableLike = std::same_as < std::remove_cvref_t<T>,
 double > || std::same_as<std::remove_cvref_t<T>, std::string>;
 
-
 // Public Functions:
 /*! In some cases a unary operation will need to be converted to a double only
- * if the string starts with a number in its string
+ * if the string starts with a number
  */
 inline auto cast(const std::string& t_str) -> double
 {
@@ -56,8 +56,6 @@ inline auto cast(const std::string& t_str) -> double
   return 0;
 }
 
-// TODO: Explain
-//!
 inline auto cast(const double t_val) -> double
 {
   return t_val;
