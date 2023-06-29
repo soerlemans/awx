@@ -34,6 +34,7 @@ Awx is currently in active development and not very mature but the following has
 Important features that must still be implemented:
 
 - [] Some bug fixes
+- [] Arrays
 - [] Implementing builtin functions
 - [] Bytecode compilation
 - [] Common optimizations
