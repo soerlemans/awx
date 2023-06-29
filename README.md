@@ -34,14 +34,14 @@ Awx is currently in active development and not very mature but the following has
 
 Important features that must still be implemented:
 
-- [] Bug fixes (parsing is still not perfect yet)
-- [] Arrays
-- [] Implementing builtin functions
-- [] Full POSIX compliancy
-- [] Bytecode compilation
-- [] Common optimizations
-- [] Benchmarking using [FlameGraph](https://github.com/brendangregg/FlameGraph)
-- [] Displaying data about the AST in a table (useful for contributors that want to do debugging)
+- [ ] Bug fixes (parsing is still not perfect yet)
+- [ ] Arrays
+- [ ] Implementing builtin functions
+- [ ] Full POSIX compliancy
+- [ ] Bytecode compilation
+- [ ] Common optimizations
+- [ ] Benchmarking using [FlameGraph](https://github.com/brendangregg/FlameGraph)
+- [ ] Displaying data about the AST in a table (useful for contributors that want to do debugging)
 
 ## Getting AWX
 ### Dependencies
