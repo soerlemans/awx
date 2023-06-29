@@ -37,7 +37,7 @@ Important features that must still be implemented:
 - [ ] Bug fixes (parsing is still not perfect yet)
 - [ ] Arrays
 - [ ] Implementing builtin functions
-- [ ] Full POSIX compliancy
+- [ ] POSIX compliance
 - [ ] Bytecode compilation
 - [ ] Common optimizations
 - [ ] Benchmarking using [FlameGraph](https://github.com/brendangregg/FlameGraph)
