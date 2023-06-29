@@ -1,24 +1,22 @@
-# AWX
+# Awx
 
-Awx is an acronym for "Awk With eXtensions".
-It is meant to be an improved version of AWK with some more shiny features and the ability to add extensions/libraries, whilst aiming to be a drop in replacement for POSIX AWK.
+Awx is an acronym for "AWK With eXtensions".
+Awx is aimed to be a drop in replacement for AWK with some added extensions (this goal is very similar to GNU AWK).
 
 Goals Awx aims to achieve:
 
 - Be fast
-- Add features to make AWk scale better for bigger projects
-  - Add scoping to variables
+- Add features to make AWK more powerful
+  - Optional local scoping for variables
+  - Default arguments and keyword arguments
+  - Add namespaces
 - Maintain POSIX AWK compatibility
-
-## Features
-
-Our aim is to implement the following features in AWX:
-
-- Default arguments
-- Assignable rules
-- Nested rules
-- Byte compilation
-- Modules
+- Expand on the standard library
+- Support reading of common formats
+  - CSV
+  - JSON
+  - XML
+  - etc
 
 ## Getting AWX
 
@@ -29,7 +27,7 @@ But the following packages are required:
 
 - C++ compiler (clang, g++ or msvc++)
   - Must support C++23
-- Cmake (You can build with just Make)
+- Cmake (there is an option to build with just Make)
 - Make
 - CLI11 (Used for CLI argument handling)
 
@@ -66,3 +64,7 @@ For the style guide look into `docs/styleguide.md`.
 I sourced some scripts from Tim Sherwood for the purpose of testing the implementation.
 I got them from his personal website [Some Useful Gawk Scripts](https://sites.cs.ucsb.edu/~sherwood/awk/).
 I also took a script from [learnxinyminutes](https://learnxinyminutes.com/docs/awk/);
+
+# Issues
+
+Awx

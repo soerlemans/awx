@@ -6,7 +6,6 @@ DEBUG := -DCMAKE_BUILD_TYPE=DEBUG
 # Rules:
 .PHONY: all \
 	build debug \
-	no-cmake \
 	install clean \
 	format lint \
 	docs docs-pdf
@@ -19,10 +18,6 @@ build:
 debug:
 	cmake -S . -B $@/ $(DEBUG)
 	cmake --build $@/
-
-# Build option if your system does not have CMake
-no-cmake:
-	$(MAKE) -f make/backup.mk
 
 # After build rules:
 install: build
