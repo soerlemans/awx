@@ -121,10 +121,14 @@ auto source_policy(TextVec& t_sources) -> PolicyFunc
         std::string line;
         std::getline(std::cin, line);
 
+        if(std::cin.eof()) {
+          break;
+        }
+
         source->add_line(line);
 
         interpreter.run(source);
-				source->next();
+        source->next();
       }
     };
   } else {
