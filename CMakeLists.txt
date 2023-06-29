@@ -10,8 +10,8 @@ set(CMAKE_CXX_COMPILER "g++")
 
 # Define the project
 project(awx
-	VERSION 0.2.0
-	DESCRIPTION "An AWK interpreter written in C++."
+	VERSION 0.3.0
+	DESCRIPTION "\"AWK With Extensions\" written in C++23"
 	LANGUAGES CXX
 )
 
