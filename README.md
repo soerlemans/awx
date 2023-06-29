@@ -8,6 +8,7 @@ Goals Awx aims to achieve:
 - Add features to make AWK more powerful
   - Optional local scoping for variables
   - Default arguments and keyword arguments
+  - Negative field references (stealing this from goawk)
   - Add namespaces
 - Maintain POSIX AWK compatibility
 - Expand on the standard library
@@ -33,13 +34,14 @@ Awx is currently in active development and not very mature but the following has
 
 Important features that must still be implemented:
 
-- [] Some bug fixes
+- [] Bug fixes (parsing is still not perfect yet)
 - [] Arrays
 - [] Implementing builtin functions
+- [] Full POSIX compliancy
 - [] Bytecode compilation
 - [] Common optimizations
 - [] Benchmarking using [FlameGraph](https://github.com/brendangregg/FlameGraph)
-- [] Displaying data about AST in a table
+- [] Displaying data about the AST in a table (useful for contributors that want to do debugging)
 
 ## Getting AWX
 ### Dependencies
@@ -85,4 +87,13 @@ TODO: For a short description of the architecture of the software look into `doc
 I sourced some scripts from Tim Sherwood for the purpose of testing the implementation.
 I got them from his personal website [Some Useful Gawk Scripts](https://sites.cs.ucsb.edu/~sherwood/awk/).
 I also took a script from [learnxinyminutes](https://learnxinyminutes.com/docs/awk/);
+
+## Similar projects
+Awx is not mature at all and I would like to share two other AWK(-like) implementations that inspired me.
+
+1. [Frawk](https://github.com/ezrosent/frawk) is an AWK like language that uses some techniques to increase performance, like static type inference (this means the type is inferred once) and some rudimentary concurrency support.
+Frawk also has support for reading CSV and TSV files, overall Frawk is a very robust and way more mature implementation.
+
+2. [Goawk](https://github.com/benhoyt/goawk) is a POSIX compliant AWK-interpreter with CSV support.
+Goawk also supports bytecode compilation as well as interoperability with Go.
 
