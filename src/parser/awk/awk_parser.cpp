@@ -26,12 +26,6 @@ using namespace node::operators;
 using namespace node::recipes;
 using namespace node::rvalue;
 
-// TODO: split the parser and its rules into multiple files, the parser should
-// Be able to be done simpler or more properly structured, find a way for this
-// To be done properly splitting the parsing rules into multiple classes would
-// Be hard to logically justify in a manner that doesnt break logical
-// Consistency
-
 // Constructors:
 AwkParser::AwkParser(TokenStream t_tokenstream)
   : PrattParser{std::move(t_tokenstream)}
@@ -108,34 +102,30 @@ auto AwkParser::function() -> NodePtr
   if(next_if(TokenType::FUNCTION)) {
     DBG_TRACE_PRINT(VERBOSE, "Found FUNCTION");
 
-    if(const auto token{get_token()};
-       tokentype::is_valid_function_identifier(token.type())) {
+    // When defining a function a space after the identifier is allowed
+    if(const auto token{get_token()}; tokentype::is_identifier(token.type())) {
       next();
       const auto name{token.value<std::string>()};
       DBG_TRACE_PRINT(VERBOSE, "Valid FUNCTION IDENTIFIER: ", name);
 
       // TODO: Create a Function class
       expect(TokenType::PAREN_OPEN, "(");
-      NodeListPtr params{param_list_opt()};
+      auto params{param_list_opt()};
       expect(TokenType::PAREN_CLOSE, ")");
 
       newline_opt();
-      NodeListPtr body{action()};
+      auto body{action()};
 
       DBG_TRACE_PRINT(INFO, "Found a FUNCTION");
 
       node =
         std::make_shared<Function>(name, std::move(params), std::move(body));
-    } else {
-      // TODO: Error handling
     }
   }
 
   return node;
 }
 
-
-// Parses lvalue statements that are the same in non unary expr and unary expr
 // TODO: Split FOR and WHILE into their own functions
 auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
 {
@@ -147,10 +137,7 @@ auto AwkParser::loop(const ParserFunc& t_body) -> NodePtr
     case TokenType::WHILE: {
       DBG_TRACE_PRINT(INFO, "Found WHILE");
 
-      expect(TokenType::PAREN_OPEN, "(");
-      NodePtr condition{expr()};
-      expect(TokenType::PAREN_CLOSE, ")");
-
+      auto condition{grouping()};
       newline_opt();
 
       // TODO: Figure out a way to distinguish between a NodeListPtr and a
@@ -291,7 +278,7 @@ auto AwkParser::multiple_expr_list() -> NodeListPtr
 
         nodes->push_back(std::move(ptr));
       } else {
-        // TODO: Error handling
+        syntax_error("Expected another expression after ',");
       }
     } else {
       break;
@@ -470,8 +457,7 @@ auto AwkParser::terminatable_statement() -> NodePtr
   DBG_TRACE(VERBOSE, "TERMINATABLE STATEMENT");
   NodePtr node;
 
-  const auto keyword{next()};
-  switch(keyword.type()) {
+  switch(next().type()) {
     case TokenType::BREAK:
       node = std::make_shared<Break>();
       break;
@@ -492,18 +478,17 @@ auto AwkParser::terminatable_statement() -> NodePtr
       node = std::make_shared<Return>(expr_opt());
       break;
 
-    case TokenType::DO:
+    case TokenType::DO: {
       newline_opt();
-      terminated_statement();
+      auto body{terminated_statement()};
       expect(TokenType::WHILE, "while");
-      expect(TokenType::PAREN_OPEN, "(");
-      expr();
-      expect(TokenType::PAREN_CLOSE, ")");
+      auto condition{grouping()};
 
-      // TODO: Implement Do while
-      DBG_PRINTLN("WARNING: Do While loops are not yet implemented!");
-      node = std::make_shared<Nil>();
+      // FIXME: Figure out this bullshit with NodeListPtr
+      // node = std::make_shared<DoWhile>(std::move(condition),
+      // std::move(body));
       break;
+    }
 
     default:
       prev();
@@ -540,10 +525,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
 
   if(next_if(TokenType::IF)) {
     DBG_TRACE_PRINT(INFO, "Found IF");
-    // TODO: Adjust grouping() to something more general?
-    expect(TokenType::PAREN_OPEN, "(");
-    NodePtr condition{expr()};
-    expect(TokenType::PAREN_CLOSE, ")");
+    NodePtr condition{grouping()};
 
     newline_opt();
     if(auto ptr{unterminated_statement()}; ptr) {
@@ -580,10 +562,7 @@ auto AwkParser::terminated_statement() -> NodePtr
   } else if(next_if(TokenType::IF)) {
     DBG_TRACE_PRINT(INFO, "Found IF");
 
-    expect(TokenType::PAREN_OPEN, "(");
-    NodePtr condition{expr()};
-    expect(TokenType::PAREN_CLOSE, ")");
-
+    NodePtr condition{grouping()};
     newline_opt();
     NodePtr then{terminated_statement()};
 

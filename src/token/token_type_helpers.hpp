@@ -30,7 +30,7 @@ namespace tokentype {
 [[nodiscard]] constexpr auto is_literal(TokenType t_tokentype) -> bool;
 [[nodiscard]] constexpr auto is_terminator(TokenType t_tokentype) -> bool;
 [[nodiscard]] constexpr auto is_unary_operator(TokenType t_tokentype) -> bool;
-[[nodiscard]] constexpr auto is_valid_function_identifier(TokenType t_tokentype)
+[[nodiscard]] constexpr auto is_identifier(TokenType t_tokentype)
   -> bool;
 
 // Function definitions:
@@ -49,7 +49,7 @@ DEFINE_TOKEN_TYPE_HELPER(is_unary_operator,
 
 // A regular identifier is a valid name for a function declaration
 // As in 'function func()' is just as valid as 'function func ()'
-DEFINE_TOKEN_TYPE_HELPER(is_valid_function_identifier,
+DEFINE_TOKEN_TYPE_HELPER(is_identifier,
                          CASE_TOKEN_TYPE(IDENTIFIER)
                            CASE_TOKEN_TYPE(FUNCTION_IDENTIFIER));
 
