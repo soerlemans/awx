@@ -811,7 +811,6 @@ auto AwkParser::item() -> NodePtr
       node =
         std::make_shared<Recipe>(std::move(pattern_ptr), std::move(action_ptr));
     } else {
-      // TODO: Properly throw later
       syntax_error("Expected body after a toplevel rule");
     }
 
@@ -833,9 +832,12 @@ auto AwkParser::item_list() -> NodeListPtr
 
   while(!eos()) {
     // Remove newlines before items
-    // TODO: Figure out if this works as intended, since its not in the
-    // grammar
     newline_opt();
+
+		// Exit if we are at the end of stream
+    if(eos()) {
+      break;
+    }
 
     if(auto ptr{item()}; ptr) {
       nodes->push_back(std::move(ptr));

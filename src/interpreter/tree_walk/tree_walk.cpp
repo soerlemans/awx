@@ -106,8 +106,6 @@ auto TreeWalk::visit(If* t_if) -> void
   if(eval_bool(t_if->condition())) {
     walk(t_if->then());
   } else {
-    // TODO: Check for nullptr, We should probably make If::m_alt point to a Nil
-    // Node
     if(auto ptr{t_if->alt()}; ptr) {
       walk(ptr);
     }
@@ -136,7 +134,6 @@ auto TreeWalk::visit(DoWhile* t_do_while) -> void
     } catch(BreakExcept& e) {
       break;
     }
-
   } while(eval_bool(t_do_while->condition()));
 }
 
@@ -159,7 +156,7 @@ auto TreeWalk::visit(For* t_for) -> void
 
 auto TreeWalk::visit(ForIn* t_for_in) -> void
 {
-	// TODO: Implement
+  // TODO: Implement
 }
 
 auto TreeWalk::visit(Continue* t_continue) -> void
@@ -732,7 +729,7 @@ auto TreeWalk::visit(UnaryPrefix* t_unary_prefix) -> void
 
 auto TreeWalk::visit(List* t_list) -> void
 {
-	// Evaluate every item in the list
+  // Evaluate every item in the list
   for(const auto& element : *t_list) {
     element->accept(this);
   }
