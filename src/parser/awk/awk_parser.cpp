@@ -262,11 +262,6 @@ auto AwkParser::print_expr_list() -> NodeListPtr
     }
   }
 
-  if(nodes->empty()) {
-    // throw std::runtime_error{"expected atleast on expr in expr_list"};
-  }
-  // TODO: If we only have one node in the list flatten it to a single NodePtr
-
   return nodes;
 }
 
@@ -301,10 +296,6 @@ auto AwkParser::multiple_expr_list() -> NodeListPtr
     } else {
       break;
     }
-  }
-
-  if(nodes->empty()) {
-    // syntax_error("Expected atleast one expression");
   }
 
   return nodes;
@@ -638,10 +629,6 @@ auto AwkParser::unterminated_statement_list() -> NodeListPtr
     }
   }
 
-  // if(nodes->empty()) {
-  //   throw std::runtime_error{"expected atleast on expr in expr_list"};
-  // }
-
   return nodes;
 }
 
@@ -660,11 +647,6 @@ auto AwkParser::terminated_statement_list() -> NodeListPtr
     }
   }
 
-  // if(nodes->empty()) {
-  //   throw std::runtime_error{"expected atleast on expr in expr_list"};
-  // }
-
-  // Create a NodeListPtr from the NodePtrList
   return nodes;
 }
 
@@ -781,10 +763,6 @@ auto AwkParser::param_list() -> NodeListPtr
     }
   }
 
-  if(nodes->empty()) {
-    // throw std::runtime_error{"expected atleast on expr in expr_list"};
-  }
-
   return nodes;
 }
 
@@ -834,7 +812,7 @@ auto AwkParser::item_list() -> NodeListPtr
     // Remove newlines before items
     newline_opt();
 
-		// Exit if we are at the end of stream
+    // Exit if we are at the end of stream
     if(eos()) {
       break;
     }
@@ -855,11 +833,6 @@ auto AwkParser::program() -> NodeListPtr
   DBG_TRACE(VERBOSE, "PROGRAM");
 
   NodeListPtr nodes{item_list()};
-
-  // program must have atleast one item
-  if(nodes->empty()) {
-    // TODO: Error handling
-  }
 
   return nodes;
 }
