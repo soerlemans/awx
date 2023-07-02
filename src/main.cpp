@@ -187,8 +187,6 @@ auto parse(const token::TokenStream& t_ts) -> node::NodePtr
   return ast;
 }
 
-// TODO: Figure out how to get this to read from stdin when no filepaths are
-// given
 auto execute(const PolicyFunc t_lambda, NodePtr& t_ast) -> void
 {
   using namespace interpreter::tree_walk;

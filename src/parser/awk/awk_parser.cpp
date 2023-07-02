@@ -811,9 +811,7 @@ auto AwkParser::program() -> NodeListPtr
 {
   DBG_TRACE(VERBOSE, "PROGRAM");
 
-  NodeListPtr nodes{item_list()};
-
-  return nodes;
+  return item_list();
 }
 
 auto AwkParser::parse() -> NodePtr

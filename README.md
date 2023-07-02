@@ -35,6 +35,7 @@ Awx is currently in active development and not very mature but the following has
 Important features that must still be implemented:
 
 - [ ] Bug fixes (parsing is still not perfect yet)
+  - [ ] Empty control statements bodies segfault
 - [ ] Arrays
 - [ ] Implementing builtin functions
 - [ ] POSIX compliance
@@ -56,9 +57,14 @@ But the following packages are required:
 - [tabulate](https://github.com/p-ranav/tabulate) (Text table library)
 
 Tabulate is downloaded using CMake and statically linked but CLI11 is dynamically linked and CMake searches for it on your system.
+You can install all required dependencies with the following aptitude command:
+
+```shell
+apt install -y build-essential cmake libcli11-dev
+```
 
 ### Build
-```
+```shell
 make -j
 ```
 
@@ -73,9 +79,19 @@ The following dependencies are required:
 
 - C++ compiler (clang, g++ or msvc++)
   - Must support C++23
+- Make (Used to invoke CMake and scripts)
+- Cmake  (Main buildsysstem)
+- [CLI11](https://github.com/CLIUtils/CLI11) (CLI option parsing library)
+- [tabulate](https://github.com/p-ranav/tabulate) (Text table library)
 - `clang-format`
 - `clang-tidy`
 - `doxygen`
+
+You can install all required dependencies with the following aptitude command:
+
+```shell
+apt install -y build-essential cmake libcli11-dev clang-format clang-tidy doxygen
+```
 
 ### Style guide
 TODO: For the style guide look into `docs/styleguide.md`.

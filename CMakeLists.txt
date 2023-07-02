@@ -29,15 +29,15 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
   $<$<CONFIG:Debug>:DEBUG>
 )
 
-# Set compile flags
-# TODO: Compile flags not yet complete
+# Compiler flags:
 target_compile_options(${PROJECT_NAME} PRIVATE
   -Wall
   -Wextra
   -pedantic
+  # We always optimize as we only benchmark for the Debug build
+	-O2
   $<$<CONFIG:Debug>:-ggdb>
   $<$<CONFIG:Debug>:-g3>
-  $<$<CONFIG:Release>:-O2>
 )
 
 # Clang-tidy setup
