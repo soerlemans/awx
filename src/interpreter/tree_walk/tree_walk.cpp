@@ -293,6 +293,7 @@ auto TreeWalk::visit(Print* t_print) -> void
     char separator = '\0';
     for(const auto& param : *params) {
       const auto& result{walk(param).m_result};
+
       std::visit(
         [&](auto&& t_result) {
           if(separator) {
