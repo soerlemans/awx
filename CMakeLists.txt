@@ -27,6 +27,7 @@ add_executable(${PROJECT_NAME})
 # Define DEBUG macro if build type is Debug
 target_compile_definitions(${PROJECT_NAME} PRIVATE
   $<$<CONFIG:Debug>:DEBUG>
+  # $<$<CONFIG:RelWithDebInfo>:DEBUG>
 )
 
 # Compiler flags:
@@ -34,11 +35,6 @@ target_compile_options(${PROJECT_NAME} PRIVATE
   -Wall
   -Wextra
   -pedantic
-  # We always optimize as we only benchmark for the Debug build
-	-O2
-  $<$<CONFIG:Debug>:-ggdb>
-  $<$<CONFIG:Debug>:-g3>
-  $<$<CONFIG:Debug>:-fno-omit-frame-pointer> # Need for perf
 )
 
 # Clang-tidy setup

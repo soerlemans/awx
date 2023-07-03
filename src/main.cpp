@@ -248,6 +248,13 @@ auto main(int t_argc, char* t_argv[]) -> int
     return -app.exit(e);
   }
 
+  if(config.m_scripts.empty() && config.m_args.empty()) {
+    std::cerr << app.help() << std::flush;
+
+		// Awk returns 1 in this case, analyse awk exit codes
+    return 1;
+  }
+
   // Set loglevel for now for debugging purposes
   DBG_SET_LOGLEVEL(VERBOSE);
   try {

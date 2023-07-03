@@ -43,6 +43,7 @@ src/version.hpp
 # Build directories
 build/*
 debug/*
+benchmark/*
 
 # Docs
 doxygen/*
