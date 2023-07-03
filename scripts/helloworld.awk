@@ -22,5 +22,7 @@
 #	print (10, 20) in var
 
 	print "10" * "10"
+	print -"10"
+	print -"fff"
 	print $0
 }

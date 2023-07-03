@@ -640,24 +640,15 @@ auto TreeWalk::visit(Ternary* t_ternary) -> void
 auto TreeWalk::visit(UnaryPrefix* t_unary_prefix) -> void
 {
   auto context{walk(t_unary_prefix->left())};
+  auto& result{m_context.m_result};
 
   switch(t_unary_prefix->op()) {
     case UnaryPrefixOp::PLUS:
-      std::visit(Overload{[&](double t_left) {
-                            m_context.m_result = +t_left;
-                          },
-                          [](std::string& t_left) {
-                          }},
-                 context.m_result);
+      result = +cast(result);
       break;
 
     case UnaryPrefixOp::MINUS:
-      std::visit(Overload{[&](double t_left) {
-                            m_context.m_result = -t_left;
-                          },
-                          [](std::string& t_left) {
-                          }},
-                 context.m_result);
+      result = -cast(result);
       break;
   }
 }
@@ -711,12 +702,8 @@ auto TreeWalk::run(const TextBufferPtr& t_input) -> void
     m_ast->accept(this);
   } catch(NextExcept& except) {
   } catch(ExitExcept& except) {
-    // TODO: Implement this more completely and elegantly
-    std::visit(
-      [](auto&& t_exit) {
-        std::exit(cast(t_exit));
-      },
-      m_context.m_result);
+    // TODO: Should we exit here?
+    std::exit(cast(m_context.m_result));
   }
 
   m_nr++;
