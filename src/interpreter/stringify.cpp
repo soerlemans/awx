@@ -8,17 +8,18 @@
 
 auto interpreter::stringify(const Any& t_any) -> std::string
 {
-  std::stringstream ss;
+  return std::visit(
+    Overload{[&](auto&& t_number) {
+               std::stringstream ss;
 
-  std::visit(Overload{[&](auto&& t_number) {
-                        const auto precision{
-                          std::numeric_limits<decltype(t_number)>::digits10};
-                        ss << std::setprecision(precision) << t_number;
-                      },
-                      [&](const std::string& t_str) {
-                        ss << t_str;
-                      }},
-             t_any);
+               const auto precision{
+                 std::numeric_limits<decltype(t_number)>::digits10};
+               ss << std::setprecision(precision) << t_number;
 
-  return ss.str();
+               return ss.str();
+             },
+             [&](const std::string& t_str) {
+               return t_str;
+             }},
+    t_any);
 }

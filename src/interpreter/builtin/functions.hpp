@@ -6,13 +6,16 @@
 #include <functional>
 #include <map>
 
+// Local Includes:
+#include "../context.hpp"
+
 
 namespace interpreter::builtin {
 // Macros:
-#define AWX_INTERPRETER_BUILTIN_FUNCTIONS_HPP
-{
-#func, func
-}
+// #define AWX_INTERPRETER_BUILTIN_FUNCTIONS_HPP
+// {
+// #func, func
+// }
 
 // Aliases:
 using BuiltinFuncPtr = std::function<Any(Any)>;
@@ -40,8 +43,8 @@ auto srand() -> Any;
 auto sub() -> Any;
 auto substr() -> Any;
 auto system() -> Any;
-auto tolower() -> Any;
-auto toupper() -> Any;
+auto tolower(const Any& t_str) -> std::string;
+auto toupper(const Any& t_any) -> std::string;
 
 } // namespace interpreter::builtin
 
