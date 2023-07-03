@@ -159,17 +159,17 @@ auto TreeWalk::visit(ForIn* t_for_in) -> void
   // TODO: Implement
 }
 
-auto TreeWalk::visit(Continue* t_continue) -> void
+auto TreeWalk::visit([[maybe_unused]] Continue* t_continue) -> void
 {
   throw ContinueExcept{};
 }
 
-auto TreeWalk::visit(Break* t_break) -> void
+auto TreeWalk::visit([[maybe_unused]] Break* t_break) -> void
 {
   throw BreakExcept{};
 }
 
-auto TreeWalk::visit(Next* t_next) -> void
+auto TreeWalk::visit([[maybe_unused]] Next* t_next) -> void
 {
   throw NextExcept{};
 }
@@ -313,8 +313,10 @@ auto TreeWalk::visit(Print* t_print) -> void
 
 auto TreeWalk::visit(Printf* t_printf) -> void
 {
-  // auto format{walk(t_printf->format())};
-  // std::printf();
+  const auto& format{walk(t_printf->format()).m_result};
+  auto& params{t_printf->params()};
+
+  // std::printf(stringify(format).c_str());
 }
 
 auto TreeWalk::visit(Getline* t_getline) -> void
@@ -323,7 +325,7 @@ auto TreeWalk::visit(Getline* t_getline) -> void
 
   // Get input
   std::string input;
-  std::cin >> input;
+  std::getline(std::cin, input);
 
   set(name, input);
 }
@@ -340,26 +342,22 @@ auto TreeWalk::visit(Array* t_array) -> void
 
 auto TreeWalk::visit(FieldReference* t_fr) -> void
 {
-  auto& context{walk(t_fr->expr())};
+  auto& result{walk(t_fr->expr()).m_result};
 
   // Resolve field reference
-  std::visit(
-    [this](auto&& t_index) {
-      m_context.m_result = m_fields.get(cast(t_index));
-    },
-    context.m_result);
+  result = m_fields.get(cast(result));
 }
 
 auto TreeWalk::visit(Variable* t_var) -> void
 {
-  auto& result = m_context.m_result;
+  auto& result{m_context.m_result};
 
   result = get(t_var->name());
 }
 
 auto TreeWalk::visit(Float* t_float) -> void
 {
-  auto& result = m_context.m_result;
+  auto& result{m_context.m_result};
 
   result = t_float->get();
 }
@@ -393,61 +391,47 @@ auto TreeWalk::visit(Regex* t_regex) -> void
   }
 }
 
+// TODO: Arithmetic and Assignment visit methods could use the same function
 auto TreeWalk::visit(Arithmetic* t_arithmetic) -> void
 {
   using namespace builtin;
 
   auto lhs{walk(t_arithmetic->left())};
   auto rhs{walk(t_arithmetic->right())};
+  auto& result{m_context.m_result};
 
-  auto lambda{[&](auto t_func) {
-    std::visit(
-      [&](auto&& t_lhs, auto&& t_rhs) {
-        m_context.m_result = (double)t_func(cast(t_lhs), t_rhs);
-      },
-      lhs.m_result, rhs.m_result);
+  const auto lambda{[&](auto t_func) {
+    result = (double)t_func(cast(lhs.m_result), cast(rhs.m_result));
   }};
 
   switch(const auto op{t_arithmetic->op()}; op) {
     case ArithmeticOp::POWER: {
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return power(t_lhs, t_rhs);
-      });
+      lambda(power<double, double>);
       break;
     }
 
     case ArithmeticOp::MULTIPLY: {
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return multiply(t_lhs, t_rhs);
-      });
+      lambda(multiply<double, double>);
       break;
     }
 
     case ArithmeticOp::DIVIDE: {
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return divide(t_lhs, t_rhs);
-      });
+      lambda(divide<double, double>);
       break;
     }
 
     case ArithmeticOp::MODULO: {
-      // lambda([](auto&& t_lhs, auto&& t_rhs) {
-      //   return modulo(t_lhs, t_rhs);
-      // });
+      // lambda(modulo<double, double>);
       break;
     }
 
     case ArithmeticOp::ADD: {
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return add(t_lhs, t_rhs);
-      });
+      lambda(add<double, double>);
       break;
     }
 
     case ArithmeticOp::SUBTRACT: {
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return subtract(t_lhs, t_rhs);
-      });
+      lambda(subtract<double, double>);
       break;
     }
 
@@ -464,56 +448,38 @@ auto TreeWalk::visit(Assignment* t_assignment) -> void
   auto lhs{walk(t_assignment->left())};
   auto rhs{walk(t_assignment->right())};
 
-  auto lambda{[&](auto t_func) {
-    std::visit(Overload{[&](std::string& t_lhs, std::string& t_rhs) {
-                          set(lhs.m_name, t_func(cast(t_lhs), t_rhs));
-                        },
-                        [&](auto&& t_lhs, auto&& t_rhs) {
-                          set(lhs.m_name, t_func(t_lhs, t_rhs));
-                        }},
-               lhs.m_result, rhs.m_result);
+  const auto lambda{[&](auto&& t_func) {
+    set(lhs.m_name, t_func(cast(lhs.m_result), cast(rhs.m_result)));
   }};
 
   switch(const auto op{t_assignment->op()}; op) {
     case AssignmentOp::POWER: {
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return power(t_lhs, t_rhs);
-      });
+      lambda(power<double, double>);
       break;
     }
 
     case AssignmentOp::MULTIPLY: {
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return multiply(t_lhs, t_rhs);
-      });
+      lambda(multiply<double, double>);
       break;
     }
 
     case AssignmentOp::DIVIDE: {
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return divide(t_lhs, t_rhs);
-      });
+      lambda(divide<double, double>);
       break;
     }
 
     case AssignmentOp::MODULO: {
-      // lambda([](auto&& t_lhs, auto&& t_rhs) {
-      //   return modulo(t_lhs, t_rhs);
-      // });
+      // lambda(modulo<double, double>);
       break;
     }
 
     case AssignmentOp::ADD: {
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return add(t_lhs, t_rhs);
-      });
+      lambda(add<double, double>);
       break;
     }
 
     case AssignmentOp::SUBTRACT: {
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return subtract(t_lhs, t_rhs);
-      });
+      lambda(subtract<double, double>);
       break;
     }
 
@@ -533,52 +499,33 @@ auto TreeWalk::visit(Comparison* t_comparison) -> void
 {
   using namespace builtin;
 
-  auto lhs{walk(t_comparison->left())};
-  auto rhs{walk(t_comparison->right())};
-
-  auto lambda{[&](auto t_func) {
-    std::visit(
-      [&](auto&& t_lhs, auto&& t_rhs) {
-        m_context.m_result = (double)t_func(t_lhs, t_rhs);
-      },
-      lhs.m_result, rhs.m_result);
-  }};
+  auto lhs{walk(t_comparison->left()).m_result};
+  auto rhs{walk(t_comparison->right()).m_result};
+  auto& result{m_context.m_result};
 
   switch(t_comparison->op()) {
     case ComparisonOp::LESS_THAN:
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return less_than(t_lhs, t_rhs);
-      });
+      // result = less_than(lhs, rhs);
       break;
 
     case ComparisonOp::LESS_THAN_EQUAL:
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return less_than_equal(t_lhs, t_rhs);
-      });
+      // result = less_than_equal(lhs, rhs);
       break;
 
     case ComparisonOp::EQUAL:
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return equal(t_lhs, t_rhs);
-      });
+      // result = equal(lhs, rhs);
       break;
 
     case ComparisonOp::NOT_EQUAL:
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return not_equal(t_lhs, t_rhs);
-      });
+      // result = not_equal(lhs, rhs);
       break;
 
     case ComparisonOp::GREATER_THAN:
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return greater_than(t_lhs, t_rhs);
-      });
+      // result = greater_than(lhs, rhs);
       break;
 
     case ComparisonOp::GREATER_THAN_EQUAL:
-      lambda([](auto&& t_lhs, auto&& t_rhs) {
-        return greater_than_equal(t_lhs, t_rhs);
-      });
+      // result = greater_than_equal(lhs, rhs);
       break;
   }
 }

@@ -8,6 +8,11 @@
 
 
 namespace interpreter {
+// Concepts:
+template<typename T>
+concept VariableLike = std::same_as < std::remove_cvref_t<T>,
+double > || std::same_as<std::remove_cvref_t<T>, std::string>;
+
 // Forward Declarations:
 // struct ArrayType;
 
