@@ -36,8 +36,8 @@ using PolicyFunc = std::function<void(NodePtr&)>;
 enum ExitCode {
   OK = 0,
   IMPROPER_USAGE,
+  EXCEPTION = 100,
   SIGNAL,
-  EXCEPTION,
 };
 
 // Functions:
@@ -246,7 +246,7 @@ auto main(int t_argc, char* t_argv[]) -> int
   try {
     parse_args(config, app, t_argc, t_argv);
   } catch(const CLI::ParseError& e) {
-    return -app.exit(e);
+    return app.exit(e);
   }
 
   if(config.m_scripts.empty() && config.m_args.empty()) {

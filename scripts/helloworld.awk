@@ -19,5 +19,7 @@
 
 	print newvar var
 
+	getline test2
+	print "Test2", test2
 #	print (10, 20) in var
 }

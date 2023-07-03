@@ -11,6 +11,15 @@
 #include "../../token/token_type_helpers.hpp"
 
 
+// Macros:
+//! Convenvience macro for
+#define GROUPING(t_var, t_func)          \
+  do {                                   \
+    expect(TokenType::PAREN_OPEN, "(");  \
+    t_var = t_func();                    \
+    expect(TokenType::PAREN_CLOSE, ")"); \
+  } while(false)
+
 // Using statements:
 using namespace parser::awk;
 
@@ -93,7 +102,6 @@ auto AwkParser::non_unary_input_function(NodePtr& t_lhs) -> NodePtr
   return node;
 }
 
-
 auto AwkParser::function() -> NodePtr
 {
   DBG_TRACE(VERBOSE, "FUNCTION");
@@ -104,19 +112,18 @@ auto AwkParser::function() -> NodePtr
 
     // When defining a function a space after the identifier is allowed
     if(const auto token{get_token()}; tokentype::is_identifier(token.type())) {
+      DBG_TRACE_PRINT(INFO, "Found a FUNCTION");
+
       next();
       const auto name{token.value<std::string>()};
       DBG_TRACE_PRINT(VERBOSE, "Valid FUNCTION IDENTIFIER: ", name);
 
-      // TODO: Create a Function class
-      expect(TokenType::PAREN_OPEN, "(");
-      auto params{param_list_opt()};
-      expect(TokenType::PAREN_CLOSE, ")");
+			NodeListPtr params;
+			GROUPING(params, param_list_opt);
 
       newline_opt();
       auto body{action()};
 
-      DBG_TRACE_PRINT(INFO, "Found a FUNCTION");
 
       node =
         std::make_shared<Function>(name, std::move(params), std::move(body));
@@ -525,7 +532,7 @@ auto AwkParser::unterminated_statement() -> NodePtr
 
   if(next_if(TokenType::IF)) {
     DBG_TRACE_PRINT(INFO, "Found IF");
-    NodePtr condition{grouping()};
+    auto condition{grouping()};
 
     newline_opt();
     if(auto ptr{unterminated_statement()}; ptr) {
@@ -562,9 +569,9 @@ auto AwkParser::terminated_statement() -> NodePtr
   } else if(next_if(TokenType::IF)) {
     DBG_TRACE_PRINT(INFO, "Found IF");
 
-    NodePtr condition{grouping()};
+    auto condition{grouping()};
     newline_opt();
-    NodePtr then{terminated_statement()};
+    auto then{terminated_statement()};
 
     if(next_if(TokenType::ELSE)) {
       newline_opt();

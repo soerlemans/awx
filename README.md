@@ -31,6 +31,7 @@ Awx is currently in active development and not very mature but the following has
 - [x] Fieldreferences (currently the field separator is always set to be a space)
 - [x] Builtin variables (some)
 - [x] Rudimentary benchmarking (measuring total execution time as well as lexing, parsing, execution)
+- [x] Profiling with callgrind
 
 Important features that must still be implemented:
 
@@ -41,7 +42,6 @@ Important features that must still be implemented:
 - [ ] POSIX compliance
 - [ ] Bytecode compilation
 - [ ] Common optimizations
-- [ ] Benchmarking using [FlameGraph](https://github.com/brendangregg/FlameGraph)
 - [ ] Displaying data about the AST in a table (useful for contributors that want to do debugging)
 
 ## Getting AWX
@@ -56,7 +56,7 @@ But the following packages are required:
 - [CLI11](https://github.com/CLIUtils/CLI11) (CLI option parsing library)
 - [tabulate](https://github.com/p-ranav/tabulate) (Text table library)
 
-Tabulate is downloaded using CMake and statically linked but CLI11 is dynamically linked and CMake searches for it on your system.
+Tabulate is downloaded using CMake and statically linked but CLI11 is dynamically linked (CMake searches for it on your system).
 You can install all required dependencies with the following aptitude command:
 
 ```shell
@@ -70,34 +70,6 @@ make -j
 
 The binary will then be in `build/awx`.
 To get the help manual run `awx -h`.
-
-## Contributing
-This section is for those who want to contribute to the project.
-
-### Dependencies
-The following dependencies are required:
-
-- C++ compiler (clang, g++ or msvc++)
-  - Must support C++23
-- Make (Used to invoke CMake and scripts)
-- Cmake  (Main buildsysstem)
-- [CLI11](https://github.com/CLIUtils/CLI11) (CLI option parsing library)
-- [tabulate](https://github.com/p-ranav/tabulate) (Text table library)
-- `clang-format`
-- `clang-tidy`
-- `doxygen`
-
-You can install all required dependencies with the following aptitude command:
-
-```shell
-apt install -y build-essential cmake libcli11-dev clang-format clang-tidy doxygen
-```
-
-### Style guide
-TODO: For the style guide look into `docs/styleguide.md`.
-
-### Architecture
-TODO: For a short description of the architecture of the software look into `docs/architecture.md`.
 
 ## Credit
 I sourced some scripts from Tim Sherwood for the purpose of testing the implementation.

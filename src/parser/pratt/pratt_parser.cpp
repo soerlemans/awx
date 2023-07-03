@@ -165,7 +165,7 @@ auto PrattParser::lvalue() -> NodePtr
   return node;
 }
 
-// TODO: Figure out if we should use PrefixMap or leave as is?
+// TODO: We should use PostfixMap?
 auto PrattParser::postcrement(NodePtr& t_lhs) -> NodePtr
 {
   DBG_TRACE(VERBOSE, "POSTCREMENT");
