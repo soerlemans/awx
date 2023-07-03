@@ -45,5 +45,8 @@ build/*
 debug/*
 benchmark/*
 
+# Profiling
+callgrind.out.*
+
 # Docs
 doxygen/*

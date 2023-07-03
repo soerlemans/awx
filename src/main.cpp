@@ -35,6 +35,7 @@ using PolicyFunc = std::function<void(NodePtr&)>;
 // Enums:
 enum ExitCode {
   OK = 0,
+  IMPROPER_USAGE,
   SIGNAL,
   EXCEPTION,
 };
@@ -251,8 +252,8 @@ auto main(int t_argc, char* t_argv[]) -> int
   if(config.m_scripts.empty() && config.m_args.empty()) {
     std::cerr << app.help() << std::flush;
 
-		// Awk returns 1 in this case, analyse awk exit codes
-    return 1;
+    // Awk returns 1 in this case, analyse awk exit codes
+    return ExitCode::IMPROPER_USAGE;
   }
 
   // Set loglevel for now for debugging purposes
