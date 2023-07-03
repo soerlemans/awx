@@ -10,6 +10,7 @@ if [[ ! -e "$EXECUTABLE" ]]; then
 		echo "ERROR: $EXECUTABLE does not exit" 1>&2
 		exit 1
 fi
+
 valgrind --tool=callgrind \
 				 --callgrind-out-file=callgrind.out.awx \
 				 "$EXECUTABLE" $@
