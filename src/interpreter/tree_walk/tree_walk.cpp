@@ -505,27 +505,27 @@ auto TreeWalk::visit(Comparison* t_comparison) -> void
 
   switch(t_comparison->op()) {
     case ComparisonOp::LESS_THAN:
-      // result = less_than(lhs, rhs);
+      result = (double)less_than(lhs, rhs);
       break;
 
     case ComparisonOp::LESS_THAN_EQUAL:
-      // result = less_than_equal(lhs, rhs);
+      result = (double)less_than_equal(lhs, rhs);
       break;
 
     case ComparisonOp::EQUAL:
-      // result = equal(lhs, rhs);
+      result = (double)equal(lhs, rhs);
       break;
 
     case ComparisonOp::NOT_EQUAL:
-      // result = not_equal(lhs, rhs);
+      result = (double)not_equal(lhs, rhs);
       break;
 
     case ComparisonOp::GREATER_THAN:
-      // result = greater_than(lhs, rhs);
+      result = (double)greater_than(lhs, rhs);
       break;
 
     case ComparisonOp::GREATER_THAN_EQUAL:
-      // result = greater_than_equal(lhs, rhs);
+      result = (double)greater_than_equal(lhs, rhs);
       break;
   }
 }
@@ -536,13 +536,7 @@ auto TreeWalk::visit(Increment* t_increment) -> void
   auto lhs{walk(t_increment->left())};
   auto& var{m_globals[lhs.m_name]};
 
-  std::visit(Overload{[&](double& t_left) {
-                        t_left++;
-                      },
-                      [&](const std::string& t_left) {
-                        var = cast(t_left) + 1.0;
-                      }},
-             var);
+  var = cast(var) + 1.0;
 }
 
 // TODO: Implement postfix increment
@@ -551,13 +545,7 @@ auto TreeWalk::visit(Decrement* t_decrement) -> void
   auto lhs{walk(t_decrement->left())};
   auto& var{m_globals[lhs.m_name]};
 
-  std::visit(Overload{[&](double& t_left) {
-                        t_left--;
-                      },
-                      [&](const std::string& t_left) {
-                        var = cast(t_left) - 1.0;
-                      }},
-             var);
+  var = cast(var) - 1.0;
 }
 
 auto TreeWalk::visit(Delete* t_delete) -> void

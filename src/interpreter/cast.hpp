@@ -97,7 +97,7 @@ auto cast(T t_func, const Any& t_lhs, const Any& t_rhs)
       using L = decltype(t_left);
       using R = decltype(t_right);
 
-      cast(t_func, std::forward<L>(t_left), std::forward<R>(t_right));
+      return cast(t_func, std::forward<L>(t_left), std::forward<R>(t_right));
     },
     t_lhs, t_rhs);
 }
