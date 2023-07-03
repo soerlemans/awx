@@ -38,6 +38,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 	-O2
   $<$<CONFIG:Debug>:-ggdb>
   $<$<CONFIG:Debug>:-g3>
+  $<$<CONFIG:Debug>:-fno-omit-frame-pointer> # Need for perf
 )
 
 # Clang-tidy setup
