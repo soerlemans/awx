@@ -45,7 +45,6 @@ auto substr() -> Any;
 auto system() -> Any;
 auto tolower(const Any& t_str) -> std::string;
 auto toupper(const Any& t_any) -> std::string;
-
 } // namespace interpreter::builtin
 
 #endif // AWX_INTERPRETER_BUILTIN_FUNCTIONS_HPP

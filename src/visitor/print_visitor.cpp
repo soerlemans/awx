@@ -130,20 +130,18 @@ auto PrintVisitor::visit(FunctionCall* t_fn_call) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("FUNCTION CALL");
-  PPRINT("| NAME: ");
-
-  if(NodeListPtr & args{t_fn_call->args()}; args) {
-    PPRINT("| ARGS");
-    args->accept(this);
-  }
+  PPRINT("Function call");
+  PPRINT("| Name: ", t_fn_call->name());
+  PPRINT_IF("Params: ", t_fn_call->args());
 }
 
 auto PrintVisitor::visit(BuiltinFunctionCall* t_fn) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("BUILTIN FUNCTION CALL");
+  PPRINT("Builtin function call");
+  PPRINT("| Name: ", t_fn->name());
+  PPRINT_IF("Params: ", t_fn->args());
 }
 
 auto PrintVisitor::visit(SpecialPattern* t_pattern) -> void

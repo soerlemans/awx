@@ -11,6 +11,7 @@
 // Includes:
 #include "../../debug/log.hpp"
 #include "../../node/include.hpp"
+#include "../builtin/functions.hpp"
 #include "../builtin/operators.hpp"
 #include "../overload.hpp"
 #include "../stringify.hpp"
@@ -18,6 +19,14 @@
 // Local Includes:
 #include "control.hpp"
 
+
+// Macros:
+#define BUILTIN_CALL(t_result, t_var, t_name, ...) \
+  do {                                             \
+    if(t_var == #t_name) {                         \
+      t_result = t_name(__VA_ARGS__);              \
+    }                                              \
+  } while(false)
 
 // Using statements:
 using namespace interpreter::tree_walk;
@@ -249,7 +258,28 @@ auto TreeWalk::visit(FunctionCall* t_fn_call) -> void
 
 auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
 {
+  using namespace builtin;
+
+
+  auto name{t_fn->name()};
+  auto& nodes{t_fn->args()};
+  auto& result{m_context.m_result};
+
   m_resolve = false;
+  // TODO: Create a method for this
+  std::vector<Any> args;
+  args.reserve(nodes->size());
+  for(auto& arg : *nodes) {
+    const auto& context{walk(arg)};
+
+    args.push_back(context.m_result);
+  }
+  m_resolve = true;
+
+  // TODO: Test code
+  BUILTIN_CALL(result, name, tolower, args.front());
+  BUILTIN_CALL(result, name, toupper, args.front());
+
   // TODO: Convert each of these to a case and call
   // DEFINE_RESERVED(g_atan2,    "atan2",    BUILTIN_FUNCTION);
   // DEFINE_RESERVED(g_close,    "close",    BUILTIN_FUNCTION);
@@ -272,8 +302,6 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
   // DEFINE_RESERVED(g_system,   "system",   BUILTIN_FUNCTION);
   // DEFINE_RESERVED(g_tolower,  "tolower",  BUILTIN_FUNCTION);
   // DEFINE_RESERVED(g_toupper,  "toupper",  BUILTIN_FUNCTION);
-
-  m_resolve = true;
 }
 
 auto TreeWalk::visit(SpecialPattern* t_pattern) -> void

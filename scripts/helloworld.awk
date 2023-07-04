@@ -24,5 +24,8 @@
 	print "10" * "10"
 	print -"10"
 	print -"fff"
+
+	print toupper("hello world")
+
 	print $0
 }
