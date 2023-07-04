@@ -67,28 +67,32 @@ namespace keywords {
 
 namespace functions {
   // Builtin functions
-  // TODO: Maybe simplify to one TokenType called BUILTIN_FUNCTION
+  // Arithmetic functions:
   DEFINE_RESERVED(g_atan2,    "atan2",    BUILTIN_FUNCTION);
-  DEFINE_RESERVED(g_close,    "close",    BUILTIN_FUNCTION);
   DEFINE_RESERVED(g_cos,      "cos",      BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_sin,      "sin",      BUILTIN_FUNCTION);
   DEFINE_RESERVED(g_exp,      "exp",      BUILTIN_FUNCTION);
-  DEFINE_RESERVED(g_gsub,     "gsub",     BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_log,      "log",      BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_sqrt,     "sqrt",     BUILTIN_FUNCTION);
   DEFINE_RESERVED(g_int,      "int",      BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_rand,     "rand",     BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_srand,    "srand",    BUILTIN_FUNCTION);
+
+	// String functions:
+  DEFINE_RESERVED(g_gsub,     "gsub",     BUILTIN_FUNCTION);
   DEFINE_RESERVED(g_index,    "index",    BUILTIN_FUNCTION);
   DEFINE_RESERVED(g_length,   "length",   BUILTIN_FUNCTION);
-  DEFINE_RESERVED(g_log,      "log",      BUILTIN_FUNCTION);
   DEFINE_RESERVED(g_match,    "match",    BUILTIN_FUNCTION);
-  DEFINE_RESERVED(g_rand,     "rand",     BUILTIN_FUNCTION);
-  DEFINE_RESERVED(g_sin,      "sin",      BUILTIN_FUNCTION);
   DEFINE_RESERVED(g_split,    "split",    BUILTIN_FUNCTION);
   DEFINE_RESERVED(g_sprintf,  "sprintf",  BUILTIN_FUNCTION);
-  DEFINE_RESERVED(g_sqrt,     "sqrt",     BUILTIN_FUNCTION);
-  DEFINE_RESERVED(g_srand,    "srand",    BUILTIN_FUNCTION);
   DEFINE_RESERVED(g_sub,      "sub",      BUILTIN_FUNCTION);
   DEFINE_RESERVED(g_substr,   "substr",   BUILTIN_FUNCTION);
-  DEFINE_RESERVED(g_system,   "system",   BUILTIN_FUNCTION);
   DEFINE_RESERVED(g_tolower,  "tolower",  BUILTIN_FUNCTION);
   DEFINE_RESERVED(g_toupper,  "toupper",  BUILTIN_FUNCTION);
+
+	// IO and general functions:
+  DEFINE_RESERVED(g_close,    "close",    BUILTIN_FUNCTION);
+  DEFINE_RESERVED(g_system,   "system",   BUILTIN_FUNCTION);
 
   // TODO: Use a std::map instead of an array as those have a faster lookup time
   // Then we wont need to loop through them either
@@ -96,26 +100,28 @@ namespace functions {
   // TODO: Make this a constexpr vector? those have constexpr initializer_list constructor
   constexpr std::array<TokenTypeWrapper<std::string_view>, 21> g_functions{
     g_atan2,
-    g_close,
     g_cos,
     g_exp,
+    g_log,
+    g_sqrt,
+    g_int,
+    g_rand,
+    g_srand,
+
     g_gsub,
     g_index,
-    g_int,
     g_length,
-    g_log,
     g_match,
-    g_rand,
     g_sin,
     g_split,
     g_sprintf,
-    g_sqrt,
-    g_srand,
     g_sub,
     g_substr,
-    g_system,
     g_tolower,
-    g_toupper
+    g_toupper,
+
+    g_close,
+    g_system
   };
 } // namespace functions
 

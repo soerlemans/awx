@@ -5,7 +5,6 @@
 #include "context.hpp"
 #include "overload.hpp"
 
-
 /*! In AWK string's are often casted to doubles for a lot of operations.
  * This gets tricky to define manually for binary operations as the down cast to
  * a double only happens when on of the arguments is a double and the other a

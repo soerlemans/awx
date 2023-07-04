@@ -1,5 +1,5 @@
-#ifndef STRINGIFY_HPP
-#define STRINGIFY_HPP
+#ifndef AWX_INTERPRETER_STRINGIFY_HPP
+#define AWX_INTERPRETER_STRINGIFY_HPP
 
 // Local Includes:
 #include "context.hpp"
@@ -10,4 +10,4 @@ namespace interpreter {
 auto stringify(const Any& t_any) -> std::string;
 } // namespace interpreter
 
-#endif // STRINGIFY_HPP
+#endif // AWX_INTERPRETER_STRINGIFY_HPP

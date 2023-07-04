@@ -1,9 +1,11 @@
 #ifndef AWX_NODE_LIST_HPP
 #define AWX_NODE_LIST_HPP
 
+// STL Includes:
 #include <list>
 #include <memory>
 
+// Local Includes:
 #include "node.hpp"
 #include "node_interface.hpp"
 

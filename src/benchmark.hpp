@@ -1,5 +1,5 @@
-#ifndef BENCHMARK_HPP
-#define BENCHMARK_HPP
+#ifndef AWX_BENCHMARK_HPP
+#define AWX_BENCHMARK_HPP
 
 // Library Includes:
 #include <tabulate/table.hpp>
@@ -59,4 +59,4 @@ auto benchmark(Args&&... t_args) -> void
   DBG_PRINTLN(timing);
 }
 
-#endif // BENCHMARK_HPP
+#endif // AWX_BENCHMARK_HPP

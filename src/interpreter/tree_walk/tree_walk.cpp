@@ -42,19 +42,36 @@ using namespace node::operators;
 using namespace node::recipes;
 using namespace node::rvalue;
 
-// Public Methods:
+// Methods:
 TreeWalk::TreeWalk(NodePtr t_ast, const TextBufferPtr& t_input)
   : m_ast{std::move(t_ast)}, m_nr{1}, m_resolve{true}
 {
   init(t_input);
 }
 
+// Helper Methods:
+//! Walk visits a node and returns its result
 auto TreeWalk::walk(NodePtr t_node) -> Context&
 {
   t_node->accept(this);
 
   return m_context;
 }
+
+auto TreeWalk::walk_list(NodeListPtr t_nodes) -> std::vector<Any>
+{
+  std::vector<Any> results;
+
+  results.reserve(t_nodes->size());
+  for(auto& arg : *t_nodes) {
+    const auto& context{walk(arg)};
+
+    results.push_back(context.m_result);
+  }
+
+  return results;
+}
+
 
 //! Evaluates the result of walking a Node and if it should be true
 auto TreeWalk::eval_bool(NodePtr t_node) -> bool
@@ -260,25 +277,20 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
 {
   using namespace builtin;
 
-
   auto name{t_fn->name()};
-  auto& nodes{t_fn->args()};
   auto& result{m_context.m_result};
 
   m_resolve = false;
-  // TODO: Create a method for this
-  std::vector<Any> args;
-  args.reserve(nodes->size());
-  for(auto& arg : *nodes) {
-    const auto& context{walk(arg)};
-
-    args.push_back(context.m_result);
-  }
+  auto params{walk_list(t_fn->args())};
   m_resolve = true;
 
-  // TODO: Test code
-  BUILTIN_CALL(result, name, tolower, args.front());
-  BUILTIN_CALL(result, name, toupper, args.front());
+  if(params.empty()) {
+    BUILTIN_CALL(result, name, rand);
+  } else if(params.size() == 1) {
+    BUILTIN_CALL(result, name, system, params.front());
+    BUILTIN_CALL(result, name, tolower, params.front());
+    BUILTIN_CALL(result, name, toupper, params.front());
+  }
 
   // TODO: Convert each of these to a case and call
   // DEFINE_RESERVED(g_atan2,    "atan2",    BUILTIN_FUNCTION);
@@ -299,9 +311,6 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
   // DEFINE_RESERVED(g_srand,    "srand",    BUILTIN_FUNCTION);
   // DEFINE_RESERVED(g_sub,      "sub",      BUILTIN_FUNCTION);
   // DEFINE_RESERVED(g_substr,   "substr",   BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_system,   "system",   BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_tolower,  "tolower",  BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_toupper,  "toupper",  BUILTIN_FUNCTION);
 }
 
 auto TreeWalk::visit(SpecialPattern* t_pattern) -> void

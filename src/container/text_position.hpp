@@ -1,5 +1,5 @@
-#ifndef AWX_CONTAINER_FILE_POSITION_HPP
-#define AWX_CONTAINER_FILE_POSITION_HPP
+#ifndef AWX_CONTAINER_TEXT_POSITION_HPP
+#define AWX_CONTAINER_TEXT_POSITION_HPP
 
 // STL Includes:
 #include <string>
@@ -26,4 +26,4 @@ struct TextPosition {
 };
 } // namespace container
 
-#endif // AWX_CONTAINER_FILE_POSITION_HPP
+#endif // AWX_CONTAINER_TEXT_POSITION_HPP

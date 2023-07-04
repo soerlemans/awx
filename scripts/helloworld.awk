@@ -26,6 +26,7 @@
 	print -"fff"
 
 	print toupper("hello world")
+	system("ls")
 
 	print $0
 }

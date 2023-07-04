@@ -45,8 +45,9 @@ class TreeWalk : public visitor::NodeVisitor {
   public:
   TreeWalk(node::NodePtr t_ast, const container::TextBufferPtr& t_input);
 
-  //! Walk returns the updated context
+  // Helper methods:
   auto walk(node::NodePtr t_node) -> Context&;
+  auto walk_list(node::NodeListPtr t_nodes) -> std::vector<Any>;
   auto eval_bool(node::NodePtr t_node) -> bool;
 
   auto clear_context() -> void;

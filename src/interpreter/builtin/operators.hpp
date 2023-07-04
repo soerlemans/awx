@@ -47,6 +47,7 @@ INTERPRETER_DEFINE_BINOP_FUNCTION(+, add)
 INTERPRETER_DEFINE_BINOP_FUNCTION(-, subtract)
 
 // Comparisons:
+// FIXME: We are comparing these as doubles now which is not a good idea
 INTERPRETER_DEFINE_BINOP_FUNCTION(<, less_than)
 INTERPRETER_DEFINE_BINOP_FUNCTION(<=, less_than_equal)
 
