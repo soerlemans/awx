@@ -33,7 +33,6 @@ auto log(const Any& t_x) -> double;
 auto sqrt(const Any& t_x) -> double;
 auto to_int(const Any& t_any) -> double;
 auto rand() -> double;
-
 auto srand() -> double;
 auto srand(const Any& t_seed) -> double;
 
@@ -51,7 +50,7 @@ auto tolower(const Any& t_any) -> std::string;
 auto toupper(const Any& t_any) -> std::string;
 
 // IO and general functions:
-auto close() -> Any;
+auto close(const Any& t_any) -> double;
 auto system(const Any& t_any) -> double;
 } // namespace interpreter::builtin
 

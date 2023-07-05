@@ -28,5 +28,7 @@
 	print toupper("hello world")
 	system("ls")
 
-	print $0
+	print "$0: " $0
+	print "l: " length($1) " $1: " $1
+	print "l: " length($2) " $2: " $2
 }

@@ -6,6 +6,7 @@
 #include <sstream>
 
 
+// TODO: Should be inlined
 auto interpreter::stringify(const Any& t_any) -> std::string
 {
   return std::visit(

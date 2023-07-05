@@ -71,6 +71,11 @@ auto to_int(const Any& t_any) -> double
 
 auto rand() -> double
 {
+  return std::rand();
+}
+
+auto srand() -> double
+{
   Any seed{(double)std::time(nullptr)};
 
   return srand(seed);
@@ -125,9 +130,12 @@ auto sub(const Any& t_ere, const Any& t_rep, Any& t_target) -> double
 
 auto substr(const Any& t_str, const Any& t_start, const Any& t_count)
   -> std::string
-{}
+{
+  auto str{stringify(t_str)};
 
-// TODO: tolower and toupper are similar, create a
+  return str.substr(cast(t_start), cast(t_count));
+}
+
 auto tolower(const Any& t_any) -> std::string
 {
   return transform(t_any, [](const unsigned t_char) {
@@ -143,6 +151,12 @@ auto toupper(const Any& t_any) -> std::string
 }
 
 // IO and general functions:
+auto close(const Any& t_any) -> double
+{
+  // TODO: Implement
+  return 1.0;
+}
+
 auto system(const Any& t_any) -> double
 {
   const std::string str{stringify(t_any)};

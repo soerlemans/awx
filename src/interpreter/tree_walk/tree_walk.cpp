@@ -280,37 +280,40 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
   auto name{t_fn->name()};
   auto& result{m_context.m_result};
 
+  // Do not resolve ERE's for builtin functions
   m_resolve = false;
   auto params{walk_list(t_fn->args())};
   m_resolve = true;
 
+  // TODO: Figure out how to clean this up
   if(params.empty()) {
+    // Arithmetic functions:
     BUILTIN_CALL(result, name, rand);
-  } else if(params.size() == 1) {
-    BUILTIN_CALL(result, name, system, params.front());
-    BUILTIN_CALL(result, name, tolower, params.front());
-    BUILTIN_CALL(result, name, toupper, params.front());
-  }
+    BUILTIN_CALL(result, name, srand);
 
-  // TODO: Convert each of these to a case and call
-  // DEFINE_RESERVED(g_atan2,    "atan2",    BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_close,    "close",    BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_cos,      "cos",      BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_exp,      "exp",      BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_gsub,     "gsub",     BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_int,      "int",      BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_index,    "index",    BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_length,   "length",   BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_log,      "log",      BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_match,    "match",    BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_rand,     "rand",     BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_sin,      "sin",      BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_split,    "split",    BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_sprintf,  "sprintf",  BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_sqrt,     "sqrt",     BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_srand,    "srand",    BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_sub,      "sub",      BUILTIN_FUNCTION);
-  // DEFINE_RESERVED(g_substr,   "substr",   BUILTIN_FUNCTION);
+    // String functions:
+    BUILTIN_CALL(result, name, length, m_fields.get());
+  } else if(params.size() == 1) {
+    // Arithmetic functions:
+    BUILTIN_CALL(result, name, cos, params[0]);
+    BUILTIN_CALL(result, name, sin, params[0]);
+    BUILTIN_CALL(result, name, exp, params[0]);
+    BUILTIN_CALL(result, name, log, params[0]);
+    BUILTIN_CALL(result, name, sqrt, params[0]);
+    BUILTIN_CALL(result, name, to_int, params[0]);
+    BUILTIN_CALL(result, name, srand, params[0]);
+
+    // String functions:
+    BUILTIN_CALL(result, name, length, params[0]);
+    BUILTIN_CALL(result, name, tolower, params[0]);
+    BUILTIN_CALL(result, name, toupper, params[0]);
+
+    // IO and general functions:
+    BUILTIN_CALL(result, name, system, params[0]);
+    BUILTIN_CALL(result, name, close, params[0]);
+  } else if(params.size() == 2) {
+    BUILTIN_CALL(result, name, atan2, params[0], params[1]);
+  }
 }
 
 auto TreeWalk::visit(SpecialPattern* t_pattern) -> void
