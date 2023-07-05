@@ -99,8 +99,9 @@ auto gsub(const Any& t_ere, const Any& t_rep, Any& t_target) -> double
 auto index(const Any& t_str, const Any& t_find) -> double
 {
   const auto str{stringify(t_str)};
+  const auto find{stringify(t_find)};
 
-  auto pos{str.find(stringify(t_find))};
+  auto pos{str.find(find)};
   if(pos == std::string::npos) {
     pos = 0;
   } else {
