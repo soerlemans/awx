@@ -14,6 +14,20 @@
 
 namespace interpreter {
 // Macros:
+/*! Cookie cut macro for easily defining binary operations that use the convert
+ * Function
+ */
+#define INTERPRETER_DEFINE_BINOP_FUNCTION(op, func_name)                 \
+  template<typename L, typename R>                                       \
+  inline auto func_name(L&& t_lhs, R&& t_rhs)                            \
+  {                                                                      \
+    const auto lambda{[](const auto& t_lhs, const auto& t_rhs) {         \
+      return t_lhs op t_rhs;                                             \
+    }};                                                                  \
+                                                                         \
+    return cast(lambda, std::forward<L>(t_lhs), std::forward<R>(t_rhs)); \
+  }
+
 //! Following macro converts a parameter if it is a string to a double
 #define INTERPRETER_CAST_IF_STR(type, dst, src)          \
   do {                                                   \
@@ -24,20 +38,6 @@ namespace interpreter {
       dst = src;                                         \
     }                                                    \
   } while(false)
-
-/*! Cookie cut macro for easily defining binary operations that use the convert
- * Function
- */
-#define INTERPRETER_DEFINE_BINOP_FUNCTION(op, func_name)                 \
-  template<typename L, typename R>                                       \
-  auto func_name(L&& t_lhs, R&& t_rhs)                                   \
-  {                                                                      \
-    const auto lambda{[](const auto& t_lhs, const auto& t_rhs) {         \
-      return t_lhs op t_rhs;                                             \
-    }};                                                                  \
-                                                                         \
-    return cast(lambda, std::forward<L>(t_lhs), std::forward<R>(t_rhs)); \
-  }
 
 // Public Functions:
 /*! In some cases a unary operation will need to be converted to a double only
@@ -54,12 +54,12 @@ inline auto cast(const std::string& t_str) -> double
   return 0;
 }
 
-inline auto cast(const double t_val) -> double
+constexpr inline auto cast(const double t_val) -> double
 {
   return t_val;
 }
 
-auto cast(const Any& t_val) -> double
+inline auto cast(const Any& t_val) -> double
 {
   return std::visit(
     [](auto&& t_val) {
@@ -70,15 +70,16 @@ auto cast(const Any& t_val) -> double
 
 // TODO: Make this variadic
 //! Overload for the greedy template down below
-template<typename T>
-auto cast(T t_func, const std::string& t_lhs, const std::string& t_rhs)
+template<typename Func>
+inline auto cast(Func t_func, const std::string& t_lhs,
+                 const std::string& t_rhs)
 {
   return t_func(t_lhs, t_rhs);
 }
 
-template<typename T, typename L, typename R>
+template<typename Func, typename L, typename R>
 requires VariableLike<L> && VariableLike<R>
-auto cast(T t_func, L t_lhs, R t_rhs)
+inline auto cast(Func t_func, L t_lhs, R t_rhs)
 {
   double lhs, rhs;
 
@@ -88,8 +89,8 @@ auto cast(T t_func, L t_lhs, R t_rhs)
   return t_func(lhs, rhs);
 }
 
-template<typename T>
-auto cast(T t_func, const Any& t_lhs, const Any& t_rhs)
+template<typename Func>
+inline auto cast(Func t_func, const Any& t_lhs, const Any& t_rhs)
 {
   return std::visit(
     [&](auto&& t_left, auto&& t_right) {

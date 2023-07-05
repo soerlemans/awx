@@ -354,7 +354,7 @@ auto TreeWalk::visit(Printf* t_printf) -> void
   const auto& format{walk(t_printf->format()).m_result};
   auto& params{t_printf->params()};
 
-  // std::printf(stringify(format).c_str());
+  // Use std::vprintf as it takes a va_list
 }
 
 auto TreeWalk::visit(Getline* t_getline) -> void

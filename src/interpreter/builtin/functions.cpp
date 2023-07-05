@@ -87,6 +87,46 @@ auto srand(const Any& t_seed) -> double
 }
 
 // String functions:
+auto gsub(const Any& t_ere, const Any& t_rep, Any& t_target) -> double
+{}
+
+auto index(const Any& t_str, const Any& t_find) -> double
+{
+  const auto str{stringify(t_str)};
+
+  auto pos{str.find(stringify(t_find))};
+  if(pos == std::string::npos) {
+    pos = 0;
+  } else {
+    pos++;
+  }
+
+  return pos;
+}
+
+auto length(const Any& t_any) -> double
+{
+  const std::string str{stringify(t_any)};
+
+  return str.size();
+}
+
+auto match(const Any& t_str, const Any& t_ere) -> double
+{}
+
+auto split(const Any& t_str, Any& t_array, const Any& t_fs) -> double
+{}
+
+auto sprintf(const Any& t_fmt, const std::vector<Any>& t_params) -> std::string
+{}
+
+auto sub(const Any& t_ere, const Any& t_rep, Any& t_target) -> double
+{}
+
+auto substr(const Any& t_str, const Any& t_start, const Any& t_count)
+  -> std::string
+{}
+
 // TODO: tolower and toupper are similar, create a
 auto tolower(const Any& t_any) -> std::string
 {
