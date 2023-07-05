@@ -7,6 +7,7 @@
 // Using statements:
 using namespace interpreter;
 
+//! Parse and set the field references according to the field separator
 auto FieldStore::set(const std::string& t_fs, std::string t_record) -> void
 {
   // FIXME: We do not account for carriage returns right now
@@ -26,7 +27,6 @@ auto FieldStore::set(const std::string& t_fs, std::string t_record) -> void
   m_fields.insert(m_fields.end(), iter, end);
 }
 
-// FIXME: Throw on empty fields
 //! Returns a field reference
 auto FieldStore::get(const std::size_t t_index) -> std::string
 {

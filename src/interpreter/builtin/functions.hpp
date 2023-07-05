@@ -44,6 +44,8 @@ auto match(const Any& t_str, const Any& t_ere) -> double;
 auto split(const Any& t_str, Any& t_array, const Any& t_fs) -> double;
 auto sprintf(const Any& t_fmt, const std::vector<Any>& t_params) -> std::string;
 auto sub(const Any& t_ere, const Any& t_rep, Any& t_target) -> double;
+auto substr(const Any& t_str, const Any& t_start)
+  -> std::string;
 auto substr(const Any& t_str, const Any& t_start, const Any& t_count)
   -> std::string;
 auto tolower(const Any& t_any) -> std::string;

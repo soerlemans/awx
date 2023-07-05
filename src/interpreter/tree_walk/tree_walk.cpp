@@ -21,11 +21,14 @@
 
 
 // Macros:
-#define BUILTIN_CALL(t_result, t_var, t_name, ...) \
-  do {                                             \
-    if(t_var == #t_name) {                         \
-      t_result = t_name(__VA_ARGS__);              \
-    }                                              \
+/*! This macro assumes that a variable called name contains the name of the
+ * builtin function
+ */
+#define BUILTIN_CALL(t_var, t_name, ...)        \
+  do {                                          \
+    if(t_var == #t_name) {                      \
+      m_context.m_result = t_name(__VA_ARGS__); \
+    }                                           \
   } while(false)
 
 // Using statements:
@@ -277,8 +280,8 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
 {
   using namespace builtin;
 
-  auto name{t_fn->name()};
-  auto& result{m_context.m_result};
+  // Warning: BUILTIN_CALL macro assumes that these variables exist
+  const auto name{t_fn->name()};
 
   // Do not resolve ERE's for builtin functions
   m_resolve = false;
@@ -288,31 +291,44 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
   // TODO: Figure out how to clean this up
   if(params.empty()) {
     // Arithmetic functions:
-    BUILTIN_CALL(result, name, rand);
-    BUILTIN_CALL(result, name, srand);
+    BUILTIN_CALL(name, rand);
+    BUILTIN_CALL(name, srand);
 
     // String functions:
-    BUILTIN_CALL(result, name, length, m_fields.get());
+    BUILTIN_CALL(name, length, m_fields.get());
   } else if(params.size() == 1) {
     // Arithmetic functions:
-    BUILTIN_CALL(result, name, cos, params[0]);
-    BUILTIN_CALL(result, name, sin, params[0]);
-    BUILTIN_CALL(result, name, exp, params[0]);
-    BUILTIN_CALL(result, name, log, params[0]);
-    BUILTIN_CALL(result, name, sqrt, params[0]);
-    BUILTIN_CALL(result, name, to_int, params[0]);
-    BUILTIN_CALL(result, name, srand, params[0]);
+    BUILTIN_CALL(name, cos, params[0]);
+    BUILTIN_CALL(name, sin, params[0]);
+    BUILTIN_CALL(name, exp, params[0]);
+    BUILTIN_CALL(name, log, params[0]);
+    BUILTIN_CALL(name, sqrt, params[0]);
+    BUILTIN_CALL(name, to_int, params[0]);
+    BUILTIN_CALL(name, srand, params[0]);
 
     // String functions:
-    BUILTIN_CALL(result, name, length, params[0]);
-    BUILTIN_CALL(result, name, tolower, params[0]);
-    BUILTIN_CALL(result, name, toupper, params[0]);
+    BUILTIN_CALL(name, length, params[0]);
+    BUILTIN_CALL(name, tolower, params[0]);
+    BUILTIN_CALL(name, toupper, params[0]);
 
     // IO and general functions:
-    BUILTIN_CALL(result, name, system, params[0]);
-    BUILTIN_CALL(result, name, close, params[0]);
+    BUILTIN_CALL(name, system, params[0]);
+    BUILTIN_CALL(name, close, params[0]);
   } else if(params.size() == 2) {
-    BUILTIN_CALL(result, name, atan2, params[0], params[1]);
+    // Arithmetic functions:
+    BUILTIN_CALL(name, atan2, params[0], params[1]);
+
+    // String functions:
+    // BUILTIN_CALL(name, gsub, params[0], params[1], m_fields.get());
+    BUILTIN_CALL(name, index, params[0], params[1]);
+    BUILTIN_CALL(name, split, params[0], params[1], get("FS"));
+    // BUILTIN_CALL(name, sub, params[0], params[1], m_fields.get());
+    BUILTIN_CALL(name, substr, params[0], params[1]);
+  } else if(params.size() == 3) {
+    // BUILTIN_CALL(name, gsub, params[0], params[1], m_fields.get());
+    BUILTIN_CALL(name, split, params[0], params[1], params[2]);
+    // BUILTIN_CALL(name, sub, params[0], params[1], m_fields.get());
+    BUILTIN_CALL(name, substr, params[0], params[1], params[2]);
   }
 }
 

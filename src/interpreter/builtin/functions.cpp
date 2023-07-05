@@ -128,12 +128,24 @@ auto sprintf(const Any& t_fmt, const std::vector<Any>& t_params) -> std::string
 auto sub(const Any& t_ere, const Any& t_rep, Any& t_target) -> double
 {}
 
+auto substr(const Any& t_str, const Any& t_start) -> std::string
+{
+  return substr(t_str, t_start, (double)std::string::npos);
+}
+
 auto substr(const Any& t_str, const Any& t_start, const Any& t_count)
   -> std::string
 {
-  auto str{stringify(t_str)};
+  const auto str{stringify(t_str)};
+  const auto start{cast(t_start)};
+  const auto count{cast(t_count)};
 
-  return str.substr(cast(t_start), cast(t_count));
+  // Bounds checking
+  if(start > str.size()) {
+		return "";
+  }
+
+  return str.substr(start, count);
 }
 
 auto tolower(const Any& t_any) -> std::string

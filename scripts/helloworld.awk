@@ -30,5 +30,5 @@
 
 	print "$0: " $0
 	print "l: " length($1) " $1: " $1
-	print "l: " length($2) " $2: " $2
+	print "substr: " substr($0, 4, 10)
 }
