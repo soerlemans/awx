@@ -5,6 +5,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 
 // Includes:
 #include "../cast.hpp"
@@ -142,7 +143,7 @@ auto substr(const Any& t_str, const Any& t_start, const Any& t_count)
 
   // Bounds checking
   if(start > str.size()) {
-		return "";
+    return "";
   }
 
   return str.substr(start, count);

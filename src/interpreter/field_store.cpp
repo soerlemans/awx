@@ -7,17 +7,31 @@
 // Using statements:
 using namespace interpreter;
 
+namespace {
+auto trim(std::string& t_str) -> void
+{
+  const auto lambda{[&](const char t_char) {
+    if(!t_str.empty() && t_str.back() == t_char) {
+      t_str.pop_back();
+    }
+  }};
+
+  // Trim newline and carriage return from end
+  lambda('\n');
+  lambda('\r');
+}
+} // namespace
+
 //! Parse and set the field references according to the field separator
 auto FieldStore::set(const std::string& t_fs, std::string t_record) -> void
 {
-  // FIXME: We do not account for carriage returns right now
-  if(!t_record.empty() && t_record.back() == '\n') {
-    t_record.pop_back();
-  }
+  using Iter = std::sregex_token_iterator;
+
+  trim(t_record);
 
   std::regex fs{t_fs, std::regex::extended};
-  std::sregex_token_iterator iter{t_record.begin(), t_record.end(), fs, -1};
-  std::sregex_token_iterator end;
+  Iter iter{t_record.begin(), t_record.end(), fs, -1};
+  Iter end;
 
   // Clear previous set fields
   m_fields.clear();

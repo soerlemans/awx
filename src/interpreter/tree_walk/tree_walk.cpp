@@ -75,7 +75,6 @@ auto TreeWalk::walk_list(NodeListPtr t_nodes) -> std::vector<Any>
   return results;
 }
 
-
 //! Evaluates the result of walking a Node and if it should be true
 auto TreeWalk::eval_bool(NodePtr t_node) -> bool
 {
@@ -288,6 +287,7 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
   auto params{walk_list(t_fn->args())};
   m_resolve = true;
 
+  // TODO: Figure out how to deal with references
   // TODO: Figure out how to clean this up
   if(params.empty()) {
     // Arithmetic functions:
@@ -303,7 +303,12 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
     BUILTIN_CALL(name, exp, params[0]);
     BUILTIN_CALL(name, log, params[0]);
     BUILTIN_CALL(name, sqrt, params[0]);
-    BUILTIN_CALL(name, to_int, params[0]);
+
+    // int function has different name from to_int
+    if(name == "int") {
+      m_context.m_result = to_int(params[0]);
+    }
+
     BUILTIN_CALL(name, srand, params[0]);
 
     // String functions:
