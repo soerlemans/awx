@@ -18,6 +18,7 @@ double > || std::same_as<std::remove_cvref_t<T>, std::string>;
 
 // Aliases:
 // using Any = std::variant<double, std::string, ArrayType>;
+// TODO: Rename Any to Var and have these be castable
 using Any = std::variant<double, std::string>;
 
 // Structs:
