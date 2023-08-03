@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <regex>
 
 // Includes:
 #include "../cast.hpp"
@@ -93,8 +94,19 @@ auto srand(const Any& t_seed) -> double
 }
 
 // String functions:
-auto gsub(const Any& t_ere, const Any& t_rep, Any& t_target) -> double
-{}
+// TODO: Must return the match count
+// FIXME: Gsub not being called?
+auto gsub(const Any& t_regex, const Any& t_rep, Any& t_target) -> double
+{
+  const auto target{stringify(t_target)};
+  std::regex re{stringify(t_regex)};
+
+  t_target = std::regex_replace(target, re, stringify(t_rep));
+
+  std::cout << "target: " << stringify(t_target) << stringify(t_regex) << '\n';
+
+  return 0.0;
+}
 
 auto index(const Any& t_str, const Any& t_find) -> double
 {
@@ -118,7 +130,7 @@ auto length(const Any& t_any) -> double
   return str.size();
 }
 
-auto match(const Any& t_str, const Any& t_ere) -> double
+auto match(const Any& t_str, const Any& t_regex) -> double
 {}
 
 auto split(const Any& t_str, Any& t_array, const Any& t_fs) -> double
@@ -127,7 +139,7 @@ auto split(const Any& t_str, Any& t_array, const Any& t_fs) -> double
 auto sprintf(const Any& t_fmt, const std::vector<Any>& t_params) -> std::string
 {}
 
-auto sub(const Any& t_ere, const Any& t_rep, Any& t_target) -> double
+auto sub(const Any& t_regx, const Any& t_rep, Any& t_target) -> double
 {}
 
 auto substr(const Any& t_str, const Any& t_start) -> std::string

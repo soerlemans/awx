@@ -358,6 +358,11 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
     if(is_substitution()) {
       const auto identifier{params[2].m_name};
 
+      std::cout << "first: " << stringify(first) << '\n';
+      std::cout << "second: " << stringify(second) << '\n';
+      std::cout << "third: " << stringify(third) << '\n';
+
+      // FIXME: gsub never called?
       BUILTIN_CALL(identifier, gsub, first, second, third);
       BUILTIN_CALL(identifier, sub, first, second, third);
 
