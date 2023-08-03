@@ -61,15 +61,15 @@ auto TreeWalk::walk(NodePtr t_node) -> Context&
   return m_context;
 }
 
-auto TreeWalk::walk_list(NodeListPtr t_nodes) -> std::vector<Any>
+auto TreeWalk::walk(NodeListPtr t_nodes) -> std::vector<Context>
 {
-  std::vector<Any> results;
+  std::vector<Context> results;
 
   results.reserve(t_nodes->size());
   for(auto& arg : *t_nodes) {
     const auto& context{walk(arg)};
 
-    results.push_back(context.m_result);
+    results.push_back(context);
   }
 
   return results;
@@ -227,11 +227,11 @@ auto TreeWalk::visit(Return* t_return) -> void
 
 auto TreeWalk::visit(Function* t_fn) -> void
 {
-  std::string name{t_fn->name()};
+  std::string identifier{t_fn->identifier()};
 
   // FIXME: For now we will completely copy the function (this is functional but
   // bad performance wise performance wise)
-  m_functions[name] = std::make_shared<Function>(*t_fn);
+  m_functions[identifier] = std::make_shared<Function>(*t_fn);
 
   // A variable can be scoped by creating a constructor and destructor that sets
   // and removes the variable
@@ -239,25 +239,25 @@ auto TreeWalk::visit(Function* t_fn) -> void
 
 auto TreeWalk::visit(FunctionCall* t_fn_call) -> void
 {
-  const std::string name{t_fn_call->name()};
+  const std::string identifier{t_fn_call->identifier()};
 
-  if(!m_functions.count(name)) {
+  if(!m_functions.count(identifier)) {
     // TODO: Create separate runtime exception type
     throw std::runtime_error{"Calling to non existent function"};
   }
 
-  auto& fn{m_functions[name]};
+  auto& fn{m_functions[identifier]};
 
   // Create the stack frame
   m_scope.emplace();
   if(auto& params{*fn->params()}; !params.empty()) {
     auto iter{params.begin()};
     for(auto& arg : *t_fn_call->args()) {
-      const auto& name{walk(*iter).m_name};
+      const auto& identifier{walk(*iter).m_name};
       const auto& result{walk(arg).m_result};
 
       auto& scope{m_scope.top()};
-      scope[name] = result;
+      scope[identifier] = result;
       iter++;
     }
   }
@@ -280,60 +280,89 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
   using namespace builtin;
 
   // Warning: BUILTIN_CALL macro assumes that these variables exist
-  const auto name{t_fn->name()};
+  const auto identifier{t_fn->identifier()};
 
   // Do not resolve ERE's for builtin functions
   m_resolve = false;
-  auto params{walk_list(t_fn->args())};
+  auto params{walk(t_fn->args())};
   m_resolve = true;
+
+  const auto is_substitution{[&]() -> bool {
+    return identifier == "gsub" || identifier == "sub";
+  }};
 
   // TODO: Figure out how to deal with references
   // TODO: Figure out how to clean this up
   if(params.empty()) {
     // Arithmetic functions:
-    BUILTIN_CALL(name, rand);
-    BUILTIN_CALL(name, srand);
+    BUILTIN_CALL(identifier, rand);
+    BUILTIN_CALL(identifier, srand);
 
     // String functions:
-    BUILTIN_CALL(name, length, m_fields.get());
+    BUILTIN_CALL(identifier, length, m_fields.get());
   } else if(params.size() == 1) {
-    // Arithmetic functions:
-    BUILTIN_CALL(name, cos, params[0]);
-    BUILTIN_CALL(name, sin, params[0]);
-    BUILTIN_CALL(name, exp, params[0]);
-    BUILTIN_CALL(name, log, params[0]);
-    BUILTIN_CALL(name, sqrt, params[0]);
+    auto first{params[0].m_result};
 
-    // int function has different name from to_int
-    if(name == "int") {
-      m_context.m_result = to_int(params[0]);
+    // Arithmetic functions:
+    BUILTIN_CALL(identifier, cos, first);
+    BUILTIN_CALL(identifier, sin, first);
+    BUILTIN_CALL(identifier, exp, first);
+    BUILTIN_CALL(identifier, log, first);
+    BUILTIN_CALL(identifier, sqrt, first);
+
+    // int function has different identifier from to_int
+    if(identifier == "int") {
+      m_context.m_result = to_int(first);
     }
 
-    BUILTIN_CALL(name, srand, params[0]);
+    BUILTIN_CALL(identifier, srand, first);
 
     // String functions:
-    BUILTIN_CALL(name, length, params[0]);
-    BUILTIN_CALL(name, tolower, params[0]);
-    BUILTIN_CALL(name, toupper, params[0]);
+    BUILTIN_CALL(identifier, length, first);
+    BUILTIN_CALL(identifier, tolower, first);
+    BUILTIN_CALL(identifier, toupper, first);
 
     // IO and general functions:
-    BUILTIN_CALL(name, system, params[0]);
-    BUILTIN_CALL(name, close, params[0]);
+    BUILTIN_CALL(identifier, system, first);
+    BUILTIN_CALL(identifier, close, first);
   } else if(params.size() == 2) {
+    auto first{params[0].m_result};
+    auto second{params[1].m_result};
+
     // Arithmetic functions:
-    BUILTIN_CALL(name, atan2, params[0], params[1]);
+    BUILTIN_CALL(identifier, atan2, first, second);
 
     // String functions:
-    // BUILTIN_CALL(name, gsub, params[0], params[1], m_fields.get());
-    BUILTIN_CALL(name, index, params[0], params[1]);
-    BUILTIN_CALL(name, split, params[0], params[1], get("FS"));
-    // BUILTIN_CALL(name, sub, params[0], params[1], m_fields.get());
-    BUILTIN_CALL(name, substr, params[0], params[1]);
+    BUILTIN_CALL(identifier, index, first, second);
+    BUILTIN_CALL(identifier, split, first, second, get("FS"));
+
+    BUILTIN_CALL(identifier, substr, first, second);
+
+    if(is_substitution()) {
+      // Field reference optional argument
+      Any field{m_fields.get()};
+
+      BUILTIN_CALL(identifier, gsub, first, second, field);
+      BUILTIN_CALL(identifier, sub, first, second, field);
+
+      m_fields.set(stringify(get("FS")), stringify(field));
+    }
   } else if(params.size() == 3) {
-    // BUILTIN_CALL(name, gsub, params[0], params[1], m_fields.get());
-    BUILTIN_CALL(name, split, params[0], params[1], params[2]);
-    // BUILTIN_CALL(name, sub, params[0], params[1], m_fields.get());
-    BUILTIN_CALL(name, substr, params[0], params[1], params[2]);
+    auto first{params[0].m_result};
+    auto second{params[1].m_result};
+    auto third{params[2].m_result};
+
+    BUILTIN_CALL(identifier, split, first, second, third);
+    BUILTIN_CALL(identifier, substr, first, second, third);
+
+    if(is_substitution()) {
+      const auto identifier{params[2].m_name};
+
+      BUILTIN_CALL(identifier, gsub, first, second, third);
+      BUILTIN_CALL(identifier, sub, first, second, third);
+
+      set(identifier, third);
+    }
   }
 }
 
@@ -399,7 +428,7 @@ auto TreeWalk::visit(Array* t_array) -> void
 {
   auto& result = m_context.m_result;
 
-  result = get(t_array->name());
+  result = get(t_array->identifier());
 }
 
 auto TreeWalk::visit(FieldReference* t_fr) -> void
@@ -414,7 +443,7 @@ auto TreeWalk::visit(Variable* t_var) -> void
 {
   auto& result{m_context.m_result};
 
-  result = get(t_var->name());
+  result = get(t_var->identifier());
 }
 
 auto TreeWalk::visit(Float* t_float) -> void
@@ -759,7 +788,9 @@ auto TreeWalk::run(const TextBufferPtr& t_input) -> void
 {
   update(t_input);
 
-  m_fields.set(" ", t_input->line());
+  // TODO: Create a method for this
+  m_fields.set(stringify(get("FS")), t_input->line());
+
   try {
     m_ast->accept(this);
   } catch(NextExcept& except) {

@@ -11,12 +11,12 @@
 namespace node::lvalue {
 class Variable : public NodeInterface {
   private:
-  std::string m_name;
+  std::string m_identifier;
 
   public:
-  Variable(const std::string& t_name);
+  Variable(const std::string& t_identifier);
 
-  auto name() const -> const std::string&;
+  auto identifier() const -> const std::string&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

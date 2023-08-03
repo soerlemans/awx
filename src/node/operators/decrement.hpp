@@ -13,6 +13,8 @@ class Decrement : public UnaryOperator {
   public:
   Decrement(NodePtr&& t_left, bool t_prefix);
 
+  auto prefix() const -> bool;
+
   MAKE_VISITABLE(visitor::NodeVisitor);
 
   ~Decrement() override = default;

@@ -9,14 +9,14 @@
 namespace node::functions {
 class Function : public NodeInterface {
   private:
-  std::string m_name;
+  std::string m_identifier;
   NodeListPtr m_params;
   NodeListPtr m_body;
 
   public:
-  Function(std::string t_name, NodeListPtr&& t_params, NodeListPtr&& t_body);
+  Function(std::string t_identifier, NodeListPtr&& t_params, NodeListPtr&& t_body);
 
-  auto name() const -> std::string_view;
+  auto identifier() const -> std::string_view;
   auto params() -> NodeListPtr&;
   auto body() -> NodeListPtr&;
 

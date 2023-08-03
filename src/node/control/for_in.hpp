@@ -1,8 +1,10 @@
 #ifndef AWX_NODE_CONTROL_FOR_IN_HPP
 #define AWX_NODE_CONTROL_FOR_IN_HPP
 
+// Includes:
 #include "../list.hpp"
 
+// Local includes:
 #include "control.hpp"
 
 
@@ -15,6 +17,10 @@ class ForIn : public NodeInterface {
 
   public:
   ForIn(NodePtr&& t_identifier, NodePtr&& t_array, NodeListPtr&& t_body);
+
+  auto identifier() -> NodePtr&;
+  auto array() -> NodePtr&;
+  auto body() -> NodeListPtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);
 

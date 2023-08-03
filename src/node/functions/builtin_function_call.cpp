@@ -7,16 +7,15 @@ using namespace visitor;
 
 BuiltinFunctionCall::BuiltinFunctionCall(std::string&& t_name,
                                          NodeListPtr&& t_args)
-  : m_name{std::move(t_name)}, m_args{std::forward<NodeListPtr>(t_args)}
+  : m_identifier{std::move(t_name)}, m_args{std::forward<NodeListPtr>(t_args)}
 {}
 
-auto BuiltinFunctionCall::name() const -> std::string_view
+auto BuiltinFunctionCall::identifier() const -> std::string_view
 {
-  return {m_name};
+  return {m_identifier};
 }
 
 auto BuiltinFunctionCall::args() -> NodeListPtr&
 {
   return m_args;
 }
-

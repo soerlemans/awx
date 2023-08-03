@@ -52,7 +52,13 @@ auto PrintVisitor::visit(While* t_while) -> void
 }
 
 auto PrintVisitor::visit(DoWhile* t_do_while) -> void
-{}
+{
+  PPRINT_INIT();
+
+  PPRINT("Do While");
+  PPRINT_IF("Condition", t_do_while->condition());
+  PPRINT_IF("Body", t_do_while->body());
+}
 
 auto PrintVisitor::visit(For* t_for) -> void
 {
@@ -69,42 +75,46 @@ auto PrintVisitor::visit(ForIn* t_for_in) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("FOR IN");
+  PPRINT("For in");
+  PPRINT_IF("Identifier", t_for_in->identifier());
+  PPRINT_IF("Array", t_for_in->array());
+  PPRINT_IF("Body", t_for_in->body());
 }
 
-auto PrintVisitor::visit(Continue* t_continue) -> void
+auto PrintVisitor::visit([[maybe_unused]] Continue* t_continue) -> void
 {
   PPRINT_INIT();
 
   PPRINT("Continue");
 }
 
-auto PrintVisitor::visit(Break* t_break) -> void
+auto PrintVisitor::visit([[maybe_unused]] Break* t_break) -> void
 {
   PPRINT_INIT();
 
   PPRINT("Break");
 }
 
-auto PrintVisitor::visit(Next* t_next) -> void
+auto PrintVisitor::visit([[maybe_unused]] Next* t_next) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("NEXT");
+  PPRINT("Next");
 }
 
 auto PrintVisitor::visit(Exit* t_exit) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("EXIT");
+  PPRINT("Exit");
+  PPRINT_IF("Expr: ", t_exit->expr());
 }
 
-auto PrintVisitor::visit(Return* t_return) -> void
+auto PrintVisitor::visit([[maybe_unused]] Return* t_return) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("RETURN");
+  PPRINT("Return");
 }
 
 auto PrintVisitor::visit(Function* t_fn) -> void
@@ -112,18 +122,9 @@ auto PrintVisitor::visit(Function* t_fn) -> void
   PPRINT_INIT();
 
   PPRINT("FUNCTION");
-  PPRINT("| NAME: ");
-
-  // TODO: Macro or lambda this??
-  if(auto& params{t_fn->params()}; params) {
-    PPRINT("| PARAMS");
-    params->accept(this);
-  }
-
-  if(auto& body{t_fn->body()}; body) {
-    PPRINT("| BODY");
-    body->accept(this);
-  }
+  PPRINT("| Name", t_fn->identifier());
+  PPRINT_IF("Params", t_fn->params());
+  PPRINT_IF("Body", t_fn->body());
 }
 
 auto PrintVisitor::visit(FunctionCall* t_fn_call) -> void
@@ -131,7 +132,7 @@ auto PrintVisitor::visit(FunctionCall* t_fn_call) -> void
   PPRINT_INIT();
 
   PPRINT("Function call");
-  PPRINT("| Name: ", t_fn_call->name());
+  PPRINT("| Name: ", t_fn_call->identifier());
   PPRINT_IF("Params: ", t_fn_call->args());
 }
 
@@ -140,7 +141,7 @@ auto PrintVisitor::visit(BuiltinFunctionCall* t_fn) -> void
   PPRINT_INIT();
 
   PPRINT("Builtin function call");
-  PPRINT("| Name: ", t_fn->name());
+  PPRINT("| Name: ", t_fn->identifier());
   PPRINT_IF("Params: ", t_fn->args());
 }
 
@@ -148,8 +149,7 @@ auto PrintVisitor::visit(SpecialPattern* t_pattern) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("SPECIAL PATTERN");
-
+  PPRINT("Special pattern");
   // TODO: List select special pattern
 }
 
@@ -191,14 +191,14 @@ auto PrintVisitor::visit(Redirection* t_redirection) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("REDIRECTION");
+  PPRINT("Redirection");
 }
 
 auto PrintVisitor::visit(Array* t_array) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("ARRAY");
+  PPRINT("Array", t_array->identifier());
 }
 
 auto PrintVisitor::visit(FieldReference* t_fr) -> void
@@ -213,7 +213,7 @@ auto PrintVisitor::visit(Variable* t_var) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("Variable", t_var->name());
+  PPRINT("Variable", t_var->identifier());
 }
 
 auto PrintVisitor::visit(Float* t_float) -> void
@@ -271,6 +271,7 @@ auto PrintVisitor::visit(Increment* t_increment) -> void
   PPRINT_INIT();
 
   PPRINT("Increment");
+  PPRINT("| Prefix: ", t_increment->prefix());
 }
 
 auto PrintVisitor::visit(Decrement* t_decrement) -> void
@@ -278,6 +279,7 @@ auto PrintVisitor::visit(Decrement* t_decrement) -> void
   PPRINT_INIT();
 
   PPRINT("Decrement");
+  PPRINT("| Prefix: ", t_decrement->prefix());
 }
 
 auto PrintVisitor::visit(Delete* t_delete) -> void

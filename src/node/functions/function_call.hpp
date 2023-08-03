@@ -1,6 +1,7 @@
 #ifndef AWX_NODE_FUNCTIONS_FUNCTION_CALL_HPP
 #define AWX_NODE_FUNCTIONS_FUNCTION_CALL_HPP
 
+// STL Includes:
 #include <string>
 #include <string_view>
 
@@ -13,13 +14,13 @@
 namespace node::functions {
 class FunctionCall : public NodeInterface {
   private:
-  std::string m_name;
+  std::string m_identifier;
   NodeListPtr m_args;
 
   public:
-  FunctionCall(std::string&& t_name, NodeListPtr&& t_args);
+  FunctionCall(std::string&& t_identifier, NodeListPtr&& t_args);
 
-  auto name() const -> std::string_view;
+  auto identifier() const -> std::string_view;
   auto args() -> NodeListPtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);

@@ -5,13 +5,13 @@ using namespace node::functions;
 
 using namespace visitor;
 
-FunctionCall::FunctionCall(std::string&& t_name, NodeListPtr&& t_args)
-  : m_name{std::move(t_name)}, m_args{std::forward<NodeListPtr>(t_args)}
+FunctionCall::FunctionCall(std::string&& t_identifier, NodeListPtr&& t_args)
+  : m_identifier{std::move(t_identifier)}, m_args{std::forward<NodeListPtr>(t_args)}
 {}
 
-auto FunctionCall::name() const -> std::string_view
+auto FunctionCall::identifier() const -> std::string_view
 {
-  return {m_name};
+  return {m_identifier};
 }
 
 auto FunctionCall::args() -> NodeListPtr&

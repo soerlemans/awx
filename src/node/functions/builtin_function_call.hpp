@@ -11,13 +11,13 @@
 namespace node::functions {
 class BuiltinFunctionCall : public NodeInterface {
   private:
-  std::string m_name;
+  std::string m_identifier;
   NodeListPtr m_args;
 
   public:
-  BuiltinFunctionCall(std::string&& t_name, NodeListPtr&& t_args);
+  BuiltinFunctionCall(std::string&& t_identifier, NodeListPtr&& t_args);
 
-  auto name() const -> std::string_view;
+  auto identifier() const -> std::string_view;
   auto args() -> NodeListPtr&;
 
   MAKE_VISITABLE(visitor::NodeVisitor);

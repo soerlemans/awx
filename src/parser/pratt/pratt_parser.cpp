@@ -618,7 +618,9 @@ auto PrattParser::universal_non_unary_expr(const BpFunc& t_expr_fn,
     lhs = std::move(ptr);
   } else if(auto ptr{lvalue()}; ptr) {
     lhs = std::move(ptr);
-    if(ptr = postcrement(lhs)) {
+
+    ptr = postcrement(lhs);
+    if(ptr) {
       lhs = std::move(ptr);
     }
   } else if(auto ptr{precrement()}; ptr) {

@@ -5,11 +5,11 @@ using namespace node::lvalue;
 
 using namespace visitor;
 
-Variable::Variable(const std::string& t_name): m_name{std::move(t_name)}
+Variable::Variable(const std::string& t_identifier)
+  : m_identifier{std::move(t_identifier)}
 {}
 
-auto Variable::name() const -> const std::string&
+auto Variable::identifier() const -> const std::string&
 {
-  return m_name;
+  return m_identifier;
 }
-
