@@ -95,15 +95,12 @@ auto srand(const Any& t_seed) -> double
 
 // String functions:
 // TODO: Must return the match count
-// FIXME: Gsub not being called?
 auto gsub(const Any& t_regex, const Any& t_rep, Any& t_target) -> double
 {
   const auto target{stringify(t_target)};
   std::regex re{stringify(t_regex)};
 
   t_target = std::regex_replace(target, re, stringify(t_rep));
-
-  std::cout << "target: " << stringify(t_target) << stringify(t_regex) << '\n';
 
   return 0.0;
 }

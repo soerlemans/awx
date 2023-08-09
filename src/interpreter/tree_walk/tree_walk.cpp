@@ -280,7 +280,7 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
   using namespace builtin;
 
   // Warning: BUILTIN_CALL macro assumes that these variables exist
-  const auto identifier{t_fn->identifier()};
+  const auto fn_id{t_fn->identifier()};
 
   // Do not resolve ERE's for builtin functions
   m_resolve = false;
@@ -288,85 +288,76 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
   m_resolve = true;
 
   const auto is_substitution{[&]() -> bool {
-    return identifier == "gsub" || identifier == "sub";
+    return fn_id == "gsub" || fn_id == "sub";
   }};
 
-  // TODO: Figure out how to deal with references
   // TODO: Figure out how to clean this up
   if(params.empty()) {
     // Arithmetic functions:
-    BUILTIN_CALL(identifier, rand);
-    BUILTIN_CALL(identifier, srand);
+    BUILTIN_CALL(fn_id, rand);
+    BUILTIN_CALL(fn_id, srand);
 
     // String functions:
-    BUILTIN_CALL(identifier, length, m_fields.get());
+    BUILTIN_CALL(fn_id, length, m_fields.get());
   } else if(params.size() == 1) {
-    auto first{params[0].m_result};
+    auto first{params.front().m_result};
 
     // Arithmetic functions:
-    BUILTIN_CALL(identifier, cos, first);
-    BUILTIN_CALL(identifier, sin, first);
-    BUILTIN_CALL(identifier, exp, first);
-    BUILTIN_CALL(identifier, log, first);
-    BUILTIN_CALL(identifier, sqrt, first);
+    BUILTIN_CALL(fn_id, cos, first);
+    BUILTIN_CALL(fn_id, sin, first);
+    BUILTIN_CALL(fn_id, exp, first);
+    BUILTIN_CALL(fn_id, log, first);
+    BUILTIN_CALL(fn_id, sqrt, first);
 
-    // int function has different identifier from to_int
-    if(identifier == "int") {
+    // int function has different fn_id from to_int
+    if(fn_id == "int") {
       m_context.m_result = to_int(first);
     }
 
-    BUILTIN_CALL(identifier, srand, first);
+    BUILTIN_CALL(fn_id, srand, first);
 
     // String functions:
-    BUILTIN_CALL(identifier, length, first);
-    BUILTIN_CALL(identifier, tolower, first);
-    BUILTIN_CALL(identifier, toupper, first);
+    BUILTIN_CALL(fn_id, length, first);
+    BUILTIN_CALL(fn_id, tolower, first);
+    BUILTIN_CALL(fn_id, toupper, first);
 
     // IO and general functions:
-    BUILTIN_CALL(identifier, system, first);
-    BUILTIN_CALL(identifier, close, first);
-  } else if(params.size() == 2) {
-    auto first{params[0].m_result};
+    BUILTIN_CALL(fn_id, system, first);
+    BUILTIN_CALL(fn_id, close, first);
+  } else if(auto first{params.front().m_result}; params.size() == 2) {
     auto second{params[1].m_result};
 
     // Arithmetic functions:
-    BUILTIN_CALL(identifier, atan2, first, second);
+    BUILTIN_CALL(fn_id, atan2, first, second);
 
     // String functions:
-    BUILTIN_CALL(identifier, index, first, second);
-    BUILTIN_CALL(identifier, split, first, second, get("FS"));
+    BUILTIN_CALL(fn_id, index, first, second);
+    BUILTIN_CALL(fn_id, split, first, second, get("FS"));
 
-    BUILTIN_CALL(identifier, substr, first, second);
+    BUILTIN_CALL(fn_id, substr, first, second);
 
     if(is_substitution()) {
       // Field reference optional argument
       Any field{m_fields.get()};
 
-      BUILTIN_CALL(identifier, gsub, first, second, field);
-      BUILTIN_CALL(identifier, sub, first, second, field);
+      BUILTIN_CALL(fn_id, gsub, first, second, field);
+      BUILTIN_CALL(fn_id, sub, first, second, field);
 
       m_fields.set(stringify(get("FS")), stringify(field));
     }
-  } else if(params.size() == 3) {
-    auto first{params[0].m_result};
-    auto second{params[1].m_result};
+  } else if(auto second{params[1].m_result}; params.size() == 3) {
     auto third{params[2].m_result};
 
-    BUILTIN_CALL(identifier, split, first, second, third);
-    BUILTIN_CALL(identifier, substr, first, second, third);
+    BUILTIN_CALL(fn_id, split, first, second, third);
+    BUILTIN_CALL(fn_id, substr, first, second, third);
 
     if(is_substitution()) {
-      const auto identifier{params[2].m_name};
+      const auto var_id{params[2].m_name};
 
-      std::cout << "first: " << stringify(first) << '\n';
-      std::cout << "second: " << stringify(second) << '\n';
-      std::cout << "third: " << stringify(third) << '\n';
+      BUILTIN_CALL(fn_id, gsub, first, second, third);
+      BUILTIN_CALL(fn_id, sub, first, second, third);
 
-      // FIXME: gsub never called?
-      BUILTIN_CALL(identifier, gsub, first, second, third);
-      BUILTIN_CALL(identifier, sub, first, second, third);
-
-      set(identifier, third);
+      set(var_id, third);
     }
   }
 }
