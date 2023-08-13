@@ -9,8 +9,7 @@
 #include <regex>
 
 // Includes:
-#include "../cast.hpp"
-#include "../stringify.hpp"
+#include "../any.hpp"
 
 
 // Using statements:
@@ -22,9 +21,9 @@ namespace {
 double g_seed{0.0};
 
 template<typename Func>
-auto transform(const Any& t_any, Func t_lambda) -> std::string
+auto transform(const std::string& t_str, Func t_lambda) -> std::string
 {
-  std::string str{stringify(t_any)};
+  std::string str{t_str};
 
   std::transform(str.begin(), str.end(), str.begin(), t_lambda);
 
@@ -36,39 +35,39 @@ auto transform(const Any& t_any, Func t_lambda) -> std::string
 namespace interpreter::builtin {
 // Builtin functions:
 // Arithmetic functions:
-auto atan2(const Any& t_y, const Any& t_x) -> double
+auto atan2(const double t_y, const double t_x) -> double
 {
-  return std::atan2(cast(t_y), cast(t_x));
+  return std::atan2(t_y, t_x);
 }
 
-auto cos(const Any& t_x) -> double
+auto cos(const double t_x) -> double
 {
-  return std::cos(cast(t_x));
+  return std::cos(t_x);
 }
 
-auto sin(const Any& t_x) -> double
+auto sin(const double t_x) -> double
 {
-  return std::sin(cast(t_x));
+  return std::sin(t_x);
 }
 
-auto exp(const Any& t_x) -> double
+auto exp(const double t_x) -> double
 {
-  return std::exp(cast(t_x));
+  return std::exp(t_x);
 }
 
-auto log(const Any& t_x) -> double
+auto log(const double t_x) -> double
 {
-  return std::log(cast(t_x));
+  return std::log(t_x);
 }
 
-auto sqrt(const Any& t_x) -> double
+auto sqrt(const double t_x) -> double
 {
-  return std::sqrt(cast(t_x));
+  return std::sqrt(t_x);
 }
 
-auto to_int(const Any& t_any) -> double
+auto to_int(const double t_any) -> double
 {
-  return cast(t_any);
+  return t_any;
 }
 
 auto rand() -> double
@@ -78,16 +77,16 @@ auto rand() -> double
 
 auto srand() -> double
 {
-  Any seed{(double)std::time(nullptr)};
+  double seed{std::time(nullptr)};
 
   return srand(seed);
 }
 
-auto srand(const Any& t_seed) -> double
+auto srand(const double t_seed) -> double
 {
   const auto prev_seed{g_seed};
 
-  g_seed = cast(t_seed);
+  g_seed = t_seed;
   std::srand((unsigned)g_seed);
 
   return prev_seed;
@@ -97,18 +96,18 @@ auto srand(const Any& t_seed) -> double
 // TODO: Must return the match count
 auto gsub(const Any& t_regex, const Any& t_rep, Any& t_target) -> double
 {
-  const auto target{stringify(t_target)};
-  std::regex re{stringify(t_regex)};
+  const auto target{t_target.str()};
+  std::regex re{t_regex.str()};
 
-  t_target = std::regex_replace(target, re, stringify(t_rep));
+  t_target = std::regex_replace(target, re, t_rep.str());
 
   return 0.0;
 }
 
 auto index(const Any& t_str, const Any& t_find) -> double
 {
-  const auto str{stringify(t_str)};
-  const auto find{stringify(t_find)};
+  const auto str{t_str.str()};
+  const auto find{t_find.str()};
 
   auto pos{str.find(find)};
   if(pos == std::string::npos) {
@@ -120,11 +119,9 @@ auto index(const Any& t_str, const Any& t_find) -> double
   return pos;
 }
 
-auto length(const Any& t_any) -> double
+auto length(const std::string t_str) -> double
 {
-  const std::string str{stringify(t_any)};
-
-  return str.size();
+  return t_str.size();
 }
 
 auto match(const Any& t_str, const Any& t_regex) -> double
@@ -147,9 +144,9 @@ auto substr(const Any& t_str, const Any& t_start) -> std::string
 auto substr(const Any& t_str, const Any& t_start, const Any& t_count)
   -> std::string
 {
-  const auto str{stringify(t_str)};
-  const auto start{cast(t_start)};
-  const auto count{cast(t_count)};
+  const auto str{t_str.str()};
+  const auto start{t_start.num()};
+  const auto count{t_count.num()};
 
   // Bounds checking
   if(start > str.size()) {
@@ -159,16 +156,16 @@ auto substr(const Any& t_str, const Any& t_start, const Any& t_count)
   return str.substr(start, count);
 }
 
-auto tolower(const Any& t_any) -> std::string
+auto tolower(const std::string t_str) -> std::string
 {
-  return transform(t_any, [](const unsigned t_char) {
+  return transform(t_str, [](const unsigned t_char) {
     return std::tolower(t_char);
   });
 }
 
-auto toupper(const Any& t_any) -> std::string
+auto toupper(const std::string t_str) -> std::string
 {
-  return transform(t_any, [](const unsigned t_char) {
+  return transform(t_str, [](const unsigned t_char) {
     return std::toupper(t_char);
   });
 }
@@ -182,7 +179,7 @@ auto close(const Any& t_any) -> double
 
 auto system(const Any& t_any) -> double
 {
-  const std::string str{stringify(t_any)};
+  const std::string str{t_any.str()};
 
   return std::system(str.c_str());
 }

@@ -14,7 +14,6 @@
 #include "../builtin/functions.hpp"
 #include "../builtin/operators.hpp"
 #include "../overload.hpp"
-#include "../stringify.hpp"
 
 // Local Includes:
 #include "control.hpp"
@@ -100,13 +99,13 @@ auto TreeWalk::eval_bool(NodePtr t_node) -> bool
 
 auto TreeWalk::clear_context() -> void
 {
-  m_context.m_name.clear();
+  m_context.m_identifier.clear();
   m_context.m_result = 0.0;
 }
 
 auto TreeWalk::set(const std::string t_name, const Any t_variable) -> void
 {
-  m_context.m_name = t_name;
+  m_context.m_identifier = t_name;
 
   if(!m_scope.empty() && m_scope.top().count(t_name)) {
     auto& variables{m_scope.top()};
@@ -118,7 +117,7 @@ auto TreeWalk::set(const std::string t_name, const Any t_variable) -> void
 
 auto TreeWalk::get(const std::string t_name) -> Any&
 {
-  m_context.m_name = t_name;
+  m_context.m_identifier = t_name;
 
   if(!m_scope.empty() && m_scope.top().count(t_name)) {
     auto& variables{m_scope.top()};
@@ -253,7 +252,7 @@ auto TreeWalk::visit(FunctionCall* t_fn_call) -> void
   if(auto& params{*fn->params()}; !params.empty()) {
     auto iter{params.begin()};
     for(auto& arg : *t_fn_call->args()) {
-      const auto& identifier{walk(*iter).m_name};
+      const auto& identifier{walk(*iter).m_identifier};
       const auto& result{walk(arg).m_result};
 
       auto& scope{m_scope.top()};
@@ -303,23 +302,24 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
     auto first{params.front().m_result};
 
     // Arithmetic functions:
-    BUILTIN_CALL(fn_id, cos, first);
-    BUILTIN_CALL(fn_id, sin, first);
-    BUILTIN_CALL(fn_id, exp, first);
-    BUILTIN_CALL(fn_id, log, first);
-    BUILTIN_CALL(fn_id, sqrt, first);
+    BUILTIN_CALL(fn_id, cos, first.num());
+    BUILTIN_CALL(fn_id, sin, first.num());
+    BUILTIN_CALL(fn_id, exp, first.num());
+    BUILTIN_CALL(fn_id, log, first.num());
+    BUILTIN_CALL(fn_id, sqrt, first.num());
 
     // int function has different fn_id from to_int
+    // TODO: Remove
     if(fn_id == "int") {
-      m_context.m_result = to_int(first);
+      m_context.m_result = to_int(first.num());
     }
 
-    BUILTIN_CALL(fn_id, srand, first);
+    BUILTIN_CALL(fn_id, srand, first.num());
 
     // String functions:
-    BUILTIN_CALL(fn_id, length, first);
-    BUILTIN_CALL(fn_id, tolower, first);
-    BUILTIN_CALL(fn_id, toupper, first);
+    BUILTIN_CALL(fn_id, length, first.str());
+    BUILTIN_CALL(fn_id, tolower, first.str());
+    BUILTIN_CALL(fn_id, toupper, first.str());
 
     // IO and general functions:
     BUILTIN_CALL(fn_id, system, first);
@@ -328,7 +328,7 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
     auto second{params[1].m_result};
 
     // Arithmetic functions:
-    BUILTIN_CALL(fn_id, atan2, first, second);
+    BUILTIN_CALL(fn_id, atan2, first.num(), second.num());
 
     // String functions:
     BUILTIN_CALL(fn_id, index, first, second);
@@ -343,7 +343,7 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
       BUILTIN_CALL(fn_id, gsub, first, second, field);
       BUILTIN_CALL(fn_id, sub, first, second, field);
 
-      m_fields.set(stringify(get("FS")), stringify(field));
+      m_fields.set(get("FS").str(), field.str());
     }
   } else if(auto second{params[1].m_result}; params.size() == 3) {
     auto third{params[2].m_result};
@@ -352,7 +352,7 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
     BUILTIN_CALL(fn_id, substr, first, second, third);
 
     if(is_substitution()) {
-      const auto var_id{params[2].m_name};
+      const auto var_id{params[2].m_identifier};
 
       BUILTIN_CALL(fn_id, gsub, first, second, third);
       BUILTIN_CALL(fn_id, sub, first, second, third);
@@ -432,7 +432,7 @@ auto TreeWalk::visit(FieldReference* t_fr) -> void
   auto& result{walk(t_fr->expr()).m_result};
 
   // Resolve field reference
-  result = m_fields.get(cast(result));
+  result = m_fields.get((std::size_t)result.num());
 }
 
 auto TreeWalk::visit(Variable* t_var) -> void
@@ -488,7 +488,7 @@ auto TreeWalk::visit(Arithmetic* t_arithmetic) -> void
   auto& result{m_context.m_result};
 
   const auto lambda{[&](auto t_func) {
-    result = (double)t_func(cast(lhs.m_result), cast(rhs.m_result));
+    result = (double)t_func(lhs.m_result.num(), rhs.m_result.num());
   }};
 
   switch(const auto op{t_arithmetic->op()}; op) {
@@ -536,7 +536,7 @@ auto TreeWalk::visit(Assignment* t_assignment) -> void
   auto rhs{walk(t_assignment->right())};
 
   const auto lambda{[&](auto&& t_func) {
-    set(lhs.m_name, t_func(cast(lhs.m_result), cast(rhs.m_result)));
+    set(lhs.m_identifier, t_func(lhs.m_result.num(), rhs.m_result.num()));
   }};
 
   switch(const auto op{t_assignment->op()}; op) {
@@ -571,7 +571,7 @@ auto TreeWalk::visit(Assignment* t_assignment) -> void
     }
 
     case AssignmentOp::REGULAR: {
-      set(lhs.m_name, rhs.m_result);
+      set(lhs.m_identifier, rhs.m_result);
       break;
     }
 
@@ -621,18 +621,18 @@ auto TreeWalk::visit(Comparison* t_comparison) -> void
 auto TreeWalk::visit(Increment* t_increment) -> void
 {
   auto lhs{walk(t_increment->left())};
-  auto& var{m_globals[lhs.m_name]};
+  auto& var{m_globals[lhs.m_identifier]};
 
-  var = cast(var) + 1.0;
+  var = var.num() + 1.0;
 }
 
 // TODO: Implement postfix increment
 auto TreeWalk::visit(Decrement* t_decrement) -> void
 {
   auto lhs{walk(t_decrement->left())};
-  auto& var{m_globals[lhs.m_name]};
+  auto& var{m_globals[lhs.m_identifier]};
 
-  var = cast(var) - 1.0;
+  var = var.num() - 1.0;
 }
 
 auto TreeWalk::visit(Delete* t_delete) -> void
@@ -645,12 +645,13 @@ auto TreeWalk::visit(Match* t_match) -> void
 
   m_resolve = false;
 
+  // TODO: Just call the match() function, which needs to be implemented
   if(op == MatchOp::MATCH) {
     const auto& lhs{walk(t_match->left())};
     const auto& rhs{walk(t_match->right())};
 
-    const auto string{stringify(lhs.m_result)};
-    const auto pattern{stringify(rhs.m_result)};
+    const auto string{lhs.m_result.str()};
+    const auto pattern{rhs.m_result.str()};
 
     std::regex re{pattern, std::regex::extended};
     result = (double)std::regex_search(string, re);
@@ -705,7 +706,7 @@ auto TreeWalk::visit(StringConcatenation* t_conc) -> void
   const auto rhs{walk(t_conc->right())};
 
   std::stringstream ss;
-  ss << stringify(lhs.m_result) << stringify(rhs.m_result);
+  ss << lhs.m_result.str() << rhs.m_result.str();
 
   m_context.m_result = ss.str();
 }
@@ -731,11 +732,11 @@ auto TreeWalk::visit(UnaryPrefix* t_unary_prefix) -> void
 
   switch(t_unary_prefix->op()) {
     case UnaryPrefixOp::PLUS:
-      result = +cast(result);
+      result = +result.num();
       break;
 
     case UnaryPrefixOp::MINUS:
-      result = -cast(result);
+      result = -result.num();
       break;
   }
 }
@@ -785,14 +786,14 @@ auto TreeWalk::run(const TextBufferPtr& t_input) -> void
   update(t_input);
 
   // TODO: Create a method for this
-  m_fields.set(stringify(get("FS")), t_input->line());
+  m_fields.set(get("FS").str(), t_input->line());
 
   try {
     m_ast->accept(this);
   } catch(NextExcept& except) {
   } catch(ExitExcept& except) {
     // TODO: Should we exit here?
-    std::exit(cast(m_context.m_result));
+    std::exit(m_context.m_result.num());
   }
 
   m_nr++;

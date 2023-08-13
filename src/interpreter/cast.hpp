@@ -33,11 +33,16 @@ namespace interpreter {
   do {                                                   \
     if constexpr(std::is_same<std::remove_cvref_t<type>, \
                               std::string>::value) {     \
-      dst = cast(src);                                   \
+      dst = cast(src);																	 \
     } else {                                             \
       dst = src;                                         \
     }                                                    \
   } while(false)
+
+// Enums:
+// TODO :Implement CastingPolicy
+//! CastingPolicy determines if a string is preffered or a number
+enum class CastingPolicy { STRING, NUMBER };
 
 // Public Functions:
 /*! In some cases a unary operation will need to be converted to a double only
@@ -61,11 +66,7 @@ constexpr inline auto cast(const double t_val) -> double
 
 inline auto cast(const Any& t_val) -> double
 {
-  return std::visit(
-    [](auto&& t_val) {
-      return cast(t_val);
-    },
-    t_val);
+  return t_val.num();
 }
 
 // TODO: Make this variadic
