@@ -37,13 +37,15 @@ auto srand() -> double;
 auto srand(const double t_seed) -> double;
 
 // String functions:
-auto gsub(const Any& t_ere, const Any& t_rep, Any& t_target) -> double;
+auto gsub(const std::string t_pat, const std::string t_rep,
+          std::string& t_target) -> double;
 auto index(const Any& t_str, const Any& t_find) -> double;
 auto length(const std::string t_str) -> double;
-auto match(const Any& t_str, const Any& t_ere) -> double;
+auto match(const std::string& t_str, const std::string& t_pat) -> double;
 auto split(const Any& t_str, Any& t_array, const Any& t_fs) -> double;
 auto sprintf(const Any& t_fmt, const std::vector<Any>& t_params) -> std::string;
-auto sub(const Any& t_ere, const Any& t_rep, Any& t_target) -> double;
+auto sub(const std::string& t_ere, const std::string& t_rep,
+         std::string& t_target) -> double;
 auto substr(const Any& t_str, const Any& t_start) -> std::string;
 auto substr(const Any& t_str, const Any& t_start, const Any& t_count)
   -> std::string;

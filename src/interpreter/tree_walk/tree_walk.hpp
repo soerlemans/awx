@@ -16,6 +16,11 @@
 
 
 namespace interpreter::tree_walk {
+// Aliases:
+//! Multiple contexts
+using Contexts = std::vector<Context>;
+
+// Classes:
 /*! Evaluates each node using the visitor pattern.
  */
 class TreeWalk : public visitor::NodeVisitor {
@@ -47,13 +52,15 @@ class TreeWalk : public visitor::NodeVisitor {
 
   // Helper methods:
   auto walk(node::NodePtr t_node) -> Context&;
-  auto walk(node::NodeListPtr t_nodes) -> std::vector<Context>;
+  auto walk(node::NodeListPtr t_nodes) -> Contexts;
   auto eval_bool(node::NodePtr t_node) -> bool;
 
   auto clear_context() -> void;
 
   auto set(std::string t_name, Any t_variable) -> void;
   auto get(const std::string t_name) -> Any&;
+
+  auto builtin(const std::string_view t_fn_id, Contexts& t_params) -> void;
 
   // Visit Methods:
   auto visit(node::control::If* t_if) -> void override;

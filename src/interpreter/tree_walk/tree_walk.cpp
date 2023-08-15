@@ -23,9 +23,9 @@
 /*! This macro assumes that a variable called name contains the name of the
  * builtin function
  */
-#define BUILTIN_CALL(t_var, t_name, ...)        \
+#define BUILTIN_CALL(t_name, ...)               \
   do {                                          \
-    if(t_var == #t_name) {                      \
+    if(t_fn_id == #t_name) {                    \
       m_context.m_result = t_name(__VA_ARGS__); \
     }                                           \
   } while(false)
@@ -60,9 +60,9 @@ auto TreeWalk::walk(NodePtr t_node) -> Context&
   return m_context;
 }
 
-auto TreeWalk::walk(NodeListPtr t_nodes) -> std::vector<Context>
+auto TreeWalk::walk(NodeListPtr t_nodes) -> Contexts
 {
-  std::vector<Context> results;
+  Contexts results;
 
   results.reserve(t_nodes->size());
   for(auto& arg : *t_nodes) {
@@ -124,6 +124,89 @@ auto TreeWalk::get(const std::string t_name) -> Any&
     return variables[t_name];
   } else {
     return m_globals[t_name];
+  }
+}
+
+auto TreeWalk::builtin(const std::string_view t_fn_id, Contexts& t_params)
+  -> void
+{
+  using namespace builtin;
+
+  const auto is_substitution{[&]() -> bool {
+    return t_fn_id == "gsub" || t_fn_id == "sub";
+  }};
+
+  // TODO: Figure out how to clean this up
+  if(t_params.empty()) {
+    // Arithmetic functions:
+    BUILTIN_CALL(rand);
+    BUILTIN_CALL(srand);
+
+    // String functions:
+    BUILTIN_CALL(length, m_fields.get());
+  } else if(t_params.size() == 1) {
+    auto first{t_params.front().m_result};
+
+    // Arithmetic functions:
+    BUILTIN_CALL(cos, first.num());
+    BUILTIN_CALL(sin, first.num());
+    BUILTIN_CALL(exp, first.num());
+    BUILTIN_CALL(log, first.num());
+    BUILTIN_CALL(sqrt, first.num());
+
+    // int function has different t_fn_id from to_int
+    // TODO: Remove
+    if(t_fn_id == "int") {
+      m_context.m_result = to_int(first.num());
+    }
+
+    BUILTIN_CALL(srand, first.num());
+
+    // String functions:
+    BUILTIN_CALL(length, first.str());
+    BUILTIN_CALL(tolower, first.str());
+    BUILTIN_CALL(toupper, first.str());
+
+    // IO and general functions:
+    BUILTIN_CALL(system, first);
+    BUILTIN_CALL(close, first);
+  } else if(auto first{t_params.front().m_result}; t_params.size() == 2) {
+    auto second{t_params[1].m_result};
+
+    // Arithmetic functions:
+    BUILTIN_CALL(atan2, first.num(), second.num());
+
+    // String functions:
+    BUILTIN_CALL(index, first, second);
+    BUILTIN_CALL(match, first.str(), second.str());
+    BUILTIN_CALL(split, first, second, get("FS"));
+
+    BUILTIN_CALL(substr, first, second);
+
+    if(is_substitution()) {
+      // Field reference optional argument
+      auto field{m_fields.get()};
+
+      BUILTIN_CALL(gsub, first.str(), second.str(), field);
+      BUILTIN_CALL(sub, first.str(), second.str(), field);
+
+      m_fields.set(get("FS").str(), field);
+    }
+  } else if(auto second{t_params[1].m_result}; t_params.size() == 3) {
+    auto third{t_params[2].m_result};
+
+    BUILTIN_CALL(split, first, second, third);
+    BUILTIN_CALL(substr, first, second, third);
+
+    if(is_substitution()) {
+      const auto var_id{t_params[2].m_identifier};
+      auto target{third.str()};
+
+      BUILTIN_CALL(gsub, first.str(), second.str(), target);
+      BUILTIN_CALL(sub, first.str(), second.str(), target);
+
+      set(var_id, target);
+    }
   }
 }
 
@@ -276,9 +359,6 @@ auto TreeWalk::visit(FunctionCall* t_fn_call) -> void
 
 auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
 {
-  using namespace builtin;
-
-  // Warning: BUILTIN_CALL macro assumes that these variables exist
   const auto fn_id{t_fn->identifier()};
 
   // Do not resolve ERE's for builtin functions
@@ -286,80 +366,7 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
   auto params{walk(t_fn->args())};
   m_resolve = true;
 
-  const auto is_substitution{[&]() -> bool {
-    return fn_id == "gsub" || fn_id == "sub";
-  }};
-
-  // TODO: Figure out how to clean this up
-  if(params.empty()) {
-    // Arithmetic functions:
-    BUILTIN_CALL(fn_id, rand);
-    BUILTIN_CALL(fn_id, srand);
-
-    // String functions:
-    BUILTIN_CALL(fn_id, length, m_fields.get());
-  } else if(params.size() == 1) {
-    auto first{params.front().m_result};
-
-    // Arithmetic functions:
-    BUILTIN_CALL(fn_id, cos, first.num());
-    BUILTIN_CALL(fn_id, sin, first.num());
-    BUILTIN_CALL(fn_id, exp, first.num());
-    BUILTIN_CALL(fn_id, log, first.num());
-    BUILTIN_CALL(fn_id, sqrt, first.num());
-
-    // int function has different fn_id from to_int
-    // TODO: Remove
-    if(fn_id == "int") {
-      m_context.m_result = to_int(first.num());
-    }
-
-    BUILTIN_CALL(fn_id, srand, first.num());
-
-    // String functions:
-    BUILTIN_CALL(fn_id, length, first.str());
-    BUILTIN_CALL(fn_id, tolower, first.str());
-    BUILTIN_CALL(fn_id, toupper, first.str());
-
-    // IO and general functions:
-    BUILTIN_CALL(fn_id, system, first);
-    BUILTIN_CALL(fn_id, close, first);
-  } else if(auto first{params.front().m_result}; params.size() == 2) {
-    auto second{params[1].m_result};
-
-    // Arithmetic functions:
-    BUILTIN_CALL(fn_id, atan2, first.num(), second.num());
-
-    // String functions:
-    BUILTIN_CALL(fn_id, index, first, second);
-    BUILTIN_CALL(fn_id, split, first, second, get("FS"));
-
-    BUILTIN_CALL(fn_id, substr, first, second);
-
-    if(is_substitution()) {
-      // Field reference optional argument
-      Any field{m_fields.get()};
-
-      BUILTIN_CALL(fn_id, gsub, first, second, field);
-      BUILTIN_CALL(fn_id, sub, first, second, field);
-
-      m_fields.set(get("FS").str(), field.str());
-    }
-  } else if(auto second{params[1].m_result}; params.size() == 3) {
-    auto third{params[2].m_result};
-
-    BUILTIN_CALL(fn_id, split, first, second, third);
-    BUILTIN_CALL(fn_id, substr, first, second, third);
-
-    if(is_substitution()) {
-      const auto var_id{params[2].m_identifier};
-
-      BUILTIN_CALL(fn_id, gsub, first, second, third);
-      BUILTIN_CALL(fn_id, sub, first, second, third);
-
-      set(var_id, third);
-    }
-  }
+  builtin(fn_id, params);
 }
 
 auto TreeWalk::visit(SpecialPattern* t_pattern) -> void
@@ -653,8 +660,7 @@ auto TreeWalk::visit(Match* t_match) -> void
     const auto string{lhs.m_result.str()};
     const auto pattern{rhs.m_result.str()};
 
-    std::regex re{pattern, std::regex::extended};
-    result = (double)std::regex_search(string, re);
+    result = builtin::match(string, pattern);
 
     if(op != MatchOp::NO_MATCH) {
       result = result ? 0.0 : 1.0;

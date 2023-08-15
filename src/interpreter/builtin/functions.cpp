@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <ranges>
 #include <regex>
 
 // Includes:
@@ -20,6 +21,7 @@ namespace {
 //! This global is used for the srand and rad
 double g_seed{0.0};
 
+// TODO: Use std::ranges
 template<typename Func>
 auto transform(const std::string& t_str, Func t_lambda) -> std::string
 {
@@ -77,7 +79,8 @@ auto rand() -> double
 
 auto srand() -> double
 {
-  double seed{std::time(nullptr)};
+  // Lookout narrowing conversion!
+  double seed{(double)std::time(nullptr)};
 
   return srand(seed);
 }
@@ -94,12 +97,12 @@ auto srand(const double t_seed) -> double
 
 // String functions:
 // TODO: Must return the match count
-auto gsub(const Any& t_regex, const Any& t_rep, Any& t_target) -> double
+auto gsub(const std::string t_pat, const std::string t_rep,
+          std::string& t_target) -> double
 {
-  const auto target{t_target.str()};
-  std::regex re{t_regex.str()};
+  std::regex re{t_pat};
 
-  t_target = std::regex_replace(target, re, t_rep.str());
+  t_target = std::regex_replace(t_target, re, t_rep);
 
   return 0.0;
 }
@@ -124,8 +127,12 @@ auto length(const std::string t_str) -> double
   return t_str.size();
 }
 
-auto match(const Any& t_str, const Any& t_regex) -> double
-{}
+auto match(const std::string& t_str, const std::string& t_pattern) -> double
+{
+  std::regex re{t_pattern, std::regex::extended};
+
+  return (double)std::regex_search(t_str, re);
+}
 
 auto split(const Any& t_str, Any& t_array, const Any& t_fs) -> double
 {}
@@ -133,7 +140,8 @@ auto split(const Any& t_str, Any& t_array, const Any& t_fs) -> double
 auto sprintf(const Any& t_fmt, const std::vector<Any>& t_params) -> std::string
 {}
 
-auto sub(const Any& t_regx, const Any& t_rep, Any& t_target) -> double
+auto sub(const std::string& t_regex, const std::string& t_rep,
+         std::string& t_target) -> double
 {}
 
 auto substr(const Any& t_str, const Any& t_start) -> std::string
