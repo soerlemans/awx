@@ -11,17 +11,8 @@
 
 
 namespace interpreter::builtin {
-// Macros:
-// #define AWX_INTERPRETER_BUILTIN_FUNCTIONS_HPP
-// {
-// #func, func
-// }
-
 // Aliases:
 using BuiltinFuncPtr = std::function<Any(Any)>;
-
-// Globals:
-// extern const std::map<std::string_view, > g_builtin_functions;
 
 // Builtin functions:
 // Arithmetic functions:

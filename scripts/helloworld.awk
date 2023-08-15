@@ -2,6 +2,6 @@
 
 
 {
-	print index($0, "45")
+	print match($0, "match")
 }
 

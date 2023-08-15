@@ -158,7 +158,7 @@ auto PrintVisitor::visit(Recipe* t_recipe) -> void
   PPRINT_INIT();
 
   PPRINT("Recipe");
-  PPRINT_IF("Pattern", t_recipe->pattern());
+  PPRINT_IF("Pattern", t_recipe->condition());
   PPRINT_IF("Body", t_recipe->body());
 }
 

@@ -16,6 +16,7 @@
 #include "../overload.hpp"
 
 // Local Includes:
+#include "bool_guard.hpp"
 #include "control.hpp"
 
 
@@ -46,7 +47,7 @@ using namespace node::rvalue;
 
 // Methods:
 TreeWalk::TreeWalk(NodePtr t_ast, const TextBufferPtr& t_input)
-  : m_ast{std::move(t_ast)}, m_nr{1}, m_resolve{true}
+  : m_init{false}, m_ast{std::move(t_ast)}, m_nr{1}, m_resolve{true}
 {
   init(t_input);
 }
@@ -361,7 +362,7 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
 {
   const auto fn_id{t_fn->identifier()};
 
-  // Do not resolve ERE's for builtin functions
+  // Do not resolve regex expressions for builtin functions
   m_resolve = false;
   auto params{walk(t_fn->args())};
   m_resolve = true;
@@ -370,11 +371,16 @@ auto TreeWalk::visit(BuiltinFunctionCall* t_fn) -> void
 }
 
 auto TreeWalk::visit(SpecialPattern* t_pattern) -> void
-{}
+{
+  if(m_init) {
+    // TODO: Push Special patterns onto a BEGIN and END stack!
+  }
+}
 
 auto TreeWalk::visit(Recipe* t_recipe) -> void
 {
-  if(eval_bool(t_recipe->pattern())) {
+  // Evaluate the recipe
+  if(eval_bool(t_recipe->condition())) {
     walk(t_recipe->body());
   }
 }
@@ -647,27 +653,24 @@ auto TreeWalk::visit(Delete* t_delete) -> void
 
 auto TreeWalk::visit(Match* t_match) -> void
 {
+  BoolGuard guard{m_resolve, false};
+
   double result{0.0};
   const auto op{t_match->op()};
 
-  m_resolve = false;
+  const auto lhs{walk(t_match->left())};
+  const auto rhs{walk(t_match->right())};
 
-  // TODO: Just call the match() function, which needs to be implemented
-  if(op == MatchOp::MATCH) {
-    const auto& lhs{walk(t_match->left())};
-    const auto& rhs{walk(t_match->right())};
+  const auto string{lhs.m_result.str()};
+  const auto pattern{rhs.m_result.str()};
 
-    const auto string{lhs.m_result.str()};
-    const auto pattern{rhs.m_result.str()};
+  std::regex re{pattern, std::regex::extended};
+  result = (double)std::regex_search(string, re);
 
-    result = builtin::match(string, pattern);
-
-    if(op != MatchOp::NO_MATCH) {
-      result = result ? 0.0 : 1.0;
-    }
+  if(op == MatchOp::NO_MATCH) {
+    result = (result) ? 0.0 : 1.0;
   }
 
-  m_resolve = true;
   m_context.m_result = result;
 }
 
@@ -762,6 +765,8 @@ auto TreeWalk::visit([[maybe_unused]] Nil* t_nil) -> void
 //! Set all of the defaults
 auto TreeWalk::init(const container::TextBufferPtr& t_input) -> void
 {
+  BoolGuard guard{m_init, true};
+
   // TODO: Clean this up
   // set("CONVFMT", "%.6g");
   // set("OFMT", "%.6g");

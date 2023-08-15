@@ -13,6 +13,7 @@
 
 // Local Includes:
 #include "control.hpp"
+#include "bool_guard.hpp"
 
 
 namespace interpreter::tree_walk {
@@ -30,6 +31,7 @@ class TreeWalk : public visitor::NodeVisitor {
   using Store = std::map<std::string, T>;
 
   // Members:
+  bool m_init;
   node::NodePtr m_ast;
   std::size_t m_nr;
 

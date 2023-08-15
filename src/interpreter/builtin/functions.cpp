@@ -129,13 +129,13 @@ auto length(const std::string t_str) -> double
 
 auto match(const std::string& t_str, const std::string& t_pattern) -> double
 {
-  std::regex re{t_pattern, std::regex::extended};
-
-  return (double)std::regex_search(t_str, re);
+  return 0.0;
 }
 
 auto split(const Any& t_str, Any& t_array, const Any& t_fs) -> double
-{}
+{
+  return 0.0;
+}
 
 auto sprintf(const Any& t_fmt, const std::vector<Any>& t_params) -> std::string
 {}
