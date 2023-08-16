@@ -178,8 +178,14 @@ auto TreeWalk::builtin(const std::string_view t_fn_id, Contexts& t_params)
     BUILTIN_CALL(atan2, first.num(), second.num());
 
     // String functions:
+    // TODO: Move this somewhere more appropiate
+    double rstart{0.0}, rlength{0.0};
+    BUILTIN_CALL(match, first.str(), second.str(), rstart, rlength);
+
+    set("RSTART", rstart);
+    set("RLENGTH", rlength);
+
     BUILTIN_CALL(index, first, second);
-    BUILTIN_CALL(match, first.str(), second.str());
     BUILTIN_CALL(split, first, second, get("FS"));
 
     BUILTIN_CALL(substr, first, second);
@@ -655,20 +661,25 @@ auto TreeWalk::visit(Match* t_match) -> void
 {
   BoolGuard guard{m_resolve, false};
 
-  double result{0.0};
-  const auto op{t_match->op()};
-
-  const auto lhs{walk(t_match->left())};
-  const auto rhs{walk(t_match->right())};
-
-  const auto string{lhs.m_result.str()};
-  const auto pattern{rhs.m_result.str()};
+  const auto string{walk(t_match->left()).m_result.str()};
+  const auto pattern{walk(t_match->right()).m_result.str()};
 
   std::regex re{pattern, std::regex::extended};
-  result = (double)std::regex_search(string, re);
+  auto found = std::regex_search(string, re);
 
-  if(op == MatchOp::NO_MATCH) {
-    result = (result) ? 0.0 : 1.0;
+  double result{0.0};
+  switch(t_match->op()) {
+    case MatchOp::MATCH:
+      result = (found) ? 1.0 : 0.0;
+      break;
+
+    case MatchOp::NO_MATCH:
+      result = (found) ? 0.0 : 1.0;
+      break;
+
+    default:
+      // TODO: Throw
+      break;
   }
 
   m_context.m_result = result;

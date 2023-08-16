@@ -2,6 +2,8 @@
 
 
 {
-	print match($0, "match")
+		test = $0
+		var = test ~ "match"
+		print var, RSTART, RLENGTH
 }
 

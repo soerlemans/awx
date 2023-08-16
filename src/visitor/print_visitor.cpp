@@ -213,7 +213,7 @@ auto PrintVisitor::visit(Variable* t_var) -> void
 {
   PPRINT_INIT();
 
-  PPRINT("Variable", t_var->identifier());
+  PPRINT("Variable: ", t_var->identifier());
 }
 
 auto PrintVisitor::visit(Float* t_float) -> void

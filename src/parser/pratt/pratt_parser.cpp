@@ -151,6 +151,7 @@ auto PrattParser::lvalue() -> NodePtr
       break;
     }
 
+		// FIXME: Field reference with match expression prints field reference only
     case TokenType::DOLLAR_SIGN: {
       DBG_TRACE_PRINT(INFO, "Found FIELD REFERENCE");
       node = std::make_shared<FieldReference>(expr());

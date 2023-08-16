@@ -127,9 +127,24 @@ auto length(const std::string t_str) -> double
   return t_str.size();
 }
 
-auto match(const std::string& t_str, const std::string& t_pattern) -> double
+auto match(const std::string& t_str, const std::string& t_pattern,
+           double& t_rstart, double& t_rlength) -> double
 {
-  return 0.0;
+  std::regex re{t_pattern, std::regex::extended};
+  std::smatch matches;
+
+  std::regex_search(t_str, matches, re);
+
+  if(matches.empty()) {
+    t_rstart = 0.0;
+    t_rlength = -1.0;
+  } else {
+    t_rstart = matches.position() + 1.0;
+    t_rlength = matches.length();
+  }
+
+
+  return t_rstart;
 }
 
 auto split(const Any& t_str, Any& t_array, const Any& t_fs) -> double
