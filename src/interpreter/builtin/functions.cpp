@@ -107,12 +107,9 @@ auto gsub(const std::string t_pat, const std::string t_rep,
   return 0.0;
 }
 
-auto index(const Any& t_str, const Any& t_find) -> double
+auto index(const std::string t_str, const std::string t_find) -> double
 {
-  const auto str{t_str.str()};
-  const auto find{t_find.str()};
-
-  auto pos{str.find(find)};
+  auto pos{t_str.find(t_find)};
   if(pos == std::string::npos) {
     pos = 0;
   } else {
@@ -127,10 +124,10 @@ auto length(const std::string t_str) -> double
   return t_str.size();
 }
 
-auto match(const std::string& t_str, const std::string& t_pattern,
+auto match(const std::string t_str, const std::string t_pat,
            double& t_rstart, double& t_rlength) -> double
 {
-  std::regex re{t_pattern, std::regex::extended};
+  std::regex re{t_pat, std::regex::extended};
   std::smatch matches;
 
   std::regex_search(t_str, matches, re);
@@ -143,40 +140,45 @@ auto match(const std::string& t_str, const std::string& t_pattern,
     t_rlength = matches.length();
   }
 
-
   return t_rstart;
 }
 
 auto split(const Any& t_str, Any& t_array, const Any& t_fs) -> double
 {
+  // TODO: Implement arrays
+
   return 0.0;
 }
 
 auto sprintf(const Any& t_fmt, const std::vector<Any>& t_params) -> std::string
 {}
 
-auto sub(const std::string& t_regex, const std::string& t_rep,
+auto sub(const std::string t_pat, const std::string t_rep,
          std::string& t_target) -> double
-{}
+{
+  using namespace std::regex_constants;
 
-auto substr(const Any& t_str, const Any& t_start) -> std::string
+  std::regex re{t_pat};
+
+  t_target = std::regex_replace(t_target, re, t_rep, format_first_only);
+
+  return 0.0;
+}
+
+auto substr(const std::string t_str, const double t_start) -> std::string
 {
   return substr(t_str, t_start, (double)std::string::npos);
 }
 
-auto substr(const Any& t_str, const Any& t_start, const Any& t_count)
+auto substr(const std::string t_str, const double t_start, const double t_count)
   -> std::string
 {
-  const auto str{t_str.str()};
-  const auto start{t_start.num()};
-  const auto count{t_count.num()};
-
   // Bounds checking
-  if(start > str.size()) {
+  if(t_start > t_str.size()) {
     return "";
   }
 
-  return str.substr(start, count);
+  return t_str.substr(t_start, t_count);
 }
 
 auto tolower(const std::string t_str) -> std::string
@@ -194,16 +196,14 @@ auto toupper(const std::string t_str) -> std::string
 }
 
 // IO and general functions:
-auto close(const Any& t_any) -> double
+auto close(const double t_fd) -> double
 {
   // TODO: Implement
   return 1.0;
 }
 
-auto system(const Any& t_any) -> double
+auto system(const std::string t_cmd) -> double
 {
-  const std::string str{t_any.str()};
-
-  return std::system(str.c_str());
+  return std::system(t_cmd.c_str());
 }
 } // namespace interpreter::builtin

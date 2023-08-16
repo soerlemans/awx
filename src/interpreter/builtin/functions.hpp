@@ -30,23 +30,23 @@ auto srand(const double t_seed) -> double;
 // String functions:
 auto gsub(const std::string t_pat, const std::string t_rep,
           std::string& t_target) -> double;
-auto index(const Any& t_str, const Any& t_find) -> double;
+auto index(const std::string t_str, const std::string t_find) -> double;
 auto length(const std::string t_str) -> double;
-auto match(const std::string& t_str, const std::string& t_pat, double& t_rstart,
+auto match(const std::string t_str, const std::string t_pat, double& t_rstart,
            double& t_rlenght) -> double;
 auto split(const Any& t_str, Any& t_array, const Any& t_fs) -> double;
 auto sprintf(const Any& t_fmt, const std::vector<Any>& t_params) -> std::string;
-auto sub(const std::string& t_ere, const std::string& t_rep,
+auto sub(const std::string t_pat, const std::string t_rep,
          std::string& t_target) -> double;
-auto substr(const Any& t_str, const Any& t_start) -> std::string;
-auto substr(const Any& t_str, const Any& t_start, const Any& t_count)
+auto substr(const std::string t_str, const double t_start) -> std::string;
+auto substr(const std::string t_str, const double t_start, const double t_count)
   -> std::string;
 auto tolower(const std::string t_str) -> std::string;
 auto toupper(const std::string t_str) -> std::string;
 
 // IO and general functions:
-auto close(const Any& t_any) -> double;
-auto system(const Any& t_any) -> double;
+auto close(const double t_fd) -> double;
+auto system(const std::string t_cmd) -> double;
 } // namespace interpreter::builtin
 
 #endif // AWX_INTERPRETER_BUILTIN_FUNCTIONS_HPP

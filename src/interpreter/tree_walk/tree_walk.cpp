@@ -169,8 +169,8 @@ auto TreeWalk::builtin(const std::string_view t_fn_id, Contexts& t_params)
     BUILTIN_CALL(toupper, first.str());
 
     // IO and general functions:
-    BUILTIN_CALL(system, first);
-    BUILTIN_CALL(close, first);
+    BUILTIN_CALL(system, first.str());
+    BUILTIN_CALL(close, first.num());
   } else if(auto first{t_params.front().m_result}; t_params.size() == 2) {
     auto second{t_params[1].m_result};
 
@@ -185,10 +185,10 @@ auto TreeWalk::builtin(const std::string_view t_fn_id, Contexts& t_params)
     set("RSTART", rstart);
     set("RLENGTH", rlength);
 
-    BUILTIN_CALL(index, first, second);
+    BUILTIN_CALL(index, first.str(), second.str());
     BUILTIN_CALL(split, first, second, get("FS"));
 
-    BUILTIN_CALL(substr, first, second);
+    BUILTIN_CALL(substr, first.str(), second.num());
 
     if(is_substitution()) {
       // Field reference optional argument
@@ -203,7 +203,7 @@ auto TreeWalk::builtin(const std::string_view t_fn_id, Contexts& t_params)
     auto third{t_params[2].m_result};
 
     BUILTIN_CALL(split, first, second, third);
-    BUILTIN_CALL(substr, first, second, third);
+    BUILTIN_CALL(substr, first.str(), second.num(), third.num());
 
     if(is_substitution()) {
       const auto var_id{t_params[2].m_identifier};
