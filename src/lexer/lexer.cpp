@@ -39,11 +39,9 @@ auto Lexer::is_keyword(std::string_view t_identifier) -> TokenType
 {
   using namespace reserved::keywords;
 
-  // TODO: Clean this up we could use a loop with an std::pair for the tokentype
-  // Having a centralized location for
-  for(auto keyword : g_keywords)
-    if(t_identifier == keyword.identifier())
-      return TokenType{keyword};
+  for(const auto& keyword : g_keywords)
+    if(t_identifier == keyword.m_identifier)
+      return keyword.m_type;
 
   return TokenType::NONE;
 }
@@ -55,8 +53,8 @@ auto Lexer::is_builtin_function(std::string_view t_identifier) -> TokenType
   // TODO: Clean this up we could use a loop with an std::pair for the tokentype
   // Having a centralized location for
   for(auto function : g_functions)
-    if(t_identifier == function.identifier())
-      return TokenType{function};
+    if(t_identifier == function.m_identifier)
+      return function.m_type;
 
   return TokenType::NONE;
 }
@@ -77,7 +75,7 @@ auto Lexer::identifier() -> Token
 
   // Function names are instantly followed by a '('
   // TODO: Throw an error if we find a space and then '('
-  const bool is_fn_id = m_tb->character() == g_paren_open.identifier();
+  const bool is_fn_id = m_tb->character() == g_paren_open.m_identifier;
 
   // We go back one since we add till we find a character that does not
   // Match so we have to unget it
@@ -166,7 +164,7 @@ auto Lexer::handle_float(std::string_view t_str, bool t_dot) -> Token
 
     if(std::isdigit(character)) {
       ss << m_tb->forward();
-    } else if(character == g_dot.identifier()) {
+    } else if(character == g_dot.m_identifier) {
       if(t_dot) {
         syntax_error("Cant have a second '.' in a float literal.");
       } else {
@@ -193,7 +191,7 @@ auto Lexer::handle_integer() -> Token
 
     if(std::isdigit(character)) {
       ss << m_tb->forward();
-    } else if(character == g_dot.identifier()) {
+    } else if(character == g_dot.m_identifier) {
       ss << m_tb->character();
 
       // Handle float as a float
@@ -237,11 +235,11 @@ auto Lexer::literal_string() -> Token
     const char character{m_tb->character()};
 
     switch(character) {
-      case g_double_quote.identifier():
+      case g_double_quote.m_identifier:
         quit = true;
         break;
 
-      case g_backslash.identifier():
+      case g_backslash.m_identifier:
         ss << m_tb->forward();
         [[fallthrough]];
 
@@ -273,18 +271,18 @@ auto Lexer::literal_regex() -> Token
     const char character{m_tb->character()};
 
     switch(character) {
-      case g_newline.identifier():
+      case g_newline.m_identifier:
         // FIXME: Error on regex literals not being closed on the same line
         // syntax_error("Unterminated regex literal reached EOL");
         // break;
         [[fallthrough]];
 
-      case g_slash.identifier():
+      case g_slash.m_identifier:
         quit = true;
         break;
 
         // TODO: Take care of handling octal escape codes and other
-      case none::g_backslash.identifier():
+      case none::g_backslash.m_identifier:
         ss << m_tb->forward();
         [[fallthrough]];
 
@@ -310,15 +308,15 @@ auto Lexer::is_multi_symbol() -> TokenType
 
   // TODO: We use two loops now, we can change this to only use one
   // Refactor someday
-  for(const auto multi : g_multi_symbols)
-    if(character == multi.identifier().front()) {
+  for(const auto& multi : g_multi_symbols)
+    if(character == multi.m_identifier.front()) {
       m_tb->forward();
       ss << m_tb->character();
 
       if(!m_tb->eol())
-        for(const auto multi : g_multi_symbols)
-          if(ss.str() == multi.identifier()) {
-            tokentype = TokenType{multi};
+        for(const auto& multi : g_multi_symbols)
+          if(ss.str() == multi.m_identifier) {
+            tokentype = multi.m_type;
 
             DBG_LOG(INFO, "MULTI SYMBOL: ", ss.str());
             break; // We found a multi symbol token!
@@ -344,9 +342,9 @@ auto Lexer::is_single_symbol() -> TokenType
   const char character{m_tb->character()};
   TokenType tokentype{TokenType::NONE};
 
-  for(const auto single : g_single_symbols)
-    if(character == single.identifier()) {
-      tokentype = TokenType{single};
+  for(const auto& single : g_single_symbols)
+    if(character == single.m_identifier) {
+      tokentype = single.m_type;
       DBG_LOG(INFO, "SINGLE SYMBOL: ", character);
       break;
     }
@@ -380,8 +378,8 @@ auto Lexer::tokenize() -> TokenStream
 {
   using namespace reserved::symbols;
 
-  constexpr char double_quote{none::g_double_quote.identifier()};
-  constexpr char slash{g_slash.identifier()};
+  constexpr char double_quote{none::g_double_quote.m_identifier};
+  constexpr char slash{g_slash.m_identifier};
 
   for(; !m_tb->eof(); m_tb->next()) {
     for(; !m_tb->eol(); m_tb->forward()) {
@@ -404,9 +402,9 @@ auto Lexer::tokenize() -> TokenStream
 
       if(std::isspace(character)) {
         // Just ignore whitespace, but do not ignore newlines
-        if(character == g_newline.identifier()) {
+        if(character == g_newline.m_identifier) {
           DBG_LOG(INFO, "NEWLINE");
-          m_ts.push_back(create_token(TokenType::NEWLINE));
+          m_ts.push_back(create_token(g_newline.m_type));
         }
       } else if(character == '#') {
         // '#' are used for comments.

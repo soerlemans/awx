@@ -1,5 +1,5 @@
-#ifndef BOOL_GUARD_HPP
-#define BOOL_GUARD_HPP
+#ifndef AWX_INTERPRETER_TREE_WALK_BOOL_GUARD_HPP
+#define AWX_INTERPRETER_TREE_WALK_BOOL_GUARD_HPP
 
 // STL Includes:
 #include <stdexcept>
@@ -30,4 +30,4 @@ class BoolGuard {
 
 } // namespace interpreter::tree_walk
 
-#endif // BOOL_GUARD_HPP
+#endif // AWX_INTERPRETER_TREE_WALK_BOOL_GUARD_HPP

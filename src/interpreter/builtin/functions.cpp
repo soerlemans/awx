@@ -124,8 +124,8 @@ auto length(const std::string t_str) -> double
   return t_str.size();
 }
 
-auto match(const std::string t_str, const std::string t_pat,
-           double& t_rstart, double& t_rlength) -> double
+auto match(const std::string t_str, const std::string t_pat, double& t_rstart,
+           double& t_rlength) -> double
 {
   std::regex re{t_pat, std::regex::extended};
   std::smatch matches;
