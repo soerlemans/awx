@@ -35,28 +35,34 @@ Lexer::Lexer(TextBufferPtr t_tb): m_tb{t_tb}
 // Public methods:
 // TODO: is_keyword and is_builtin_function are very similar create a
 // Standardised function?
-auto Lexer::is_keyword(std::string_view t_identifier) -> TokenType
+auto Lexer::is_keyword(std::string_view t_identifier) -> TokenTypeOpt
 {
   using namespace reserved::keywords;
 
-  for(const auto& keyword : g_keywords)
-    if(t_identifier == keyword.m_identifier)
-      return keyword.m_type;
+  TokenTypeOpt opt;
 
-  return TokenType::NONE;
+  for(const auto& keyword : g_keywords)
+    if(t_identifier == keyword.m_identifier) {
+      opt = keyword.m_type;
+      break;
+    }
+
+  return opt;
 }
 
-auto Lexer::is_builtin_function(std::string_view t_identifier) -> TokenType
+auto Lexer::is_builtin_function(std::string_view t_identifier) -> TokenTypeOpt
 {
   using namespace reserved::functions;
 
-  // TODO: Clean this up we could use a loop with an std::pair for the tokentype
-  // Having a centralized location for
-  for(auto function : g_functions)
-    if(t_identifier == function.m_identifier)
-      return function.m_type;
+  TokenTypeOpt opt;
 
-  return TokenType::NONE;
+  for(const auto& function : g_functions)
+    if(t_identifier == function.m_identifier) {
+      opt = function.m_type;
+      break;
+    }
+
+  return opt;
 }
 
 auto Lexer::identifier() -> Token
@@ -81,17 +87,14 @@ auto Lexer::identifier() -> Token
   // Match so we have to unget it
   m_tb->backward();
 
-  // Verify if it is a keyword or not
-  if(const auto tokentype{is_keyword(ss.str())}; tokentype != TokenType::NONE) {
+  if(const auto opt{is_keyword(ss.str())}; opt) {
     DBG_LOG(INFO, "KEYWORD: ", ss.str());
 
-    token = create_token(tokentype);
-    // Verify if it is a keyword or not
-  } else if(const auto tokentype{is_builtin_function(ss.str())};
-            tokentype != TokenType::NONE) {
+    token = create_token(opt.value());
+  } else if(const auto opt{is_builtin_function(ss.str())}; opt) {
     DBG_LOG(INFO, "BUILTIN FUNCTION: ", ss.str());
 
-    token = create_token(tokentype, ss.str());
+    token = create_token(opt.value(), ss.str());
   } else if(is_fn_id) {
     DBG_LOG(INFO, "FUNCTION IDENTIFIER: ", ss.str());
 
@@ -235,11 +238,11 @@ auto Lexer::literal_string() -> Token
     const char character{m_tb->character()};
 
     switch(character) {
-      case g_double_quote.m_identifier:
+      case g_double_quote:
         quit = true;
         break;
 
-      case g_backslash.m_identifier:
+      case g_backslash:
         ss << m_tb->forward();
         [[fallthrough]];
 
@@ -282,7 +285,7 @@ auto Lexer::literal_regex() -> Token
         break;
 
         // TODO: Take care of handling octal escape codes and other
-      case none::g_backslash.m_identifier:
+      case none::g_backslash:
         ss << m_tb->forward();
         [[fallthrough]];
 
@@ -296,12 +299,13 @@ auto Lexer::literal_regex() -> Token
   return create_token(TokenType::REGEX, ss.str());
 }
 
-auto Lexer::is_multi_symbol() -> TokenType
+auto Lexer::is_multi_symbol() -> TokenTypeOpt
 {
   using namespace reserved::symbols;
 
+  TokenTypeOpt opt;
+
   std::stringstream ss;
-  TokenType tokentype{TokenType::NONE};
   const char character{m_tb->character()};
 
   ss << character;
@@ -316,7 +320,7 @@ auto Lexer::is_multi_symbol() -> TokenType
       if(!m_tb->eol())
         for(const auto& multi : g_multi_symbols)
           if(ss.str() == multi.m_identifier) {
-            tokentype = multi.m_type;
+            opt = multi.m_type;
 
             DBG_LOG(INFO, "MULTI SYMBOL: ", ss.str());
             break; // We found a multi symbol token!
@@ -324,7 +328,7 @@ auto Lexer::is_multi_symbol() -> TokenType
 
       // If the next character is not part of
       // A multi symbol just undo the forward
-      if(tokentype == TokenType::NONE)
+      if(!opt)
         m_tb->backward();
 
       // We compare against all reserverd multi symbols in the second loop
@@ -332,45 +336,45 @@ auto Lexer::is_multi_symbol() -> TokenType
       break;
     }
 
-  return tokentype;
+  return opt;
 }
 
-auto Lexer::is_single_symbol() -> TokenType
+auto Lexer::is_single_symbol() -> TokenTypeOpt
 {
   using namespace reserved::symbols;
 
+  TokenTypeOpt opt;
   const char character{m_tb->character()};
-  TokenType tokentype{TokenType::NONE};
 
   for(const auto& single : g_single_symbols)
     if(character == single.m_identifier) {
-      tokentype = single.m_type;
       DBG_LOG(INFO, "SINGLE SYMBOL: ", character);
+      opt = single.m_type;
       break;
     }
 
-  return tokentype;
+  return opt;
 }
 
 auto Lexer::symbol() -> Token
 {
-  TokenType tokentype{TokenType::NONE};
+  TokenTypeOpt opt;
 
   // First check for multi symbol
-  tokentype = is_multi_symbol();
+  opt = is_multi_symbol();
 
   // Then check for single symbol
-  if(tokentype == TokenType::NONE)
-    tokentype = is_single_symbol();
+  if(!opt)
+    opt = is_single_symbol();
 
   // Throw if it is neither
-  if(tokentype == TokenType::NONE) {
+  if(!opt) {
     std::cout << "Token Error: " << m_tb->character() << '\n';
     syntax_error("Character encountered is not valid AWX!");
   }
 
   // Add the symbol if we recognize it
-  return create_token(tokentype);
+  return create_token(opt.value());
 }
 
 // TODO: refactor this
@@ -378,7 +382,7 @@ auto Lexer::tokenize() -> TokenStream
 {
   using namespace reserved::symbols;
 
-  constexpr char double_quote{none::g_double_quote.m_identifier};
+  constexpr char double_quote{none::g_double_quote};
   constexpr char slash{g_slash.m_identifier};
 
   for(; !m_tb->eof(); m_tb->next()) {

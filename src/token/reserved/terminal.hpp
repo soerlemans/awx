@@ -4,6 +4,8 @@
 // STL Includes:
 #include <type_traits>
 
+// Includes:
+#include "../token_type.hpp"
 
 namespace token::reserved {
 // Concepts:

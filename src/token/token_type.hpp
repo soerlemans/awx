@@ -1,10 +1,17 @@
 #ifndef AWX_TOKEN_TOKEN_TYPE_HPP
 #define AWX_TOKEN_TOKEN_TYPE_HPP
 
-#include "../types.hpp"
+// STL Includes:
+#include <optional>
 
 
 namespace token {
+// Forward Declarations:
+enum class TokenType;
+
+// Aliases:
+using TokenTypeOpt = std::optional<TokenType>;
+
 // Enums:
 enum class TokenType {
   NONE = 0,

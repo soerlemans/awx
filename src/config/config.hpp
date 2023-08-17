@@ -3,15 +3,16 @@
 
 // STL Includes:
 #include <filesystem>
+#include <list>
 #include <memory>
 #include <string>
 #include <vector>
-#include <list>
 
 // Includes:
-#include "../container/file_buffer.hpp"
+#include "../container/text_buffer.hpp"
 
 
+// Aliases:
 namespace fs = std::filesystem;
 
 /*!The AWX mode determines the interpreters mode and what it considers valid

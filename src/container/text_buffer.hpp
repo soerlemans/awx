@@ -16,7 +16,6 @@ namespace container {
 class TextBuffer;
 
 // Aliases:
-namespace fs = std::filesystem;
 using TextBufferPtr = std::shared_ptr<TextBuffer>;
 
 // Classes:
@@ -48,8 +47,7 @@ class TextBuffer {
   auto eol() const -> bool;
   auto eof() const -> bool;
 
-  virtual auto path() const -> fs::path;
-  virtual auto position() const -> TextPosition;
+  auto position() const -> TextPosition;
 
   friend auto operator<<(std::ostream& t_os, const TextBuffer& t_tb)
     -> std::ostream&;

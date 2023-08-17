@@ -774,14 +774,17 @@ auto TreeWalk::visit([[maybe_unused]] Nil* t_nil) -> void
 
 // Runtime methods:
 //! Set all of the defaults
-auto TreeWalk::init(const container::TextBufferPtr& t_input) -> void
+auto TreeWalk::init(const TextBufferPtr& t_input) -> void
 {
   BoolGuard guard{m_init, true};
+
+  const auto tp{t_input->position()};
 
   // TODO: Clean this up
   // set("CONVFMT", "%.6g");
   // set("OFMT", "%.6g");
-  set("FILENAME", t_input->path().string());
+
+  set("FILENAME", tp.m_source);
 
   set("FS", " ");
   set("OFS", " ");
@@ -797,7 +800,7 @@ auto TreeWalk::init(const container::TextBufferPtr& t_input) -> void
   update(t_input);
 }
 
-auto TreeWalk::update(const container::TextBufferPtr& t_input) -> void
+auto TreeWalk::update(const TextBufferPtr& t_input) -> void
 {
   set("NR", (double)m_nr);
   set("FNR", (double)t_input->size());

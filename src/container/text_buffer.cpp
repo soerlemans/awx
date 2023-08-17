@@ -83,11 +83,6 @@ auto TextBuffer::eof() const -> bool
   return m_lineno >= size();
 }
 
-auto TextBuffer::path() const -> fs::path
-{
-  return fs::path{""};
-}
-
 //! This method is required for token creating in the Lexer, think about how to
 //! make this more elegant
 auto TextBuffer::position() const -> TextPosition

@@ -12,7 +12,6 @@
 
 // Includes:
 #include "config/config.hpp"
-#include "container/file_buffer.hpp"
 #include "container/text_buffer.hpp"
 #include "debug/log.hpp"
 #include "interpreter/tree_walk/tree_walk.hpp"
@@ -29,6 +28,8 @@ using namespace container;
 using namespace node;
 
 // Aliases:
+namespace fs = std::filesystem;
+
 using TextVec = std::vector<TextBufferPtr>;
 using PolicyFunc = std::function<void(NodePtr&)>;
 
@@ -69,6 +70,34 @@ auto parse_args(Config& t_config, CLI::App& t_app, const int t_argc,
 }
 // NOLINTEND
 
+auto open_file(fs::path t_path) -> container::TextBuffer
+{
+  using namespace container;
+
+  TextBuffer tb;
+
+  if(!fs::exists(t_path)) {
+    std::stringstream ss;
+    ss << "File does not exist! ";
+    ss << std::quoted(t_path.string());
+
+    throw std::invalid_argument{ss.str()};
+  }
+
+  std::ifstream ifs{t_path};
+  while(ifs.good() && !ifs.eof()) {
+    std::string line;
+    std::getline(ifs, line);
+
+    // Dont discard newlines
+    line += '\n';
+
+    tb.add_line(line);
+  }
+
+  return tb;
+}
+
 auto init_scripts(Config& t_config) -> TextVec
 {
   auto& args{t_config.m_args};
@@ -77,7 +106,7 @@ auto init_scripts(Config& t_config) -> TextVec
   // If no scrips were passed with -f use the first positional argument
   if(!t_config.m_scripts.empty()) {
     for(auto& script : t_config.m_scripts) {
-      auto buffer{std::make_shared<FileBuffer>(script)};
+      auto buffer{std::make_shared<TextBuffer>(open_file(script))};
       scripts.push_back(std::move(buffer));
     }
   } else {
@@ -102,7 +131,7 @@ auto init_sources(Config& t_config) -> TextVec
   TextVec sources;
 
   for(auto& filepath : args) {
-    sources.push_back(std::make_shared<FileBuffer>(filepath));
+    sources.push_back(std::make_shared<TextBuffer>(open_file(filepath)));
   }
 
   return sources;

@@ -6,7 +6,7 @@
 #include <stack>
 
 // Includes:
-#include "../../container/file_buffer.hpp"
+#include "../../container/text_buffer.hpp"
 #include "../../visitor/node_visitor.hpp"
 #include "../context.hpp"
 #include "../field_store.hpp"

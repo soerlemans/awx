@@ -7,7 +7,7 @@
 #include <tuple>
 
 // Includes:
-#include "../container/file_buffer.hpp"
+#include "../container/text_buffer.hpp"
 #include "../token/reserved/reserved.hpp"
 #include "../token/token.hpp"
 
@@ -36,9 +36,9 @@ class Lexer {
   Lexer(container::TextBufferPtr t_fb);
 
   // Name lexing:
-  static auto is_keyword(std::string_view t_identifier) -> token::TokenType;
+  static auto is_keyword(std::string_view t_identifier) -> token::TokenTypeOpt;
   static auto is_builtin_function(std::string_view t_identifier)
-    -> token::TokenType;
+    -> token::TokenTypeOpt;
   auto identifier() -> token::Token;
 
   // Integer literal lexing:
@@ -54,8 +54,8 @@ class Lexer {
   auto literal_regex() -> token::Token;
 
   // Symbol lexing:
-  auto is_multi_symbol() -> token::TokenType;
-  auto is_single_symbol() -> token::TokenType;
+  auto is_multi_symbol() -> token::TokenTypeOpt;
+  auto is_single_symbol() -> token::TokenTypeOpt;
   auto symbol() -> token::Token;
 
   auto tokenize() -> token::TokenStream;

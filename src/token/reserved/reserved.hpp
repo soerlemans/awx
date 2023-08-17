@@ -6,9 +6,6 @@
 #include <string_view>
 #include <type_traits>
 
-// Includes:
-#include "../token_type.hpp"
-
 // Local Includes:
 #include "terminal.hpp"
 
@@ -263,8 +260,8 @@ namespace symbols {
 // Contains symbols that have a special meaning but are not tied to a Token
 namespace none {
   // String literal symbols
-  DEFINE_TERMINAL(g_double_quote, '"', NONE);
-  DEFINE_TERMINAL(g_backslash, '\\',  NONE);
+	constexpr char g_double_quote{'"'};
+	constexpr char g_backslash{'\\'};
 } // namespace none
 } // namespace symbols
 } // namespace reserved
