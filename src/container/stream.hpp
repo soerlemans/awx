@@ -4,6 +4,7 @@
 // STL Includes:
 #include <concepts>
 #include <iterator>
+#include <optional>
 
 
 // Classes:
@@ -15,6 +16,7 @@ class Stream : public T {
   private:
   using Iterator = typename T::iterator;
   using Value = typename T::value_type;
+  using ValueOpt = std::optional<Value>;
 
   Iterator m_iter;
 
@@ -42,6 +44,19 @@ class Stream : public T {
     m_iter--;
 
     return *iter;
+  }
+
+  virtual auto peek() const -> ValueOpt
+  {
+		ValueOpt opt;
+    auto iter{m_iter};
+
+    iter++;
+    if(iter != this->end()) {
+			opt = *iter;
+    }
+
+		return opt;
   }
 
   virtual auto current() const -> Value&
