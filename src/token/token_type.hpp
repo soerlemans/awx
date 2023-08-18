@@ -14,10 +14,8 @@ using TokenTypeOpt = std::optional<TokenType>;
 
 // Enums:
 enum class TokenType {
-  NONE = 0,
-
   // Identifiers:
-  IDENTIFIER,
+  IDENTIFIER = 0,
   FUNCTION_IDENTIFIER,
 
   // Keywords:

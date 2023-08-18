@@ -562,7 +562,7 @@ auto PrattParser::string_concat(NodePtr& t_lhs, const BpFunc& t_rhs,
 
   if(t_lhs) {
     // No infix token means that we are dealing with string concatenation
-    const auto [lbp, rbp] = m_infix.at(TokenType::NONE);
+    const auto [lbp, rbp] = m_infix.string_concat();
 
     if(lbp >= t_min_bp) {
       if(auto rhs{t_rhs(rbp)}; rhs) {

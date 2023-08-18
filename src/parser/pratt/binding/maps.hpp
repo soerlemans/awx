@@ -48,9 +48,6 @@ class InfixMap : public BindingMap {
     INSERT_BINDING(PLUS, 15, 16);  // Addition
     INSERT_BINDING(MINUS, 15, 16); // Subtraction
 
-		// No infix operator means that we are dealing with a string concatenation
-    INSERT_BINDING(NONE, 13, 14);
-
     // Comparisons:
     INSERT_BINDING(LESS_THAN, 12, 12);
     INSERT_BINDING(LESS_THAN_EQUAL, 12, 12);
@@ -81,6 +78,12 @@ class InfixMap : public BindingMap {
     INSERT_BINDING(ADD_ASSIGNMENT, 2, 1);
     INSERT_BINDING(SUBTRACT_ASSIGNMENT, 2, 1);
     INSERT_BINDING(ASSIGNMENT, 2, 1);
+  }
+
+  auto string_concat() -> BindingPower
+  {
+    // No infix operator means that we are dealing with a string concatenation
+    return {13, 14};
   }
 };
 
