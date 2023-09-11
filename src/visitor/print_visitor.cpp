@@ -272,6 +272,7 @@ auto PrintVisitor::visit(Increment* t_increment) -> void
 
   PPRINT("Increment");
   PPRINT("| Prefix: ", t_increment->prefix());
+  PPRINT_IF("Left", t_increment->left());
 }
 
 auto PrintVisitor::visit(Decrement* t_decrement) -> void
@@ -280,6 +281,7 @@ auto PrintVisitor::visit(Decrement* t_decrement) -> void
 
   PPRINT("Decrement");
   PPRINT("| Prefix: ", t_decrement->prefix());
+  PPRINT_IF("Left", t_decrement->left());
 }
 
 auto PrintVisitor::visit(Delete* t_delete) -> void
