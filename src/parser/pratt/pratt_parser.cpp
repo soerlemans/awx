@@ -151,7 +151,7 @@ auto PrattParser::lvalue() -> NodePtr
       break;
     }
 
-		// FIXME: Field reference with match expression prints field reference only
+    // FIXME: Field reference with match expression prints field reference only
     case TokenType::DOLLAR_SIGN: {
       DBG_TRACE_PRINT(INFO, "Found FIELD REFERENCE");
       node = std::make_shared<FieldReference>(expr());
@@ -611,6 +611,23 @@ auto PrattParser::universal_non_unary_expr(const BpFunc& t_expr_fn,
     return t_expr_fn(rbp);
   }};
 
+  const auto infix{[&](TokenType t_type) {
+    NodePtr rhs;
+
+    const auto [lbp, rbp] = m_infix.at(t_type);
+    if(lbp < t_min_bp) {
+      prev();
+    } else {
+      rhs = t_expr_fn(rbp);
+      if(!rhs) {
+        syntax_error("Infix operations require a right hand side");
+      }
+    }
+
+    return rhs;
+  }};
+
+  // Prefix:
   if(auto ptr{grouping()}; ptr) {
     lhs = std::move(ptr);
   } else if(auto ptr{negation(prefix)}; ptr) {
@@ -619,10 +636,15 @@ auto PrattParser::universal_non_unary_expr(const BpFunc& t_expr_fn,
     lhs = std::move(ptr);
   } else if(auto ptr{lvalue()}; ptr) {
     lhs = std::move(ptr);
-
-    ptr = postcrement(lhs);
-    if(ptr) {
-      lhs = std::move(ptr);
+    // TODO: Cleanup
+    while(!eos()) {
+      if(ptr = postcrement(lhs); ptr) {
+        lhs = std::move(ptr);
+      } else if(ptr = assignment(lhs, infix); ptr) {
+        lhs = std::move(ptr);
+      } else {
+        break;
+      }
     }
   } else if(auto ptr{precrement()}; ptr) {
     lhs = std::move(ptr);
@@ -632,26 +654,8 @@ auto PrattParser::universal_non_unary_expr(const BpFunc& t_expr_fn,
 
   // Infix:
   while(!eos()) {
-    const auto infix{[&](TokenType t_type) {
-      NodePtr rhs;
-
-      const auto [lbp, rbp] = m_infix.at(t_type);
-      if(lbp < t_min_bp) {
-        prev();
-      } else {
-        rhs = t_expr_fn(rbp);
-        if(!rhs) {
-          syntax_error("Infix operations require a right hand side");
-        }
-      }
-
-      return rhs;
-    }};
-
     // If we do not find the expression quit
     if(auto ptr{universal_infix(lhs, infix)}; ptr) {
-      lhs = std::move(ptr);
-    } else if(auto ptr{assignment(lhs, infix)}; ptr) {
       lhs = std::move(ptr);
     } else if(auto ptr{t_infix_fn(lhs, infix)}; ptr) {
       lhs = std::move(ptr);

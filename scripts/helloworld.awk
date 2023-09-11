@@ -2,8 +2,9 @@
 
 
 {
-		test = $0
-		var = test ~ "match"
-		print var, RSTART, RLENGTH
+	    var22 = 10
+		var = ++var22
+
+		print var, var22
 }
 

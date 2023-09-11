@@ -20,7 +20,6 @@ namespace node {
 // Forward Declarations:
 class NodeInterface;
 class List; // List of NodePtr's
-class Expression;
 class Nil; // Node that indicates nothing
 
 // Aliases:

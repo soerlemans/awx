@@ -823,7 +823,5 @@ auto AwkParser::program() -> NodeListPtr
 
 auto AwkParser::parse() -> NodePtr
 {
-  NodePtr ast{program()};
-
-  return ast;
+  return program();
 }
